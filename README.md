@@ -2,6 +2,21 @@
 
 Repositorio de referencia para el diseño y prototipado de la plataforma interna de staff.
 
+## Links
+
+| | URL |
+|---|---|
+| **Landing** | https://vanegu1tas.github.io/kamleon-proto/ |
+| **Prototipo** | https://vanegu1tas.github.io/kamleon-proto/prototype/ |
+| **Storybook** | https://vanegu1tas.github.io/kamleon-proto/storybook/ |
+
+## Comandos locales
+
+```bash
+npm run prototype   # Vite dev server → http://localhost:5173
+npm run storybook   # Storybook       → http://localhost:6006
+```
+
 ## Estructura
 
 ```
