@@ -1,0 +1,120 @@
+/* ─── Shell ──────────────────────────────────────── */
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border: 1px solid var(--color-grey-25);
+  border-radius: 20px;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.8), 0 0 16px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+}
+
+.expanded {
+  width: 256px;
+  background: linear-gradient(161.79deg, #0b0f12 63.877%, #161d24 100%);
+}
+
+.collapsed {
+  width: 82px;
+  background: linear-gradient(134.24deg, #0b0f12 63.877%, #161d24 100%);
+}
+
+/* ─── Header ─────────────────────────────────────── */
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  padding: 0 16px;
+  flex-shrink: 0;
+}
+
+.collapsed .header {
+  justify-content: center;
+}
+
+.toggleBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 2px;
+  border: 1px solid var(--color-grey-25);
+  border-radius: 8px;
+  background: none;
+  cursor: pointer;
+  color: var(--color-grey-65);
+  flex-shrink: 0;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.toggleBtn:hover {
+  color: var(--color-white);
+  border-color: var(--color-grey-46);
+}
+
+/* ─── Divider (solo en collapsed) ───────────────── */
+
+.divider {
+  height: 1px;
+  background-color: var(--color-grey-25);
+  flex-shrink: 0;
+}
+
+/* ─── Nav ────────────────────────────────────────── */
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  flex: 1;
+  padding: 40px 16px 32px;
+  overflow-y: auto;
+}
+
+/* ─── Section ────────────────────────────────────── */
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sectionLabel {
+  display: block;
+  padding: 2px 12px;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-grey-65);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  line-height: normal;
+}
+
+/* ─── Tablet drawer (≤768px) ─────────────────────── */
+
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    z-index: 200;
+    border-radius: 0 20px 20px 0;
+    transform: translateX(-100%);
+    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .expanded,
+  .collapsed {
+    width: 256px;
+  }
+
+  .drawerVisible {
+    transform: translateX(0);
+  }
+}

@@ -1,0 +1,49 @@
+/* ─── Base ───────────────────────────────────────── */
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: 9999px;
+  background-color: var(--color-bg-surface-subtle);
+}
+
+/* ─── Dot ────────────────────────────────────────── */
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ─── Label ──────────────────────────────────────── */
+
+.label {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-book);
+  line-height: 16px;
+  white-space: nowrap;
+}
+
+/* ─── Active ─────────────────────────────────────── */
+
+.active .dot {
+  background-color: var(--color-status-active);
+}
+
+.active .label {
+  color: var(--color-text-strong);
+}
+
+/* ─── Inactive ───────────────────────────────────── */
+
+.inactive .dot {
+  background-color: var(--color-status-inactive);
+}
+
+.inactive .label {
+  color: var(--color-text-disabled);
+}

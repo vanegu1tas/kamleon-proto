@@ -1,0 +1,16 @@
+/**
+ * Tokens — Global
+ * Tokens generales que no pertenecen a color ni tipografía.
+ *
+ * Uso: var(--radius-s)
+ */
+
+:root {
+
+  /* ─── Border Radius ─────────────────────────── */
+  --radius-xs: 8px;
+  --radius-s:  12px;
+  --radius-m:  24px;
+  --radius-l:  40px;
+
+}

@@ -1,0 +1,78 @@
+/* ─── Base ───────────────────────────────────────── */
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.15s ease;
+
+  /* Variables de color para los iconos duotono */
+  --icon-primary:    white;
+  --icon-secondary:  var(--color-grey-65);
+  --icon-accent:     var(--color-black);
+}
+
+/* ─── Modos ──────────────────────────────────────── */
+
+.expanded {
+  gap: 12px;
+  padding: 8px 16px;
+  border-radius: var(--radius-l);
+}
+
+.collapsed {
+  padding: 12px;
+  border-radius: var(--radius-l);
+  justify-content: center;
+}
+
+/* ─── Default ────────────────────────────────────── */
+
+.default:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* ─── Selected ───────────────────────────────────── */
+
+.selected {
+  background-color: var(--color-bg-nav-active);
+  --icon-primary:   var(--color-turquoise-51);
+  --icon-secondary: var(--color-turquoise-30);
+  --icon-accent:    var(--color-bg-nav-active);
+}
+
+/* ─── Icon ───────────────────────────────────────── */
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+}
+
+/* ─── Label ──────────────────────────────────────── */
+
+.label {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-book);
+  line-height: normal;
+  color: var(--color-grey-70);
+}
+
+.selected .label {
+  font-weight: var(--font-weight-medium);
+  line-height: 24px;
+  color: var(--color-white);
+}

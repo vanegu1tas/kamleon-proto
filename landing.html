@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kamleon — Design System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0b0f12;
+      color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .logo svg { display: block; }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .tagline {
+      font-size: 16px;
+      color: #9ca3af;
+      margin-bottom: 48px;
+      font-weight: 400;
+    }
+
+    .cards {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .card {
+      display: block;
+      text-decoration: none;
+      background: #161d24;
+      border: 1px solid #253040;
+      border-radius: 16px;
+      padding: 28px 32px;
+      width: 220px;
+      transition: border-color 0.15s, transform 0.15s;
+    }
+
+    .card:hover {
+      border-color: #2fd5cb;
+      transform: translateY(-2px);
+    }
+
+    .card-icon {
+      width: 40px;
+      height: 40px;
+      background: #0b0f12;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 500;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+
+    .card-desc {
+      font-size: 13px;
+      color: #9ca3af;
+      line-height: 1.5;
+    }
+
+    .footer {
+      margin-top: 64px;
+      font-size: 12px;
+      color: #32404d;
+    }
+
+    .footer a {
+      color: #32404d;
+      text-decoration: none;
+    }
+
+    .footer a:hover { color: #9ca3af; }
+  </style>
+</head>
+<body>
+
+  <div class="logo">
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="28" height="28" rx="8" fill="#2fd5cb"/>
+      <text x="14" y="20" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#0b0f12">K</text>
+    </svg>
+    <h1>Kamleon</h1>
+  </div>
+
+  <p class="tagline">Design system &amp; prototipos de la plataforma interna de staff</p>
+
+  <div class="cards">
+
+    <a class="card" href="./prototype/">
+      <div class="card-icon">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="4" width="16" height="12" rx="2" stroke="#2fd5cb" stroke-width="1.5"/>
+          <path d="M6 8h8M6 11h5" stroke="#2fd5cb" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="card-title">Prototipo</div>
+      <div class="card-desc">Panel staff — organizaciones, centros y equipos</div>
+    </a>
+
+    <a class="card" href="./storybook/">
+      <div class="card-icon">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="3" y="3" width="6" height="6" rx="1.5" stroke="#2fd5cb" stroke-width="1.5"/>
+          <rect x="11" y="3" width="6" height="6" rx="1.5" stroke="#2fd5cb" stroke-width="1.5"/>
+          <rect x="3" y="11" width="6" height="6" rx="1.5" stroke="#2fd5cb" stroke-width="1.5"/>
+          <rect x="11" y="11" width="6" height="6" rx="1.5" stroke="#2fd5cb" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <div class="card-title">Storybook</div>
+      <div class="card-desc">Componentes del design system en aislamiento</div>
+    </a>
+
+    <a class="card" href="https://github.com/vanegu1tas/kamleon-proto/tree/main/docs" target="_blank" rel="noopener">
+      <div class="card-icon">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M5 5h10M5 8.5h10M5 12h6" stroke="#2fd5cb" stroke-width="1.5" stroke-linecap="round"/>
+          <rect x="2" y="2" width="16" height="16" rx="2" stroke="#2fd5cb" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <div class="card-title">Docs</div>
+      <div class="card-desc">Modelo de datos, navegación y permisos</div>
+    </a>
+
+  </div>
+
+  <p class="footer">
+    <a href="https://github.com/vanegu1tas/kamleon-proto" target="_blank" rel="noopener">github.com/vanegu1tas/kamleon-proto</a>
+  </p>
+
+</body>
+</html>

@@ -1,0 +1,58 @@
+/**
+ * Color Tokens — Global Colors 2
+ * Fuente: Figma Design System (node: 2138:367)
+ *
+ * Uso: var(--color-grey-91)
+ */
+
+:root {
+
+  /* ─── Base ─────────────────────────────────── */
+  --color-black:  #0b0f12;
+  --color-white:  #ffffff;
+
+  /* ─── Grey ──────────────────────────────────── */
+  --color-grey-98: #fafafa;
+  --color-grey-96: #f4f5f5;
+  --color-grey-91: #e5e7eb;
+  --color-grey-70: #b1b2b4;
+  --color-grey-65: #9ca3af;
+  --color-grey-46: #6b7280;
+  --color-grey-25: #32404d;
+  --color-grey-11: #161d24;
+
+  /* ─── Turquoise ─────────────────────────────── */
+  --color-turquoise-86: #c7f1ef;
+  --color-turquoise-75: #94e8e3;
+  --color-turquoise-63: #61dfd8;
+  --color-turquoise-51: #2fd5cb;
+  --color-turquoise-30: #1a7f79;
+
+  /* ─── Red ───────────────────────────────────── */
+  --color-red-91: #fad6d4;
+  --color-red-83: #fdafab;
+  --color-red-75: #fc8c85;
+  --color-red-65: #fc664e;
+  --color-red-58: #e04f4a;
+  --color-red-48: #c43b33;
+  --color-red-29: #8b0e0a;
+
+  /* ─── Yellow ────────────────────────────────── */
+  --color-yellow-90: #faf2d1;
+  --color-yellow-82: #fceba6;
+  --color-yellow-74: #ffe07a;
+  --color-yellow-66: #ffd952;
+  --color-yellow-61: #fac63e;
+  --color-yellow-57: #f5b22d;
+  --color-yellow-47: #ed9005;
+
+  /* ─── Green ─────────────────────────────────── */
+  --color-green-88: #d9edd6;
+  --color-green-79: #b8e3b2;
+  --color-green-70: #96d68f;
+  --color-green-62: #75cc6e;
+  --color-green-50: #5cac55;
+  --color-green-41: #44923e;
+  --color-green-30: #2a7324;
+
+}

@@ -1,0 +1,89 @@
+/**
+ * Text Styles
+ * Equivalente en código a los estilos de texto de Figma.
+ *
+ * Cada clase agrupa: font-family + font-size + font-weight
+ * + line-height y letter-spacing propios del estilo.
+ *
+ * Uso: class="text-heading-h1-bold"
+ */
+
+/* ─── Heading ───────────────────────────────────── */
+
+.text-heading-h1-bold {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-32);
+  font-weight: var(--font-weight-bold);
+  line-height: normal;
+}
+
+.text-heading-h1-medium {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-32);
+  font-weight: var(--font-weight-medium);
+  line-height: normal;
+}
+
+.text-heading-h2 {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-24);
+  font-weight: var(--font-weight-medium);
+  line-height: normal;
+}
+
+.text-heading-h3 {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-20);
+  font-weight: var(--font-weight-medium);
+  line-height: normal;
+}
+
+/* ─── Body ──────────────────────────────────────── */
+
+.text-body-l-medium {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-medium);
+  line-height: normal;
+}
+
+.text-body-l-book {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-book);
+  line-height: normal;
+}
+
+.text-body-m-medium {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+  line-height: 16px;
+}
+
+.text-body-m-book {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  line-height: 16px;
+}
+
+/* ─── Label ─────────────────────────────────────── */
+
+.text-label-section {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  line-height: normal;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+
+.text-label-table {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  line-height: 16px;
+  letter-spacing: 0.24px;
+  text-transform: uppercase;
+}

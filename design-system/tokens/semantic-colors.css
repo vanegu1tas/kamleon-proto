@@ -1,0 +1,54 @@
+/**
+ * Semantic Color Tokens
+ * Extraídos del análisis del frame: Web-App / node 2603:13148
+ *
+ * Cada token referencia un global de colors.css.
+ * Uso: var(--color-bg-page), var(--color-text-primary), etc.
+ */
+
+:root {
+
+  /* ─── Background ────────────────────────────── */
+
+  --color-bg-page:              var(--color-grey-96);   /* #f4f5f5 */
+  --color-bg-surface:           var(--color-white);     /* #ffffff */
+  --color-bg-surface-raised:    var(--color-grey-98);   /* #fafafa */
+  --color-bg-surface-subtle:    var(--color-grey-96);   /* #f4f5f5 */
+  --color-bg-sidebar:           var(--color-black);     /* #0b0f12 */
+  --color-bg-nav-active:        var(--color-grey-11);   /* #161d24 */
+
+
+  /* ─── Border ────────────────────────────────── */
+
+  --color-border-default:       var(--color-grey-91);   /* #e5e7eb */
+  --color-border-strong:        var(--color-grey-25);   /* #32404d */
+  --color-border-focus:         var(--color-turquoise-51); /* #2fd5cb */
+  --color-border-error:         var(--color-red-58);       /* #e04f4a */
+
+
+  /* ─── Text ──────────────────────────────────── */
+
+  --color-text-strong:          var(--color-black);     /* #0b0f12 */
+  --color-text-subtle:          var(--color-grey-46);   /* #6b7280 */
+  --color-text-disabled:        var(--color-grey-65);   /* #9ca3af */
+  --color-text-placeholder:     var(--color-grey-65);   /* #9ca3af */
+  --color-text-inverse:         var(--color-white);     /* #ffffff */
+
+
+  /* ─── Actions ───────────────────────────────── */
+
+  --color-action-primary-bg:    var(--color-black);     /* #0b0f12 */
+  --color-action-primary-text:  var(--color-white);     /* #ffffff */
+  --color-action-ghost-border:  var(--color-grey-91);   /* #e5e7eb */
+  --color-action-ghost-text:    var(--color-black);     /* #0b0f12 */
+  --color-action-disabled-text: var(--color-grey-65);   /* #9ca3af */
+
+
+  /* ─── Status ────────────────────────────────── */
+
+  --color-status-active:        var(--color-turquoise-51); /* #2fd5cb */
+  --color-status-inactive:      var(--color-red-75);       /* #fc8c85 */
+  --color-status-error:         var(--color-red-58);       /* #e04f4a */
+  --color-status-error-subtle:  var(--color-red-75);       /* #fc8c85 */
+
+}

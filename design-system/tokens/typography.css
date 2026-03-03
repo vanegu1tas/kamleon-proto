@@ -1,0 +1,31 @@
+/**
+ * Typography Tokens — Global
+ * Fuente: Figma Design System · Variables > Typography
+ *
+ * Uso: var(--font-size-14), var(--font-weight-medium)
+ */
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+:root {
+
+  /* ─── Font Family ───────────────────────────── */
+  --font-family-primary: 'Circular Pro', Inter, sans-serif;
+
+  /* ─── Font Size ─────────────────────────────── */
+  --font-size-12: 12px;
+  --font-size-14: 14px;
+  --font-size-16: 16px;
+  --font-size-20: 20px;
+  --font-size-24: 24px;
+  --font-size-32: 32px;
+
+  /* ─── Font Weight ───────────────────────────── */
+  --font-weight-book:   400;
+  --font-weight-medium: 500;
+  --font-weight-bold:   700;
+
+}
