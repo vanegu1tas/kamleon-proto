@@ -57,7 +57,15 @@ Referencia completa: [`docs/navigation.md`](./navigation.md)
 
 ---
 
-## Comandos
+## URLs públicas (GitHub Pages)
+
+| | URL |
+|---|---|
+| **Landing** | https://vanegu1tas.github.io/kamleon-proto/ |
+| **Prototipo** | https://vanegu1tas.github.io/kamleon-proto/prototype/ |
+| **Storybook** | https://vanegu1tas.github.io/kamleon-proto/storybook/ |
+
+## Comandos locales
 
 | Comando | Descripción | URL |
 |---|---|---|
@@ -304,6 +312,13 @@ Nodos relevantes:
 ### Docs de features
 - [ ] Definir lista de features a diseñar
 - [ ] Crear primeros docs en `docs/features/`
+
+### GitHub Pages
+- [x] Repo en GitHub: https://github.com/vanegu1tas/kamleon-proto
+- [x] GitHub Actions workflow (`.github/workflows/deploy.yml`)
+- [x] Landing page (`landing.html`) con links a prototipo, Storybook y docs
+- [x] `docs/README.md` para navegación contextual
+- [x] README raíz con links públicos
 
 ### Pendientes abiertos en docs
 - [ ] Lista completa de permisos del Admin de Centro restringido
