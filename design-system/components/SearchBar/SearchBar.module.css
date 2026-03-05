@@ -1,0 +1,100 @@
+/* ─── Wrapper ─────────────────────────────────────── */
+
+.wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 13px;
+  border-radius: 40px;
+  border: 1px solid var(--color-border-default);
+  background: var(--color-bg-surface-subtle);
+  width: 100%;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* ─── Hover ───────────────────────────────────────── */
+
+.wrapper:hover:not(.disabled) {
+  border-color: var(--color-border-strong);
+}
+
+/* ─── Focus ───────────────────────────────────────── */
+
+.wrapper:focus-within:not(.disabled) {
+  border-color: var(--color-border-default);
+  box-shadow: 0 0 0 2px var(--color-bg-surface), 0 0 0 4px var(--color-border-focus);
+}
+
+/* ─── Error ───────────────────────────────────────── */
+
+.wrapper.error {
+  border-color: var(--color-border-error);
+}
+
+.wrapper.error:focus-within {
+  box-shadow: 0 0 0 2px var(--color-bg-surface), 0 0 0 4px var(--color-border-error);
+}
+
+/* ─── Disabled ────────────────────────────────────── */
+
+.wrapper.disabled {
+  background: var(--color-bg-surface-disabled);
+  border-color: var(--color-border-default);
+  cursor: not-allowed;
+}
+
+/* ─── Search icon ─────────────────────────────────── */
+
+.searchIcon {
+  display: flex;
+  flex-shrink: 0;
+  color: var(--color-text-subtle);
+}
+
+.disabled .searchIcon {
+  color: var(--color-text-disabled);
+}
+
+/* ─── Input ───────────────────────────────────────── */
+
+.input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  line-height: 17.5px;
+  color: var(--color-text-strong);
+  min-width: 0;
+}
+
+.input::placeholder {
+  color: var(--color-text-placeholder);
+}
+
+.input:disabled {
+  color: var(--color-text-disabled);
+  cursor: not-allowed;
+}
+
+/* ─── Clear button ────────────────────────────────── */
+
+.clearBtn {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  color: var(--color-text-subtle);
+}
+
+.clearBtn:hover {
+  color: var(--color-text-strong);
+}

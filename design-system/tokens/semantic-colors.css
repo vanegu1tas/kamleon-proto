@@ -12,8 +12,10 @@
 
   --color-bg-page:              var(--color-grey-96);   /* #f4f5f5 */
   --color-bg-surface:           var(--color-white);     /* #ffffff */
-  --color-bg-surface-raised:    var(--color-grey-98);   /* #fafafa */
-  --color-bg-surface-subtle:    var(--color-grey-96);   /* #f4f5f5 */
+  --color-bg-surface-raised:    var(--color-grey-96);   /* #f4f5f5 */
+  --color-bg-surface-subtle:    var(--color-grey-98);   /* #fafafa */
+  --color-bg-surface-disabled: var(--color-grey-91);   /* #e5e7eb */
+  --color-bg-icon-hover:        var(--color-grey-91);   /* #e5e7eb — hover de icon buttons */
   --color-bg-sidebar:           var(--color-black);     /* #0b0f12 */
   --color-bg-nav-active:        var(--color-grey-11);   /* #161d24 */
 

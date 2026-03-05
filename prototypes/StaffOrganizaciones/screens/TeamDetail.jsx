@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Button from '../../../design-system/components/Button/Button';
 import Tag from '../../../design-system/components/Tag/Tag';
-import styles from './CenterDetail.module.css';
+import styles from './TeamDetail.module.css';
 
 // ─── Icons ──────────────────────────────────────────────
 
@@ -85,24 +85,32 @@ function DotsIcon() {
 // ─── Tabs ────────────────────────────────────────────────
 
 const TABS = [
-  { id: 'teams',          label: 'Teams' },
-  { id: 'administrators', label: 'Administrators' },
   { id: 'users',          label: 'Users' },
-  { id: 'monitoring',     label: 'Monitoring' },
+  { id: 'administrators', label: 'Administrators' },
 ];
 
 // ─── Mock data ───────────────────────────────────────────
 
-const MOCK_CENTER_DETAIL = {
+const MOCK_TEAM_CONTACT = {
   email:   'center@gmail.com',
   phone:   '+57 317 670 00 22',
   address: 'Avenida siempre viva, 35',
 };
 
-const MOCK_TEAMS = [
-  { id: 1, name: 'Team Alpha', professionals: 2, users: 8, status: 'active' },
-  { id: 2, name: 'Team Beta',  professionals: 1, users: 5, status: 'active' },
+const DEFAULT_USERS = [
+  { id: 1, name: 'Carlos García',  dateAdded: '12 Jan 2024', status: 'active'   },
+  { id: 2, name: 'María López',    dateAdded: '03 Feb 2024', status: 'active'   },
+  { id: 3, name: 'Jordi Puig',     dateAdded: '15 Mar 2024', status: 'inactive' },
+  { id: 4, name: 'Laia Ferrer',    dateAdded: '28 Apr 2024', status: 'active'   },
 ];
+
+const USERS_BY_TEAM = {
+  2: [
+    { id: 5, name: 'Ana Martínez', dateAdded: '05 Jan 2024', status: 'active' },
+    { id: 6, name: 'Pau Roca',     dateAdded: '20 Feb 2024', status: 'active' },
+    { id: 7, name: 'Sara Vidal',   dateAdded: '11 Mar 2024', status: 'active' },
+  ],
+};
 
 // ─── Empty state ─────────────────────────────────────────
 
@@ -121,21 +129,22 @@ function EmptyState({ title, subtitle, action }) {
   );
 }
 
-// ─── Teams content ───────────────────────────────────────
+// ─── Users content ───────────────────────────────────────
 
-function TeamsContent({ center, org, onNavigate }) {
-  const hasTeams = MOCK_TEAMS.length > 0;
+function UsersContent({ team, center }) {
+  const users = Object.hasOwn(USERS_BY_TEAM, team.id) ? USERS_BY_TEAM[team.id] : DEFAULT_USERS;
+  const hasUsers = users.length > 0;
 
-  if (!hasTeams) {
+  if (!hasUsers) {
     return (
       <div className={styles.contentSection}>
-        <h2 className={styles.contentTitle}>Teams</h2>
+        <h2 className={styles.contentTitle}>Users</h2>
         <EmptyState
-          title="No teams yet..."
-          subtitle="Teams for this center will be displayed here"
+          title="No users yet..."
+          subtitle="Users for this team will be displayed here"
           action={
             <Button variant="primary" size="s" leftIcon={<PlusIcon />}>
-              New Team
+              New User
             </Button>
           }
         />
@@ -146,11 +155,11 @@ function TeamsContent({ center, org, onNavigate }) {
   return (
     <>
       {/* Top: título + botón + search */}
-      <div className={styles.teamsTop}>
-        <div className={styles.teamsTopRow}>
-          <h2 className={styles.contentTitle}>Teams</h2>
+      <div className={styles.usersTop}>
+        <div className={styles.usersTopRow}>
+          <h2 className={styles.contentTitle}>Users</h2>
           <Button variant="primary" size="s" leftIcon={<PlusIcon />}>
-            New Team
+            New User
           </Button>
         </div>
         <div className={styles.searchWrap}>
@@ -162,30 +171,29 @@ function TeamsContent({ center, org, onNavigate }) {
       {/* Tabla */}
       <div className={styles.tableWrap}>
         <div className={styles.tableHeader}>
-          <div className={`${styles.colHead} ${styles.colTeam}`}>Team</div>
-          <div className={`${styles.colHead} ${styles.colNum}`}>Professionals</div>
-          <div className={`${styles.colHead} ${styles.colNum}`}>Users</div>
+          <div className={`${styles.colHead} ${styles.colName}`}>Name</div>
+          <div className={`${styles.colHead} ${styles.colCenter}`}>Center</div>
+          <div className={`${styles.colHead} ${styles.colDate}`}>Date Added</div>
           <div className={`${styles.colHead} ${styles.colNum}`}>Status</div>
           <div className={`${styles.colHead} ${styles.colActions}`} />
         </div>
 
-        {MOCK_TEAMS.map((team, i) => (
+        {users.map((user, i) => (
           <div
-            key={team.id}
-            className={`${styles.tableRow} ${styles.tableRowClickable} ${i < MOCK_TEAMS.length - 1 ? styles.rowBorder : ''}`}
-            onClick={() => onNavigate('team-detail', { team, center, org })}
+            key={user.id}
+            className={`${styles.tableRow} ${i < users.length - 1 ? styles.rowBorder : ''}`}
           >
-            <div className={`${styles.teamNameCell} ${styles.colTeam}`}>
-              <div className={styles.teamAvatar}>{team.name.charAt(0)}</div>
-              <span className={styles.teamName}>{team.name}</span>
+            <div className={`${styles.userNameCell} ${styles.colName}`}>
+              <div className={styles.userAvatar}>{user.name.charAt(0)}</div>
+              <span className={styles.userName}>{user.name}</span>
             </div>
-            <div className={`${styles.numCell} ${styles.colNum}`}>{team.professionals}</div>
-            <div className={`${styles.numCell} ${styles.colNum}`}>{team.users}</div>
+            <div className={`${styles.centerCell} ${styles.colCenter}`}>{center.name}</div>
+            <div className={`${styles.dateCell} ${styles.colDate}`}>{user.dateAdded}</div>
             <div className={`${styles.numCell} ${styles.colNum}`}>
-              <Tag status={team.status} />
+              <Tag status={user.status} />
             </div>
             <div className={`${styles.actionsCell} ${styles.colActions}`}>
-              <button className={styles.dotsBtn} aria-label="Más opciones" onClick={e => e.stopPropagation()}>
+              <button className={styles.dotsBtn} aria-label="Más opciones">
                 <DotsIcon />
               </button>
             </div>
@@ -196,7 +204,7 @@ function TeamsContent({ center, org, onNavigate }) {
       {/* Paginación */}
       <div className={styles.tablePagination}>
         <span className={styles.pageInfo}>
-          Showing <strong>{MOCK_TEAMS.length}</strong> of <strong>{MOCK_TEAMS.length}</strong> teams
+          Showing <strong>{users.length}</strong> of <strong>{users.length}</strong> users
         </span>
         <div className={styles.pageButtons}>
           <button className={styles.pageBtn} disabled>Previous</button>
@@ -209,8 +217,8 @@ function TeamsContent({ center, org, onNavigate }) {
 
 // ─── Component ───────────────────────────────────────────
 
-export default function CenterDetail({ center, org, onBack, onNavigate }) {
-  const [activeTab, setActiveTab] = useState('teams');
+export default function TeamDetail({ team, center, onBack }) {
+  const [activeTab, setActiveTab] = useState('users');
 
   return (
     <div className={styles.container}>
@@ -223,33 +231,33 @@ export default function CenterDetail({ center, org, onBack, onNavigate }) {
           <span className={styles.backLabel}>Back</span>
         </button>
 
-        <div className={styles.centerInfo}>
-          <div className={styles.centerInfoLeft}>
-            <div className={styles.centerAvatarWrap}>
-              <div className={styles.centerAvatar}>
+        <div className={styles.teamInfo}>
+          <div className={styles.teamInfoLeft}>
+            <div className={styles.teamAvatarWrap}>
+              <div className={styles.teamAvatar}>
+                {team.name.charAt(0)}
+              </div>
+              <div className={styles.centerBadge}>
                 {center.name.charAt(0)}
               </div>
-              <div className={styles.orgBadge}>
-                {org.name.charAt(0)}
-              </div>
             </div>
-            <div className={styles.centerMeta}>
-              <h1 className={styles.centerName}>{center.name}</h1>
-              <div className={styles.centerSubtitle}>
-                <span>{org.name}</span>
+            <div className={styles.teamMeta}>
+              <h1 className={styles.teamName}>{team.name}</h1>
+              <div className={styles.teamSubtitle}>
+                <span>{center.name}</span>
                 <span className={styles.separator}>|</span>
                 <div className={styles.statusBadge}>
-                  <div className={`${styles.statusDot} ${styles[center.status]}`} />
-                  <span>{center.status === 'active' ? 'Active' : 'Inactive'}</span>
+                  <div className={`${styles.statusDot} ${styles[team.status]}`} />
+                  <span>{team.status === 'active' ? 'Active' : 'Inactive'}</span>
                 </div>
               </div>
             </div>
           </div>
-          <div className={styles.centerActions}>
-            <button className={styles.actionBtn} aria-label="Editar centro">
+          <div className={styles.teamActions}>
+            <button className={styles.actionBtn} aria-label="Editar equipo">
               <EditIcon />
             </button>
-            <button className={styles.actionBtn} aria-label="Eliminar centro">
+            <button className={styles.actionBtn} aria-label="Eliminar equipo">
               <TrashIcon />
             </button>
           </div>
@@ -257,9 +265,9 @@ export default function CenterDetail({ center, org, onBack, onNavigate }) {
 
         <div className={styles.metadata}>
           <div className={styles.metaRow}>
-            <div className={styles.metaItem}><MailIcon /><span>{MOCK_CENTER_DETAIL.email}</span></div>
-            <div className={styles.metaItem}><PhoneIcon /><span>{MOCK_CENTER_DETAIL.phone}</span></div>
-            <div className={styles.metaItem}><PinIcon /><span>{MOCK_CENTER_DETAIL.address}</span></div>
+            <div className={styles.metaItem}><MailIcon /><span>{MOCK_TEAM_CONTACT.email}</span></div>
+            <div className={styles.metaItem}><PhoneIcon /><span>{MOCK_TEAM_CONTACT.phone}</span></div>
+            <div className={styles.metaItem}><PinIcon /><span>{MOCK_TEAM_CONTACT.address}</span></div>
           </div>
         </div>
 
@@ -280,34 +288,14 @@ export default function CenterDetail({ center, org, onBack, onNavigate }) {
       {/* ── Content card ──────────────────────────────── */}
       <div className={styles.contentCard}>
 
-        {activeTab === 'teams' && <TeamsContent center={center} org={org} onNavigate={onNavigate} />}
+        {activeTab === 'users' && <UsersContent team={team} center={center} />}
 
         {activeTab === 'administrators' && (
           <div className={styles.contentSection}>
             <h2 className={styles.contentTitle}>Administrators</h2>
             <EmptyState
               title="No administrators yet..."
-              subtitle="Administrators for this center will appear here"
-            />
-          </div>
-        )}
-
-        {activeTab === 'users' && (
-          <div className={styles.contentSection}>
-            <h2 className={styles.contentTitle}>Users</h2>
-            <EmptyState
-              title="No users yet..."
-              subtitle="Users belonging to this center will appear here"
-            />
-          </div>
-        )}
-
-        {activeTab === 'monitoring' && (
-          <div className={styles.contentSection}>
-            <h2 className={styles.contentTitle}>Monitoring</h2>
-            <EmptyState
-              title="No data yet..."
-              subtitle="Monitoring data will be displayed here"
+              subtitle="Administrators for this team will appear here"
             />
           </div>
         )}

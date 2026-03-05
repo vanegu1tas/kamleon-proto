@@ -12,6 +12,7 @@ import {
 } from '../../design-system/icons';
 import OrgDetail from './screens/OrgDetail';
 import CenterDetail from './screens/CenterDetail';
+import TeamDetail from './screens/TeamDetail';
 import styles from './StaffOrganizaciones.module.css';
 
 // ─── Mock data ──────────────────────────────────────────
@@ -140,6 +141,7 @@ export default function StaffOrganizaciones() {
     'orgs':          'Center Control',
     'org-detail':    (params) => params?.org?.name ?? '',
     'center-detail': (params) => params?.center?.name ?? '',
+    'team-detail':   (params) => params?.team?.name ?? '',
   };
 
   const breadcrumbs = navStack.map((item, i) => ({
@@ -248,6 +250,15 @@ export default function StaffOrganizaciones() {
           <CenterDetail
             center={currentScreen.params.center}
             org={currentScreen.params.org}
+            onBack={goBack}
+            onNavigate={navigate}
+          />
+        )}
+
+        {currentScreen.screen === 'team-detail' && (
+          <TeamDetail
+            team={currentScreen.params.team}
+            center={currentScreen.params.center}
             onBack={goBack}
           />
         )}

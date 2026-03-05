@@ -119,9 +119,14 @@ const MOCK_DETAIL = {
 
 const DEFAULT_CENTERS = [
   { id: 1, name: 'Sede Guarne',   teams: 2, professionals: 2, users: 2, status: 'active',
-    teamsList: ['Team Alpha', 'Team Beta'] },
+    teamsList: [
+      { id: 1, name: 'Team Alpha', professionals: 2, users: 8, status: 'active' },
+      { id: 2, name: 'Team Beta',  professionals: 1, users: 5, status: 'active' },
+    ] },
   { id: 2, name: 'Sede Medellín', teams: 1, professionals: 2, users: 2, status: 'active',
-    teamsList: ['Team Gamma'] },
+    teamsList: [
+      { id: 3, name: 'Team Gamma', professionals: 1, users: 6, status: 'active' },
+    ] },
 ];
 
 // Por org ID — orgs sin entrada usan DEFAULT_CENTERS
@@ -242,9 +247,13 @@ function CentersContent({ org, onNavigate }) {
 
               {isExpanded && center.teamsList && (
                 <div className={`${styles.teamRows} ${i < centers.length - 1 ? styles.rowBorder : ''}`}>
-                  {center.teamsList.map((team, j) => (
-                    <div key={j} className={styles.teamRow}>
-                      <div className={styles.teamCell}>{team}</div>
+                  {center.teamsList.map((team) => (
+                    <div
+                      key={team.id}
+                      className={styles.teamRow}
+                      onClick={e => { e.stopPropagation(); onNavigate('team-detail', { team, center, org }); }}
+                    >
+                      <div className={styles.teamCell}>{team.name}</div>
                     </div>
                   ))}
                 </div>
@@ -280,8 +289,8 @@ export default function OrgDetail({ org, onBack, onNavigate }) {
       <div className={styles.headerCard}>
 
         <button className={styles.backBtn} onClick={onBack}>
-          <ArrowLeftIcon />
-          <span>Back</span>
+          <span className={styles.backIcon}><ArrowLeftIcon /></span>
+          <span className={styles.backLabel}>Back</span>
         </button>
 
         <div className={styles.orgInfo}>

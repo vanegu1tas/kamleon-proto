@@ -1,6 +1,6 @@
 # Project Summary — Kamleon Design System
 
-Estado del proyecto al 2026-03-01. Referencia rápida para retomar el trabajo.
+Estado del proyecto al 2026-03-05. Referencia rápida para retomar el trabajo.
 
 ---
 
@@ -102,14 +102,36 @@ kamleon/
 │   │   │   ├── SidebarItem.jsx         ✅ icon + label · default/selected · expanded/collapsed
 │   │   │   ├── SidebarItem.module.css
 │   │   │   └── SidebarItem.stories.jsx ✅
-│   │   └── Sidebar/
-│   │       ├── Sidebar.jsx             ✅ shell completo · header · toggle · secciones · nav
-│   │       ├── Sidebar.module.css
-│   │       └── Sidebar.stories.jsx     ✅
+│   │   ├── Sidebar/
+│   │   │   ├── Sidebar.jsx             ✅ shell completo · header · toggle · secciones · nav
+│   │   │   ├── Sidebar.module.css
+│   │   │   └── Sidebar.stories.jsx     ✅
+│   │   └── SearchBar/
+│   │       ├── SearchBar.jsx           ✅ input de búsqueda · estados: default/hover/focus/error/disabled
+│   │       ├── SearchBar.module.css
+│   │       └── SearchBar.stories.jsx   ✅
 │   └── icons/
 │       ├── outline/
-│       │   ├── IconChevronLeft.jsx   ✅ doble chevron izquierda (colapsar sidebar)
-│       │   ├── IconChevronRight.jsx  ✅ doble chevron derecha (expandir sidebar)
+│       │   ├── IconCollapse.jsx      ✅ doble chevron izquierda (colapsar sidebar)
+│       │   ├── IconExpand.jsx        ✅ doble chevron derecha (expandir sidebar)
+│       │   ├── IconChevronRight.jsx  ✅ chevron simple derecha
+│       │   ├── IconChevronDown.jsx   ✅ chevron simple abajo
+│       │   ├── IconSearch.jsx        ✅ lupa
+│       │   ├── IconClose.jsx         ✅ X (cerrar / limpiar)
+│       │   ├── IconUser.jsx          ✅ persona
+│       │   ├── IconTeams.jsx         ✅ dos personas
+│       │   ├── IconBuilding.jsx      ✅ edificio / centro
+│       │   ├── IconDevices.jsx       ✅ dispositivo
+│       │   ├── IconAnalytics.jsx     ✅ gráfico de barras con línea de tendencia
+│       │   ├── IconEye.jsx           ✅ ojo (mostrar)
+│       │   ├── IconEyeClosed.jsx     ✅ ojo cerrado (ocultar)
+│       │   ├── IconAddImage.jsx      ✅ añadir imagen
+│       │   └── index.js              ✅
+│       ├── filled/
+│       │   ├── IconUserFilled.jsx    ✅ persona (filled)
+│       │   ├── IconMailFilled.jsx    ✅ correo (filled)
+│       │   ├── IconPhoneFilled.jsx   ✅ teléfono (filled)
+│       │   ├── IconLocationFilled.jsx ✅ ubicación (filled)
 │       │   └── index.js              ✅
 │       ├── LogoKamleon.jsx     ✅ logotipo SVG (usado en header del Sidebar)
 │       ├── IconSbCenter.jsx    ✅
@@ -125,8 +147,15 @@ kamleon/
 ├── prototypes/
 │   ├── main.jsx                ✅ entry point · importa tokens · renderiza prototipo activo
 │   └── StaffOrganizaciones/
-│       ├── StaffOrganizaciones.jsx         ✅ pantalla completa staff
-│       └── StaffOrganizaciones.module.css  ✅
+│       ├── StaffOrganizaciones.jsx         ✅ OrgList + navegación por stack
+│       ├── StaffOrganizaciones.module.css  ✅
+│       └── screens/
+│           ├── OrgDetail.jsx               ✅ tabs: Centers · Administrators · Monitoring
+│           ├── OrgDetail.module.css        ✅
+│           ├── CenterDetail.jsx            ✅ tabs: Teams · Administrators · Users · Monitoring
+│           ├── CenterDetail.module.css     ✅
+│           ├── TeamDetail.jsx              ✅ tabs: Users · Administrators
+│           └── TeamDetail.module.css       ✅
 ├── docs/
 │   ├── data-model.md           ✅
 │   ├── navigation.md           ✅
@@ -212,9 +241,9 @@ Los nombres de variables siguen estos prefijos exactos. **No usar nombres cortos
 
 | Grupo | Tokens |
 |---|---|
-| Background | `bg-page` · `bg-surface` · `bg-surface-raised` · `bg-surface-subtle` · `bg-sidebar` · `bg-nav-active` |
-| Border | `border-default` · `border-strong` |
-| Text | `text-strong` · `text-subtle` · `text-disabled` · `text-inverse` |
+| Background | `bg-page` · `bg-surface` · `bg-surface-raised` · `bg-surface-subtle` · `bg-surface-disabled` · `bg-icon-hover` · `bg-sidebar` · `bg-nav-active` |
+| Border | `border-default` · `border-strong` · `border-focus` · `border-error` |
+| Text | `text-strong` · `text-subtle` · `text-disabled` · `text-placeholder` · `text-inverse` |
 | Actions | `action-primary-bg/text` · `action-ghost-border/text` · `action-disabled-text` |
 | Status | `status-active` · `status-inactive` · `status-error` · `status-error-subtle` |
 
@@ -254,7 +283,7 @@ Dos colecciones con convenciones distintas:
 
 | Archivo | Descripción |
 |---|---|
-| `StaffOrganizaciones` | Panel staff — sidebar + KPI cards + tabla de organizaciones expandible |
+| `StaffOrganizaciones` | Panel staff — sidebar + KPI cards + tabla de organizaciones expandible + flujo OrgDetail → CenterDetail → TeamDetail |
 
 ---
 
@@ -283,6 +312,8 @@ Nodos relevantes:
 - `2155:1987` — Componente Sidebar (Design System)
 - `2154:1394` — IconSbCenter · `2154:1392` — IconSbTeams
 - `2154:1390` — IconSbDrop · `2154:1393` — IconSbChart · `2154:1391` — IconSbUnit
+- `2754:15230` — Pantalla TeamDetail (Web App)
+- `2769:15593` — Componente Back button (Web App)
 
 ---
 
@@ -293,16 +324,20 @@ Nodos relevantes:
 - [x] Tag — active/inactive · dot + label
 - [x] SidebarItem — icon + label · default/selected · expanded/collapsed
 - [x] Sidebar — shell completo con header (logo SVG), toggle, secciones y nav
+- [x] SearchBar — lupa + placeholder + clear button · estados: default/hover/focus/error/disabled
 - [ ] Input — campo de texto base para formularios
 - [ ] Toggle / Switch — para pantalla de permisos del Admin restringido
 - [ ] Configurar Figma Code Connect
 
 ### Storybook
-- [x] Setup + stories para los 4 componentes
+- [x] Setup + stories para los 5 componentes
 - [ ] Añadir story por cada componente nuevo
 
 ### Prototipos
 - [x] StaffOrganizaciones — sidebar + KPI cards + tabla expandible
+- [x] OrgDetail — header org + tabs: Centers (expandible → TeamDetail) · Administrators · Monitoring
+- [x] CenterDetail — header centro + tabs: Teams (→ TeamDetail) · Administrators · Users · Monitoring
+- [x] TeamDetail — header equipo + tabs: Users · Administrators
 - [ ] Depurar estados de componentes detectados en el prototipo
 
 ### Design System — Tokens

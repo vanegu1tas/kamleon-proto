@@ -28,23 +28,36 @@
 .backBtn {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  align-self: flex-start;
+}
+
+.backIcon {
+  width: 32px;
+  height: 32px;
   background: var(--color-bg-surface);
   border: 1px solid var(--color-border-default);
   border-radius: 8px;
-  padding: 6px 10px;
-  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: border-color 0.15s ease;
+}
+
+.backBtn:hover .backIcon {
+  border-color: var(--color-border-strong);
+}
+
+.backLabel {
   font-family: var(--font-family-primary);
   font-size: var(--font-size-14);
   font-weight: var(--font-weight-medium);
-  color: var(--color-text-subtle);
-  align-self: flex-start;
-  transition: color 0.15s ease, border-color 0.15s ease;
-}
-
-.backBtn:hover {
   color: var(--color-text-strong);
-  border-color: var(--color-border-strong);
 }
 
 /* ─── Center info ────────────────────────────────────── */
@@ -334,6 +347,14 @@
   display: flex;
   align-items: center;
   min-height: 64px;
+}
+
+.tableRowClickable {
+  cursor: pointer;
+}
+
+.tableRowClickable:hover {
+  background: var(--color-bg-surface-subtle);
 }
 
 .rowBorder { border-bottom: 1px solid var(--color-border-default); }

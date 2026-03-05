@@ -1,7 +1,7 @@
 import styles from './Sidebar.module.css';
 import SidebarItem from '../SidebarItem/SidebarItem';
 import LogoKamleon from '../../icons/LogoKamleon';
-import { IconChevronLeft, IconChevronRight } from '../../icons/outline';
+import { IconCollapse, IconExpand } from '../../icons/outline';
 
 /**
  * Sidebar
@@ -35,7 +35,7 @@ export default function Sidebar({ collapsed = false, onToggle, sections = [], dr
           onClick={onToggle}
           aria-label={inDrawerMode ? 'Cerrar menú' : (collapsed ? 'Expandir sidebar' : 'Colapsar sidebar')}
         >
-          {showExpanded ? <IconChevronLeft size={16} /> : <IconChevronRight size={16} />}
+          {showExpanded ? <IconCollapse size={16} /> : <IconExpand size={16} />}
         </button>
       </div>
 

@@ -60,21 +60,30 @@
   color: var(--color-text-strong);
 }
 
-/* ─── Org info ───────────────────────────────────────── */
+/* ─── Team info ──────────────────────────────────────── */
 
-.orgInfo {
+.teamInfo {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
 }
 
-.orgInfoLeft {
+.teamInfoLeft {
   display: flex;
   align-items: center;
   gap: 16px;
 }
 
-.orgAvatar {
+/* Avatar with center badge */
+
+.teamAvatarWrap {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+}
+
+.teamAvatar {
   width: 64px;
   height: 64px;
   border-radius: 50%;
@@ -87,16 +96,34 @@
   font-size: var(--font-size-24);
   font-weight: var(--font-weight-medium);
   color: var(--color-text-subtle);
-  flex-shrink: 0;
 }
 
-.orgMeta {
+.centerBadge {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--color-bg-surface-subtle);
+  border: 2px solid var(--color-bg-surface);
+  outline: 1px solid var(--color-border-default);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-subtle);
+}
+
+.teamMeta {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
-.orgName {
+.teamName {
   font-family: var(--font-family-primary);
   font-size: var(--font-size-24);
   font-weight: var(--font-weight-medium);
@@ -105,7 +132,7 @@
   line-height: 1.25;
 }
 
-.orgSubtitle {
+.teamSubtitle {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -134,7 +161,7 @@
 
 /* ─── Action buttons ─────────────────────────────────── */
 
-.orgActions {
+.teamActions {
   display: flex;
   gap: 8px;
   align-items: center;
@@ -183,7 +210,6 @@
 }
 
 .metaItem svg { flex-shrink: 0; }
-.metaItem em  { font-style: italic; }
 
 /* ─── Tab bar ────────────────────────────────────────── */
 
@@ -228,7 +254,6 @@
   flex-direction: column;
 }
 
-/* Sección genérica para tabs sin tabla (empty state) */
 .contentSection {
   padding: 24px;
   display: flex;
@@ -238,22 +263,22 @@
 
 .contentTitle {
   font-family: var(--font-family-primary);
-  font-size: var(--font-size-24);
+  font-size: var(--font-size-20);
   font-weight: var(--font-weight-medium);
   color: var(--color-text-strong);
   margin: 0;
 }
 
-/* ─── Centers — top section ──────────────────────────── */
+/* ─── Users — top section ────────────────────────────── */
 
-.centersTop {
+.usersTop {
   padding: 24px 24px 16px;
   display: flex;
   flex-direction: column;
   gap: 32px;
 }
 
-.centersTopRow {
+.usersTopRow {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -289,7 +314,7 @@
   box-sizing: border-box;
 }
 
-.searchInput:focus { border-color: var(--color-border-focus); }
+.searchInput:focus { border-color: var(--color-border-strong); }
 
 /* ─── Table ──────────────────────────────────────────── */
 
@@ -311,10 +336,12 @@
   font-weight: var(--font-weight-medium);
   color: var(--color-text-subtle);
   text-transform: uppercase;
-  letter-spacing: 0.6px;
+  letter-spacing: 0.24px;
 }
 
-.colCenter  { width: 262px; flex-shrink: 0; }
+.colName    { width: 262px; flex-shrink: 0; }
+.colCenter  { flex: 1; text-align: center; }
+.colDate    { flex: 1; text-align: center; }
 .colNum     { flex: 1; text-align: center; }
 .colActions { width: 80px; flex-shrink: 0; }
 
@@ -322,50 +349,18 @@
   display: flex;
   align-items: center;
   min-height: 64px;
-  cursor: pointer;
-  transition: background 0.1s ease;
 }
-
-.tableRow:hover { background: var(--color-bg-surface-subtle); }
 
 .rowBorder { border-bottom: 1px solid var(--color-border-default); }
 
-/* Celda nombre del centro */
-.centerNameCell {
+.userNameCell {
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 16px 12px;
 }
 
-.rowChevron {
-  background: none;
-  border: none;
-  padding: 6px;
-  margin: -6px;
-  border-radius: 50%;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--color-text-subtle);
-  flex-shrink: 0;
-  transition: color 0.15s ease, transform 0.15s ease, background 0.15s ease;
-}
-
-.rowChevron:not(.rowChevronDisabled):hover {
-  background: var(--color-bg-icon-hover);
-  color: var(--color-text-strong);
-}
-
-.rowChevronExpanded { transform: rotate(90deg); }
-
-.rowChevronDisabled {
-  opacity: 0.25;
-  cursor: default;
-}
-
-.centerAvatar {
+.userAvatar {
   width: 32px;
   height: 32px;
   border-radius: 50%;
@@ -381,7 +376,7 @@
   flex-shrink: 0;
 }
 
-.centerName {
+.userName {
   font-family: var(--font-family-primary);
   font-size: var(--font-size-14);
   font-weight: var(--font-weight-medium);
@@ -391,8 +386,8 @@
   text-overflow: ellipsis;
 }
 
-/* Celdas numéricas y status */
-.numCell {
+.centerCell,
+.dateCell {
   flex: 1;
   display: flex;
   align-items: center;
@@ -403,7 +398,14 @@
   color: var(--color-text-strong);
 }
 
-/* Celda acciones */
+.numCell {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+}
+
 .actionsCell {
   width: 80px;
   display: flex;
@@ -476,32 +478,6 @@
 .pageBtn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
-}
-
-/* ─── Team sub-rows (expanded center) ───────────────── */
-
-.teamRows {
-  /* border bottom handled via .rowBorder */
-}
-
-.teamRow {
-  display: flex;
-  align-items: center;
-  padding-left: 72px;
-  cursor: pointer;
-  transition: background 0.1s ease;
-}
-
-.teamRow:hover { background: var(--color-bg-surface-subtle); }
-
-.teamCell {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  padding: 12px;
-  font-family: var(--font-family-primary);
-  font-size: var(--font-size-14);
-  color: var(--color-text-strong);
 }
 
 /* ─── Empty state ────────────────────────────────────── */

@@ -1,2 +1,14 @@
-export { default as IconChevronLeft } from './IconChevronLeft';
+export { default as IconCollapse } from './IconCollapse';
 export { default as IconChevronRight } from './IconChevronRight';
+export { default as IconChevronDown } from './IconChevronDown';
+export { default as IconExpand } from './IconExpand';
+export { default as IconSearch } from './IconSearch';
+export { default as IconClose } from './IconClose';
+export { default as IconUser } from './IconUser';
+export { default as IconTeams } from './IconTeams';
+export { default as IconBuilding } from './IconBuilding';
+export { default as IconDevices } from './IconDevices';
+export { default as IconAnalytics } from './IconAnalytics';
+export { default as IconEye } from './IconEye';
+export { default as IconEyeClosed } from './IconEyeClosed';
+export { default as IconAddImage } from './IconAddImage';
