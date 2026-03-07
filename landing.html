@@ -4,161 +4,417 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Kamleon — Design System</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="preload" href="./fonts/CircularPro-Medium.otf" as="font" type="font/otf" crossorigin />
   <style>
+    @font-face {
+      font-family: 'Circular Pro';
+      src: url('./fonts/CircularPro-Book.otf') format('opentype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Circular Pro';
+      src: url('./fonts/CircularPro-Medium.otf') format('opentype');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Circular Pro';
+      src: url('./fonts/CircularPro-Bold.otf') format('opentype');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    :root {
+      --bg:          #0c1016;
+      --bg-hover:    #111924;
+      --border:      #1c2b38;
+      --text-strong: #dce6ee;
+      --text-dim:    #6a8599;
+      --text-muted:  #5a7d96;
+      --accent:      #2fd5cb;
+    }
+
     body {
-      font-family: 'Inter', sans-serif;
-      background: #0b0f12;
-      color: #ffffff;
-      min-height: 100vh;
+      font-family: 'Circular Pro', Inter, sans-serif;
+      background: var(--bg);
+      color: var(--text-strong);
+      min-height: 100dvh;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 40px 24px;
+      padding: 48px 24px;
     }
 
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 12px;
+    #bg-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
     }
 
-    .logo svg { display: block; }
+    .container {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 480px;
+    }
 
-    h1 {
-      font-size: 32px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
+    /* ─── BRAND ──────────────────────────────── */
+
+    .brand {
+      margin-bottom: 10px;
+      animation: fadeUp 0.5s ease-out both;
+    }
+
+    .brand svg {
+      height: 22px;
+      width: auto;
+      display: block;
+      color: var(--text-strong);
     }
 
     .tagline {
-      font-size: 16px;
-      color: #9ca3af;
-      margin-bottom: 48px;
+      font-size: 14px;
+      color: var(--text-muted);
+      font-weight: 400;
+      margin-bottom: 40px;
+      animation: fadeUp 0.5s 0.06s ease-out both;
+    }
+
+    /* ─── NAV LIST ───────────────────────────── */
+
+    .nav-list {
+      list-style: none;
+      border-top: 1px solid var(--border);
+      margin-bottom: 40px;
+    }
+
+    .nav-item {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-item:nth-child(1) .nav-link { animation-delay: 0.14s; }
+    .nav-item:nth-child(2) .nav-link { animation-delay: 0.20s; }
+    .nav-item:nth-child(3) .nav-link { animation-delay: 0.26s; }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 18px 12px;
+      margin: 0 -12px;
+      text-decoration: none;
+      color: inherit;
+      background: transparent;
+      border-radius: 4px;
+      transition: background 0.15s ease-out;
+      animation: fadeUp 0.5s ease-out both;
+    }
+
+    .nav-link:hover { background: var(--bg-hover); }
+
+    .nav-link:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+
+    .nav-index {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 0.06em;
+      min-width: 18px;
+    }
+
+    .nav-content { flex: 1; }
+
+    .nav-title {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text-strong);
+      transition: color 0.15s;
+    }
+
+    .nav-link:hover .nav-title { color: var(--accent); }
+
+    .nav-desc {
+      margin-top: 2px;
+      font-size: 12px;
+      color: var(--text-muted);
       font-weight: 400;
     }
 
-    .cards {
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    .card {
-      display: block;
-      text-decoration: none;
-      background: #161d24;
-      border: 1px solid #253040;
-      border-radius: 16px;
-      padding: 28px 32px;
-      width: 220px;
-      transition: border-color 0.15s, transform 0.15s;
-    }
-
-    .card:hover {
-      border-color: #2fd5cb;
-      transform: translateY(-2px);
-    }
-
-    .card-icon {
-      width: 40px;
-      height: 40px;
-      background: #0b0f12;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 16px;
-    }
-
-    .card-title {
+    .nav-arrow {
       font-size: 16px;
-      font-weight: 500;
-      color: #ffffff;
-      margin-bottom: 6px;
+      color: var(--text-muted);
+      line-height: 1;
+      transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), color 0.15s;
     }
 
-    .card-desc {
-      font-size: 13px;
-      color: #9ca3af;
-      line-height: 1.5;
+    .nav-link:hover .nav-arrow {
+      transform: translateX(4px);
+      color: var(--accent);
     }
+
+    /* ─── FOOTER ─────────────────────────────── */
 
     .footer {
-      margin-top: 64px;
       font-size: 12px;
-      color: #32404d;
+      color: var(--text-muted);
+      animation: fadeUp 0.5s 0.32s ease-out both;
     }
 
     .footer a {
-      color: #32404d;
+      color: var(--text-muted);
       text-decoration: none;
+      transition: color 0.15s;
+      padding: 8px 0;
+      display: inline-block;
     }
 
-    .footer a:hover { color: #9ca3af; }
+    .footer a:hover { color: var(--text-dim); }
+
+    /* ─── ANIMATIONS ─────────────────────────── */
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── RESPONSIVE ─────────────────────────── */
+
+    @media (max-width: 600px) {
+      body {
+        padding: 32px 20px;
+        align-items: flex-start;
+      }
+
+      .tagline  { margin-bottom: 28px; }
+      .nav-list { margin-bottom: 28px; }
+
+      .nav-link {
+        padding: 16px 10px;
+        margin: 0 -10px;
+      }
+
+      .nav-desc { font-size: 13px; }
+    }
+
+    /* Landscape mobile — viewport muy bajo */
+    @media (max-height: 480px) and (max-width: 900px) {
+      body { padding: 16px 20px; }
+
+      .brand    { margin-bottom: 6px; }
+      .tagline  { margin-bottom: 14px; }
+      .nav-list { margin-bottom: 14px; }
+
+      .nav-link { padding: 12px 10px; margin: 0 -10px; }
+    }
+
+    /* Pantallas muy pequeñas ≤ 360px */
+    @media (max-width: 360px) {
+      body { padding-left: 16px; padding-right: 16px; }
+
+      .nav-link { margin: 0 -8px; padding-left: 8px; padding-right: 8px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition-duration: 0ms !important; }
+    }
   </style>
 </head>
 <body>
 
-  <div class="logo">
-    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="28" height="28" rx="8" fill="#2fd5cb"/>
-      <text x="14" y="20" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#0b0f12">K</text>
-    </svg>
-    <h1>Kamleon</h1>
-  </div>
+  <canvas id="bg-canvas"></canvas>
 
-  <p class="tagline">Design system &amp; prototipos de la plataforma interna de staff</p>
+  <main class="container">
 
-  <div class="cards">
+    <div class="brand">
+      <svg width="339" height="63" viewBox="0 0 339 63" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Kamleon">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M235.96 9.25806C247.372 9.25822 257.573 17.6524 257.573 31.2727C257.573 44.893 247.371 53.2341 235.96 53.2343C224.549 53.2343 214.4 44.8403 214.4 31.2727C214.4 17.705 224.602 9.25806 235.96 9.25806ZM235.96 17.1241C229.44 17.1241 222.866 21.6646 222.866 31.1673C222.866 40.6698 229.492 45.2097 235.96 45.2097C242.481 45.2096 249.107 40.6696 249.107 31.1673C249.107 21.6648 242.481 17.1243 235.96 17.1241Z" fill="currentColor"/>
+        <path d="M157.552 44.5257H176.272V52.3918H149.4V10.2107H157.552V44.5257Z" fill="currentColor"/>
+        <path d="M116.377 40.6715L128.683 10.2107H139.831V52.3387H131.838V22.775L119.743 52.3387H112.907L100.812 23.0389V52.3387H92.9765V10.2107H103.756L116.377 40.6715Z" fill="currentColor"/>
+        <path d="M208.827 17.9182H190.684V27.5263H207.091V34.8645H190.684V44.6311H208.827V52.3387H182.534V10.2107H208.827V17.9182Z" fill="currentColor"/>
+        <path d="M292.28 38.0847V10.2107H300.484V52.3387H291.86L272.771 22.458V52.3387H264.621V10.2107H274.822L292.28 38.0847Z" fill="currentColor"/>
+        <path d="M17.409 29.2652L34.2363 10.1537H44.9639L28.3468 28.5258L45.1218 52.2825H34.8675L22.6673 34.8083H22.615L17.409 40.5622V52.2825H9.25781V10.1537H17.409V29.2652Z" fill="currentColor"/>
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M87.719 52.2825H78.8319L75.3086 42.6744H58.2711L54.8002 52.2825H46.1764L62.267 10.1537H71.733L87.719 52.2825ZM61.0577 35.1776H72.6267L66.8426 19.2347L61.0577 35.1776Z" fill="currentColor"/>
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M318.673 15.0159C320.987 15.0159 322.775 16.7586 322.775 18.9231C322.775 20.4012 321.933 21.6149 320.724 22.1956L322.88 26.6307H319.357L317.674 22.7765L317.621 22.8296H316.938V26.683H313.677V15.0159H318.673ZM316.938 20.1373H317.884C318.778 20.1373 319.356 19.7148 319.357 18.9231C319.357 18.0257 318.778 17.7613 317.884 17.7613H316.938V20.1373Z" fill="currentColor"/>
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M317.884 9.68439C324.089 9.68439 329.243 14.805 329.243 21.0345C329.243 27.264 324.089 32.3846 317.884 32.3846C311.679 32.3844 306.578 27.2639 306.578 21.0345C306.578 14.8051 311.679 9.68457 317.884 9.68439ZM317.884 12.6406C313.309 12.6408 309.681 16.3361 309.681 21.0345C309.681 25.7329 313.257 29.4282 317.884 29.4284C322.512 29.4284 326.087 25.733 326.087 21.0345C326.087 16.336 322.459 12.6406 317.884 12.6406Z" fill="currentColor"/>
+      </svg>
+    </div>
 
-    <a class="card" href="./prototype/">
-      <div class="card-icon">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="2" y="4" width="16" height="12" rx="2" stroke="#2fd5cb" stroke-width="1.5"/>
-          <path d="M6 8h8M6 11h5" stroke="#2fd5cb" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>
-      </div>
-      <div class="card-title">Prototipo</div>
-      <div class="card-desc">Panel staff — organizaciones, centros y equipos</div>
-    </a>
+    <p class="tagline">Design system &amp; prototipos de la plataforma interna</p>
 
-    <a class="card" href="./storybook/">
-      <div class="card-icon">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="3" y="3" width="6" height="6" rx="1.5" stroke="#2fd5cb" stroke-width="1.5"/>
-          <rect x="11" y="3" width="6" height="6" rx="1.5" stroke="#2fd5cb" stroke-width="1.5"/>
-          <rect x="3" y="11" width="6" height="6" rx="1.5" stroke="#2fd5cb" stroke-width="1.5"/>
-          <rect x="11" y="11" width="6" height="6" rx="1.5" stroke="#2fd5cb" stroke-width="1.5"/>
-        </svg>
-      </div>
-      <div class="card-title">Storybook</div>
-      <div class="card-desc">Componentes del design system en aislamiento</div>
-    </a>
+    <nav aria-label="Accesos directos">
+    <ul class="nav-list">
+      <li class="nav-item">
+        <a class="nav-link" href="./prototype/">
+          <span class="nav-index">01</span>
+          <div class="nav-content">
+            <div class="nav-title">Prototipo</div>
+            <div class="nav-desc">Panel staff · organizaciones, centros y equipos</div>
+          </div>
+          <span class="nav-arrow">→</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="./storybook/">
+          <span class="nav-index">02</span>
+          <div class="nav-content">
+            <div class="nav-title">Storybook</div>
+            <div class="nav-desc">Componentes del design system en aislamiento</div>
+          </div>
+          <span class="nav-arrow">→</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="https://github.com/vanegu1tas/kamleon-proto/tree/main/docs" target="_blank" rel="noopener" aria-label="Documentación (abre en nueva pestaña)">
+          <span class="nav-index">03</span>
+          <div class="nav-content">
+            <div class="nav-title">Documentación</div>
+            <div class="nav-desc">Modelo de datos · navegación · permisos</div>
+          </div>
+          <span class="nav-arrow">→</span>
+        </a>
+      </li>
+    </ul>
+    </nav>
 
-    <a class="card" href="https://github.com/vanegu1tas/kamleon-proto/tree/main/docs" target="_blank" rel="noopener">
-      <div class="card-icon">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M5 5h10M5 8.5h10M5 12h6" stroke="#2fd5cb" stroke-width="1.5" stroke-linecap="round"/>
-          <rect x="2" y="2" width="16" height="16" rx="2" stroke="#2fd5cb" stroke-width="1.5"/>
-        </svg>
-      </div>
-      <div class="card-title">Docs</div>
-      <div class="card-desc">Modelo de datos, navegación y permisos</div>
-    </a>
+    <p class="footer">
+      <a href="https://github.com/vanegu1tas/kamleon-proto" target="_blank" rel="noopener" aria-label="github.com/vanegu1tas/kamleon-proto (abre en nueva pestaña)">github.com/vanegu1tas/kamleon-proto</a>
+    </p>
 
-  </div>
+  </main>
 
-  <p class="footer">
-    <a href="https://github.com/vanegu1tas/kamleon-proto" target="_blank" rel="noopener">github.com/vanegu1tas/kamleon-proto</a>
-  </p>
+  <script>
+    (function () {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      const canvas = document.getElementById('bg-canvas');
+      const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+      if (!gl) return;
+
+      const vert = `
+        attribute vec2 a_pos;
+        void main() { gl_Position = vec4(a_pos, 0.0, 1.0); }
+      `;
+
+      const frag = `
+        precision mediump float;
+        uniform vec2  u_res;
+        uniform float u_time;
+
+        float hash(vec2 p) {
+          return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+        }
+
+        float noise(vec2 p) {
+          vec2 i = floor(p);
+          vec2 f = fract(p);
+          f = f * f * (3.0 - 2.0 * f);
+          return mix(
+            mix(hash(i),              hash(i + vec2(1.0, 0.0)), f.x),
+            mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), f.x),
+            f.y
+          );
+        }
+
+        float fbm(vec2 p) {
+          float v = 0.0, a = 0.5;
+          for (int i = 0; i < 5; i++) { v += a * noise(p); p *= 2.0; a *= 0.5; }
+          return v;
+        }
+
+        void main() {
+          vec2 uv = gl_FragCoord.xy / u_res;
+          float t  = u_time * 0.08;
+
+          vec2 q = vec2(
+            fbm(uv * 1.4 + t * 0.4),
+            fbm(uv * 1.4 + vec2(3.7, 1.9) + t * 0.35)
+          );
+          float n = fbm(uv * 1.1 + q * 0.55 + t * 0.22);
+
+          vec3 dark     = vec3(0.047, 0.063, 0.086);  /* #0c1016 */
+          vec3 midteal  = vec3(0.035, 0.160, 0.185);  /* dark teal */
+          vec3 deep     = vec3(0.025, 0.035, 0.055);  /* near-black blue */
+
+          vec3 col = mix(deep, mix(dark, midteal, n), smoothstep(0.2, 0.8, n));
+
+          gl_FragColor = vec4(col, 1.0);
+        }
+      `;
+
+      function compile(type, src) {
+        const s = gl.createShader(type);
+        gl.shaderSource(s, src);
+        gl.compileShader(s);
+        return s;
+      }
+
+      const prog = gl.createProgram();
+      gl.attachShader(prog, compile(gl.VERTEX_SHADER, vert));
+      gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, frag));
+      gl.linkProgram(prog);
+      gl.useProgram(prog);
+
+      const buf = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+
+      const loc = gl.getAttribLocation(prog, 'a_pos');
+      gl.enableVertexAttribArray(loc);
+      gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+
+      const uRes  = gl.getUniformLocation(prog, 'u_res');
+      const uTime = gl.getUniformLocation(prog, 'u_time');
+
+      function resize() {
+        canvas.width  = window.innerWidth;
+        canvas.height = window.innerHeight;
+        gl.viewport(0, 0, canvas.width, canvas.height);
+      }
+
+      let resizeTimer;
+      window.addEventListener('resize', function () {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(resize, 100);
+      });
+      resize();
+
+      let elapsed = 0;
+      let lastTs = null;
+      let rafId = null;
+
+      function frame(ts) {
+        if (lastTs !== null) elapsed += ts - lastTs;
+        lastTs = ts;
+        gl.uniform2f(uRes, canvas.width, canvas.height);
+        gl.uniform1f(uTime, elapsed / 1000);
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+        rafId = requestAnimationFrame(frame);
+      }
+
+      document.addEventListener('visibilitychange', function () {
+        if (document.hidden) {
+          cancelAnimationFrame(rafId);
+          lastTs = null;
+        } else {
+          rafId = requestAnimationFrame(frame);
+        }
+      });
+
+      rafId = requestAnimationFrame(frame);
+    })();
+  </script>
 
 </body>
 </html>
