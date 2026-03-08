@@ -1,6 +1,6 @@
 # Project Summary — Kamleon Design System
 
-Estado del proyecto al 2026-03-06. Referencia rápida para retomar el trabajo.
+Estado del proyecto al 2026-03-08. Referencia rápida para retomar el trabajo.
 
 ---
 
@@ -325,7 +325,7 @@ Nodos relevantes:
 - [x] Tag — active/inactive · dot + label
 - [x] SidebarItem — icon + label · default/selected · expanded/collapsed
 - [x] Sidebar — shell completo con header (logo SVG), toggle, secciones y nav
-- [x] SearchBar — lupa + placeholder + clear button · estados: default/hover/focus/error/disabled
+- [x] SearchBar — lupa + placeholder + clear button · estados: default/hover/focus/error/disabled · focus ring para click y teclado
 - [ ] Input — campo de texto base para formularios
 - [ ] Toggle / Switch — para pantalla de permisos del Admin restringido
 - [ ] Configurar Figma Code Connect
@@ -344,10 +344,11 @@ Nodos relevantes:
 - [x] OrgDetail — header org + tabs: Centers (expandible → TeamDetail) · Administrators · Monitoring
 - [x] CenterDetail — header centro + tabs: Teams (→ TeamDetail) · Administrators · Users · Monitoring
 - [x] TeamDetail — header equipo + tabs: Users · Administrators
-- [ ] Depurar estados de componentes detectados en el prototipo
+- [x] Refinado visual: KPI cards, hovers de tabla, SearchBar integrado, títulos H3
 
 ### Design System — Tokens
 - [x] Tipografía, border radius, colores globales, colores semánticos, fuentes
+- [x] Reset base: `box-sizing: border-box` + `body { margin: 0 }`  en tokens.css
 - [ ] Sincronización Figma → tokens (pendiente de decisión: Tokens Studio o manual)
 
 ### Docs de features

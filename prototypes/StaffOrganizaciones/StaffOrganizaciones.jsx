@@ -3,6 +3,7 @@ import Sidebar from '../../design-system/components/Sidebar/Sidebar';
 import LogoKamleon from '../../design-system/icons/LogoKamleon';
 import Button from '../../design-system/components/Button/Button';
 import Tag from '../../design-system/components/Tag/Tag';
+import SearchBar from '../../design-system/components/SearchBar/SearchBar';
 import {
   IconSbCenter,
   IconSbTeams,
@@ -105,15 +106,6 @@ function BellIcon() {
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
       <path d="M10 2a6 6 0 00-6 6v3l-1.5 2.5h15L16 11V8a6 6 0 00-6-6z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
       <path d="M8.5 16.5a1.5 1.5 0 003 0" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function SearchIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-      <circle cx="7" cy="7" r="4.5" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M10.5 10.5L13.5 13.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
     </svg>
   );
 }
@@ -301,13 +293,7 @@ export default function StaffOrganizaciones() {
           <div className={styles.tableCard}>
             <div className={styles.tableTop}>
               <h2 className={styles.tableTitle}>Organizations</h2>
-              <div className={styles.searchWrap}>
-                <span className={styles.searchIcon}><SearchIcon /></span>
-                <input
-                  className={styles.searchInput}
-                  placeholder="Search by name..."
-                />
-              </div>
+              <SearchBar placeholder="Search by name..." className={styles.searchBar} />
             </div>
 
             <div className={styles.tableBody}>

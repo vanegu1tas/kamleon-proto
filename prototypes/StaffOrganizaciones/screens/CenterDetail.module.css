@@ -263,7 +263,7 @@
 
 .contentTitle {
   font-family: var(--font-family-primary);
-  font-size: var(--font-size-24);
+  font-size: var(--font-size-20);
   font-weight: var(--font-weight-medium);
   color: var(--color-text-strong);
   margin: 0;
@@ -347,17 +347,39 @@
   display: flex;
   align-items: center;
   min-height: 64px;
+  position: relative;
+  isolation: isolate;
 }
+
+.tableRow::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--color-border-default);
+  display: none;
+}
+
+.rowBorder::after { display: block; }
 
 .tableRowClickable {
   cursor: pointer;
 }
 
-.tableRowClickable:hover {
+.tableRowClickable::before {
+  content: '';
+  position: absolute;
+  inset: 4px 0 5px;
   background: var(--color-bg-surface-subtle);
+  border-radius: var(--radius-s);
+  opacity: 0;
+  transition: opacity 0.1s ease;
+  z-index: -1;
 }
 
-.rowBorder { border-bottom: 1px solid var(--color-border-default); }
+.tableRowClickable:hover::before { opacity: 1; }
 
 .teamNameCell {
   display: flex;
