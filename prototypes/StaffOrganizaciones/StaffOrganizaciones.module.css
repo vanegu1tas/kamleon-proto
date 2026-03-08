@@ -191,7 +191,7 @@
   flex-direction: column;
   justify-content: flex-end;
   gap: 4px;
-  min-height: 124px;
+  min-height: 88px;
 }
 
 .kpiCard.alert {
@@ -204,10 +204,10 @@
 
 .kpiValue {
   font-family: var(--font-family-primary);
-  font-size: var(--font-size-32);
+  font-size: var(--font-size-24);
   font-weight: var(--font-weight-bold);
   color: var(--color-text-strong);
-  line-height: 1.25;
+  line-height: normal;
 }
 
 .kpiCard.alert .kpiValue {
@@ -216,7 +216,7 @@
 
 .kpiLabel {
   font-family: var(--font-family-primary);
-  font-size: var(--font-size-16);
+  font-size: var(--font-size-14);
   color: var(--color-text-subtle);
   line-height: 1.25;
 }
@@ -444,6 +444,7 @@
 .centerRows {
   border-bottom: 1px solid var(--color-border-default);
 }
+
 
 .centerRow {
   display: flex;

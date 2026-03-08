@@ -1,6 +1,6 @@
 # Project Summary — Kamleon Design System
 
-Estado del proyecto al 2026-03-05. Referencia rápida para retomar el trabajo.
+Estado del proyecto al 2026-03-06. Referencia rápida para retomar el trabajo.
 
 ---
 
@@ -201,6 +201,7 @@ Los nombres de variables siguen estos prefijos exactos. **No usar nombres cortos
 | `text-heading-h1-bold` | 32px | Bold | normal |
 | `text-heading-h1-medium` | 32px | Medium | normal |
 | `text-heading-h2` | 24px | Medium | normal |
+| `text-heading-h2-bold` | 24px | Bold | normal |
 | `text-heading-h3` | 20px | Medium | normal |
 | `text-body-l-medium` | 16px | Medium | normal |
 | `text-body-l-book` | 16px | Book | normal |
@@ -329,6 +330,11 @@ Nodos relevantes:
 - [ ] Toggle / Switch — para pantalla de permisos del Admin restringido
 - [ ] Configurar Figma Code Connect
 
+### Design System — Iconos
+- [x] Duotono (`IconSb*`) — 5 iconos para sidebar
+- [x] Outline (`Icon*`) — 14 iconos con SVG exacto de Figma · todos 24x24 · stroke + currentColor
+- [x] Filled (`Icon*Filled`) — 4 iconos · fill + currentColor
+
 ### Storybook
 - [x] Setup + stories para los 5 componentes
 - [ ] Añadir story por cada componente nuevo
@@ -351,7 +357,7 @@ Nodos relevantes:
 ### GitHub Pages
 - [x] Repo en GitHub: https://github.com/vanegu1tas/kamleon-proto
 - [x] GitHub Actions workflow (`.github/workflows/deploy.yml`)
-- [x] Landing page (`landing.html`) con links a prototipo, Storybook y docs
+- [x] Landing page (`landing.html`) — rediseñada (ver sección Landing)
 - [x] `docs/README.md` para navegación contextual
 - [x] README raíz con links públicos
 
@@ -361,6 +367,41 @@ Nodos relevantes:
 - [ ] Dashboard/home o entrada directa a lista
 - [ ] Flujo de onboarding de nueva organización
 - [ ] Flujo de activación de cuenta de admin de centro recién creado
+
+---
+
+---
+
+## Landing page — estado actual (2026-03-07)
+
+Archivo: `landing.html` — HTML estático, sin build, se copia directamente a `gh-pages/index.html`.
+
+### Diseño
+- Layout centrado, `max-width: 480px`, fondo oscuro (#0c1016)
+- Logo SVG real de Kamleon (`fill="currentColor"`, `role="img"`)
+- Tagline + lista numerada 01/02/03 (Prototipo · Storybook · Documentación)
+- Fuente: Circular Pro (rutas relativas `./fonts/`) con fallback Inter
+- Tokens hardcodeados en el propio archivo (no usa tokens del design system — fondo oscuro vs fondo blanco de la plataforma)
+
+### Shader de fondo
+- Canvas WebGL con fragment shader de noise domain-warped (fbm sobre fbm)
+- Tres capas de color: deep (#060912) · dark (#0c1016) · midteal
+- Velocidad: `u_time * 0.08` — sutil, período ~25s
+- Fallback: si WebGL no disponible o `prefers-reduced-motion`, fondo sólido
+- Se pausa con `visibilitychange` cuando el tab está en background
+
+### A11y
+- Contraste: `--text-muted` ajustado a #5a7d96 (~4.6:1 sobre fondo oscuro)
+- `:focus-visible` con outline turquesa en nav links
+- `<main>` + `<nav aria-label="Accesos directos">` — landmarks semánticos
+- `role="img"` en SVG logo
+- `aria-label` con "(abre en nueva pestaña)" en links externos
+- `<link rel="preload">` para CircularPro-Medium
+
+### Responsive
+- ≤ 600px: padding reducido, `align-items: flex-start`
+- landscape + max-height 480px: espaciado comprimido al mínimo
+- ≤ 360px: márgenes laterales mínimos
 
 ---
 

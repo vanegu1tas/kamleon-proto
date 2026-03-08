@@ -31,6 +31,13 @@
   line-height: normal;
 }
 
+.text-heading-h2-bold {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-24);
+  font-weight: var(--font-weight-bold);
+  line-height: normal;
+}
+
 .text-heading-h3 {
   font-family: var(--font-family-primary);
   font-size: var(--font-size-20);
