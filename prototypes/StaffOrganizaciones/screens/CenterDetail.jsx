@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import Button from '../../../design-system/components/Button/Button';
 import Tag from '../../../design-system/components/Tag/Tag';
+import SearchBar from '../../../design-system/components/SearchBar/SearchBar';
+import TabBar from '../../../design-system/components/TabBar/TabBar';
 import styles from './CenterDetail.module.css';
 
 // ─── Icons ──────────────────────────────────────────────
@@ -59,15 +61,6 @@ function PlusIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
       <path d="M8 3V13M3 8H13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function SearchIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-      <circle cx="7" cy="7" r="4.5" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M10.5 10.5L13.5 13.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
     </svg>
   );
 }
@@ -153,10 +146,7 @@ function TeamsContent({ center, org, onNavigate }) {
             New Team
           </Button>
         </div>
-        <div className={styles.searchWrap}>
-          <span className={styles.searchIcon}><SearchIcon /></span>
-          <input className={styles.searchInput} placeholder="Search by name..." />
-        </div>
+        <SearchBar placeholder="Search by name..." className={styles.searchBar} />
       </div>
 
       {/* Tabla */}
@@ -263,16 +253,8 @@ export default function CenterDetail({ center, org, onBack, onNavigate }) {
           </div>
         </div>
 
-        <div className={styles.tabBar}>
-          {TABS.map(tab => (
-            <button
-              key={tab.id}
-              className={`${styles.tab} ${activeTab === tab.id ? styles.tabActive : ''}`}
-              onClick={() => setActiveTab(tab.id)}
-            >
-              {tab.label}
-            </button>
-          ))}
+        <div className={styles.tabBarWrap}>
+          <TabBar tabs={TABS} activeTab={activeTab} onChange={setActiveTab} />
         </div>
 
       </div>

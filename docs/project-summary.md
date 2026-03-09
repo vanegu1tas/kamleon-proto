@@ -1,6 +1,6 @@
 # Project Summary — Kamleon Design System
 
-Estado del proyecto al 2026-03-08. Referencia rápida para retomar el trabajo.
+Estado del proyecto al 2026-03-09. Referencia rápida para retomar el trabajo.
 
 ---
 
@@ -106,10 +106,14 @@ kamleon/
 │   │   │   ├── Sidebar.jsx             ✅ shell completo · header · toggle · secciones · nav
 │   │   │   ├── Sidebar.module.css
 │   │   │   └── Sidebar.stories.jsx     ✅
-│   │   └── SearchBar/
-│   │       ├── SearchBar.jsx           ✅ input de búsqueda · estados: default/hover/focus/error/disabled
-│   │       ├── SearchBar.module.css
-│   │       └── SearchBar.stories.jsx   ✅
+│   │   ├── SearchBar/
+│   │   │   ├── SearchBar.jsx           ✅ input de búsqueda · estados: default/hover/focus/error/disabled
+│   │   │   ├── SearchBar.module.css
+│   │   │   └── SearchBar.stories.jsx   ✅
+│   │   └── TabBar/
+│   │       ├── TabBar.jsx              ✅ indicador deslizante · glow animado · controlled · 2-4 tabs
+│   │       ├── TabBar.module.css
+│   │       └── TabBar.stories.jsx      ✅
 │   └── icons/
 │       ├── outline/
 │       │   ├── IconCollapse.jsx      ✅ doble chevron izquierda (colapsar sidebar)
@@ -326,6 +330,7 @@ Nodos relevantes:
 - [x] SidebarItem — icon + label · default/selected · expanded/collapsed
 - [x] Sidebar — shell completo con header (logo SVG), toggle, secciones y nav
 - [x] SearchBar — lupa + placeholder + clear button · estados: default/hover/focus/error/disabled · focus ring para click y teclado
+- [x] TabBar — indicador deslizante + glow animado · variantes 2/3/4 tabs · controlled
 - [ ] Input — campo de texto base para formularios
 - [ ] Toggle / Switch — para pantalla de permisos del Admin restringido
 - [ ] Configurar Figma Code Connect
@@ -336,7 +341,7 @@ Nodos relevantes:
 - [x] Filled (`Icon*Filled`) — 4 iconos · fill + currentColor
 
 ### Storybook
-- [x] Setup + stories para los 5 componentes
+- [x] Setup + stories para los 6 componentes
 - [ ] Añadir story por cada componente nuevo
 
 ### Prototipos
@@ -345,6 +350,9 @@ Nodos relevantes:
 - [x] CenterDetail — header centro + tabs: Teams (→ TeamDetail) · Administrators · Users · Monitoring
 - [x] TeamDetail — header equipo + tabs: Users · Administrators
 - [x] Refinado visual: KPI cards, hovers de tabla, SearchBar integrado, títulos H3
+- [x] SearchBar reemplazado por componente del design system en OrgDetail, CenterDetail y TeamDetail
+- [x] TabBar reemplazado por componente del design system en OrgDetail, CenterDetail y TeamDetail
+- [x] Empty state Centers (OrgDetail) mejorado: ilustración SVG de edificios en lugar de círculo gris, subtítulo en 14px
 
 ### Design System — Tokens
 - [x] Tipografía, border radius, colores globales, colores semánticos, fuentes

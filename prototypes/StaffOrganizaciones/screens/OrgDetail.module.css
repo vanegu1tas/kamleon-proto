@@ -21,6 +21,7 @@
   gap: 24px;
   padding: 24px 24px 0;
   flex-shrink: 0;
+  overflow: hidden;
 }
 
 /* ─── Back button ────────────────────────────────────── */
@@ -187,34 +188,8 @@
 
 /* ─── Tab bar ────────────────────────────────────────── */
 
-.tabBar {
-  display: flex;
-  align-items: center;
-  height: 56px;
+.tabBarWrap {
   margin: 0 -24px;
-}
-
-.tab {
-  height: 100%;
-  padding: 8px 32px;
-  background: none;
-  border: none;
-  border-bottom: 3px solid transparent;
-  cursor: pointer;
-  font-family: var(--font-family-primary);
-  font-size: var(--font-size-16);
-  font-weight: var(--font-weight-book);
-  color: var(--color-text-subtle);
-  white-space: nowrap;
-  transition: color 0.15s ease;
-}
-
-.tab:hover:not(.tabActive) { color: var(--color-text-strong); }
-
-.tabActive {
-  font-weight: var(--font-weight-medium);
-  color: var(--color-text-strong);
-  border-bottom-color: var(--color-status-active);
 }
 
 /* ─── Content card ───────────────────────────────────── */
@@ -261,35 +236,9 @@
 
 /* ─── Search ─────────────────────────────────────────── */
 
-.searchWrap {
-  position: relative;
-  width: 194px;
+.searchBar {
+  width: 223px;
 }
-
-.searchIcon {
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  pointer-events: none;
-  color: var(--color-text-subtle);
-  display: flex;
-}
-
-.searchInput {
-  width: 100%;
-  background: var(--color-bg-surface-raised);
-  border: 1px solid var(--color-border-default);
-  border-radius: var(--radius-l);
-  padding: 9px 13px 9px 36px;
-  font-family: var(--font-family-primary);
-  font-size: var(--font-size-14);
-  color: var(--color-text-subtle);
-  outline: none;
-  box-sizing: border-box;
-}
-
-.searchInput:focus { border-color: var(--color-border-focus); }
 
 /* ─── Table ──────────────────────────────────────────── */
 
@@ -583,7 +532,7 @@
 
 .emptySubtitle {
   font-family: var(--font-family-primary);
-  font-size: var(--font-size-16);
+  font-size: var(--font-size-14);
   color: var(--color-text-subtle);
   margin: 0;
 }

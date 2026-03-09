@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import Button from '../../../design-system/components/Button/Button';
 import Tag from '../../../design-system/components/Tag/Tag';
+import SearchBar from '../../../design-system/components/SearchBar/SearchBar';
+import TabBar from '../../../design-system/components/TabBar/TabBar';
 import styles from './OrgDetail.module.css';
 
 // ─── Icons ──────────────────────────────────────────────
@@ -80,15 +82,6 @@ function ChevronIcon() {
   );
 }
 
-function SearchIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-      <circle cx="7" cy="7" r="4.5" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M10.5 10.5L13.5 13.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  );
-}
-
 function DotsIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -134,13 +127,54 @@ const CENTERS_BY_ORG = {
   1: [], // AnyósPark — sin centros
 };
 
+// ─── Illustrations ───────────────────────────────────────
+
+function CentersIllustration() {
+  return (
+    <svg width="120" height="96" viewBox="0 0 120 96" fill="none" aria-hidden="true">
+      {/* Ground */}
+      <line x1="8" y1="88" x2="112" y2="88" stroke="var(--color-border-default)" strokeWidth="1.5" strokeLinecap="round" />
+      {/* Left small building */}
+      <rect x="8" y="54" width="22" height="34" rx="1.5" fill="var(--color-bg-surface)" stroke="var(--color-border-default)" strokeWidth="1.5" />
+      <rect x="13" y="60" width="6" height="5" rx="1" fill="var(--color-bg-surface-subtle)" stroke="var(--color-border-default)" strokeWidth="1" />
+      <rect x="21" y="60" width="6" height="5" rx="1" fill="var(--color-bg-surface-subtle)" stroke="var(--color-border-default)" strokeWidth="1" />
+      <rect x="13" y="70" width="6" height="5" rx="1" fill="var(--color-bg-surface-subtle)" stroke="var(--color-border-default)" strokeWidth="1" />
+      <rect x="21" y="70" width="6" height="5" rx="1" fill="var(--color-bg-surface-subtle)" stroke="var(--color-border-default)" strokeWidth="1" />
+      <rect x="15" y="79" width="8" height="9" rx="1" fill="var(--color-bg-surface-subtle)" stroke="var(--color-border-default)" strokeWidth="1" />
+      {/* Main building */}
+      <rect x="34" y="28" width="52" height="60" rx="2" fill="var(--color-bg-surface)" stroke="var(--color-border-default)" strokeWidth="1.5" />
+      {/* Roof band */}
+      <rect x="30" y="20" width="60" height="14" rx="2" fill="var(--color-bg-surface-subtle)" stroke="var(--color-border-default)" strokeWidth="1.5" />
+      {/* Windows row 1 */}
+      <rect x="41" y="37" width="10" height="8" rx="1" fill="var(--color-bg-surface-subtle)" stroke="var(--color-border-default)" strokeWidth="1" />
+      <rect x="55" y="37" width="10" height="8" rx="1" fill="var(--color-bg-surface-subtle)" stroke="var(--color-border-default)" strokeWidth="1" />
+      <rect x="69" y="37" width="10" height="8" rx="1" fill="var(--color-bg-surface-subtle)" stroke="var(--color-border-default)" strokeWidth="1" />
+      {/* Windows row 2 */}
+      <rect x="41" y="51" width="10" height="8" rx="1" fill="var(--color-bg-surface-subtle)" stroke="var(--color-border-default)" strokeWidth="1" />
+      <rect x="55" y="51" width="10" height="8" rx="1" fill="var(--color-bg-surface-subtle)" stroke="var(--color-border-default)" strokeWidth="1" />
+      <rect x="69" y="51" width="10" height="8" rx="1" fill="var(--color-bg-surface-subtle)" stroke="var(--color-border-default)" strokeWidth="1" />
+      {/* Door */}
+      <rect x="52" y="68" width="16" height="20" rx="1.5" fill="var(--color-bg-surface-subtle)" stroke="var(--color-border-default)" strokeWidth="1.5" />
+      <circle cx="65" cy="78" r="1.5" fill="var(--color-border-default)" />
+      {/* Right small building */}
+      <rect x="90" y="62" width="22" height="26" rx="1.5" fill="var(--color-bg-surface)" stroke="var(--color-border-default)" strokeWidth="1.5" />
+      <rect x="95" y="67" width="5" height="5" rx="1" fill="var(--color-bg-surface-subtle)" stroke="var(--color-border-default)" strokeWidth="1" />
+      <rect x="102" y="67" width="5" height="5" rx="1" fill="var(--color-bg-surface-subtle)" stroke="var(--color-border-default)" strokeWidth="1" />
+      <rect x="97" y="77" width="8" height="11" rx="1" fill="var(--color-bg-surface-subtle)" stroke="var(--color-border-default)" strokeWidth="1" />
+      {/* Flagpole */}
+      <line x1="60" y1="6" x2="60" y2="20" stroke="var(--color-border-default)" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M60 7l8 3.5-8 3.5V7z" fill="var(--color-border-default)" />
+    </svg>
+  );
+}
+
 // ─── Empty state ─────────────────────────────────────────
 
-function EmptyState({ title, subtitle, action }) {
+function EmptyState({ illustration, title, subtitle, action }) {
   return (
     <div className={styles.emptyState}>
       <div className={styles.emptyInfo}>
-        <div className={styles.emptyCircle} />
+        {illustration ?? <div className={styles.emptyCircle} />}
         <div className={styles.emptyText}>
           <p className={styles.emptyTitle}>{title}</p>
           <p className={styles.emptySubtitle}>{subtitle}</p>
@@ -169,8 +203,9 @@ function CentersContent({ org, onNavigate }) {
   if (!hasCenters) {
     return (
       <div className={styles.contentSection}>
-        <h2 className={styles.contentTitle}>Centers</h2>
+        <h3 className={styles.contentTitle}>Centers</h3>
         <EmptyState
+          illustration={<CentersIllustration />}
           title="No centers yet..."
           subtitle="Your centers will be displayed here, let's create your first center"
           action={
@@ -193,10 +228,7 @@ function CentersContent({ org, onNavigate }) {
             New Center
           </Button>
         </div>
-        <div className={styles.searchWrap}>
-          <span className={styles.searchIcon}><SearchIcon /></span>
-          <input className={styles.searchInput} placeholder="Search by name..." />
-        </div>
+        <SearchBar placeholder="Search by name..." className={styles.searchBar} />
       </div>
 
       {/* Tabla */}
@@ -332,16 +364,8 @@ export default function OrgDetail({ org, onBack, onNavigate }) {
           </div>
         </div>
 
-        <div className={styles.tabBar}>
-          {TABS.map(tab => (
-            <button
-              key={tab.id}
-              className={`${styles.tab} ${activeTab === tab.id ? styles.tabActive : ''}`}
-              onClick={() => setActiveTab(tab.id)}
-            >
-              {tab.label}
-            </button>
-          ))}
+        <div className={styles.tabBarWrap}>
+          <TabBar tabs={TABS} activeTab={activeTab} onChange={setActiveTab} />
         </div>
 
       </div>

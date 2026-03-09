@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import Button from '../../../design-system/components/Button/Button';
 import Tag from '../../../design-system/components/Tag/Tag';
+import SearchBar from '../../../design-system/components/SearchBar/SearchBar';
+import TabBar from '../../../design-system/components/TabBar/TabBar';
 import styles from './TeamDetail.module.css';
 
 // ─── Icons ──────────────────────────────────────────────
@@ -63,15 +65,6 @@ function PlusIcon() {
   );
 }
 
-function SearchIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-      <circle cx="7" cy="7" r="4.5" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M10.5 10.5L13.5 13.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  );
-}
-
 function DotsIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -98,17 +91,17 @@ const MOCK_TEAM_CONTACT = {
 };
 
 const DEFAULT_USERS = [
-  { id: 1, name: 'Carlos García',  dateAdded: '12 Jan 2024', status: 'active'   },
-  { id: 2, name: 'María López',    dateAdded: '03 Feb 2024', status: 'active'   },
-  { id: 3, name: 'Jordi Puig',     dateAdded: '15 Mar 2024', status: 'inactive' },
-  { id: 4, name: 'Laia Ferrer',    dateAdded: '28 Apr 2024', status: 'active'   },
+  { id: 1, name: 'Carlos García', dateAdded: '12 Jan 2024', status: 'active',   email: 'carlos.garcia@kamleon.com', phone: '+34 612 345 678', birthday: '15/06/1990', gender: 'Male',   height: '178 cm', weight: '75 kg', rfid: true,  pin: false },
+  { id: 2, name: 'María López',   dateAdded: '03 Feb 2024', status: 'active',   email: 'maria.lopez@kamleon.com',   phone: '+34 623 456 789', birthday: '22/03/1985', gender: 'Female', height: '162 cm', weight: '58 kg', rfid: true,  pin: true  },
+  { id: 3, name: 'Jordi Puig',    dateAdded: '15 Mar 2024', status: 'inactive', email: 'jordi.puig@kamleon.com',    phone: '+34 634 567 890', birthday: '07/11/1992', gender: 'Male',   height: '182 cm', weight: '82 kg', rfid: false, pin: false },
+  { id: 4, name: 'Laia Ferrer',   dateAdded: '28 Apr 2024', status: 'active',   email: 'laia.ferrer@kamleon.com',   phone: '+34 645 678 901', birthday: '30/09/1995', gender: 'Female', height: '165 cm', weight: '61 kg', rfid: true,  pin: false },
 ];
 
 const USERS_BY_TEAM = {
   2: [
-    { id: 5, name: 'Ana Martínez', dateAdded: '05 Jan 2024', status: 'active' },
-    { id: 6, name: 'Pau Roca',     dateAdded: '20 Feb 2024', status: 'active' },
-    { id: 7, name: 'Sara Vidal',   dateAdded: '11 Mar 2024', status: 'active' },
+    { id: 5, name: 'Ana Martínez', dateAdded: '05 Jan 2024', status: 'active', email: 'ana.martinez@kamleon.com', phone: '+34 611 222 333', birthday: '12/04/1993', gender: 'Female', height: '168 cm', weight: '63 kg', rfid: true,  pin: true  },
+    { id: 6, name: 'Pau Roca',     dateAdded: '20 Feb 2024', status: 'active', email: 'pau.roca@kamleon.com',     phone: '+34 622 333 444', birthday: '03/08/1988', gender: 'Male',   height: '175 cm', weight: '72 kg', rfid: true,  pin: false },
+    { id: 7, name: 'Sara Vidal',   dateAdded: '11 Mar 2024', status: 'active', email: 'sara.vidal@kamleon.com',   phone: '+34 633 444 555', birthday: '19/12/1997', gender: 'Female', height: '160 cm', weight: '55 kg', rfid: false, pin: true  },
   ],
 };
 
@@ -131,7 +124,7 @@ function EmptyState({ title, subtitle, action }) {
 
 // ─── Users content ───────────────────────────────────────
 
-function UsersContent({ team, center }) {
+function UsersContent({ team, center, onNavigate }) {
   const users = Object.hasOwn(USERS_BY_TEAM, team.id) ? USERS_BY_TEAM[team.id] : DEFAULT_USERS;
   const hasUsers = users.length > 0;
 
@@ -162,10 +155,7 @@ function UsersContent({ team, center }) {
             New User
           </Button>
         </div>
-        <div className={styles.searchWrap}>
-          <span className={styles.searchIcon}><SearchIcon /></span>
-          <input className={styles.searchInput} placeholder="Search by name..." />
-        </div>
+        <SearchBar placeholder="Search by name..." className={styles.searchBar} />
       </div>
 
       {/* Tabla */}
@@ -181,7 +171,8 @@ function UsersContent({ team, center }) {
         {users.map((user, i) => (
           <div
             key={user.id}
-            className={`${styles.tableRow} ${i < users.length - 1 ? styles.rowBorder : ''}`}
+            className={`${styles.tableRow} ${styles.tableRowClickable} ${i < users.length - 1 ? styles.rowBorder : ''}`}
+            onClick={() => onNavigate('user-detail', { user, team, center })}
           >
             <div className={`${styles.userNameCell} ${styles.colName}`}>
               <div className={styles.userAvatar}>{user.name.charAt(0)}</div>
@@ -217,7 +208,7 @@ function UsersContent({ team, center }) {
 
 // ─── Component ───────────────────────────────────────────
 
-export default function TeamDetail({ team, center, onBack }) {
+export default function TeamDetail({ team, center, onBack, onNavigate }) {
   const [activeTab, setActiveTab] = useState('users');
 
   return (
@@ -271,16 +262,8 @@ export default function TeamDetail({ team, center, onBack }) {
           </div>
         </div>
 
-        <div className={styles.tabBar}>
-          {TABS.map(tab => (
-            <button
-              key={tab.id}
-              className={`${styles.tab} ${activeTab === tab.id ? styles.tabActive : ''}`}
-              onClick={() => setActiveTab(tab.id)}
-            >
-              {tab.label}
-            </button>
-          ))}
+        <div className={styles.tabBarWrap}>
+          <TabBar tabs={TABS} activeTab={activeTab} onChange={setActiveTab} />
         </div>
 
       </div>
@@ -288,7 +271,7 @@ export default function TeamDetail({ team, center, onBack }) {
       {/* ── Content card ──────────────────────────────── */}
       <div className={styles.contentCard}>
 
-        {activeTab === 'users' && <UsersContent team={team} center={center} />}
+        {activeTab === 'users' && <UsersContent team={team} center={center} onNavigate={onNavigate} />}
 
         {activeTab === 'administrators' && (
           <div className={styles.contentSection}>

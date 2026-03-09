@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Sidebar from '../../design-system/components/Sidebar/Sidebar';
 import LogoKamleon from '../../design-system/icons/LogoKamleon';
 import Button from '../../design-system/components/Button/Button';
@@ -14,6 +14,7 @@ import {
 import OrgDetail from './screens/OrgDetail';
 import CenterDetail from './screens/CenterDetail';
 import TeamDetail from './screens/TeamDetail';
+import UserDetail from './screens/UserDetail';
 import styles from './StaffOrganizaciones.module.css';
 
 // ─── Mock data ──────────────────────────────────────────
@@ -110,6 +111,27 @@ function BellIcon() {
   );
 }
 
+function FilterIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <path d="M2 3h12l-4.5 5.5V13l-3-1.5V8.5L2 3z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function SortIcon({ col, activeCol, dir }) {
+  const isActive = col === activeCol;
+  // Active: show only the current direction arrow. Hover (inactive): show both subtle.
+  const showUp   = !isActive || dir === 'asc';
+  const showDown = !isActive || dir === 'desc';
+  return (
+    <svg width="10" height="12" viewBox="0 0 10 12" fill="none" className={styles.sortIcon}>
+      {showUp   && <path d="M5 1L8.5 5H1.5L5 1Z"   fill="currentColor" />}
+      {showDown && <path d="M5 11L1.5 7H8.5L5 11Z" fill="currentColor" />}
+    </svg>
+  );
+}
+
 // ─── Component ──────────────────────────────────────────
 
 export default function StaffOrganizaciones() {
@@ -118,6 +140,11 @@ export default function StaffOrganizaciones() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isTablet, setIsTablet] = useState(() => window.matchMedia('(max-width: 768px)').matches);
   const [expandedOrgs, setExpandedOrgs] = useState(new Set());
+  const [sortCol, setSortCol] = useState(null);
+  const [sortDir, setSortDir] = useState('asc');
+  const [filters, setFilters] = useState({ status: new Set(), segment: new Set() });
+  const [filterOpen, setFilterOpen] = useState(false);
+  const filterRef = useRef(null);
 
   const currentScreen = navStack[navStack.length - 1];
 
@@ -134,6 +161,7 @@ export default function StaffOrganizaciones() {
     'org-detail':    (params) => params?.org?.name ?? '',
     'center-detail': (params) => params?.center?.name ?? '',
     'team-detail':   (params) => params?.team?.name ?? '',
+    'user-detail':   (params) => params?.user?.name ?? '',
   };
 
   const breadcrumbs = navStack.map((item, i) => ({
@@ -144,6 +172,15 @@ export default function StaffOrganizaciones() {
       ? () => setNavStack(prev => prev.slice(0, i + 1))
       : null,
   }));
+
+  useEffect(() => {
+    if (!filterOpen) return;
+    function handleClick(e) {
+      if (filterRef.current && !filterRef.current.contains(e.target)) setFilterOpen(false);
+    }
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [filterOpen]);
 
   useEffect(() => {
     const mq = window.matchMedia('(max-width: 768px)');
@@ -158,6 +195,40 @@ export default function StaffOrganizaciones() {
     } else {
       setSidebarCollapsed(c => !c);
     }
+  }
+
+  function handleSort(col) {
+    if (sortCol !== col) { setSortCol(col); setSortDir('asc'); }
+    else if (sortDir === 'asc') setSortDir('desc');
+    else { setSortCol(null); setSortDir('asc'); }
+  }
+
+  function toggleFilter(group, value) {
+    setFilters(prev => {
+      const next = new Set(prev[group]);
+      next.has(value) ? next.delete(value) : next.add(value);
+      return { ...prev, [group]: next };
+    });
+  }
+
+  function clearFilters() {
+    setFilters({ status: new Set(), segment: new Set() });
+  }
+
+  const activeFilterCount = filters.status.size + filters.segment.size;
+
+  // Derived: filtered + sorted orgs
+  let displayedOrgs = [...ORGS];
+  if (filters.status.size > 0)  displayedOrgs = displayedOrgs.filter(o => filters.status.has(o.status));
+  if (filters.segment.size > 0) displayedOrgs = displayedOrgs.filter(o => filters.segment.has(o.segments.toLowerCase()));
+  if (sortCol) {
+    displayedOrgs.sort((a, b) => {
+      const va = typeof a[sortCol] === 'string' ? a[sortCol].toLowerCase() : a[sortCol];
+      const vb = typeof b[sortCol] === 'string' ? b[sortCol].toLowerCase() : b[sortCol];
+      if (va < vb) return sortDir === 'asc' ? -1 : 1;
+      if (va > vb) return sortDir === 'asc' ?  1 : -1;
+      return 0;
+    });
   }
 
   function toggleOrg(id) {
@@ -252,6 +323,16 @@ export default function StaffOrganizaciones() {
             team={currentScreen.params.team}
             center={currentScreen.params.center}
             onBack={goBack}
+            onNavigate={navigate}
+          />
+        )}
+
+        {currentScreen.screen === 'user-detail' && (
+          <UserDetail
+            user={currentScreen.params.user}
+            team={currentScreen.params.team}
+            center={currentScreen.params.center}
+            onBack={goBack}
           />
         )}
 
@@ -292,24 +373,80 @@ export default function StaffOrganizaciones() {
           {/* Organizations table */}
           <div className={styles.tableCard}>
             <div className={styles.tableTop}>
-              <h2 className={styles.tableTitle}>Organizations</h2>
-              <SearchBar placeholder="Search by name..." className={styles.searchBar} />
+              <div className={styles.tableTopRow}>
+                <h2 className={styles.tableTitle}>Organizations</h2>
+              </div>
+              <div className={styles.tableControls}>
+                <SearchBar placeholder="Search by name..." className={styles.searchBar} />
+                <div className={styles.filterWrap} ref={filterRef}>
+                  <button
+                    className={`${styles.filterBtn} ${activeFilterCount > 0 ? styles.filterBtnActive : ''}`}
+                    onClick={() => setFilterOpen(v => !v)}
+                    aria-label="Filter"
+                  >
+                    <FilterIcon />
+                    {activeFilterCount > 0 && <span className={styles.filterBadge}>{activeFilterCount}</span>}
+                  </button>
+                  <span className={styles.filterTooltip}>Filter</span>
+                  {filterOpen && (
+                    <div className={styles.filterDropdown}>
+                      <div className={styles.filterSection}>
+                        <p className={styles.filterSectionLabel}>Status</p>
+                        {['active', 'inactive'].map(v => (
+                          <label key={v} className={styles.filterOption}>
+                            <input type="checkbox" checked={filters.status.has(v)} onChange={() => toggleFilter('status', v)} />
+                            <span>{v === 'active' ? 'Active' : 'Inactive'}</span>
+                          </label>
+                        ))}
+                      </div>
+                      <div className={styles.filterSection}>
+                        <p className={styles.filterSectionLabel}>Segment</p>
+                        {['sport', 'fitness'].map(v => (
+                          <label key={v} className={styles.filterOption}>
+                            <input type="checkbox" checked={filters.segment.has(v)} onChange={() => toggleFilter('segment', v)} />
+                            <span>{v.charAt(0).toUpperCase() + v.slice(1)}</span>
+                          </label>
+                        ))}
+                      </div>
+                      {activeFilterCount > 0 && (
+                        <button className={styles.clearFilters} onClick={clearFilters}>Clear filters</button>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
 
             <div className={styles.tableBody}>
               {/* Column headers */}
               <div className={styles.colHeaders}>
-                <div className={`${styles.colHead} ${styles.colName}`}>Name</div>
+                <div className={`${styles.colHead} ${styles.colName}`}>
+                  <button className={`${styles.sortBtn} ${sortCol === 'name' ? styles.sortBtnActive : ''}`} onClick={() => handleSort('name')}>
+                    Name <SortIcon col="name" activeCol={sortCol} dir={sortDir} />
+                  </button>
+                </div>
                 <div className={`${styles.colHead} ${styles.colStatus} ${styles.cellCenter}`}>Status</div>
-                <div className={`${styles.colHead} ${styles.colPlan} ${styles.cellCenter}`}>Centers</div>
-                <div className={`${styles.colHead} ${styles.colCenters} ${styles.cellCenter}`}>Users</div>
-                <div className={`${styles.colHead} ${styles.colTeams} ${styles.cellCenter}`}>Units</div>
+                <div className={`${styles.colHead} ${styles.colPlan} ${styles.cellCenter}`}>
+                  <button className={`${styles.sortBtn} ${sortCol === 'centers' ? styles.sortBtnActive : ''}`} onClick={() => handleSort('centers')}>
+                    Centers <SortIcon col="centers" activeCol={sortCol} dir={sortDir} />
+                  </button>
+                </div>
+                <div className={`${styles.colHead} ${styles.colCenters} ${styles.cellCenter}`}>
+                  <button className={`${styles.sortBtn} ${sortCol === 'users' ? styles.sortBtnActive : ''}`} onClick={() => handleSort('users')}>
+                    Users <SortIcon col="users" activeCol={sortCol} dir={sortDir} />
+                  </button>
+                </div>
+                <div className={`${styles.colHead} ${styles.colTeams} ${styles.cellCenter}`}>
+                  <button className={`${styles.sortBtn} ${sortCol === 'units' ? styles.sortBtnActive : ''}`} onClick={() => handleSort('units')}>
+                    Units <SortIcon col="units" activeCol={sortCol} dir={sortDir} />
+                  </button>
+                </div>
                 <div className={`${styles.colHead} ${styles.colUsers} ${styles.cellCenter}`}>Segments</div>
                 <div className={`${styles.colHead} ${styles.colActions}`} />
               </div>
 
               {/* Rows */}
-              {ORGS.map(org => {
+              {displayedOrgs.map(org => {
                 const isExpanded = expandedOrgs.has(org.id);
                 return (
                   <div key={org.id}>
