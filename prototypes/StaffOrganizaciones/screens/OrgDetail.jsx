@@ -1,8 +1,13 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Button from '../../../design-system/components/Button/Button';
 import Tag from '../../../design-system/components/Tag/Tag';
 import SearchBar from '../../../design-system/components/SearchBar/SearchBar';
 import TabBar from '../../../design-system/components/TabBar/TabBar';
+import ContextMenu from '../../../design-system/components/ContextMenu/ContextMenu';
+import { IconEdit, IconPlus, IconTrash, IconSettings } from '../../../design-system/icons/outline';
+import { IconUserFilled, IconMailFilled, IconPhoneFilled, IconLocationFilled } from '../../../design-system/icons/filled';
+import { getUserCountForCenter, getProfessionalCountForCenter, getActiveTeamCount } from '../mockData';
+import NewCenterModal from './NewCenterModal';
 import styles from './OrgDetail.module.css';
 
 // ─── Icons ──────────────────────────────────────────────
@@ -100,33 +105,6 @@ const TABS = [
   { id: 'monitoring',     label: 'Monitoring' },
 ];
 
-// ─── Mock data ───────────────────────────────────────────
-
-const MOCK_DETAIL = {
-  contact:  'Daniel Vanegas',
-  email:    'contact@organization.com',
-  phone:    '+34 93 123 45 67',
-  fiscal:   'Carrer de Provença, 292, Barcelona',
-  shipping: 'Carrer de Provença, 292, Barcelona',
-};
-
-const DEFAULT_CENTERS = [
-  { id: 1, name: 'Sede Guarne',   teams: 2, professionals: 2, users: 2, status: 'active',
-    teamsList: [
-      { id: 1, name: 'Team Alpha', professionals: 2, users: 8, status: 'active' },
-      { id: 2, name: 'Team Beta',  professionals: 1, users: 5, status: 'active' },
-    ] },
-  { id: 2, name: 'Sede Medellín', teams: 1, professionals: 2, users: 2, status: 'active',
-    teamsList: [
-      { id: 3, name: 'Team Gamma', professionals: 1, users: 6, status: 'active' },
-    ] },
-];
-
-// Por org ID — orgs sin entrada usan DEFAULT_CENTERS
-const CENTERS_BY_ORG = {
-  1: [], // AnyósPark — sin centros
-};
-
 // ─── Illustrations ───────────────────────────────────────
 
 function CentersIllustration() {
@@ -189,8 +167,20 @@ function EmptyState({ illustration, title, subtitle, action }) {
 
 function CentersContent({ org, onNavigate }) {
   const [expandedCenters, setExpandedCenters] = useState(new Set());
-  const centers = Object.hasOwn(CENTERS_BY_ORG, org.id) ? CENTERS_BY_ORG[org.id] : DEFAULT_CENTERS;
+  const [openMenuCenterId, setOpenMenuCenterId] = useState(null);
+  const [showNewCenterModal, setShowNewCenterModal] = useState(false);
+  const menuRef = useRef(null);
+  const centers = org.centers;
   const hasCenters = centers.length > 0;
+
+  useEffect(() => {
+    if (!openMenuCenterId) return;
+    function handleClick(e) {
+      if (menuRef.current && !menuRef.current.contains(e.target)) setOpenMenuCenterId(null);
+    }
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [openMenuCenterId]);
 
   function toggleCenter(id) {
     setExpandedCenters(prev => {
@@ -202,19 +192,22 @@ function CentersContent({ org, onNavigate }) {
 
   if (!hasCenters) {
     return (
-      <div className={styles.contentSection}>
-        <h3 className={styles.contentTitle}>Centers</h3>
-        <EmptyState
-          illustration={<CentersIllustration />}
-          title="No centers yet..."
-          subtitle="Your centers will be displayed here, let's create your first center"
-          action={
-            <Button variant="primary" size="s" leftIcon={<PlusIcon />}>
-              New Center
-            </Button>
-          }
-        />
-      </div>
+      <>
+        <div className={styles.contentSection}>
+          <h3 className={styles.contentTitle}>Centers</h3>
+          <EmptyState
+            illustration={<CentersIllustration />}
+            title="No centers yet..."
+            subtitle="Your centers will be displayed here, let's create your first center"
+            action={
+              <Button variant="primary" size="s" leftIcon={<PlusIcon />} onClick={() => setShowNewCenterModal(true)}>
+                New Center
+              </Button>
+            }
+          />
+        </div>
+        {showNewCenterModal && <NewCenterModal onClose={() => setShowNewCenterModal(false)} />}
+      </>
     );
   }
 
@@ -224,7 +217,7 @@ function CentersContent({ org, onNavigate }) {
       <div className={styles.centersTop}>
         <div className={styles.centersTopRow}>
           <h2 className={styles.contentTitle}>Centers</h2>
-          <Button variant="primary" size="s" leftIcon={<PlusIcon />}>
+          <Button variant="primary" size="s" leftIcon={<PlusIcon />} onClick={() => setShowNewCenterModal(true)}>
             New Center
           </Button>
         </div>
@@ -236,19 +229,19 @@ function CentersContent({ org, onNavigate }) {
         {/* Header */}
         <div className={styles.tableHeader}>
           <div className={`${styles.colHead} ${styles.colCenter}`}>Center</div>
+          <div className={`${styles.colHead} ${styles.colNum}`}>Status</div>
           <div className={`${styles.colHead} ${styles.colNum}`}>Active Teams</div>
           <div className={`${styles.colHead} ${styles.colNum}`}>Professionals</div>
           <div className={`${styles.colHead} ${styles.colNum}`}>Users</div>
-          <div className={`${styles.colHead} ${styles.colNum}`}>Status</div>
           <div className={`${styles.colHead} ${styles.colActions}`} />
         </div>
 
         {/* Rows */}
         {centers.map((center, i) => {
           const isExpanded = expandedCenters.has(center.id);
-          const hasTeams  = center.teamsList?.length > 0;
+          const hasTeams   = center.teams.length > 0;
           return (
-            <div key={center.id}>
+            <div key={center.id} style={openMenuCenterId === center.id ? { position: 'relative', zIndex: 10 } : undefined}>
               <div
                 className={`${styles.tableRow} ${!isExpanded && i < centers.length - 1 ? styles.rowBorder : ''}`}
                 onClick={() => onNavigate('center-detail', { center, org })}
@@ -264,22 +257,42 @@ function CentersContent({ org, onNavigate }) {
                   <div className={styles.centerAvatar}>{center.name.charAt(0)}</div>
                   <span className={styles.centerName}>{center.name}</span>
                 </div>
-                <div className={`${styles.numCell} ${styles.colNum}`}>{center.teams}</div>
-                <div className={`${styles.numCell} ${styles.colNum}`}>{center.professionals}</div>
-                <div className={`${styles.numCell} ${styles.colNum}`}>{center.users}</div>
                 <div className={`${styles.numCell} ${styles.colNum}`}>
                   <Tag status={center.status} />
                 </div>
+                <div className={`${styles.numCell} ${styles.colNum}`}>{getActiveTeamCount(center)}</div>
+                <div className={`${styles.numCell} ${styles.colNum}`}>{getProfessionalCountForCenter(center)}</div>
+                <div className={`${styles.numCell} ${styles.colNum}`}>{getUserCountForCenter(center)}</div>
                 <div className={`${styles.actionsCell} ${styles.colActions}`}>
-                  <button className={styles.dotsBtn} aria-label="Más opciones" onClick={e => e.stopPropagation()}>
-                    <DotsIcon />
-                  </button>
+                  <div
+                    className={styles.moreMenuAnchor}
+                    ref={openMenuCenterId === center.id ? menuRef : null}
+                  >
+                    <button
+                      className={styles.dotsBtn}
+                      aria-label="Más opciones"
+                      onClick={e => { e.stopPropagation(); setOpenMenuCenterId(prev => prev === center.id ? null : center.id); }}
+                    >
+                      <DotsIcon />
+                    </button>
+                    {openMenuCenterId === center.id && (
+                      <div className={styles.contextMenuWrap}>
+                        <ContextMenu
+                          items={[
+                            { label: 'Edit',     icon: <IconEdit size={16} />,  onClick: () => setOpenMenuCenterId(null) },
+                            { label: 'New Team', icon: <IconPlus size={16} />,  onClick: () => setOpenMenuCenterId(null) },
+                            { label: 'Delete',   icon: <IconTrash size={16} />, variant: 'danger', onClick: () => setOpenMenuCenterId(null) },
+                          ]}
+                        />
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
 
-              {isExpanded && center.teamsList && (
+              {isExpanded && hasTeams && (
                 <div className={`${styles.teamRows} ${i < centers.length - 1 ? styles.rowBorder : ''}`}>
-                  {center.teamsList.map((team) => (
+                  {center.teams.map((team) => (
                     <div
                       key={team.id}
                       className={styles.teamRow}
@@ -294,6 +307,8 @@ function CentersContent({ org, onNavigate }) {
           );
         })}
       </div>
+
+      {showNewCenterModal && <NewCenterModal onClose={() => setShowNewCenterModal(false)} />}
 
       {/* Paginación */}
       <div className={styles.tablePagination}>
@@ -343,24 +358,25 @@ export default function OrgDetail({ org, onBack, onNavigate }) {
             </div>
           </div>
           <div className={styles.orgActions}>
-            <button className={styles.actionBtn} aria-label="Editar organización">
-              <EditIcon />
+            <button className={`${styles.actionBtn} ${styles.actionBtnTooltip}`} aria-label="Configuración de organización" data-tooltip="Settings">
+              <IconSettings size={16} />
             </button>
-            <button className={styles.actionBtn} aria-label="Eliminar organización">
-              <TrashIcon />
+            <button className={`${styles.actionBtn} ${styles.actionBtnTooltip}`} aria-label="Eliminar organización" data-tooltip="Delete">
+              <IconTrash size={16} />
             </button>
           </div>
         </div>
 
         <div className={styles.metadata}>
           <div className={styles.metaRow}>
-            <div className={styles.metaItem}><PersonIcon /><span>{MOCK_DETAIL.contact}</span></div>
-            <div className={styles.metaItem}><MailIcon /><span>{MOCK_DETAIL.email}</span></div>
-            <div className={styles.metaItem}><PhoneIcon /><span>{MOCK_DETAIL.phone}</span></div>
+            <div className={`${styles.metaItem} ${styles.metaItemTooltip}`} data-tooltip="Primary contact">
+              <IconUserFilled size={16} /><span>{org.contact}</span>
+            </div>
+            <div className={styles.metaItem}><IconMailFilled size={16} /><span>{org.email}</span></div>
+            <div className={styles.metaItem}><IconPhoneFilled size={16} /><span>{org.phone}</span></div>
           </div>
           <div className={styles.metaRow}>
-            <div className={styles.metaItem}><PinIcon /><span><em>Fiscal:</em> {MOCK_DETAIL.fiscal}</span></div>
-            <div className={styles.metaItem}><PinIcon /><span><em>Shipping:</em> {MOCK_DETAIL.shipping}</span></div>
+            <div className={styles.metaItem}><IconLocationFilled size={16} /><span><em>Fiscal:</em> {org.fiscal}</span></div>
           </div>
         </div>
 
@@ -381,6 +397,11 @@ export default function OrgDetail({ org, onBack, onNavigate }) {
             <EmptyState
               title="No administrators yet..."
               subtitle="Administrators for this organization will appear here"
+              action={
+                <Button variant="primary" size="s" leftIcon={<IconPlus size={16} />}>
+                  New Administrator
+                </Button>
+              }
             />
           </div>
         )}

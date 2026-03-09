@@ -12,3 +12,8 @@ export { default as IconAnalytics } from './IconAnalytics';
 export { default as IconEye } from './IconEye';
 export { default as IconEyeClosed } from './IconEyeClosed';
 export { default as IconAddImage } from './IconAddImage';
+export { default as IconFilter } from './IconFilter';
+export { default as IconEdit } from './IconEdit';
+export { default as IconPlus } from './IconPlus';
+export { default as IconTrash } from './IconTrash';
+export { default as IconSettings } from './IconSettings';

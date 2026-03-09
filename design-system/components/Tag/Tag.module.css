@@ -47,3 +47,23 @@
 .inactive .label {
   color: var(--color-text-disabled);
 }
+
+/* ─── Professional ───────────────────────────────── */
+
+.professional .dot {
+  background-color: var(--color-turquoise-30);
+}
+
+.professional .label {
+  color: var(--color-text-strong);
+}
+
+/* ─── User ───────────────────────────────────────── */
+
+.user .dot {
+  background-color: var(--color-border-strong);
+}
+
+.user .label {
+  color: var(--color-text-subtle);
+}

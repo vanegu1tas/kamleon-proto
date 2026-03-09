@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { IconSettings, IconTrash } from '../../../design-system/icons/outline';
+import { IconMailFilled, IconPhoneFilled } from '../../../design-system/icons/filled';
 import styles from './UserDetail.module.css';
 
 // ─── Icons ──────────────────────────────────────────────
@@ -349,11 +351,11 @@ export default function UserDetail({ user: initialUser, team, onBack }) {
                 </div>
               </div>
               <div className={styles.actions}>
-                <button className={styles.actionBtn} aria-label="Editar usuario" onClick={handleEdit}>
-                  <EditIcon />
+                <button className={`${styles.actionBtn} ${styles.actionBtnTooltip}`} aria-label="Configuración de usuario" data-tooltip="Settings" onClick={handleEdit}>
+                  <IconSettings size={16} />
                 </button>
-                <button className={styles.actionBtn} aria-label="Eliminar usuario">
-                  <TrashIcon />
+                <button className={`${styles.actionBtn} ${styles.actionBtnTooltip}`} aria-label="Eliminar usuario" data-tooltip="Delete">
+                  <IconTrash size={16} />
                 </button>
               </div>
             </div>
@@ -364,8 +366,8 @@ export default function UserDetail({ user: initialUser, team, onBack }) {
                 <p className={styles.sectionLabel}>Personal Information</p>
                 <div className={styles.infoGrid}>
                   <div className={styles.infoCol}>
-                    <div className={styles.infoItem}><MailIcon /><span>{u.email}</span></div>
-                    <div className={styles.infoItem}><PhoneIcon /><span>{u.phone}</span></div>
+                    <div className={styles.infoItem}><IconMailFilled size={16} /><span>{u.email}</span></div>
+                    <div className={styles.infoItem}><IconPhoneFilled size={16} /><span>{u.phone}</span></div>
                   </div>
                   <div className={styles.infoCol}>
                     <div className={styles.infoItem}><CalendarIcon /><span>{u.birthday}</span></div>

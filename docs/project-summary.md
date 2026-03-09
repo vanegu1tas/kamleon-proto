@@ -1,6 +1,6 @@
 # Project Summary — Kamleon Design System
 
-Estado del proyecto al 2026-03-09. Referencia rápida para retomar el trabajo.
+Estado del proyecto al 2026-03-10. Referencia rápida para retomar el trabajo.
 
 ---
 
@@ -95,7 +95,7 @@ kamleon/
 │   │   │   ├── Button.module.css
 │   │   │   └── Button.stories.jsx      ✅
 │   │   ├── Tag/
-│   │   │   ├── Tag.jsx                 ✅ estados active/inactive · dot + label
+│   │   │   ├── Tag.jsx                 ✅ active/inactive/professional/user · dot + label
 │   │   │   ├── Tag.module.css
 │   │   │   └── Tag.stories.jsx         ✅
 │   │   ├── SidebarItem/
@@ -110,10 +110,16 @@ kamleon/
 │   │   │   ├── SearchBar.jsx           ✅ input de búsqueda · estados: default/hover/focus/error/disabled
 │   │   │   ├── SearchBar.module.css
 │   │   │   └── SearchBar.stories.jsx   ✅
-│   │   └── TabBar/
-│   │       ├── TabBar.jsx              ✅ indicador deslizante · glow animado · controlled · 2-4 tabs
-│   │       ├── TabBar.module.css
-│   │       └── TabBar.stories.jsx      ✅
+│   │   ├── TabBar/
+│   │   │   ├── TabBar.jsx              ✅ indicador deslizante · glow animado · controlled · 2-4 tabs
+│   │   │   ├── TabBar.module.css
+│   │   │   └── TabBar.stories.jsx      ✅
+│   │   ├── ContextMenu/
+│   │   │   ├── ContextMenu.jsx         ✅ menú contextual · items con icon · variante danger
+│   │   │   └── ContextMenu.module.css
+│   │   └── ToolbarButton/
+│   │       ├── ToolbarButton.jsx       ✅ botón de toolbar · selected state · badge de filtros
+│   │       └── ToolbarButton.module.css
 │   └── icons/
 │       ├── outline/
 │       │   ├── IconCollapse.jsx      ✅ doble chevron izquierda (colapsar sidebar)
@@ -130,6 +136,11 @@ kamleon/
 │       │   ├── IconEye.jsx           ✅ ojo (mostrar)
 │       │   ├── IconEyeClosed.jsx     ✅ ojo cerrado (ocultar)
 │       │   ├── IconAddImage.jsx      ✅ añadir imagen
+│       │   ├── IconEdit.jsx          ✅ lápiz (editar)
+│       │   ├── IconPlus.jsx          ✅ cruz / añadir
+│       │   ├── IconTrash.jsx         ✅ papelera (eliminar)
+│       │   ├── IconSettings.jsx      ✅ engranaje (configuración)
+│       │   ├── IconFilter.jsx        ✅ embudo (filtros)
 │       │   └── index.js              ✅
 │       ├── filled/
 │       │   ├── IconUserFilled.jsx    ✅ persona (filled)
@@ -151,15 +162,20 @@ kamleon/
 ├── prototypes/
 │   ├── main.jsx                ✅ entry point · importa tokens · renderiza prototipo activo
 │   └── StaffOrganizaciones/
-│       ├── StaffOrganizaciones.jsx         ✅ OrgList + navegación por stack
+│       ├── StaffOrganizaciones.jsx         ✅ OrgList + navegación por stack + ContextMenu en tabla
 │       ├── StaffOrganizaciones.module.css  ✅
+│       ├── mockData.js                     ✅ datos mock centralizados
 │       └── screens/
 │           ├── OrgDetail.jsx               ✅ tabs: Centers · Administrators · Monitoring
 │           ├── OrgDetail.module.css        ✅
 │           ├── CenterDetail.jsx            ✅ tabs: Teams · Administrators · Users · Monitoring
 │           ├── CenterDetail.module.css     ✅
-│           ├── TeamDetail.jsx              ✅ tabs: Users · Administrators
-│           └── TeamDetail.module.css       ✅
+│           ├── TeamDetail.jsx              ✅ tabs: Users (con filtro por role) · Administrators
+│           ├── TeamDetail.module.css       ✅
+│           ├── UserDetail.jsx              ✅ vista/edición de usuario · toggles de permisos
+│           ├── UserDetail.module.css       ✅
+│           ├── NewCenterModal.jsx          ✅ drawer lateral (slide-in desde derecha) para crear centro
+│           └── NewCenterModal.module.css   ✅
 ├── docs/
 │   ├── data-model.md           ✅
 │   ├── navigation.md           ✅
@@ -288,7 +304,7 @@ Dos colecciones con convenciones distintas:
 
 | Archivo | Descripción |
 |---|---|
-| `StaffOrganizaciones` | Panel staff — sidebar + KPI cards + tabla de organizaciones expandible + flujo OrgDetail → CenterDetail → TeamDetail |
+| `StaffOrganizaciones` | Panel staff — sidebar + KPI cards + tabla de organizaciones expandible + flujo OrgDetail → CenterDetail → TeamDetail → UserDetail |
 
 ---
 
@@ -326,18 +342,20 @@ Nodos relevantes:
 
 ### Design System — Componentes
 - [x] Button — primary/secondary · s/m · default/hover/disabled
-- [x] Tag — active/inactive · dot + label
+- [x] Tag — active/inactive/professional/user · dot + label
 - [x] SidebarItem — icon + label · default/selected · expanded/collapsed
 - [x] Sidebar — shell completo con header (logo SVG), toggle, secciones y nav
 - [x] SearchBar — lupa + placeholder + clear button · estados: default/hover/focus/error/disabled · focus ring para click y teclado
 - [x] TabBar — indicador deslizante + glow animado · variantes 2/3/4 tabs · controlled
+- [x] ContextMenu — menú contextual flotante · items con icono · variante danger · click-outside
+- [x] ToolbarButton — botón de toolbar con selected state y badge de filtros
 - [ ] Input — campo de texto base para formularios
 - [ ] Toggle / Switch — para pantalla de permisos del Admin restringido
 - [ ] Configurar Figma Code Connect
 
 ### Design System — Iconos
 - [x] Duotono (`IconSb*`) — 5 iconos para sidebar
-- [x] Outline (`Icon*`) — 14 iconos con SVG exacto de Figma · todos 24x24 · stroke + currentColor
+- [x] Outline (`Icon*`) — 19 iconos con SVG exacto de Figma · todos 24x24 · stroke + currentColor
 - [x] Filled (`Icon*Filled`) — 4 iconos · fill + currentColor
 
 ### Storybook
@@ -345,14 +363,15 @@ Nodos relevantes:
 - [ ] Añadir story por cada componente nuevo
 
 ### Prototipos
-- [x] StaffOrganizaciones — sidebar + KPI cards + tabla expandible
-- [x] OrgDetail — header org + tabs: Centers (expandible → TeamDetail) · Administrators · Monitoring
-- [x] CenterDetail — header centro + tabs: Teams (→ TeamDetail) · Administrators · Users · Monitoring
-- [x] TeamDetail — header equipo + tabs: Users · Administrators
+- [x] StaffOrganizaciones — sidebar + KPI cards + tabla expandible + filtros con dropdown animado + ContextMenu (Edit/New Center/Delete) en cada fila
+- [x] OrgDetail — header org (iconos filled, tooltips, Settings/Delete buttons) + tabs: Centers (status 2ª col, ContextMenu) · Administrators (empty state + CTA) · Monitoring
+- [x] CenterDetail — header centro (iconos filled, tooltips) + tabs: Teams (status 2ª col, ContextMenu) · Administrators (empty state + CTA) · Users · Monitoring
+- [x] TeamDetail — header equipo (iconos filled, tooltips) + tabs: Users (status 2ª col, filtro por role) · Administrators (empty state + CTA)
+- [x] UserDetail — vista/edición · Settings/Trash icon buttons con tooltips · toggles de permisos
+- [x] NewCenterModal — drawer lateral slide-in desde derecha · campos: Name*, Email, Phone, Address · sección "Invite administrators" con emails dinámicos · Create deshabilitado hasta tener Name · cierra con click en overlay o X
 - [x] Refinado visual: KPI cards, hovers de tabla, SearchBar integrado, títulos H3
-- [x] SearchBar reemplazado por componente del design system en OrgDetail, CenterDetail y TeamDetail
-- [x] TabBar reemplazado por componente del design system en OrgDetail, CenterDetail y TeamDetail
-- [x] Empty state Centers (OrgDetail) mejorado: ilustración SVG de edificios en lugar de círculo gris, subtítulo en 14px
+- [x] Empty state Centers (OrgDetail) mejorado: ilustración SVG de edificios, subtítulo 14px
+- [x] Todos los empty states de Administrators tienen botón "New Administrator" (primary/s)
 
 ### Design System — Tokens
 - [x] Tipografía, border radius, colores globales, colores semánticos, fuentes

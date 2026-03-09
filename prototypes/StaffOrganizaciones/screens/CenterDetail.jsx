@@ -1,8 +1,12 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Button from '../../../design-system/components/Button/Button';
 import Tag from '../../../design-system/components/Tag/Tag';
 import SearchBar from '../../../design-system/components/SearchBar/SearchBar';
 import TabBar from '../../../design-system/components/TabBar/TabBar';
+import ContextMenu from '../../../design-system/components/ContextMenu/ContextMenu';
+import { IconEdit, IconPlus, IconTrash, IconSettings } from '../../../design-system/icons/outline';
+import { IconMailFilled, IconPhoneFilled, IconLocationFilled } from '../../../design-system/icons/filled';
+import { getUsersForTeam, getProfessionalsForTeam } from '../mockData';
 import styles from './CenterDetail.module.css';
 
 // ─── Icons ──────────────────────────────────────────────
@@ -84,19 +88,6 @@ const TABS = [
   { id: 'monitoring',     label: 'Monitoring' },
 ];
 
-// ─── Mock data ───────────────────────────────────────────
-
-const MOCK_CENTER_DETAIL = {
-  email:   'center@gmail.com',
-  phone:   '+57 317 670 00 22',
-  address: 'Avenida siempre viva, 35',
-};
-
-const MOCK_TEAMS = [
-  { id: 1, name: 'Team Alpha', professionals: 2, users: 8, status: 'active' },
-  { id: 2, name: 'Team Beta',  professionals: 1, users: 5, status: 'active' },
-];
-
 // ─── Empty state ─────────────────────────────────────────
 
 function EmptyState({ title, subtitle, action }) {
@@ -117,7 +108,19 @@ function EmptyState({ title, subtitle, action }) {
 // ─── Teams content ───────────────────────────────────────
 
 function TeamsContent({ center, org, onNavigate }) {
-  const hasTeams = MOCK_TEAMS.length > 0;
+  const [openMenuTeamId, setOpenMenuTeamId] = useState(null);
+  const menuRef = useRef(null);
+  const teams = center.teams;
+  const hasTeams = teams.length > 0;
+
+  useEffect(() => {
+    if (!openMenuTeamId) return;
+    function handleClick(e) {
+      if (menuRef.current && !menuRef.current.contains(e.target)) setOpenMenuTeamId(null);
+    }
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [openMenuTeamId]);
 
   if (!hasTeams) {
     return (
@@ -153,31 +156,52 @@ function TeamsContent({ center, org, onNavigate }) {
       <div className={styles.tableWrap}>
         <div className={styles.tableHeader}>
           <div className={`${styles.colHead} ${styles.colTeam}`}>Team</div>
+          <div className={`${styles.colHead} ${styles.colNum}`}>Status</div>
           <div className={`${styles.colHead} ${styles.colNum}`}>Professionals</div>
           <div className={`${styles.colHead} ${styles.colNum}`}>Users</div>
-          <div className={`${styles.colHead} ${styles.colNum}`}>Status</div>
           <div className={`${styles.colHead} ${styles.colActions}`} />
         </div>
 
-        {MOCK_TEAMS.map((team, i) => (
+        {teams.map((team, i) => (
           <div
             key={team.id}
-            className={`${styles.tableRow} ${styles.tableRowClickable} ${i < MOCK_TEAMS.length - 1 ? styles.rowBorder : ''}`}
+            className={`${styles.tableRow} ${styles.tableRowClickable} ${i < teams.length - 1 ? styles.rowBorder : ''}`}
             onClick={() => onNavigate('team-detail', { team, center, org })}
+            style={openMenuTeamId === team.id ? { position: 'relative', zIndex: 10 } : undefined}
           >
             <div className={`${styles.teamNameCell} ${styles.colTeam}`}>
               <div className={styles.teamAvatar}>{team.name.charAt(0)}</div>
               <span className={styles.teamName}>{team.name}</span>
             </div>
-            <div className={`${styles.numCell} ${styles.colNum}`}>{team.professionals}</div>
-            <div className={`${styles.numCell} ${styles.colNum}`}>{team.users}</div>
             <div className={`${styles.numCell} ${styles.colNum}`}>
               <Tag status={team.status} />
             </div>
+            <div className={`${styles.numCell} ${styles.colNum}`}>{getProfessionalsForTeam(team).length}</div>
+            <div className={`${styles.numCell} ${styles.colNum}`}>{getUsersForTeam(team).length}</div>
             <div className={`${styles.actionsCell} ${styles.colActions}`}>
-              <button className={styles.dotsBtn} aria-label="Más opciones" onClick={e => e.stopPropagation()}>
-                <DotsIcon />
-              </button>
+              <div
+                className={styles.moreMenuAnchor}
+                ref={openMenuTeamId === team.id ? menuRef : null}
+              >
+                <button
+                  className={styles.dotsBtn}
+                  aria-label="Más opciones"
+                  onClick={e => { e.stopPropagation(); setOpenMenuTeamId(prev => prev === team.id ? null : team.id); }}
+                >
+                  <DotsIcon />
+                </button>
+                {openMenuTeamId === team.id && (
+                  <div className={styles.contextMenuWrap}>
+                    <ContextMenu
+                      items={[
+                        { label: 'Edit',     icon: <IconEdit size={16} />,  onClick: () => setOpenMenuTeamId(null) },
+                        { label: 'New User', icon: <IconPlus size={16} />,  onClick: () => setOpenMenuTeamId(null) },
+                        { label: 'Delete',   icon: <IconTrash size={16} />, variant: 'danger', onClick: () => setOpenMenuTeamId(null) },
+                      ]}
+                    />
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         ))}
@@ -186,7 +210,7 @@ function TeamsContent({ center, org, onNavigate }) {
       {/* Paginación */}
       <div className={styles.tablePagination}>
         <span className={styles.pageInfo}>
-          Showing <strong>{MOCK_TEAMS.length}</strong> of <strong>{MOCK_TEAMS.length}</strong> teams
+          Showing <strong>{teams.length}</strong> of <strong>{teams.length}</strong> teams
         </span>
         <div className={styles.pageButtons}>
           <button className={styles.pageBtn} disabled>Previous</button>
@@ -236,20 +260,20 @@ export default function CenterDetail({ center, org, onBack, onNavigate }) {
             </div>
           </div>
           <div className={styles.centerActions}>
-            <button className={styles.actionBtn} aria-label="Editar centro">
-              <EditIcon />
+            <button className={`${styles.actionBtn} ${styles.actionBtnTooltip}`} aria-label="Configuración de centro" data-tooltip="Settings">
+              <IconSettings size={16} />
             </button>
-            <button className={styles.actionBtn} aria-label="Eliminar centro">
-              <TrashIcon />
+            <button className={`${styles.actionBtn} ${styles.actionBtnTooltip}`} aria-label="Eliminar centro" data-tooltip="Delete">
+              <IconTrash size={16} />
             </button>
           </div>
         </div>
 
         <div className={styles.metadata}>
           <div className={styles.metaRow}>
-            <div className={styles.metaItem}><MailIcon /><span>{MOCK_CENTER_DETAIL.email}</span></div>
-            <div className={styles.metaItem}><PhoneIcon /><span>{MOCK_CENTER_DETAIL.phone}</span></div>
-            <div className={styles.metaItem}><PinIcon /><span>{MOCK_CENTER_DETAIL.address}</span></div>
+            <div className={styles.metaItem}><IconMailFilled size={16} /><span>{center.email}</span></div>
+            <div className={styles.metaItem}><IconPhoneFilled size={16} /><span>{center.phone}</span></div>
+            <div className={styles.metaItem}><IconLocationFilled size={16} /><span>{center.address}</span></div>
           </div>
         </div>
 
@@ -270,6 +294,11 @@ export default function CenterDetail({ center, org, onBack, onNavigate }) {
             <EmptyState
               title="No administrators yet..."
               subtitle="Administrators for this center will appear here"
+              action={
+                <Button variant="primary" size="s" leftIcon={<IconPlus size={16} />}>
+                  New Administrator
+                </Button>
+              }
             />
           </div>
         )}

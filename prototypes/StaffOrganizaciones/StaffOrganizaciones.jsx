@@ -12,33 +12,15 @@ import {
   IconSbUnit,
 } from '../../design-system/icons';
 import OrgDetail from './screens/OrgDetail';
+import NewCenterModal from './screens/NewCenterModal';
 import CenterDetail from './screens/CenterDetail';
 import TeamDetail from './screens/TeamDetail';
 import UserDetail from './screens/UserDetail';
+import { ORGS, getUserCountForOrg } from './mockData';
+import { IconFilter, IconEdit, IconPlus, IconTrash } from '../../design-system/icons/outline';
+import ToolbarButton from '../../design-system/components/ToolbarButton/ToolbarButton';
+import ContextMenu from '../../design-system/components/ContextMenu/ContextMenu';
 import styles from './StaffOrganizaciones.module.css';
-
-// ─── Mock data ──────────────────────────────────────────
-
-const ORGS = [
-  { id: 1, name: 'AnyósPark',             status: 'active',   centers: 3, users: 45,  units: 12, segments: 'Fitness'       },
-  { id: 2, name: 'Arsenal Football Club', status: 'active',   centers: 5, users: 120, units: 30, segments: 'Sport',
-    centersList: [
-      { id: 1, name: 'Sede Guarne',   status: 'active' },
-      { id: 2, name: 'Sede Medellín', status: 'active' },
-    ] },
-  { id: 3, name: 'Astonia FC',            status: 'active',   centers: 2, users: 34,  units: 8,  segments: 'Sport'         },
-  { id: 4, name: 'Baskonia-Alavés Group', status: 'active',   centers: 4, users: 87,  units: 22, segments: 'Sport'         },
-  { id: 5, name: 'CAR Sant Cugat',        status: 'active',   centers: 2, users: 41,  units: 10, segments: 'Fitness'       },
-  { id: 6, name: 'CAR Sierra Nevada',     status: 'active',   centers: 1, users: 28,  units: 6,  segments: 'Sport'         },
-  { id: 7, name: 'CEAR La Cartuja',       status: 'inactive', centers: 1, users: 19,  units: 4,  segments: 'Fitness'       },
-  { id: 8, name: 'CEM Joan Miró',         status: 'active',   centers: 2, users: 56,  units: 14, segments: 'Sport',
-    centersList: [
-      { id: 1, name: 'Joan Miró Centre', status: 'active' },
-      { id: 2, name: 'Nou Barris',       status: 'active' },
-    ] },
-  { id: 9, name: 'CNEA Font-Romeu',       status: 'active',   centers: 1, users: 22,  units: 5,  segments: 'Sport'         },
-  { id: 10, name: 'Dynatech',             status: 'inactive', centers: 1, users: 15,  units: 3,  segments: 'Fitness'       },
-];
 
 const NAV_SECTIONS = [
   {
@@ -111,13 +93,6 @@ function BellIcon() {
   );
 }
 
-function FilterIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-      <path d="M2 3h12l-4.5 5.5V13l-3-1.5V8.5L2 3z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
 
 function SortIcon({ col, activeCol, dir }) {
   const isActive = col === activeCol;
@@ -145,6 +120,9 @@ export default function StaffOrganizaciones() {
   const [filters, setFilters] = useState({ status: new Set(), segment: new Set() });
   const [filterOpen, setFilterOpen] = useState(false);
   const filterRef = useRef(null);
+  const [openMenuOrgId, setOpenMenuOrgId] = useState(null);
+  const menuRef = useRef(null);
+  const [showNewCenterModal, setShowNewCenterModal] = useState(false);
 
   const currentScreen = navStack[navStack.length - 1];
 
@@ -183,6 +161,15 @@ export default function StaffOrganizaciones() {
   }, [filterOpen]);
 
   useEffect(() => {
+    if (!openMenuOrgId) return;
+    function handleClick(e) {
+      if (menuRef.current && !menuRef.current.contains(e.target)) setOpenMenuOrgId(null);
+    }
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [openMenuOrgId]);
+
+  useEffect(() => {
     const mq = window.matchMedia('(max-width: 768px)');
     const handler = (e) => setIsTablet(e.matches);
     mq.addEventListener('change', handler);
@@ -217,14 +204,21 @@ export default function StaffOrganizaciones() {
 
   const activeFilterCount = filters.status.size + filters.segment.size;
 
+  function getSortValue(org, col) {
+    if (col === 'centers') return org.centers.length;
+    if (col === 'users')   return getUserCountForOrg(org);
+    const v = org[col];
+    return typeof v === 'string' ? v.toLowerCase() : v;
+  }
+
   // Derived: filtered + sorted orgs
   let displayedOrgs = [...ORGS];
   if (filters.status.size > 0)  displayedOrgs = displayedOrgs.filter(o => filters.status.has(o.status));
   if (filters.segment.size > 0) displayedOrgs = displayedOrgs.filter(o => filters.segment.has(o.segments.toLowerCase()));
   if (sortCol) {
     displayedOrgs.sort((a, b) => {
-      const va = typeof a[sortCol] === 'string' ? a[sortCol].toLowerCase() : a[sortCol];
-      const vb = typeof b[sortCol] === 'string' ? b[sortCol].toLowerCase() : b[sortCol];
+      const va = getSortValue(a, sortCol);
+      const vb = getSortValue(b, sortCol);
       if (va < vb) return sortDir === 'asc' ? -1 : 1;
       if (va > vb) return sortDir === 'asc' ?  1 : -1;
       return 0;
@@ -347,28 +341,36 @@ export default function StaffOrganizaciones() {
           </div>
 
           {/* KPI cards */}
-          <div className={styles.kpiRow}>
-            <div className={styles.kpiCard}>
-              <span className={styles.kpiValue}>12</span>
-              <span className={styles.kpiLabel}>Total Orgs</span>
-            </div>
-            <div className={styles.kpiCard}>
-              <span className={styles.kpiValue}>14</span>
-              <span className={styles.kpiLabel}>Total Centers</span>
-            </div>
-            <div className={styles.kpiCard}>
-              <span className={styles.kpiValue}>364</span>
-              <span className={styles.kpiLabel}>Total Users</span>
-            </div>
-            <div className={styles.kpiCard}>
-              <span className={styles.kpiValue}>22/30</span>
-              <span className={styles.kpiLabel}>Active Units</span>
-            </div>
-            <div className={`${styles.kpiCard} ${styles.alert}`}>
-              <span className={styles.kpiValue}>3</span>
-              <span className={styles.kpiLabel}>Sensor alerts</span>
-            </div>
-          </div>
+          {(() => {
+            const totalOrgs    = ORGS.length;
+            const totalCenters = ORGS.reduce((acc, o) => acc + o.centers.length, 0);
+            const totalUsers   = ORGS.reduce((acc, o) => acc + getUserCountForOrg(o), 0);
+            const totalUnits   = ORGS.reduce((acc, o) => acc + o.units, 0);
+            return (
+              <div className={styles.kpiRow}>
+                <div className={styles.kpiCard}>
+                  <span className={styles.kpiValue}>{totalOrgs}</span>
+                  <span className={styles.kpiLabel}>Total Orgs</span>
+                </div>
+                <div className={styles.kpiCard}>
+                  <span className={styles.kpiValue}>{totalCenters}</span>
+                  <span className={styles.kpiLabel}>Total Centers</span>
+                </div>
+                <div className={styles.kpiCard}>
+                  <span className={styles.kpiValue}>{totalUsers}</span>
+                  <span className={styles.kpiLabel}>Total Users</span>
+                </div>
+                <div className={styles.kpiCard}>
+                  <span className={styles.kpiValue}>{totalUnits}</span>
+                  <span className={styles.kpiLabel}>Total Units</span>
+                </div>
+                <div className={`${styles.kpiCard} ${styles.alert}`}>
+                  <span className={styles.kpiValue}>3</span>
+                  <span className={styles.kpiLabel}>Sensor alerts</span>
+                </div>
+              </div>
+            );
+          })()}
 
           {/* Organizations table */}
           <div className={styles.tableCard}>
@@ -379,37 +381,74 @@ export default function StaffOrganizaciones() {
               <div className={styles.tableControls}>
                 <SearchBar placeholder="Search by name..." className={styles.searchBar} />
                 <div className={styles.filterWrap} ref={filterRef}>
-                  <button
-                    className={`${styles.filterBtn} ${activeFilterCount > 0 ? styles.filterBtnActive : ''}`}
+                  <ToolbarButton
+                    icon={<IconFilter size={16} />}
+                    selected={activeFilterCount > 0}
                     onClick={() => setFilterOpen(v => !v)}
                     aria-label="Filter"
                   >
-                    <FilterIcon />
+                    Filters
                     {activeFilterCount > 0 && <span className={styles.filterBadge}>{activeFilterCount}</span>}
-                  </button>
-                  <span className={styles.filterTooltip}>Filter</span>
+                  </ToolbarButton>
                   {filterOpen && (
                     <div className={styles.filterDropdown}>
+
+                      {/* ── Segment — checkboxes ── */}
                       <div className={styles.filterSection}>
-                        <p className={styles.filterSectionLabel}>Status</p>
-                        {['active', 'inactive'].map(v => (
-                          <label key={v} className={styles.filterOption}>
-                            <input type="checkbox" checked={filters.status.has(v)} onChange={() => toggleFilter('status', v)} />
-                            <span>{v === 'active' ? 'Active' : 'Inactive'}</span>
+                        <p className={styles.filterSectionLabel}>
+                          Segment
+                        </p>
+                        {[{ v: 'sport', label: 'Sport' }, { v: 'fitness', label: 'Fitness' }].map(({ v, label }) => (
+                          <label
+                            key={v}
+                            className={`${styles.filterOption} ${filters.segment.has(v) ? styles.filterOptionChecked : ''}`}
+                          >
+                            <input
+                              type="checkbox"
+                              className={styles.nativeCheck}
+                              checked={filters.segment.has(v)}
+                              onChange={() => toggleFilter('segment', v)}
+                            />
+                            <span className={styles.checkBox}>
+                              <svg width="10" height="8" viewBox="0 0 10 8" fill="none" className={styles.checkMark} aria-hidden="true">
+                                <path d="M1 3.5L3.5 6.5L9 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                              </svg>
+                            </span>
+                            <span className={styles.optionLabel}>{label}</span>
                           </label>
                         ))}
                       </div>
+
+                      {/* ── Status — custom checkboxes ── */}
                       <div className={styles.filterSection}>
-                        <p className={styles.filterSectionLabel}>Segment</p>
-                        {['sport', 'fitness'].map(v => (
-                          <label key={v} className={styles.filterOption}>
-                            <input type="checkbox" checked={filters.segment.has(v)} onChange={() => toggleFilter('segment', v)} />
-                            <span>{v.charAt(0).toUpperCase() + v.slice(1)}</span>
+                        <p className={styles.filterSectionLabel}>
+                          Status
+                        </p>
+                        {[{ v: 'active', label: 'Active' }, { v: 'inactive', label: 'Inactive' }].map(({ v, label }) => (
+                          <label
+                            key={v}
+                            className={`${styles.filterOption} ${filters.status.has(v) ? styles.filterOptionChecked : ''}`}
+                          >
+                            <input
+                              type="checkbox"
+                              className={styles.nativeCheck}
+                              checked={filters.status.has(v)}
+                              onChange={() => toggleFilter('status', v)}
+                            />
+                            <span className={styles.checkBox}>
+                              <svg width="10" height="8" viewBox="0 0 10 8" fill="none" className={styles.checkMark} aria-hidden="true">
+                                <path d="M1 3.5L3.5 6.5L9 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                              </svg>
+                            </span>
+                            <span className={styles.optionLabel}>{label}</span>
                           </label>
                         ))}
                       </div>
+
                       {activeFilterCount > 0 && (
-                        <button className={styles.clearFilters} onClick={clearFilters}>Clear filters</button>
+                        <button className={styles.clearFilters} onClick={clearFilters}>
+                          Clear filters
+                        </button>
                       )}
                     </div>
                   )}
@@ -449,7 +488,7 @@ export default function StaffOrganizaciones() {
               {displayedOrgs.map(org => {
                 const isExpanded = expandedOrgs.has(org.id);
                 return (
-                  <div key={org.id}>
+                  <div key={org.id} style={openMenuOrgId === org.id ? { position: 'relative', zIndex: 10 } : undefined}>
                     <div
                       className={`${styles.orgRow} ${isExpanded ? styles.orgRowExpanded : ''}`}
                       onClick={() => navigate('org-detail', { org })}
@@ -476,12 +515,12 @@ export default function StaffOrganizaciones() {
 
                       {/* Centers */}
                       <div className={`${styles.cell} ${styles.colPlan} ${styles.cellCenter}`}>
-                        {org.centers}
+                        {org.centers.length}
                       </div>
 
                       {/* Users */}
                       <div className={`${styles.cell} ${styles.colCenters} ${styles.cellCenter}`}>
-                        {org.users}
+                        {getUserCountForOrg(org)}
                       </div>
 
                       {/* Units */}
@@ -496,18 +535,53 @@ export default function StaffOrganizaciones() {
 
                       {/* Actions */}
                       <div className={styles.cellActions}>
-                        <button className={styles.actionBtn}>
+                        <div
+                          className={styles.moreMenuAnchor}
+                          ref={openMenuOrgId === org.id ? menuRef : null}
+                        >
+                        <button
+                          className={styles.actionBtn}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setOpenMenuOrgId(prev => prev === org.id ? null : org.id);
+                          }}
+                        >
                           <DotsIcon />
                         </button>
+                        {openMenuOrgId === org.id && (
+                          <div className={styles.contextMenuWrap}>
+                            <ContextMenu
+                              items={[
+                                {
+                                  label: 'Edit',
+                                  icon: <IconEdit size={16} />,
+                                  onClick: () => setOpenMenuOrgId(null),
+                                },
+                                {
+                                  label: 'New Center',
+                                  icon: <IconPlus size={16} />,
+                                  onClick: () => { setOpenMenuOrgId(null); setShowNewCenterModal(true); },
+                                },
+                                {
+                                  label: 'Delete',
+                                  icon: <IconTrash size={16} />,
+                                  variant: 'danger',
+                                  onClick: () => setOpenMenuOrgId(null),
+                                },
+                              ]}
+                            />
+                          </div>
+                        )}
+                        </div>
                       </div>
                     </div>
 
                     {/* Expanded center rows */}
-                    {isExpanded && org.centersList && (
+                    {isExpanded && org.centers.length > 0 && (
                       <div className={styles.centerRows}>
-                        {org.centersList.map((center, i) => (
+                        {org.centers.map((center) => (
                           <div
-                            key={i}
+                            key={center.id}
                             className={styles.centerRow}
                             onClick={e => { e.stopPropagation(); navigate('center-detail', { center, org }); }}
                           >
@@ -536,6 +610,8 @@ export default function StaffOrganizaciones() {
         </div>}
 
       </div>
+
+      {showNewCenterModal && <NewCenterModal onClose={() => setShowNewCenterModal(false)} />}
     </div>
   );
 }

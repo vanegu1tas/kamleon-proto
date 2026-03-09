@@ -1,8 +1,12 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Button from '../../../design-system/components/Button/Button';
 import Tag from '../../../design-system/components/Tag/Tag';
 import SearchBar from '../../../design-system/components/SearchBar/SearchBar';
 import TabBar from '../../../design-system/components/TabBar/TabBar';
+import ToolbarButton from '../../../design-system/components/ToolbarButton/ToolbarButton';
+import { getMembersForTeam } from '../mockData';
+import { IconSettings, IconTrash, IconFilter, IconPlus } from '../../../design-system/icons/outline';
+import { IconMailFilled, IconPhoneFilled, IconLocationFilled } from '../../../design-system/icons/filled';
 import styles from './TeamDetail.module.css';
 
 // ─── Icons ──────────────────────────────────────────────
@@ -82,29 +86,6 @@ const TABS = [
   { id: 'administrators', label: 'Administrators' },
 ];
 
-// ─── Mock data ───────────────────────────────────────────
-
-const MOCK_TEAM_CONTACT = {
-  email:   'center@gmail.com',
-  phone:   '+57 317 670 00 22',
-  address: 'Avenida siempre viva, 35',
-};
-
-const DEFAULT_USERS = [
-  { id: 1, name: 'Carlos García', dateAdded: '12 Jan 2024', status: 'active',   email: 'carlos.garcia@kamleon.com', phone: '+34 612 345 678', birthday: '15/06/1990', gender: 'Male',   height: '178 cm', weight: '75 kg', rfid: true,  pin: false },
-  { id: 2, name: 'María López',   dateAdded: '03 Feb 2024', status: 'active',   email: 'maria.lopez@kamleon.com',   phone: '+34 623 456 789', birthday: '22/03/1985', gender: 'Female', height: '162 cm', weight: '58 kg', rfid: true,  pin: true  },
-  { id: 3, name: 'Jordi Puig',    dateAdded: '15 Mar 2024', status: 'inactive', email: 'jordi.puig@kamleon.com',    phone: '+34 634 567 890', birthday: '07/11/1992', gender: 'Male',   height: '182 cm', weight: '82 kg', rfid: false, pin: false },
-  { id: 4, name: 'Laia Ferrer',   dateAdded: '28 Apr 2024', status: 'active',   email: 'laia.ferrer@kamleon.com',   phone: '+34 645 678 901', birthday: '30/09/1995', gender: 'Female', height: '165 cm', weight: '61 kg', rfid: true,  pin: false },
-];
-
-const USERS_BY_TEAM = {
-  2: [
-    { id: 5, name: 'Ana Martínez', dateAdded: '05 Jan 2024', status: 'active', email: 'ana.martinez@kamleon.com', phone: '+34 611 222 333', birthday: '12/04/1993', gender: 'Female', height: '168 cm', weight: '63 kg', rfid: true,  pin: true  },
-    { id: 6, name: 'Pau Roca',     dateAdded: '20 Feb 2024', status: 'active', email: 'pau.roca@kamleon.com',     phone: '+34 622 333 444', birthday: '03/08/1988', gender: 'Male',   height: '175 cm', weight: '72 kg', rfid: true,  pin: false },
-    { id: 7, name: 'Sara Vidal',   dateAdded: '11 Mar 2024', status: 'active', email: 'sara.vidal@kamleon.com',   phone: '+34 633 444 555', birthday: '19/12/1997', gender: 'Female', height: '160 cm', weight: '55 kg', rfid: false, pin: true  },
-  ],
-};
-
 // ─── Empty state ─────────────────────────────────────────
 
 function EmptyState({ title, subtitle, action }) {
@@ -125,8 +106,33 @@ function EmptyState({ title, subtitle, action }) {
 // ─── Users content ───────────────────────────────────────
 
 function UsersContent({ team, center, onNavigate }) {
-  const users = Object.hasOwn(USERS_BY_TEAM, team.id) ? USERS_BY_TEAM[team.id] : DEFAULT_USERS;
-  const hasUsers = users.length > 0;
+  const allUsers = getMembersForTeam(team);
+  const [roleFilter, setRoleFilter] = useState(new Set());
+  const [filterOpen, setFilterOpen] = useState(false);
+  const filterRef = useRef(null);
+
+  useEffect(() => {
+    if (!filterOpen) return;
+    function handleClick(e) {
+      if (filterRef.current && !filterRef.current.contains(e.target)) setFilterOpen(false);
+    }
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [filterOpen]);
+
+  function toggleRole(v) {
+    setRoleFilter(prev => {
+      const next = new Set(prev);
+      next.has(v) ? next.delete(v) : next.add(v);
+      return next;
+    });
+  }
+
+  const users = roleFilter.size > 0
+    ? allUsers.filter(u => roleFilter.has(u.role))
+    : allUsers;
+
+  const hasUsers = allUsers.length > 0;
 
   if (!hasUsers) {
     return (
@@ -155,22 +161,64 @@ function UsersContent({ team, center, onNavigate }) {
             New User
           </Button>
         </div>
-        <SearchBar placeholder="Search by name..." className={styles.searchBar} />
+        <div className={styles.toolbarRow}>
+          <SearchBar placeholder="Search by name..." className={styles.searchBar} />
+          <div className={styles.filterWrap} ref={filterRef}>
+            <ToolbarButton
+              icon={<IconFilter size={16} />}
+              selected={roleFilter.size > 0}
+              onClick={() => setFilterOpen(prev => !prev)}
+            >
+              Filters
+              {roleFilter.size > 0 && (
+                <span className={styles.filterBadge}>{roleFilter.size}</span>
+              )}
+            </ToolbarButton>
+            {filterOpen && (
+              <div className={styles.filterDropdown}>
+                <div className={styles.filterSection}>
+                  <p className={styles.filterSectionLabel}>Role</p>
+                  {[{ v: 'professional', label: 'Professional' }, { v: 'user', label: 'User' }].map(({ v, label }) => (
+                    <label key={v} className={`${styles.filterOption} ${roleFilter.has(v) ? styles.filterOptionChecked : ''}`}>
+                      <input
+                        type="checkbox"
+                        className={styles.nativeCheck}
+                        checked={roleFilter.has(v)}
+                        onChange={() => toggleRole(v)}
+                      />
+                      <span className={styles.checkBox}>
+                        <svg className={styles.checkMark} viewBox="0 0 10 8" fill="none">
+                          <path d="M1 4l3 3 5-6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </span>
+                      {label}
+                    </label>
+                  ))}
+                </div>
+                {roleFilter.size > 0 && (
+                  <button className={styles.clearFilters} onClick={() => setRoleFilter(new Set())}>
+                    Clear filters
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* Tabla */}
       <div className={styles.tableWrap}>
         <div className={styles.tableHeader}>
           <div className={`${styles.colHead} ${styles.colName}`}>Name</div>
-          <div className={`${styles.colHead} ${styles.colCenter}`}>Center</div>
-          <div className={`${styles.colHead} ${styles.colDate}`}>Date Added</div>
           <div className={`${styles.colHead} ${styles.colNum}`}>Status</div>
+          <div className={`${styles.colHead} ${styles.colRole}`}>Role</div>
+          <div className={`${styles.colHead} ${styles.colDate}`}>Date Added</div>
           <div className={`${styles.colHead} ${styles.colActions}`} />
         </div>
 
         {users.map((user, i) => (
           <div
-            key={user.id}
+            key={`${user.role}-${user.id}`}
             className={`${styles.tableRow} ${styles.tableRowClickable} ${i < users.length - 1 ? styles.rowBorder : ''}`}
             onClick={() => onNavigate('user-detail', { user, team, center })}
           >
@@ -178,11 +226,13 @@ function UsersContent({ team, center, onNavigate }) {
               <div className={styles.userAvatar}>{user.name.charAt(0)}</div>
               <span className={styles.userName}>{user.name}</span>
             </div>
-            <div className={`${styles.centerCell} ${styles.colCenter}`}>{center.name}</div>
-            <div className={`${styles.dateCell} ${styles.colDate}`}>{user.dateAdded}</div>
             <div className={`${styles.numCell} ${styles.colNum}`}>
               <Tag status={user.status} />
             </div>
+            <div className={`${styles.roleCell} ${styles.colRole}`}>
+              <Tag status={user.role} />
+            </div>
+            <div className={`${styles.dateCell} ${styles.colDate}`}>{user.dateAdded}</div>
             <div className={`${styles.actionsCell} ${styles.colActions}`}>
               <button className={styles.dotsBtn} aria-label="Más opciones">
                 <DotsIcon />
@@ -245,20 +295,20 @@ export default function TeamDetail({ team, center, onBack, onNavigate }) {
             </div>
           </div>
           <div className={styles.teamActions}>
-            <button className={styles.actionBtn} aria-label="Editar equipo">
-              <EditIcon />
+            <button className={`${styles.actionBtn} ${styles.actionBtnTooltip}`} aria-label="Configuración de equipo" data-tooltip="Settings">
+              <IconSettings size={16} />
             </button>
-            <button className={styles.actionBtn} aria-label="Eliminar equipo">
-              <TrashIcon />
+            <button className={`${styles.actionBtn} ${styles.actionBtnTooltip}`} aria-label="Eliminar equipo" data-tooltip="Delete">
+              <IconTrash size={16} />
             </button>
           </div>
         </div>
 
         <div className={styles.metadata}>
           <div className={styles.metaRow}>
-            <div className={styles.metaItem}><MailIcon /><span>{MOCK_TEAM_CONTACT.email}</span></div>
-            <div className={styles.metaItem}><PhoneIcon /><span>{MOCK_TEAM_CONTACT.phone}</span></div>
-            <div className={styles.metaItem}><PinIcon /><span>{MOCK_TEAM_CONTACT.address}</span></div>
+            <div className={styles.metaItem}><IconMailFilled size={16} /><span>{team.email}</span></div>
+            <div className={styles.metaItem}><IconPhoneFilled size={16} /><span>{team.phone}</span></div>
+            <div className={styles.metaItem}><IconLocationFilled size={16} /><span>{team.address}</span></div>
           </div>
         </div>
 
@@ -279,6 +329,11 @@ export default function TeamDetail({ team, center, onBack, onNavigate }) {
             <EmptyState
               title="No administrators yet..."
               subtitle="Administrators for this team will appear here"
+              action={
+                <Button variant="primary" size="s" leftIcon={<IconPlus size={16} />}>
+                  New Administrator
+                </Button>
+              }
             />
           </div>
         )}
