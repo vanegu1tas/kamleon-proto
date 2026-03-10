@@ -7,6 +7,7 @@ import ToolbarButton from '../../../design-system/components/ToolbarButton/Toolb
 import { getMembersForTeam } from '../mockData';
 import { IconSettings, IconTrash, IconFilter, IconPlus } from '../../../design-system/icons/outline';
 import { IconMailFilled, IconPhoneFilled, IconLocationFilled } from '../../../design-system/icons/filled';
+import EditTeamDrawer from './EditTeamDrawer';
 import styles from './TeamDetail.module.css';
 
 // ─── Icons ──────────────────────────────────────────────
@@ -260,6 +261,7 @@ function UsersContent({ team, center, onNavigate }) {
 
 export default function TeamDetail({ team, center, onBack, onNavigate }) {
   const [activeTab, setActiveTab] = useState('users');
+  const [showEditDrawer, setShowEditDrawer] = useState(false);
 
   return (
     <div className={styles.container}>
@@ -295,7 +297,7 @@ export default function TeamDetail({ team, center, onBack, onNavigate }) {
             </div>
           </div>
           <div className={styles.teamActions}>
-            <button className={`${styles.actionBtn} ${styles.actionBtnTooltip}`} aria-label="Configuración de equipo" data-tooltip="Settings">
+            <button className={`${styles.actionBtn} ${styles.actionBtnTooltip}`} aria-label="Configuración de equipo" data-tooltip="Settings" onClick={() => setShowEditDrawer(true)}>
               <IconSettings size={16} />
             </button>
             <button className={`${styles.actionBtn} ${styles.actionBtnTooltip}`} aria-label="Eliminar equipo" data-tooltip="Delete">
@@ -339,6 +341,14 @@ export default function TeamDetail({ team, center, onBack, onNavigate }) {
         )}
 
       </div>
+
+      {showEditDrawer && (
+        <EditTeamDrawer
+          team={team}
+          onClose={() => setShowEditDrawer(false)}
+        />
+      )}
+
     </div>
   );
 }

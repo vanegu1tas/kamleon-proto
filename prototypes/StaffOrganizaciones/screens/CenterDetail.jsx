@@ -7,6 +7,7 @@ import ContextMenu from '../../../design-system/components/ContextMenu/ContextMe
 import { IconEdit, IconPlus, IconTrash, IconSettings } from '../../../design-system/icons/outline';
 import { IconMailFilled, IconPhoneFilled, IconLocationFilled } from '../../../design-system/icons/filled';
 import { getUsersForTeam, getProfessionalsForTeam } from '../mockData';
+import EditCenterDrawer from './EditCenterDrawer';
 import styles from './CenterDetail.module.css';
 
 // ─── Icons ──────────────────────────────────────────────
@@ -225,6 +226,7 @@ function TeamsContent({ center, org, onNavigate }) {
 
 export default function CenterDetail({ center, org, onBack, onNavigate }) {
   const [activeTab, setActiveTab] = useState('teams');
+  const [showEditDrawer, setShowEditDrawer] = useState(false);
 
   return (
     <div className={styles.container}>
@@ -260,7 +262,7 @@ export default function CenterDetail({ center, org, onBack, onNavigate }) {
             </div>
           </div>
           <div className={styles.centerActions}>
-            <button className={`${styles.actionBtn} ${styles.actionBtnTooltip}`} aria-label="Configuración de centro" data-tooltip="Settings">
+            <button className={`${styles.actionBtn} ${styles.actionBtnTooltip}`} aria-label="Configuración de centro" data-tooltip="Settings" onClick={() => setShowEditDrawer(true)}>
               <IconSettings size={16} />
             </button>
             <button className={`${styles.actionBtn} ${styles.actionBtnTooltip}`} aria-label="Eliminar centro" data-tooltip="Delete">
@@ -309,6 +311,11 @@ export default function CenterDetail({ center, org, onBack, onNavigate }) {
             <EmptyState
               title="No users yet..."
               subtitle="Users belonging to this center will appear here"
+              action={
+                <Button variant="primary" size="s" leftIcon={<IconPlus size={16} />}>
+                  New User
+                </Button>
+              }
             />
           </div>
         )}
@@ -324,6 +331,14 @@ export default function CenterDetail({ center, org, onBack, onNavigate }) {
         )}
 
       </div>
+
+      {showEditDrawer && (
+        <EditCenterDrawer
+          center={center}
+          onClose={() => setShowEditDrawer(false)}
+        />
+      )}
+
     </div>
   );
 }

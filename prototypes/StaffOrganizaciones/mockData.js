@@ -21,6 +21,19 @@ export const USERS_POOL = [
   { id: 10, name: 'David Torres',     email: 'david.torres@kamleon.com',     phone: '+34 666 777 888', birthday: '14/09/1989', gender: 'Male',   height: '176 cm', weight: '80 kg', rfid: true,  pin: false, dateAdded: '29 Jun 2024', status: 'inactive' },
   { id: 11, name: 'Nuria Ros',        email: 'nuria.ros@kamleon.com',        phone: '+34 677 888 999', birthday: '31/05/1996', gender: 'Female', height: '163 cm', weight: '57 kg', rfid: true,  pin: true,  dateAdded: '08 Jul 2024', status: 'active'   },
   { id: 12, name: 'Iñaki Etxeberria', email: 'inaki.etxeberria@kamleon.com', phone: '+34 688 999 000', birthday: '20/02/1987', gender: 'Male',   height: '185 cm', weight: '88 kg', rfid: false, pin: false, dateAdded: '14 Aug 2024', status: 'active'   },
+  { id: 19, name: 'Ben White',         email: 'b.white@arsenal.com',        phone: '+44 771 100 001', birthday: '08/10/1997', gender: 'Male',   height: '186 cm', weight: '80 kg', rfid: true,  pin: true,  dateAdded: '01 Sep 2024', status: 'active'   },
+  { id: 20, name: 'Bukayo Saka',       email: 'b.saka@arsenal.com',         phone: '+44 771 100 002', birthday: '05/09/2001', gender: 'Male',   height: '178 cm', weight: '73 kg', rfid: true,  pin: true,  dateAdded: '01 Sep 2024', status: 'active'   },
+  { id: 21, name: 'Martin Ødegaard',   email: 'm.odegaard@arsenal.com',     phone: '+47 912 345 678', birthday: '17/12/1998', gender: 'Male',   height: '178 cm', weight: '68 kg', rfid: true,  pin: false, dateAdded: '01 Sep 2024', status: 'active'   },
+  { id: 22, name: 'Declan Rice',       email: 'd.rice@arsenal.com',         phone: '+44 771 100 004', birthday: '14/01/1999', gender: 'Male',   height: '185 cm', weight: '83 kg', rfid: true,  pin: true,  dateAdded: '01 Sep 2024', status: 'active'   },
+  { id: 23, name: 'Gabriel Magalhães', email: 'g.magalhaes@arsenal.com',    phone: '+55 11 91234 5678', birthday: '19/12/1997', gender: 'Male', height: '190 cm', weight: '84 kg', rfid: true,  pin: false, dateAdded: '01 Sep 2024', status: 'active'   },
+  { id: 24, name: 'William Saliba',    email: 'w.saliba@arsenal.com',       phone: '+33 6 12 34 56 78', birthday: '24/03/2001', gender: 'Male', height: '192 cm', weight: '85 kg', rfid: true,  pin: true,  dateAdded: '01 Sep 2024', status: 'active'   },
+  { id: 25, name: 'Kai Havertz',       email: 'k.havertz@arsenal.com',      phone: '+49 151 12345678', birthday: '11/06/1999', gender: 'Male',  height: '189 cm', weight: '83 kg', rfid: false, pin: true,  dateAdded: '01 Sep 2024', status: 'active'   },
+  { id: 26, name: 'Leandro Trossard',  email: 'l.trossard@arsenal.com',     phone: '+32 471 123 456', birthday: '04/12/1994', gender: 'Male',   height: '173 cm', weight: '68 kg', rfid: true,  pin: false, dateAdded: '01 Sep 2024', status: 'active'   },
+  { id: 27, name: 'Jurriën Timber',    email: 'j.timber@arsenal.com',       phone: '+31 6 12345678',  birthday: '17/06/2001', gender: 'Male',   height: '180 cm', weight: '75 kg', rfid: true,  pin: true,  dateAdded: '01 Sep 2024', status: 'active'   },
+  { id: 28, name: 'Thomas Partey',     email: 't.partey@arsenal.com',       phone: '+233 24 123 4567', birthday: '13/06/1993', gender: 'Male',  height: '185 cm', weight: '77 kg', rfid: false, pin: false, dateAdded: '01 Sep 2024', status: 'inactive' },
+  { id: 29, name: 'Gabriel Martinelli',email: 'g.martinelli@arsenal.com',   phone: '+55 11 98765 4321', birthday: '18/06/2001', gender: 'Male', height: '181 cm', weight: '75 kg', rfid: true,  pin: true,  dateAdded: '01 Sep 2024', status: 'active'   },
+  { id: 30, name: 'Oleksandr Zinchenko',email:'o.zinchenko@arsenal.com',    phone: '+380 67 123 4567', birthday: '15/12/1996', gender: 'Male',  height: '175 cm', weight: '64 kg', rfid: true,  pin: false, dateAdded: '01 Sep 2024', status: 'active'   },
+  { id: 31, name: 'David Raya',        email: 'd.raya@arsenal.com',         phone: '+34 655 100 031', birthday: '15/09/1995', gender: 'Male',   height: '183 cm', weight: '80 kg', rfid: true,  pin: true,  dateAdded: '01 Sep 2024', status: 'active'   },
   // ── Professionals (coaches, physicians, analysts) ──────────────────────────
   { id: 13, name: 'Dr. Elena Navarro',  email: 'e.navarro@kamleon.com',   phone: '+34 610 100 001', birthday: '04/03/1982', gender: 'Female', height: '167 cm', weight: '62 kg', rfid: true,  pin: true,  dateAdded: '01 Jan 2024', status: 'active' },
   { id: 14, name: 'Marc Dalmau',        email: 'm.dalmau@kamleon.com',    phone: '+34 610 100 002', birthday: '18/07/1979', gender: 'Male',   height: '181 cm', weight: '79 kg', rfid: true,  pin: false, dateAdded: '01 Jan 2024', status: 'active' },
@@ -49,21 +62,18 @@ export const ORGS = [
   // ── 2 · Arsenal Football Club ─────────────────────────────────────────────
   {
     id: 2, name: 'Arsenal Football Club', status: 'active', segments: 'Sport', units: 30,
-    contact: 'James Wright', email: 'contact@arsenal.com', phone: '+44 20 7704 4000', fiscal: 'Highbury House, London N5 1BU',
+    contact: 'James Wright', email: 'contact@arsenal.com', phone: '+44 20 7704 4000', fiscal: 'Highbury House, 75 Drayton Park, London N5 1BU',
     centers: [
       {
-        id: 201, name: 'Sede Guarne', status: 'active',
-        email: 'guarne@arsenal.com', phone: '+57 4 531 00 22', address: 'Vereda El Molino, Guarne, Antioquia',
+        id: 201, name: 'Sobha Realty Training Centre', status: 'active',
+        email: 'training@arsenal.com', phone: '+44 1727 730 000', address: 'Shenley Road, London Colney, St. Albans AL2 1DR',
         teams: [
-          { id: 2011, name: 'Team Alpha', status: 'active', professionalIds: [13, 14], email: 'alpha@arsenal.com', phone: '+57 4 531 00 23', address: 'Vereda El Molino, Guarne', users: [1, 2, 3, 4] },
-          { id: 2012, name: 'Team Beta',  status: 'active', professionalIds: [15],     email: 'beta@arsenal.com',  phone: '+57 4 531 00 24', address: 'Vereda El Molino, Guarne', users: [5, 6, 7] },
-        ],
-      },
-      {
-        id: 202, name: 'Sede Medellín', status: 'active',
-        email: 'medellin@arsenal.com', phone: '+57 4 444 55 66', address: 'Calle 10 #43D-50, Medellín',
-        teams: [
-          { id: 2021, name: 'Team Gamma', status: 'active', professionalIds: [16], email: 'gamma@arsenal.com', phone: '+57 4 444 55 67', address: 'Calle 10 #43D-50, Medellín', users: [8, 9, 10] },
+          {
+            id: 2011, name: 'Arsenal First Team', status: 'active',
+            professionalIds: [13],
+            email: 'squad@arsenal.com', phone: '+44 1727 730 001', address: 'Shenley Road, London Colney, St. Albans AL2 1DR',
+            users: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31],
+          },
         ],
       },
     ],

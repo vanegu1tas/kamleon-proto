@@ -10,7 +10,7 @@
   padding: 8px;
   display: flex;
   flex-direction: column;
-  min-width: 160px;
+  min-width: 200px;
 }
 
 /* ─── Item ───────────────────────────────────────── */
@@ -30,6 +30,7 @@
   color: var(--color-text-strong);
   cursor: pointer;
   text-align: left;
+  white-space: nowrap;
   transition: background 0.12s ease;
 }
 

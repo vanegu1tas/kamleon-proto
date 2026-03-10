@@ -165,6 +165,18 @@
   justify-content: space-between;
 }
 
+.createWrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.createMenuWrap {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  z-index: 100;
+}
+
 .pageTitle {
   font-family: var(--font-family-primary);
   font-size: var(--font-size-32);
@@ -677,10 +689,8 @@
 }
 
 .contextMenuWrap {
-  position: absolute;
-  top: calc(100% + 4px);
-  right: 0;
-  z-index: 100;
+  position: fixed;
+  z-index: 200;
 }
 
 .actionBtn {
@@ -705,11 +715,12 @@
   border-bottom: 1px solid var(--color-border-default);
 }
 
-
 .centerRow {
   display: flex;
   align-items: center;
-  padding-left: 76px;
+  gap: 12px;
+  padding: 0 12px 0 76px;
+  min-height: 52px;
   cursor: pointer;
   position: relative;
   isolation: isolate;
@@ -734,15 +745,46 @@
   padding-bottom: 4px;
 }
 
-.centerCell {
-  flex: 1;
+.centerAvatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 12px;
+  justify-content: center;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-subtle);
+  flex-shrink: 0;
+}
+
+.centerName {
   font-family: var(--font-family-primary);
   font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
   color: var(--color-text-strong);
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.centerStats {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  color: var(--color-text-subtle);
+  flex-shrink: 0;
+}
+
+.statDot {
+  color: var(--color-border-strong);
 }
 
 /* ─── Backdrop (tablet drawer) ───────────────────────── */

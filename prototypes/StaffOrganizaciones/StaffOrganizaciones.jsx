@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import Sidebar from '../../design-system/components/Sidebar/Sidebar';
 import LogoKamleon from '../../design-system/icons/LogoKamleon';
 import Button from '../../design-system/components/Button/Button';
@@ -16,7 +17,7 @@ import NewCenterModal from './screens/NewCenterModal';
 import CenterDetail from './screens/CenterDetail';
 import TeamDetail from './screens/TeamDetail';
 import UserDetail from './screens/UserDetail';
-import { ORGS, getUserCountForOrg } from './mockData';
+import { ORGS, getUserCountForOrg, getUserCountForCenter, getProfessionalCountForCenter, getActiveTeamCount } from './mockData';
 import { IconFilter, IconEdit, IconPlus, IconTrash } from '../../design-system/icons/outline';
 import ToolbarButton from '../../design-system/components/ToolbarButton/ToolbarButton';
 import ContextMenu from '../../design-system/components/ContextMenu/ContextMenu';
@@ -121,8 +122,11 @@ export default function StaffOrganizaciones() {
   const [filterOpen, setFilterOpen] = useState(false);
   const filterRef = useRef(null);
   const [openMenuOrgId, setOpenMenuOrgId] = useState(null);
+  const [menuPos, setMenuPos] = useState({ top: 0, right: 0 });
   const menuRef = useRef(null);
   const [showNewCenterModal, setShowNewCenterModal] = useState(false);
+  const [createMenuOpen, setCreateMenuOpen] = useState(false);
+  const createMenuRef = useRef(null);
 
   const currentScreen = navStack[navStack.length - 1];
 
@@ -168,6 +172,15 @@ export default function StaffOrganizaciones() {
     document.addEventListener('mousedown', handleClick);
     return () => document.removeEventListener('mousedown', handleClick);
   }, [openMenuOrgId]);
+
+  useEffect(() => {
+    if (!createMenuOpen) return;
+    function handleClick(e) {
+      if (createMenuRef.current && !createMenuRef.current.contains(e.target)) setCreateMenuOpen(false);
+    }
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [createMenuOpen]);
 
   useEffect(() => {
     const mq = window.matchMedia('(max-width: 768px)');
@@ -239,8 +252,16 @@ export default function StaffOrganizaciones() {
         <Sidebar
           collapsed={sidebarCollapsed}
           onToggle={handleSidebarToggle}
-          sections={NAV_SECTIONS}
           drawerOpen={isTablet ? drawerOpen : undefined}
+          sections={NAV_SECTIONS.map(section => ({
+            ...section,
+            items: section.items.map(item => ({
+              ...item,
+              onClick: item.id === 'center'
+                ? () => setNavStack([{ screen: 'orgs' }])
+                : item.onClick,
+            })),
+          }))}
         />
       </div>
 
@@ -335,9 +356,28 @@ export default function StaffOrganizaciones() {
           {/* Heading */}
           <div className={styles.heading}>
             <h1 className={styles.pageTitle}>Welcome, Daniel</h1>
-            <Button variant="primary" size="s" leftIcon={<PlusIcon />}>
-              Create
-            </Button>
+            <div className={styles.createWrap} ref={createMenuRef}>
+              <Button
+                variant="primary"
+                size="s"
+                leftIcon={<PlusIcon />}
+                onClick={() => setCreateMenuOpen(prev => !prev)}
+              >
+                Create
+              </Button>
+              {createMenuOpen && (
+                <div className={styles.createMenuWrap}>
+                  <ContextMenu
+                    items={[
+                      { label: 'New Organization', icon: <IconPlus size={16} />, onClick: () => setCreateMenuOpen(false) },
+                      { label: 'New Center',       icon: <IconPlus size={16} />, onClick: () => { setCreateMenuOpen(false); setShowNewCenterModal(true); } },
+                      { label: 'New Team',         icon: <IconPlus size={16} />, onClick: () => setCreateMenuOpen(false) },
+                      { label: 'New User',         icon: <IconPlus size={16} />, onClick: () => setCreateMenuOpen(false) },
+                    ]}
+                  />
+                </div>
+              )}
+            </div>
           </div>
 
           {/* KPI cards */}
@@ -488,7 +528,7 @@ export default function StaffOrganizaciones() {
               {displayedOrgs.map(org => {
                 const isExpanded = expandedOrgs.has(org.id);
                 return (
-                  <div key={org.id} style={openMenuOrgId === org.id ? { position: 'relative', zIndex: 10 } : undefined}>
+                  <div key={org.id}>
                     <div
                       className={`${styles.orgRow} ${isExpanded ? styles.orgRowExpanded : ''}`}
                       onClick={() => navigate('org-detail', { org })}
@@ -535,43 +575,22 @@ export default function StaffOrganizaciones() {
 
                       {/* Actions */}
                       <div className={styles.cellActions}>
-                        <div
-                          className={styles.moreMenuAnchor}
-                          ref={openMenuOrgId === org.id ? menuRef : null}
-                        >
+                        <div className={styles.moreMenuAnchor}>
                         <button
                           className={styles.actionBtn}
                           onClick={(e) => {
                             e.stopPropagation();
-                            setOpenMenuOrgId(prev => prev === org.id ? null : org.id);
+                            if (openMenuOrgId === org.id) {
+                              setOpenMenuOrgId(null);
+                            } else {
+                              const rect = e.currentTarget.getBoundingClientRect();
+                              setMenuPos({ top: rect.bottom + 4, right: window.innerWidth - rect.right });
+                              setOpenMenuOrgId(org.id);
+                            }
                           }}
                         >
                           <DotsIcon />
                         </button>
-                        {openMenuOrgId === org.id && (
-                          <div className={styles.contextMenuWrap}>
-                            <ContextMenu
-                              items={[
-                                {
-                                  label: 'Edit',
-                                  icon: <IconEdit size={16} />,
-                                  onClick: () => setOpenMenuOrgId(null),
-                                },
-                                {
-                                  label: 'New Center',
-                                  icon: <IconPlus size={16} />,
-                                  onClick: () => { setOpenMenuOrgId(null); setShowNewCenterModal(true); },
-                                },
-                                {
-                                  label: 'Delete',
-                                  icon: <IconTrash size={16} />,
-                                  variant: 'danger',
-                                  onClick: () => setOpenMenuOrgId(null),
-                                },
-                              ]}
-                            />
-                          </div>
-                        )}
                         </div>
                       </div>
                     </div>
@@ -579,15 +598,28 @@ export default function StaffOrganizaciones() {
                     {/* Expanded center rows */}
                     {isExpanded && org.centers.length > 0 && (
                       <div className={styles.centerRows}>
-                        {org.centers.map((center) => (
-                          <div
-                            key={center.id}
-                            className={styles.centerRow}
-                            onClick={e => { e.stopPropagation(); navigate('center-detail', { center, org }); }}
-                          >
-                            <div className={styles.centerCell}>{center.name}</div>
-                          </div>
-                        ))}
+                        {org.centers.map((center) => {
+                          const teams = getActiveTeamCount(center);
+                          const users = getUserCountForCenter(center);
+                          const profs = getProfessionalCountForCenter(center);
+                          return (
+                            <div
+                              key={center.id}
+                              className={styles.centerRow}
+                              onClick={e => { e.stopPropagation(); navigate('center-detail', { center, org }); }}
+                            >
+                              <div className={styles.centerAvatar}>{center.name.charAt(0)}</div>
+                              <span className={styles.centerName}>{center.name}</span>
+                              <div className={styles.centerStats}>
+                                <span>{teams} {teams === 1 ? 'team' : 'teams'}</span>
+                                <span className={styles.statDot}>·</span>
+                                <span>{users} {users === 1 ? 'user' : 'users'}</span>
+                                <span className={styles.statDot}>·</span>
+                                <span>{profs} {profs === 1 ? 'professional' : 'professionals'}</span>
+                              </div>
+                            </div>
+                          );
+                        })}
                       </div>
                     )}
                   </div>
@@ -612,6 +644,33 @@ export default function StaffOrganizaciones() {
       </div>
 
       {showNewCenterModal && <NewCenterModal onClose={() => setShowNewCenterModal(false)} />}
+
+      {openMenuOrgId && createPortal(
+        <div className={styles.contextMenuWrap} style={{ top: menuPos.top, right: menuPos.right }} ref={menuRef}>
+          <ContextMenu
+            items={[
+              {
+                label: 'Edit',
+                icon: <IconEdit size={16} />,
+                onClick: () => setOpenMenuOrgId(null),
+              },
+              {
+                label: 'New Center',
+                icon: <IconPlus size={16} />,
+                onClick: () => { setOpenMenuOrgId(null); setShowNewCenterModal(true); },
+              },
+              {
+                label: 'Delete',
+                icon: <IconTrash size={16} />,
+                variant: 'danger',
+                onClick: () => setOpenMenuOrgId(null),
+              },
+            ]}
+          />
+        </div>,
+        document.body
+      )}
+
     </div>
   );
 }
