@@ -1,3 +1,5 @@
+import { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import styles from './SidebarItem.module.css';
 
 /**
@@ -18,17 +20,51 @@ export default function SidebarItem({
   collapsed = false,
   onClick,
 }) {
+  const btnRef = useRef(null);
+  const [tooltipPos, setTooltipPos] = useState(null);
+
+  function handleMouseEnter() {
+    if (!collapsed) return;
+    const rect = btnRef.current.getBoundingClientRect();
+    const sidebar = btnRef.current.closest('aside');
+    const sidebarRight = sidebar ? sidebar.getBoundingClientRect().right : rect.right;
+    setTooltipPos({
+      top: rect.top + rect.height / 2,
+      left: sidebarRight + 8,
+    });
+  }
+
+  function handleMouseLeave() {
+    setTooltipPos(null);
+  }
+
   return (
-    <button
-      className={[
-        styles.item,
-        styles[state],
-        collapsed ? styles.collapsed : styles.expanded,
-      ].join(' ')}
-      onClick={onClick}
-    >
-      {icon && <span className={styles.icon}>{icon}</span>}
-      {!collapsed && <span className={styles.label}>{label}</span>}
-    </button>
+    <>
+      <button
+        ref={btnRef}
+        className={[
+          styles.item,
+          styles[state],
+          collapsed ? styles.collapsed : styles.expanded,
+        ].join(' ')}
+        onClick={onClick}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        {icon && <span className={styles.icon}>{icon}</span>}
+        {!collapsed && <span className={styles.label}>{label}</span>}
+      </button>
+
+      {tooltipPos && createPortal(
+        <div
+          className={styles.tooltip}
+          style={{ top: tooltipPos.top, left: tooltipPos.left }}
+        >
+          <span className={styles.tooltipArrow} />
+          {label}
+        </div>,
+        document.body
+      )}
+    </>
   );
 }

@@ -29,7 +29,6 @@ const NAV_SECTIONS = [
     label: 'Management',
     items: [
       { id: 'center', label: 'Center control', icon: <IconSbCenter />, active: true  },
-      { id: 'teams',  label: 'Teams',           icon: <IconSbTeams />,  active: false },
     ],
   },
   {

@@ -8,6 +8,7 @@ import { IconEdit, IconPlus, IconTrash, IconSettings } from '../../../design-sys
 import { IconUserFilled, IconMailFilled, IconPhoneFilled, IconLocationFilled } from '../../../design-system/icons/filled';
 import { getUserCountForCenter, getProfessionalCountForCenter, getActiveTeamCount } from '../mockData';
 import NewCenterModal from './NewCenterModal';
+import EditOrgDrawer from './EditOrgDrawer';
 import styles from './OrgDetail.module.css';
 
 // ─── Icons ──────────────────────────────────────────────
@@ -328,6 +329,7 @@ function CentersContent({ org, onNavigate }) {
 
 export default function OrgDetail({ org, onBack, onNavigate }) {
   const [activeTab, setActiveTab] = useState('centers');
+  const [showEditDrawer, setShowEditDrawer] = useState(false);
 
   return (
     <div className={styles.container}>
@@ -358,7 +360,7 @@ export default function OrgDetail({ org, onBack, onNavigate }) {
             </div>
           </div>
           <div className={styles.orgActions}>
-            <button className={`${styles.actionBtn} ${styles.actionBtnTooltip}`} aria-label="Configuración de organización" data-tooltip="Settings">
+            <button className={`${styles.actionBtn} ${styles.actionBtnTooltip}`} aria-label="Configuración de organización" data-tooltip="Settings" onClick={() => setShowEditDrawer(true)}>
               <IconSettings size={16} />
             </button>
             <button className={`${styles.actionBtn} ${styles.actionBtnTooltip}`} aria-label="Eliminar organización" data-tooltip="Delete">
@@ -417,6 +419,14 @@ export default function OrgDetail({ org, onBack, onNavigate }) {
         )}
 
       </div>
+
+      {showEditDrawer && (
+        <EditOrgDrawer
+          org={org}
+          onClose={() => setShowEditDrawer(false)}
+        />
+      )}
+
     </div>
   );
 }
