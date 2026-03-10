@@ -1,6 +1,6 @@
 # Project Summary — Kamleon Design System
 
-Estado del proyecto al 2026-03-10. Referencia rápida para retomar el trabajo.
+Estado del proyecto al 2026-03-11. Referencia rápida para retomar el trabajo.
 
 ---
 
@@ -175,13 +175,18 @@ kamleon/
 │           ├── UserDetail.jsx              ✅ vista/edición de usuario · toggles de permisos
 │           ├── UserDetail.module.css       ✅
 │           ├── NewCenterModal.jsx          ✅ drawer lateral (slide-in desde derecha) para crear centro
-│           └── NewCenterModal.module.css   ✅
+│           ├── NewCenterModal.module.css   ✅
+│           ├── EditCenterDrawer.jsx        ✅ drawer edición de centro · campos pre-llenados · Save habilitado solo con cambios · address line 2 eliminable
+│           ├── EditCenterDrawer.module.css ✅
+│           ├── EditTeamDrawer.jsx          ✅ drawer edición de equipo · Team info + Settings (Status/RFID/Set PIN) · Reset PIN condicional
+│           └── EditTeamDrawer.module.css   ✅
 ├── docs/
 │   ├── data-model.md           ✅
 │   ├── navigation.md           ✅
 │   ├── permissions.md          ✅ (con gaps marcados en Admin restringido)
 │   ├── project-summary.md      ✅ este archivo
-│   └── features/               🔲 pendiente (un doc por feature)
+│   └── features/
+│       └── user-test-script-navegacion.md  ✅ guión de prueba de usuario (8 tareas)
 ├── figma/
 │   └── code-connect/           🔲 pendiente
 ├── index.html                  ✅ entry HTML del servidor de prototipos
@@ -369,9 +374,16 @@ Nodos relevantes:
 - [x] TeamDetail — header equipo (iconos filled, tooltips) + tabs: Users (status 2ª col, filtro por role) · Administrators (empty state + CTA)
 - [x] UserDetail — vista/edición · Settings/Trash icon buttons con tooltips · toggles de permisos
 - [x] NewCenterModal — drawer lateral slide-in desde derecha · campos: Name*, Email, Phone, Address · sección "Invite administrators" con emails dinámicos · Create deshabilitado hasta tener Name · cierra con click en overlay o X
+- [x] EditCenterDrawer — drawer edición de centro · campos pre-llenados · Save habilitado solo si hay cambios · address line 2 con botón eliminar (icono X + tooltip "Remove")
+- [x] EditTeamDrawer — drawer edición de equipo · sección Team info (Name*) + sección Settings (Status/RFID/Set PIN toggles) · Reset PIN aparece solo cuando Set PIN está ON
+- [x] Create button dropdown en OrgList — 4 opciones: New Organization / New Center / New Team / New User
+- [x] ContextMenu fix — renderizado con createPortal en document.body para escapar stacking context de centros expandidos
+- [x] Center rows expandidos — avatar inicial + nombre + stats (teams · users · professionals)
+- [x] Arsenal FC actualizado — 1 centro (Sobha Realty Training Centre) · 1 equipo (Arsenal First Team) · 25 usuarios · 1 profesional
+- [x] Sidebar "Center control" — siempre navega a la lista de organizaciones
 - [x] Refinado visual: KPI cards, hovers de tabla, SearchBar integrado, títulos H3
 - [x] Empty state Centers (OrgDetail) mejorado: ilustración SVG de edificios, subtítulo 14px
-- [x] Todos los empty states de Administrators tienen botón "New Administrator" (primary/s)
+- [x] Empty states con CTAs: Administrators (New Administrator) en Org/Center/Team · Users (New User) en Center
 
 ### Design System — Tokens
 - [x] Tipografía, border radius, colores globales, colores semánticos, fuentes
@@ -379,8 +391,7 @@ Nodos relevantes:
 - [ ] Sincronización Figma → tokens (pendiente de decisión: Tokens Studio o manual)
 
 ### Docs de features
-- [ ] Definir lista de features a diseñar
-- [ ] Crear primeros docs en `docs/features/`
+- [x] Guión de prueba de usuario de navegación (`docs/features/user-test-script-navegacion.md`) — 8 tareas con mock data real, guías de observación y métricas
 
 ### GitHub Pages
 - [x] Repo en GitHub: https://github.com/vanegu1tas/kamleon-proto
