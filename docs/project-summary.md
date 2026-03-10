@@ -1,6 +1,6 @@
 # Project Summary — Kamleon Design System
 
-Estado del proyecto al 2026-03-11. Referencia rápida para retomar el trabajo.
+Estado del proyecto al 2026-03-12. Referencia rápida para retomar el trabajo.
 
 ---
 
@@ -179,7 +179,9 @@ kamleon/
 │           ├── EditCenterDrawer.jsx        ✅ drawer edición de centro · campos pre-llenados · Save habilitado solo con cambios · address line 2 eliminable
 │           ├── EditCenterDrawer.module.css ✅
 │           ├── EditTeamDrawer.jsx          ✅ drawer edición de equipo · Team info + Settings (Status/RFID/Set PIN) · Reset PIN condicional
-│           └── EditTeamDrawer.module.css   ✅
+│           ├── EditTeamDrawer.module.css   ✅
+│           ├── EditOrgDrawer.jsx           ✅ drawer edición de org · Organization info + Settings (Status dropdown, Integrations con Kamleon API expandible)
+│           └── EditOrgDrawer.module.css    ✅
 ├── docs/
 │   ├── data-model.md           ✅
 │   ├── navigation.md           ✅
@@ -354,6 +356,7 @@ Nodos relevantes:
 - [x] TabBar — indicador deslizante + glow animado · variantes 2/3/4 tabs · controlled
 - [x] ContextMenu — menú contextual flotante · items con icono · variante danger · click-outside
 - [x] ToolbarButton — botón de toolbar con selected state y badge de filtros
+- [x] SidebarItem — tooltips portal al colapsar (createPortal en body, fondo oscuro, flecha izquierda)
 - [ ] Input — campo de texto base para formularios
 - [ ] Toggle / Switch — para pantalla de permisos del Admin restringido
 - [ ] Configurar Figma Code Connect
@@ -376,6 +379,9 @@ Nodos relevantes:
 - [x] NewCenterModal — drawer lateral slide-in desde derecha · campos: Name*, Email, Phone, Address · sección "Invite administrators" con emails dinámicos · Create deshabilitado hasta tener Name · cierra con click en overlay o X
 - [x] EditCenterDrawer — drawer edición de centro · campos pre-llenados · Save habilitado solo si hay cambios · address line 2 con botón eliminar (icono X + tooltip "Remove")
 - [x] EditTeamDrawer — drawer edición de equipo · sección Team info (Name*) + sección Settings (Status/RFID/Set PIN toggles) · Reset PIN aparece solo cuando Set PIN está ON
+- [x] EditOrgDrawer — drawer edición de org · Organization info (Name*, Segment* dropdown, Email, Phone, Fiscal Address, Description textarea) · Settings: Status dropdown + Integrations (Kamleon API expandible con toggle Enable API, Max tokens, API Token, Run Test, tabla Tokens Consume · Teamworks colapsable)
+- [x] SidebarItem tooltips — portal en document.body al colapsar · fondo oscuro · flecha izquierda · 8px a la derecha del borde del sidebar
+- [x] Sidebar: item "Teams" oculto
 - [x] Create button dropdown en OrgList — 4 opciones: New Organization / New Center / New Team / New User
 - [x] ContextMenu fix — renderizado con createPortal en document.body para escapar stacking context de centros expandidos
 - [x] Center rows expandidos — avatar inicial + nombre + stats (teams · users · professionals)
