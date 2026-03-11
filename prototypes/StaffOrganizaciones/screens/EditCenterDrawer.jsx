@@ -3,7 +3,7 @@ import Button from '../../../design-system/components/Button/Button';
 import { IconClose, IconPlus } from '../../../design-system/icons/outline';
 import styles from './EditCenterDrawer.module.css';
 
-export default function EditCenterDrawer({ center, onClose }) {
+export default function EditCenterDrawer({ center, org, onClose }) {
   const [name,    setName]    = useState(center.name    ?? '');
   const [email,   setEmail]   = useState(center.email   ?? '');
   const [phone,   setPhone]   = useState(center.phone   ?? '');
@@ -34,6 +34,13 @@ export default function EditCenterDrawer({ center, onClose }) {
 
         {/* ── Body ── */}
         <div className={styles.body}>
+
+          {/* Subtitle */}
+          {org && (
+            <p className={styles.subtitle}>
+              Editing Center for <span className={styles.subtitleOrg}>{org.name}</span>
+            </p>
+          )}
 
           {/* Avatar row */}
           <div className={styles.avatarRow}>

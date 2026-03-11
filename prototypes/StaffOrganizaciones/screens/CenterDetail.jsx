@@ -8,6 +8,7 @@ import { IconEdit, IconPlus, IconTrash, IconSettings } from '../../../design-sys
 import { IconMailFilled, IconPhoneFilled, IconLocationFilled } from '../../../design-system/icons/filled';
 import { getUsersForTeam, getProfessionalsForTeam } from '../mockData';
 import EditCenterDrawer from './EditCenterDrawer';
+import NewTeamDrawer from './NewTeamDrawer';
 import styles from './CenterDetail.module.css';
 
 // ─── Icons ──────────────────────────────────────────────
@@ -110,6 +111,7 @@ function EmptyState({ title, subtitle, action }) {
 
 function TeamsContent({ center, org, onNavigate }) {
   const [openMenuTeamId, setOpenMenuTeamId] = useState(null);
+  const [showNewTeamDrawer, setShowNewTeamDrawer] = useState(false);
   const menuRef = useRef(null);
   const teams = center.teams;
   const hasTeams = teams.length > 0;
@@ -131,11 +133,12 @@ function TeamsContent({ center, org, onNavigate }) {
           title="No teams yet..."
           subtitle="Teams for this center will be displayed here"
           action={
-            <Button variant="primary" size="s" leftIcon={<PlusIcon />}>
+            <Button variant="primary" size="s" leftIcon={<PlusIcon />} onClick={() => setShowNewTeamDrawer(true)}>
               New Team
             </Button>
           }
         />
+        {showNewTeamDrawer && <NewTeamDrawer center={center} onClose={() => setShowNewTeamDrawer(false)} />}
       </div>
     );
   }
@@ -146,7 +149,7 @@ function TeamsContent({ center, org, onNavigate }) {
       <div className={styles.teamsTop}>
         <div className={styles.teamsTopRow}>
           <h2 className={styles.contentTitle}>Teams</h2>
-          <Button variant="primary" size="s" leftIcon={<PlusIcon />}>
+          <Button variant="primary" size="s" leftIcon={<PlusIcon />} onClick={() => setShowNewTeamDrawer(true)}>
             New Team
           </Button>
         </div>
@@ -218,6 +221,10 @@ function TeamsContent({ center, org, onNavigate }) {
           <button className={styles.pageBtn}>Next</button>
         </div>
       </div>
+
+      {showNewTeamDrawer && (
+        <NewTeamDrawer center={center} onClose={() => setShowNewTeamDrawer(false)} />
+      )}
     </>
   );
 }
@@ -335,6 +342,7 @@ export default function CenterDetail({ center, org, onBack, onNavigate }) {
       {showEditDrawer && (
         <EditCenterDrawer
           center={center}
+          org={org}
           onClose={() => setShowEditDrawer(false)}
         />
       )}

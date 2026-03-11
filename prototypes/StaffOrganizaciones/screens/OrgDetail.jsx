@@ -9,6 +9,8 @@ import { IconUserFilled, IconMailFilled, IconPhoneFilled, IconLocationFilled } f
 import { getUserCountForCenter, getProfessionalCountForCenter, getActiveTeamCount } from '../mockData';
 import NewCenterModal from './NewCenterModal';
 import EditOrgDrawer from './EditOrgDrawer';
+import EditCenterDrawer from './EditCenterDrawer';
+import NewTeamDrawer from './NewTeamDrawer';
 import styles from './OrgDetail.module.css';
 
 // ─── Icons ──────────────────────────────────────────────
@@ -170,6 +172,8 @@ function CentersContent({ org, onNavigate }) {
   const [expandedCenters, setExpandedCenters] = useState(new Set());
   const [openMenuCenterId, setOpenMenuCenterId] = useState(null);
   const [showNewCenterModal, setShowNewCenterModal] = useState(false);
+  const [editCenterTarget, setEditCenterTarget] = useState(null);
+  const [newTeamCenter,    setNewTeamCenter]    = useState(null);
   const menuRef = useRef(null);
   const centers = org.centers;
   const hasCenters = centers.length > 0;
@@ -268,6 +272,7 @@ function CentersContent({ org, onNavigate }) {
                   <div
                     className={styles.moreMenuAnchor}
                     ref={openMenuCenterId === center.id ? menuRef : null}
+                    onClick={e => e.stopPropagation()}
                   >
                     <button
                       className={styles.dotsBtn}
@@ -280,8 +285,8 @@ function CentersContent({ org, onNavigate }) {
                       <div className={styles.contextMenuWrap}>
                         <ContextMenu
                           items={[
-                            { label: 'Edit',     icon: <IconEdit size={16} />,  onClick: () => setOpenMenuCenterId(null) },
-                            { label: 'New Team', icon: <IconPlus size={16} />,  onClick: () => setOpenMenuCenterId(null) },
+                            { label: 'Edit',     icon: <IconEdit size={16} />,  onClick: () => { setEditCenterTarget(center); setOpenMenuCenterId(null); } },
+                            { label: 'New Team', icon: <IconPlus size={16} />,  onClick: () => { setNewTeamCenter(center); setOpenMenuCenterId(null); } },
                             { label: 'Delete',   icon: <IconTrash size={16} />, variant: 'danger', onClick: () => setOpenMenuCenterId(null) },
                           ]}
                         />
@@ -310,6 +315,19 @@ function CentersContent({ org, onNavigate }) {
       </div>
 
       {showNewCenterModal && <NewCenterModal onClose={() => setShowNewCenterModal(false)} />}
+      {editCenterTarget && (
+        <EditCenterDrawer
+          center={editCenterTarget}
+          org={org}
+          onClose={() => setEditCenterTarget(null)}
+        />
+      )}
+      {newTeamCenter && (
+        <NewTeamDrawer
+          center={newTeamCenter}
+          onClose={() => setNewTeamCenter(null)}
+        />
+      )}
 
       {/* Paginación */}
       <div className={styles.tablePagination}>

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import Button from '../../../design-system/components/Button/Button';
-import { IconClose, IconChevronDown } from '../../../design-system/icons/outline';
+import { IconClose, IconChevronDown, IconPlus } from '../../../design-system/icons/outline';
 import styles from './EditOrgDrawer.module.css';
 
 const SEGMENTS = ['Sport', 'Fitness'];
@@ -49,8 +49,8 @@ function KamleonContent() {
         />
       </div>
 
-      {/* Max tokens + API Token */}
-      <div className={styles.formRow}>
+      {/* Max tokens + API Token — stacked verticalmente */}
+      <div className={styles.integrationFields}>
         <div className={styles.field}>
           <label className={styles.fieldLabel}>Max tokens per month</label>
           <div className={styles.inputWithBtn}>
@@ -98,10 +98,7 @@ function KamleonContent() {
 
       {/* Tokens Consume */}
       <div className={styles.tokensSection}>
-        <div className={styles.integrationSettingInfo}>
-          <span className={styles.integrationSettingLabel}>Tokens Consume</span>
-          <span className={styles.integrationSettingDesc}>Short Description</span>
-        </div>
+        <span className={styles.integrationSettingLabel}>Tokens Consume</span>
         <div className={styles.tokensTable}>
           <div className={styles.tokensTableHeader}>
             <span className={styles.tokensTableCell}>Year</span>
@@ -146,24 +143,26 @@ function IntegrationRow({ logo, name, children }) {
 // ─── Component ───────────────────────────────────────────
 
 export default function EditOrgDrawer({ org, onClose }) {
-  const [name,        setName]        = useState(org.name        ?? '');
-  const [segment,     setSegment]     = useState(org.segments    ?? SEGMENTS[0]);
-  const [email,       setEmail]       = useState(org.email       ?? '');
-  const [phone,       setPhone]       = useState(org.phone       ?? '');
-  const [address,     setAddress]     = useState(org.address     ?? '');
-  const [description, setDescription] = useState(org.description ?? '');
-  const [status,      setStatus]      = useState(org.status      ?? 'active');
+  const [name,      setName]      = useState(org.name     ?? '');
+  const [segment,   setSegment]   = useState(org.segments ?? SEGMENTS[0]);
+  const [email,     setEmail]     = useState(org.email    ?? '');
+  const [phone,     setPhone]     = useState(org.phone    ?? '');
+  const [addresses, setAddresses] = useState([org.fiscal  ?? org.address ?? '']);
+  const [status,    setStatus]    = useState(org.status   ?? 'active');
 
   const initial = name.trim().charAt(0).toUpperCase();
 
+  function addAddress() { setAddresses(prev => [...prev, '']); }
+  function updateAddress(i, val) { setAddresses(prev => prev.map((a, idx) => idx === i ? val : a)); }
+  function removeAddress(i) { setAddresses(prev => prev.filter((_, idx) => idx !== i)); }
+
   const hasChanges =
-    name        !== (org.name        ?? '') ||
-    segment     !== (org.segments    ?? SEGMENTS[0]) ||
-    email       !== (org.email       ?? '') ||
-    phone       !== (org.phone       ?? '') ||
-    address     !== (org.address     ?? '') ||
-    description !== (org.description ?? '') ||
-    status      !== (org.status      ?? 'active');
+    name    !== (org.name     ?? '')         ||
+    segment !== (org.segments ?? SEGMENTS[0])||
+    email   !== (org.email    ?? '')         ||
+    phone   !== (org.phone    ?? '')         ||
+    status  !== (org.status   ?? 'active')   ||
+    addresses[0] !== (org.fiscal ?? org.address ?? '');
 
   return (
     <div className={styles.overlay} onMouseDown={onClose}>
@@ -184,7 +183,7 @@ export default function EditOrgDrawer({ org, onClose }) {
           <div className={styles.avatarRow}>
             <div className={styles.avatar}>{initial || '?'}</div>
             <div className={styles.avatarText}>
-              <button className={styles.changePictureBtn} type="button">Add picture</button>
+              <button className={styles.changePictureBtn} type="button">{org.picture ? 'Change picture' : 'Add picture'}</button>
               <span className={styles.avatarSep}>-</span>
               <span className={styles.avatarOptional}>Optional</span>
             </div>
@@ -245,26 +244,44 @@ export default function EditOrgDrawer({ org, onClose }) {
                 </div>
               </div>
 
-              {/* Fiscal Address */}
-              <div className={styles.field}>
-                <label className={styles.fieldLabel}>Fiscal Address</label>
-                <input
-                  className={styles.input}
-                  placeholder="Write your address here..."
-                  value={address}
-                  onChange={e => setAddress(e.target.value)}
-                />
-              </div>
-
-              {/* Description */}
-              <div className={styles.field}>
-                <label className={styles.fieldLabel}>Description</label>
-                <textarea
-                  className={styles.textarea}
-                  placeholder="Write a description..."
-                  value={description}
-                  onChange={e => setDescription(e.target.value)}
-                />
+              {/* Address(es) */}
+              <div className={styles.addressSection}>
+                {addresses.map((addr, i) => (
+                  <div key={i} className={styles.field}>
+                    <label className={styles.fieldLabel}>
+                      {i === 0 ? 'Address' : `Address ${i + 1}`}
+                    </label>
+                    {i === 0 ? (
+                      <input
+                        className={styles.input}
+                        placeholder="Write your address here..."
+                        value={addr}
+                        onChange={e => updateAddress(i, e.target.value)}
+                      />
+                    ) : (
+                      <div className={styles.addressRow}>
+                        <input
+                          className={styles.input}
+                          placeholder="Write your address here..."
+                          value={addr}
+                          onChange={e => updateAddress(i, e.target.value)}
+                        />
+                        <button
+                          className={styles.removeBtn}
+                          type="button"
+                          onClick={() => removeAddress(i)}
+                          aria-label="Remove address"
+                        >
+                          <IconClose size={14} />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ))}
+                <button className={styles.addAddressBtn} type="button" onClick={addAddress}>
+                  <IconPlus size={16} />
+                  Add new address
+                </button>
               </div>
 
             </div>
@@ -274,7 +291,6 @@ export default function EditOrgDrawer({ org, onClose }) {
           <div className={styles.section}>
             <h3 className={styles.sectionTitle}>Settings</h3>
 
-            <div className={styles.subsectionLabel}>Current status</div>
             <div className={styles.field}>
               <label className={styles.fieldLabel}>Status</label>
               <div className={styles.selectWrap}>

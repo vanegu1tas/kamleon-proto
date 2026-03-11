@@ -14,6 +14,8 @@ import {
 } from '../../design-system/icons';
 import OrgDetail from './screens/OrgDetail';
 import NewCenterModal from './screens/NewCenterModal';
+import NewOrgDrawer from './screens/NewOrgDrawer';
+import EditOrgDrawer from './screens/EditOrgDrawer';
 import CenterDetail from './screens/CenterDetail';
 import TeamDetail from './screens/TeamDetail';
 import UserDetail from './screens/UserDetail';
@@ -120,10 +122,15 @@ export default function StaffOrganizaciones() {
   const [filters, setFilters] = useState({ status: new Set(), segment: new Set() });
   const [filterOpen, setFilterOpen] = useState(false);
   const filterRef = useRef(null);
-  const [openMenuOrgId, setOpenMenuOrgId] = useState(null);
+  const [openMenuOrg, setOpenMenuOrg] = useState(null);
+  const openMenuOrgId = openMenuOrg?.id ?? null;
   const [menuPos, setMenuPos] = useState({ top: 0, right: 0 });
   const menuRef = useRef(null);
+  const mainRef = useRef(null);
   const [showNewCenterModal, setShowNewCenterModal] = useState(false);
+  const [newCenterOrg, setNewCenterOrg] = useState(null);
+  const [showNewOrgDrawer, setShowNewOrgDrawer]   = useState(false);
+  const [editOrgTarget,   setEditOrgTarget]       = useState(null);
   const [createMenuOpen, setCreateMenuOpen] = useState(false);
   const createMenuRef = useRef(null);
 
@@ -166,10 +173,15 @@ export default function StaffOrganizaciones() {
   useEffect(() => {
     if (!openMenuOrgId) return;
     function handleClick(e) {
-      if (menuRef.current && !menuRef.current.contains(e.target)) setOpenMenuOrgId(null);
+      if (menuRef.current && !menuRef.current.contains(e.target)) setOpenMenuOrg(null);
     }
+    function handleScroll() { setOpenMenuOrg(null); }
     document.addEventListener('mousedown', handleClick);
-    return () => document.removeEventListener('mousedown', handleClick);
+    mainRef.current?.addEventListener('scroll', handleScroll);
+    return () => {
+      document.removeEventListener('mousedown', handleClick);
+      mainRef.current?.removeEventListener('scroll', handleScroll);
+    };
   }, [openMenuOrgId]);
 
   useEffect(() => {
@@ -273,7 +285,7 @@ export default function StaffOrganizaciones() {
         />
       )}
 
-      <div className={styles.main}>
+      <div className={styles.main} ref={mainRef}>
         {/* Topbar */}
         <div className={styles.topbar}>
           <button
@@ -368,8 +380,8 @@ export default function StaffOrganizaciones() {
                 <div className={styles.createMenuWrap}>
                   <ContextMenu
                     items={[
-                      { label: 'New Organization', icon: <IconPlus size={16} />, onClick: () => setCreateMenuOpen(false) },
-                      { label: 'New Center',       icon: <IconPlus size={16} />, onClick: () => { setCreateMenuOpen(false); setShowNewCenterModal(true); } },
+                      { label: 'New Organization', icon: <IconPlus size={16} />, onClick: () => { setCreateMenuOpen(false); setShowNewOrgDrawer(true); } },
+                      { label: 'New Center',       icon: <IconPlus size={16} />, onClick: () => { setCreateMenuOpen(false); setNewCenterOrg(null); setShowNewCenterModal(true); } },
                       { label: 'New Team',         icon: <IconPlus size={16} />, onClick: () => setCreateMenuOpen(false) },
                       { label: 'New User',         icon: <IconPlus size={16} />, onClick: () => setCreateMenuOpen(false) },
                     ]}
@@ -580,11 +592,11 @@ export default function StaffOrganizaciones() {
                           onClick={(e) => {
                             e.stopPropagation();
                             if (openMenuOrgId === org.id) {
-                              setOpenMenuOrgId(null);
+                              setOpenMenuOrg(null);
                             } else {
                               const rect = e.currentTarget.getBoundingClientRect();
                               setMenuPos({ top: rect.bottom + 4, right: window.innerWidth - rect.right });
-                              setOpenMenuOrgId(org.id);
+                              setOpenMenuOrg(org);
                             }
                           }}
                         >
@@ -642,7 +654,9 @@ export default function StaffOrganizaciones() {
 
       </div>
 
-      {showNewCenterModal && <NewCenterModal onClose={() => setShowNewCenterModal(false)} />}
+      {showNewCenterModal && <NewCenterModal org={newCenterOrg} onClose={() => { setShowNewCenterModal(false); setNewCenterOrg(null); }} />}
+      {showNewOrgDrawer   && <NewOrgDrawer   onClose={() => setShowNewOrgDrawer(false)}   />}
+      {editOrgTarget      && <EditOrgDrawer  org={editOrgTarget} onClose={() => setEditOrgTarget(null)} />}
 
       {openMenuOrgId && createPortal(
         <div className={styles.contextMenuWrap} style={{ top: menuPos.top, right: menuPos.right }} ref={menuRef}>
@@ -651,18 +665,18 @@ export default function StaffOrganizaciones() {
               {
                 label: 'Edit',
                 icon: <IconEdit size={16} />,
-                onClick: () => setOpenMenuOrgId(null),
+                onClick: () => { setEditOrgTarget(openMenuOrg); setOpenMenuOrg(null); },
               },
               {
                 label: 'New Center',
                 icon: <IconPlus size={16} />,
-                onClick: () => { setOpenMenuOrgId(null); setShowNewCenterModal(true); },
+                onClick: () => { setNewCenterOrg(openMenuOrg); setOpenMenuOrg(null); setShowNewCenterModal(true); },
               },
               {
                 label: 'Delete',
                 icon: <IconTrash size={16} />,
                 variant: 'danger',
-                onClick: () => setOpenMenuOrgId(null),
+                onClick: () => setOpenMenuOrg(null),
               },
             ]}
           />

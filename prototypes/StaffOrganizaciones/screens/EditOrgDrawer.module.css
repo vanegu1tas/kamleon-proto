@@ -17,13 +17,14 @@
 
 .drawer {
   position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
+  top: 12px;
+  right: 12px;
+  bottom: 12px;
   width: 560px;
   background: var(--color-bg-surface);
-  border-left: 1px solid var(--color-border-default);
-  box-shadow: -8px 0 32px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-m);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), -8px 0 32px rgba(0, 0, 0, 0.08);
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -41,7 +42,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 24px;
+  padding: 16px 16px 16px 24px;
   border-bottom: 1px solid var(--color-border-default);
   flex-shrink: 0;
 }
@@ -146,16 +147,75 @@
   font-family: var(--font-family-primary);
   font-size: var(--font-size-20);
   font-weight: var(--font-weight-medium);
+  line-height: 25px;
   color: var(--color-text-strong);
   margin: 0;
 }
 
+/* ─── Address section ─────────────────────────────────── */
+
+.addressSection {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.addressRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.addressRow .input {
+  flex: 1;
+}
+
+.removeBtn {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  color: var(--color-text-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 4px;
+  transition: color 0.15s ease;
+}
+
+.removeBtn:hover {
+  color: var(--color-text-strong);
+}
+
+.addAddressBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-turquoise-30);
+  transition: opacity 0.15s ease;
+}
+
+.addAddressBtn:hover { opacity: 0.75; }
+
+/* ─── (legacy, kept for compat) ──────────────────────── */
+
 .subsectionLabel {
   font-family: var(--font-family-primary);
-  font-size: var(--font-size-16);
+  font-size: var(--font-size-12);
   font-weight: var(--font-weight-medium);
-  color: var(--color-text-strong);
-  margin-top: -8px;
+  line-height: normal;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--color-text-subtle);
+  margin: 0;
 }
 
 /* ─── Fields ──────────────────────────────────────────── */
@@ -363,11 +423,14 @@
 }
 
 .integrationRow {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
   border-bottom: 1px solid var(--color-border-default);
 }
 
-.integrationRow:first-child {
-  border-top: 1px solid var(--color-border-default);
+.integrationRow:last-child {
+  border-bottom: none;
 }
 
 .integrationBtn {
@@ -404,7 +467,7 @@
 .integrationInfo {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 
 .integrationName {
@@ -437,7 +500,13 @@
   display: flex;
   flex-direction: column;
   gap: 32px;
-  padding: 0 24px 24px 64px;
+  padding: 0 12px 16px 64px;
+}
+
+.integrationFields {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .integrationSettingRow {
@@ -492,7 +561,6 @@
   flex-direction: column;
   gap: 16px;
   padding-bottom: 8px;
-  border-bottom: 1px solid var(--color-border-default);
 }
 
 .tokensTable {
@@ -502,6 +570,7 @@
 
 .tokensTableHeader {
   display: flex;
+  align-items: center;
   background: var(--color-bg-surface-raised);
 }
 
@@ -519,12 +588,24 @@
 }
 
 .tokensTableHeader .tokensTableCell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: var(--font-size-12);
   font-weight: var(--font-weight-medium);
   color: var(--color-text-subtle);
   text-transform: uppercase;
   letter-spacing: 0.24px;
-  padding: 16px 12px;
+  height: 24px;
+  padding: 0 12px;
+}
+
+.tokensTableHeader .tokensTableCell:first-child {
+  border-radius: var(--radius-s) 0 0 var(--radius-s);
+}
+
+.tokensTableHeader .tokensTableCell:last-child {
+  border-radius: 0 var(--radius-s) var(--radius-s) 0;
 }
 
 /* ─── Footer ──────────────────────────────────────────── */

@@ -1,14 +1,18 @@
 import { useState } from 'react';
 import Button from '../../../design-system/components/Button/Button';
-import { IconClose, IconAddImage, IconPlus } from '../../../design-system/icons/outline';
+import { IconClose, IconAddImage, IconPlus, IconChevronDown } from '../../../design-system/icons/outline';
+import { ORGS } from '../mockData';
 import styles from './NewCenterModal.module.css';
 
-export default function NewCenterModal({ onClose }) {
-  const [name, setName]       = useState('');
-  const [email, setEmail]     = useState('');
-  const [phone, setPhone]     = useState('');
-  const [address, setAddress] = useState('');
+export default function NewCenterModal({ org, onClose }) {
+  const [selectedOrg, setSelectedOrg] = useState(org || null);
+  const [name, setName]               = useState('');
+  const [email, setEmail]             = useState('');
+  const [phone, setPhone]             = useState('');
+  const [address, setAddress]         = useState('');
   const [adminEmails, setAdminEmails] = useState([]);
+
+  const activeOrg = selectedOrg;
 
   function addAdmin() {
     setAdminEmails(prev => [...prev, '']);
@@ -21,6 +25,8 @@ export default function NewCenterModal({ onClose }) {
   function removeAdmin(i) {
     setAdminEmails(prev => prev.filter((_, idx) => idx !== i));
   }
+
+  const canCreate = name.trim() && activeOrg;
 
   return (
     <div className={styles.overlay} onMouseDown={onClose}>
@@ -37,6 +43,13 @@ export default function NewCenterModal({ onClose }) {
         {/* ── Body ── */}
         <div className={styles.body}>
 
+          {/* Subtitle dinámica */}
+          <p className={styles.subtitle}>
+            {activeOrg
+              ? <>New Center for <span className={styles.subtitleOrg}>{activeOrg.name}</span></>
+              : 'New Center for…'}
+          </p>
+
           {/* Avatar row */}
           <div className={styles.avatarRow}>
             <div className={styles.avatar}>
@@ -51,6 +64,32 @@ export default function NewCenterModal({ onClose }) {
 
           {/* Fields */}
           <div className={styles.fields}>
+
+            {/* Organization selector — solo cuando no viene con org pre-seleccionada */}
+            {!org && (
+              <div className={styles.field}>
+                <label className={styles.fieldLabel}>
+                  Organization <span className={styles.required}>*</span>
+                </label>
+                <div className={styles.selectWrap}>
+                  <select
+                    className={styles.select}
+                    value={selectedOrg?.id ?? ''}
+                    onChange={e => {
+                      const found = ORGS.find(o => String(o.id) === e.target.value);
+                      setSelectedOrg(found || null);
+                    }}
+                  >
+                    <option value="" disabled>Select organization</option>
+                    {ORGS.map(o => (
+                      <option key={o.id} value={o.id}>{o.name}</option>
+                    ))}
+                  </select>
+                  <IconChevronDown size={16} className={styles.selectIcon} />
+                </div>
+              </div>
+            )}
+
             <div className={styles.field}>
               <label className={styles.fieldLabel}>
                 Name <span className={styles.required}>*</span>
@@ -96,6 +135,7 @@ export default function NewCenterModal({ onClose }) {
                 onChange={e => setAddress(e.target.value)}
               />
             </div>
+
           </div>
 
           {/* Invite administrators */}
@@ -137,7 +177,7 @@ export default function NewCenterModal({ onClose }) {
         {/* ── Footer ── */}
         <div className={styles.footer}>
           <Button variant="secondary" size="m" onClick={onClose}>Cancel</Button>
-          <Button variant="primary"   size="m" disabled={!name.trim()}>Create</Button>
+          <Button variant="primary" size="m" disabled={!canCreate}>Create</Button>
         </div>
 
       </div>

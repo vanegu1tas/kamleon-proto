@@ -13,7 +13,7 @@
   to   { opacity: 1; }
 }
 
-/* ─── Drawer ──────────────────────────────────────────── */
+/* ─── Panel ───────────────────────────────────────────── */
 
 .drawer {
   position: absolute;
@@ -42,7 +42,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 16px 16px 24px;
+  padding: 16px 16px 17px 24px;
   border-bottom: 1px solid var(--color-border-default);
   flex-shrink: 0;
 }
@@ -55,23 +55,10 @@
   margin: 0;
 }
 
-.subtitle {
-  font-family: var(--font-family-primary);
-  font-size: var(--font-size-14);
-  font-weight: var(--font-weight-book);
-  color: var(--color-text-subtle);
-  margin: 0;
-}
-
-.subtitleOrg {
-  font-weight: var(--font-weight-medium);
-  color: var(--color-text-strong);
-}
-
 .closeBtn {
   background: var(--color-bg-surface);
   border: 1px solid var(--color-border-default);
-  border-radius: 8px;
+  border-radius: var(--radius-xs);
   padding: 8px;
   display: flex;
   align-items: center;
@@ -115,13 +102,18 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  font-family: var(--font-family-primary);
-  font-size: var(--font-size-24);
-  font-weight: var(--font-weight-medium);
-  color: var(--color-text-strong);
+  color: var(--color-text-subtle);
 }
 
-.changePictureBtn {
+.avatarText {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-16);
+}
+
+.addPictureBtn {
   background: none;
   border: none;
   padding: 0;
@@ -133,20 +125,11 @@
   transition: opacity 0.15s ease;
 }
 
-.changePictureBtn:hover { opacity: 0.75; }
+.addPictureBtn:hover { opacity: 0.75; }
 
-/* ─── Section label ───────────────────────────────────── */
-
-.sectionLabel {
-  font-family: var(--font-family-primary);
-  font-size: var(--font-size-14);
-  font-weight: var(--font-weight-book);
+.avatarSep,
+.avatarOptional {
   color: var(--color-text-subtle);
-}
-
-.sectionOrg {
-  color: var(--color-text-strong);
-  font-weight: var(--font-weight-medium);
 }
 
 /* ─── Fields ──────────────────────────────────────────── */
@@ -159,7 +142,7 @@
 
 .formRow {
   display: flex;
-  gap: 24px;
+  gap: 16px;
 }
 
 .formRow > * {
@@ -170,87 +153,15 @@
 .field {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
 }
 
 .fieldLabel {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   font-family: var(--font-family-primary);
   font-size: var(--font-size-14);
   font-weight: var(--font-weight-bold);
   color: var(--color-text-strong);
   padding-left: 12px;
-  padding-right: 4px;
-}
-
-.inputWithAction {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.inputWithAction .input {
-  flex: 1;
-}
-
-.removeFieldBtn {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  background: none;
-  border: none;
-  padding: 6px;
-  cursor: pointer;
-  color: var(--color-text-subtle);
-  border-radius: 6px;
-  transition: color 0.15s ease, background 0.15s ease;
-}
-
-.removeFieldBtn:hover {
-  color: var(--color-status-error);
-  background: var(--color-bg-surface-subtle);
-}
-
-/* Tooltip */
-.removeFieldBtn::after {
-  content: attr(data-tooltip);
-  position: absolute;
-  bottom: calc(100% + 6px);
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--color-text-strong);
-  color: var(--color-bg-surface);
-  font-family: var(--font-family-primary);
-  font-size: var(--font-size-12);
-  font-weight: var(--font-weight-book);
-  white-space: nowrap;
-  padding: 4px 8px;
-  border-radius: 4px;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.15s ease;
-}
-
-.removeFieldBtn::before {
-  content: '';
-  position: absolute;
-  bottom: calc(100% + 2px);
-  left: 50%;
-  transform: translateX(-50%);
-  border: 4px solid transparent;
-  border-top-color: var(--color-text-strong);
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.15s ease;
-}
-
-.removeFieldBtn:hover::after,
-.removeFieldBtn:hover::before {
-  opacity: 1;
 }
 
 .required {
@@ -280,7 +191,82 @@
   border-color: var(--color-border-focus);
 }
 
-/* ─── Add address link ────────────────────────────────── */
+/* ─── Segment select ──────────────────────────────────── */
+
+.selectWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.select {
+  width: 100%;
+  height: 36px;
+  background: var(--color-bg-surface-subtle);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-l);
+  padding: 0 32px 0 13px;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  color: var(--color-text-strong);
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+  box-sizing: border-box;
+}
+
+.select:focus {
+  border-color: var(--color-border-focus);
+}
+
+.select option[value=""] {
+  color: var(--color-text-placeholder);
+}
+
+.selectIcon {
+  position: absolute;
+  right: 10px;
+  pointer-events: none;
+  color: var(--color-text-subtle);
+}
+
+/* ─── Address section ─────────────────────────────────── */
+
+.addressSection {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.addressRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.addressRow .input {
+  flex: 1;
+}
+
+.removeBtn {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  color: var(--color-text-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 4px;
+  transition: color 0.15s ease;
+}
+
+.removeBtn:hover {
+  color: var(--color-text-strong);
+}
 
 .addAddressBtn {
   display: inline-flex;
