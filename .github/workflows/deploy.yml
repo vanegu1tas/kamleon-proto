@@ -33,8 +33,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build prototype
-        run: npx vite build --base=/kamleon-proto/prototype/ --outDir=gh-pages/prototype
+      - name: Build prototype V1
+        run: npx vite build --config vite.config.v1.js --base=/kamleon-proto/prototype/ --outDir=gh-pages/prototype
+
+      - name: Build prototype V2
+        run: npx vite build --config vite.config.v2.js --base=/kamleon-proto/prototype-v2/ --outDir=gh-pages/prototype-v2
 
       - name: Build Storybook
         run: npx storybook build --output-dir gh-pages/storybook
@@ -42,6 +45,7 @@ jobs:
       - name: Assemble site
         run: |
           cp landing.html gh-pages/index.html
+          cp -r fonts gh-pages/fonts
           touch gh-pages/.nojekyll
 
       - name: Upload artifact
