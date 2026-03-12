@@ -1,6 +1,6 @@
 # Project Summary — Kamleon Design System
 
-Estado del proyecto al 2026-03-12. Referencia rápida para retomar el trabajo.
+Estado del proyecto al 2026-03-13. Referencia rápida para retomar el trabajo.
 
 ---
 
@@ -62,15 +62,18 @@ Referencia completa: [`docs/navigation.md`](./navigation.md)
 | | URL |
 |---|---|
 | **Landing** | https://vanegu1tas.github.io/kamleon-proto/ |
-| **Prototipo** | https://vanegu1tas.github.io/kamleon-proto/prototype/ |
+| **Prototipo V1** | https://vanegu1tas.github.io/kamleon-proto/prototype/ |
+| **Prototipo V2** | https://vanegu1tas.github.io/kamleon-proto/prototype-v2/ |
 | **Storybook** | https://vanegu1tas.github.io/kamleon-proto/storybook/ |
 
 ## Comandos locales
 
 | Comando | Descripción | URL |
 |---|---|---|
-| `npm run prototype` | Servidor Vite para prototipos | http://localhost:5173 |
+| `npm run prototype` | Servidor Vite para prototipos (V1 por defecto) | http://localhost:5173 |
 | `npm run storybook` | Catálogo de componentes | http://localhost:6006 |
+
+> Para desarrollo de V2: editar `index.html` para apuntar a `main-v2.jsx`, o usar `npx vite --config vite.config.v2.js`.
 
 ---
 
@@ -159,34 +162,44 @@ kamleon/
 │   ├── CircularPro-Book.otf    ✅
 │   ├── CircularPro-Medium.otf  ✅
 │   └── CircularPro-Bold.otf    ✅
+├── index-v1.html               ✅ entry HTML para build V1 (apunta a main-v1.jsx)
+├── index-v2.html               ✅ entry HTML para build V2 (apunta a main-v2.jsx)
+├── vite.config.v1.js           ✅ config build V1 (input: index-v1.html)
+├── vite.config.v2.js           ✅ config build V2 (input: index-v2.html)
 ├── prototypes/
-│   ├── main.jsx                ✅ entry point · selector de prototipos (estado local, sin routing)
+│   ├── main.jsx                ✅ entry point dev local (apunta a V1 o V2)
+│   ├── main-v1.jsx             ✅ entry point build V1 — renderiza StaffOrganizaciones directamente
+│   ├── main-v2.jsx             ✅ entry point build V2 — renderiza StaffOrganizacionesV2 directamente
 │   ├── StaffOrganizaciones/    (V1)
-│   └── StaffOrganizacionesV2/ (V2 — pendiente)
-│       ├── StaffOrganizaciones.jsx         ✅ OrgList + navegación por stack + ContextMenu en tabla
-│       ├── StaffOrganizaciones.module.css  ✅
-│       ├── mockData.js                     ✅ datos mock centralizados
+│   │   ├── StaffOrganizaciones.jsx         ✅ OrgList + navegación por stack + ContextMenu en tabla
+│   │   ├── StaffOrganizaciones.module.css  ✅ (compartido con V2)
+│   │   ├── mockData.js                     ✅ datos mock centralizados · IDs únicos por org
+│   │   └── screens/
+│   │       ├── OrgDetail.jsx               ✅ tabs: Centers · Administrators · Monitoring
+│   │       ├── CenterDetail.jsx            ✅ tabs: Teams · Administrators · Users · Monitoring
+│   │       ├── TeamDetail.jsx              ✅ tabs: Users (filtro por role) · Administrators
+│   │       ├── UserDetail.jsx              ✅ vista/edición · toggles de permisos
+│   │       ├── NewCenterModal.jsx          ✅ drawer crear centro
+│   │       ├── NewOrgDrawer.jsx            ✅ drawer crear org
+│   │       ├── NewTeamDrawer.jsx           ✅ drawer crear equipo
+│   │       ├── EditCenterDrawer.jsx        ✅ drawer edición centro
+│   │       ├── EditTeamDrawer.jsx          ✅ drawer edición equipo · Reset PIN condicional
+│   │       ├── EditOrgDrawer.jsx           ✅ drawer edición org · Status + Integrations
+│   │       └── EditUserDrawer.jsx          ✅ drawer edición usuario · Name/Email/Phone/Birthday/Gender/Height/Weight · Status/RFID/PIN toggles
+│   └── StaffOrganizacionesV2/  (V2 — master-detail)
+│       ├── StaffOrganizacionesV2.jsx       ✅ shell V2 · SearchPalette (⌘K) · topbar con search pill (fondo blanco, sombra)
+│       ├── components/
+│       │   └── SearchPalette.jsx           ✅ paleta de búsqueda global · búsqueda por org/centro/equipo/usuario
 │       └── screens/
-│           ├── OrgDetail.jsx               ✅ tabs: Centers · Administrators · Monitoring
-│           ├── OrgDetail.module.css        ✅
-│           ├── CenterDetail.jsx            ✅ tabs: Teams · Administrators · Users · Monitoring
-│           ├── CenterDetail.module.css     ✅
-│           ├── TeamDetail.jsx              ✅ tabs: Users (con filtro por role) · Administrators
-│           ├── TeamDetail.module.css       ✅
-│           ├── UserDetail.jsx              ✅ vista/edición de usuario · toggles de permisos
-│           ├── UserDetail.module.css       ✅
-│           ├── NewCenterModal.jsx          ✅ drawer crear centro · subtítulo "New Center for [Org]" · selector org en flujo global · Invite administrators
-│           ├── NewCenterModal.module.css   ✅
-│           ├── NewOrgDrawer.jsx            ✅ drawer crear organización · Name*, Segment* dropdown, Email, Phone, multi-address · Create deshabilitado sin nombre
-│           ├── NewOrgDrawer.module.css     ✅
-│           ├── NewTeamDrawer.jsx           ✅ drawer crear equipo · subtítulo "New Team for [Center]" · avatar · Team name* · toggles RFID + Set PIN
-│           ├── NewTeamDrawer.module.css    ✅
-│           ├── EditCenterDrawer.jsx        ✅ drawer edición de centro · subtítulo "Editing Center for [Org]" en body · campos pre-llenados · Save con cambios · address line 2 eliminable
-│           ├── EditCenterDrawer.module.css ✅
-│           ├── EditTeamDrawer.jsx          ✅ drawer edición de equipo · Team info + Settings (Status/RFID/Set PIN) · Reset PIN condicional
-│           ├── EditTeamDrawer.module.css   ✅
-│           ├── EditOrgDrawer.jsx           ✅ drawer edición de org · Organization info + Settings (Status dropdown, Integrations con Kamleon API expandible)
-│           └── EditOrgDrawer.module.css    ✅
+│           └── OrgDetailV2.jsx             ✅ layout master-detail en dos paneles
+│               ├── Panel izquierdo: lista de centros + botón "+" (New Center) con tooltip izquierda
+│               └── Panel derecho (según selección):
+│                   ├── CenterCard — tabs: Teams · Users · Monitoring
+│                   │   ├── Tab Teams: lista de equipos · click → TeamCard
+│                   │   ├── Tab Users: todos los usuarios del centro · búsqueda + filter pills por equipo · click → UserCard
+│                   │   └── Botón "Create" dropdown: New Team / New User / New Unit
+│                   ├── TeamCard — tabs: Users · Administrators
+│                   └── UserCard — vista de usuario · botón Settings → EditUserDrawer
 ├── docs/
 │   ├── data-model.md           ✅
 │   ├── navigation.md           ✅
@@ -377,30 +390,25 @@ Nodos relevantes:
 - [ ] Añadir story por cada componente nuevo
 
 ### Prototipos
-- [x] StaffOrganizaciones (V1) — sidebar + KPI cards + tabla expandible + filtros con dropdown animado + ContextMenu (Edit/New Center/Delete) en cada fila
-- [ ] StaffOrganizacionesV2 (V2) — master-detail en OrgDetail > Centers · selector de prototipos en main.jsx
-- [x] OrgDetail — header org (iconos filled, tooltips, Settings/Delete buttons) + tabs: Centers (status 2ª col, ContextMenu) · Administrators (empty state + CTA) · Monitoring
-- [x] CenterDetail — header centro (iconos filled, tooltips) + tabs: Teams (status 2ª col, ContextMenu) · Administrators (empty state + CTA) · Users · Monitoring
-- [x] TeamDetail — header equipo (iconos filled, tooltips) + tabs: Users (status 2ª col, filtro por role) · Administrators (empty state + CTA)
-- [x] UserDetail — vista/edición · Settings/Trash icon buttons con tooltips · toggles de permisos
-- [x] NewCenterModal — drawer slide-in · subtítulo "New Center for [Org]" (subtle/book + strong/medium) · selector de org en flujo global · Invite administrators dinámico
-- [x] NewOrgDrawer — drawer crear org · Name*, Segment* (Sport/Fitness), Email, Phone, multi-address con remove · Create deshabilitado sin nombre
-- [x] NewTeamDrawer — drawer crear equipo · subtítulo "New Team for [Center]" · avatar icon · Team name* · toggles RFID + Set PIN · disparado desde OrgDetail (context menu centros) y CenterDetail (botón New Team)
-- [x] EditCenterDrawer — drawer edición de centro · subtítulo "Editing Center for [Org]" en body (encima del avatar) · Save habilitado solo si hay cambios · address line 2 eliminable · conectado desde OrgDetail context menu y CenterDetail settings
-- [x] EditTeamDrawer — drawer edición de equipo · sección Team info (Name*) + sección Settings (Status/RFID/Set PIN toggles) · Reset PIN aparece solo cuando Set PIN está ON
-- [x] EditOrgDrawer — drawer edición de org · Organization info (Name*, Segment*, Email, Phone, multi-address) · Settings: Status dropdown + Integrations (Kamleon API expandible) · conectado al context menu de la lista de orgs
-- [x] SidebarItem tooltips — portal en document.body al colapsar · fondo oscuro · flecha izquierda · 8px a la derecha del borde del sidebar
-- [x] Sidebar: item "Teams" oculto
-- [x] Create button dropdown en OrgList — 4 opciones: New Organization / New Center / New Team / New User — cada una abre su drawer correspondiente
-- [x] ContextMenu fix — renderizado con createPortal en document.body para escapar stacking context de centros expandidos
-- [x] Context menu centros (OrgDetail) — Edit abre EditCenterDrawer · New Team abre NewTeamDrawer · fix stopPropagation para evitar navegación a CenterDetail al hacer click en un item del menú
-- [x] Todos los drawers — estilo floating card: top/right/bottom 12px · border-radius var(--radius-m) · border 1px · box-shadow · slide-in animation
-- [x] Center rows expandidos — avatar inicial + nombre + stats (teams · users · professionals)
-- [x] Arsenal FC actualizado — 1 centro (Sobha Realty Training Centre) · 1 equipo (Arsenal First Team) · 25 usuarios · 1 profesional
-- [x] Sidebar "Center control" — siempre navega a la lista de organizaciones
-- [x] Refinado visual: KPI cards, hovers de tabla, SearchBar integrado, títulos H3
-- [x] Empty state Centers (OrgDetail) mejorado: ilustración SVG de edificios, subtítulo 14px
-- [x] Empty states con CTAs: Administrators (New Administrator) en Org/Center/Team · Users (New User) en Center
+- [x] StaffOrganizaciones (V1) — sidebar + KPI cards + tabla expandible + filtros + ContextMenu · todos los drawers CRUD
+- [x] EditUserDrawer (V1) — drawer edición de usuario · Name/Email/Phone/Birthday/Gender/Height/Weight · Status/RFID/PIN toggles · wired al Settings button en UserDetail
+- [x] OrgDetail — tabs: Centers · Administrators · Monitoring
+- [x] CenterDetail — tabs: Teams · Administrators · Users · Monitoring
+- [x] TeamDetail — tabs: Users (filtro por role) · Administrators
+- [x] UserDetail — vista/edición · toggles de permisos
+- [x] NewCenterModal, NewOrgDrawer, NewTeamDrawer — drawers de creación
+- [x] EditCenterDrawer, EditTeamDrawer, EditOrgDrawer — drawers de edición
+- [x] StaffOrganizacionesV2 (V2) — shell completa · SearchPalette ⌘K · search pill topbar (fondo blanco + sombra)
+- [x] OrgDetailV2 — layout master-detail en dos paneles
+- [x] CenterCard (V2) — tabs: Teams · Users · Monitoring · botón Create dropdown (New Team/New User/New Unit)
+- [x] Tab Users en CenterCard — lista todos los usuarios del centro (todos los equipos) · búsqueda + filter pills por equipo · paginación · click navega a UserCard
+- [x] TeamCard (V2) — tabs: Users · Administrators
+- [x] UserCard (V2) — vista de usuario · Settings button → EditUserDrawer
+- [x] Panel izquierdo (V2) — botón "+" junto al overline "Centers" · tooltip "New Center" posicionado a la izquierda (flecha derecha)
+- [x] Center rows expandidos (OrgList V2) — click navega a OrgDetailV2 con `initialCenter` (no al CenterDetail V1)
+- [x] mockData.js — IDs únicos y no solapantes por organización (1-12 Astonia, 19-31 Arsenal, 32-52 Baskonia, 53-63 CAR Sant Cugat, 64-70 Sierra Nevada, 71-74 CEAR, 75-87 CEM Joan Miró, 88-90 CNEA, 91-94 Dynatech)
+- [x] Desplegado V2 en GitHub Pages (/prototype-v2/) · builds separados con vite.config.v1/v2.js · mv para renombrar index.html
+- [x] Fix 404 en V2: mv del HTML de salida para que GitHub Pages sirva index.html correctamente
 
 ### Design System — Tokens
 - [x] Tipografía, border radius, colores globales, colores semánticos, fuentes
@@ -412,8 +420,8 @@ Nodos relevantes:
 
 ### GitHub Pages
 - [x] Repo en GitHub: https://github.com/vanegu1tas/kamleon-proto
-- [x] GitHub Actions workflow (`.github/workflows/deploy.yml`)
-- [x] Landing page (`landing.html`) — rediseñada (ver sección Landing)
+- [x] GitHub Actions workflow (`.github/workflows/deploy.yml`) — builds V1 + V2 + Storybook + landing
+- [x] Landing page (`landing.html`) — 4 entradas: Prototipo V1 · Prototipo V2 · Storybook · Docs
 - [x] `docs/README.md` para navegación contextual
 - [x] README raíz con links públicos
 
@@ -464,6 +472,16 @@ Archivo: `landing.html` — HTML estático, sin build, se copia directamente a `
 ## Cómo retomar
 
 1. Leer este archivo
-2. `npm run prototype` para ver el estado visual actual
-3. `npm run storybook` para inspeccionar componentes en aislamiento
-4. Continuar con Input / Toggle, o documentar el primer feature
+2. `npm run prototype` → http://localhost:5173 (V1 por defecto; editar `index.html` para V2)
+3. `npm run storybook` → http://localhost:6006 para inspeccionar componentes en aislamiento
+4. V2 en producción: https://vanegu1tas.github.io/kamleon-proto/prototype-v2/
+
+## Próximos pasos sugeridos (V2)
+
+- [ ] **NewUserDrawer** — drawer crear usuario (análogo a EditUserDrawer pero en modo creación) · conectar desde el botón "New User" del Create dropdown en CenterCard
+- [ ] **NewCenterDrawer en V2** — conectar el botón "+" del panel izquierdo al flujo de creación de centro
+- [ ] **Empty states V2** — CenterCard sin equipos · TeamCard sin usuarios · UserCard estado vacío
+- [ ] **Tab Administrators** — implementar el tab en CenterCard y TeamCard (hoy muestra empty state)
+- [ ] **Tab Monitoring** — placeholder o primer contenido de monitoreo
+- [ ] **Paginación real** — conectar la paginación del tab Users a los datos mock
+- [ ] **Admin de Centro** — comenzar el prototipo del panel de Admin de Centro (separado del panel Staff)
