@@ -34,10 +34,14 @@ jobs:
         run: npm ci
 
       - name: Build prototype V1
-        run: npx vite build --config vite.config.v1.js --base=/kamleon-proto/prototype/ --outDir=gh-pages/prototype
+        run: |
+          npx vite build --config vite.config.v1.js --base=/kamleon-proto/prototype/ --outDir=gh-pages/prototype
+          mv gh-pages/prototype/index-v1.html gh-pages/prototype/index.html
 
       - name: Build prototype V2
-        run: npx vite build --config vite.config.v2.js --base=/kamleon-proto/prototype-v2/ --outDir=gh-pages/prototype-v2
+        run: |
+          npx vite build --config vite.config.v2.js --base=/kamleon-proto/prototype-v2/ --outDir=gh-pages/prototype-v2
+          mv gh-pages/prototype-v2/index-v2.html gh-pages/prototype-v2/index.html
 
       - name: Build Storybook
         run: npx storybook build --output-dir gh-pages/storybook
