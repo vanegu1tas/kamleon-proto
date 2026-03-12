@@ -160,8 +160,9 @@ kamleon/
 │   ├── CircularPro-Medium.otf  ✅
 │   └── CircularPro-Bold.otf    ✅
 ├── prototypes/
-│   ├── main.jsx                ✅ entry point · importa tokens · renderiza prototipo activo
-│   └── StaffOrganizaciones/
+│   ├── main.jsx                ✅ entry point · selector de prototipos (estado local, sin routing)
+│   ├── StaffOrganizaciones/    (V1)
+│   └── StaffOrganizacionesV2/ (V2 — pendiente)
 │       ├── StaffOrganizaciones.jsx         ✅ OrgList + navegación por stack + ContextMenu en tabla
 │       ├── StaffOrganizaciones.module.css  ✅
 │       ├── mockData.js                     ✅ datos mock centralizados
@@ -174,9 +175,13 @@ kamleon/
 │           ├── TeamDetail.module.css       ✅
 │           ├── UserDetail.jsx              ✅ vista/edición de usuario · toggles de permisos
 │           ├── UserDetail.module.css       ✅
-│           ├── NewCenterModal.jsx          ✅ drawer lateral (slide-in desde derecha) para crear centro
+│           ├── NewCenterModal.jsx          ✅ drawer crear centro · subtítulo "New Center for [Org]" · selector org en flujo global · Invite administrators
 │           ├── NewCenterModal.module.css   ✅
-│           ├── EditCenterDrawer.jsx        ✅ drawer edición de centro · campos pre-llenados · Save habilitado solo con cambios · address line 2 eliminable
+│           ├── NewOrgDrawer.jsx            ✅ drawer crear organización · Name*, Segment* dropdown, Email, Phone, multi-address · Create deshabilitado sin nombre
+│           ├── NewOrgDrawer.module.css     ✅
+│           ├── NewTeamDrawer.jsx           ✅ drawer crear equipo · subtítulo "New Team for [Center]" · avatar · Team name* · toggles RFID + Set PIN
+│           ├── NewTeamDrawer.module.css    ✅
+│           ├── EditCenterDrawer.jsx        ✅ drawer edición de centro · subtítulo "Editing Center for [Org]" en body · campos pre-llenados · Save con cambios · address line 2 eliminable
 │           ├── EditCenterDrawer.module.css ✅
 │           ├── EditTeamDrawer.jsx          ✅ drawer edición de equipo · Team info + Settings (Status/RFID/Set PIN) · Reset PIN condicional
 │           ├── EditTeamDrawer.module.css   ✅
@@ -309,9 +314,10 @@ Dos colecciones con convenciones distintas:
 
 ### Prototipos disponibles
 
-| Archivo | Descripción |
+| Prototipo | Descripción |
 |---|---|
-| `StaffOrganizaciones` | Panel staff — sidebar + KPI cards + tabla de organizaciones expandible + flujo OrgDetail → CenterDetail → TeamDetail → UserDetail |
+| `StaffOrganizaciones` (V1) | Panel staff — sidebar + KPI cards + tabla de organizaciones expandible + flujo OrgDetail → CenterDetail → TeamDetail → UserDetail |
+| `StaffOrganizacionesV2` (V2) | Panel staff — misma shell, navegación master-detail. Tab Centers en OrgDetail muestra ficha completa del centro seleccionado. Pensado para usuarios gestores (flujo Excel/Word). |
 
 ---
 
@@ -371,19 +377,24 @@ Nodos relevantes:
 - [ ] Añadir story por cada componente nuevo
 
 ### Prototipos
-- [x] StaffOrganizaciones — sidebar + KPI cards + tabla expandible + filtros con dropdown animado + ContextMenu (Edit/New Center/Delete) en cada fila
+- [x] StaffOrganizaciones (V1) — sidebar + KPI cards + tabla expandible + filtros con dropdown animado + ContextMenu (Edit/New Center/Delete) en cada fila
+- [ ] StaffOrganizacionesV2 (V2) — master-detail en OrgDetail > Centers · selector de prototipos en main.jsx
 - [x] OrgDetail — header org (iconos filled, tooltips, Settings/Delete buttons) + tabs: Centers (status 2ª col, ContextMenu) · Administrators (empty state + CTA) · Monitoring
 - [x] CenterDetail — header centro (iconos filled, tooltips) + tabs: Teams (status 2ª col, ContextMenu) · Administrators (empty state + CTA) · Users · Monitoring
 - [x] TeamDetail — header equipo (iconos filled, tooltips) + tabs: Users (status 2ª col, filtro por role) · Administrators (empty state + CTA)
 - [x] UserDetail — vista/edición · Settings/Trash icon buttons con tooltips · toggles de permisos
-- [x] NewCenterModal — drawer lateral slide-in desde derecha · campos: Name*, Email, Phone, Address · sección "Invite administrators" con emails dinámicos · Create deshabilitado hasta tener Name · cierra con click en overlay o X
-- [x] EditCenterDrawer — drawer edición de centro · campos pre-llenados · Save habilitado solo si hay cambios · address line 2 con botón eliminar (icono X + tooltip "Remove")
+- [x] NewCenterModal — drawer slide-in · subtítulo "New Center for [Org]" (subtle/book + strong/medium) · selector de org en flujo global · Invite administrators dinámico
+- [x] NewOrgDrawer — drawer crear org · Name*, Segment* (Sport/Fitness), Email, Phone, multi-address con remove · Create deshabilitado sin nombre
+- [x] NewTeamDrawer — drawer crear equipo · subtítulo "New Team for [Center]" · avatar icon · Team name* · toggles RFID + Set PIN · disparado desde OrgDetail (context menu centros) y CenterDetail (botón New Team)
+- [x] EditCenterDrawer — drawer edición de centro · subtítulo "Editing Center for [Org]" en body (encima del avatar) · Save habilitado solo si hay cambios · address line 2 eliminable · conectado desde OrgDetail context menu y CenterDetail settings
 - [x] EditTeamDrawer — drawer edición de equipo · sección Team info (Name*) + sección Settings (Status/RFID/Set PIN toggles) · Reset PIN aparece solo cuando Set PIN está ON
-- [x] EditOrgDrawer — drawer edición de org · Organization info (Name*, Segment* dropdown, Email, Phone, Fiscal Address, Description textarea) · Settings: Status dropdown + Integrations (Kamleon API expandible con toggle Enable API, Max tokens, API Token, Run Test, tabla Tokens Consume · Teamworks colapsable)
+- [x] EditOrgDrawer — drawer edición de org · Organization info (Name*, Segment*, Email, Phone, multi-address) · Settings: Status dropdown + Integrations (Kamleon API expandible) · conectado al context menu de la lista de orgs
 - [x] SidebarItem tooltips — portal en document.body al colapsar · fondo oscuro · flecha izquierda · 8px a la derecha del borde del sidebar
 - [x] Sidebar: item "Teams" oculto
-- [x] Create button dropdown en OrgList — 4 opciones: New Organization / New Center / New Team / New User
+- [x] Create button dropdown en OrgList — 4 opciones: New Organization / New Center / New Team / New User — cada una abre su drawer correspondiente
 - [x] ContextMenu fix — renderizado con createPortal en document.body para escapar stacking context de centros expandidos
+- [x] Context menu centros (OrgDetail) — Edit abre EditCenterDrawer · New Team abre NewTeamDrawer · fix stopPropagation para evitar navegación a CenterDetail al hacer click en un item del menú
+- [x] Todos los drawers — estilo floating card: top/right/bottom 12px · border-radius var(--radius-m) · border 1px · box-shadow · slide-in animation
 - [x] Center rows expandidos — avatar inicial + nombre + stats (teams · users · professionals)
 - [x] Arsenal FC actualizado — 1 centro (Sobha Realty Training Centre) · 1 equipo (Arsenal First Team) · 25 usuarios · 1 profesional
 - [x] Sidebar "Center control" — siempre navega a la lista de organizaciones

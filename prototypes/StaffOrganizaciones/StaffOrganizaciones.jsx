@@ -299,23 +299,21 @@ export default function StaffOrganizaciones() {
             <LogoKamleon />
           </div>
 
-          {/* Breadcrumb — desktop only, visible cuando hay más de un nivel */}
-          {navStack.length > 1 && (
-            <nav className={styles.breadcrumb} aria-label="Navegación">
-              {breadcrumbs.map((crumb, i) => (
-                <span key={i} className={styles.breadcrumbItem}>
-                  {i > 0 && <span className={styles.breadcrumbSep}>/</span>}
-                  {crumb.onClick ? (
-                    <button className={styles.breadcrumbLink} onClick={crumb.onClick}>
-                      {crumb.label}
-                    </button>
-                  ) : (
-                    <span className={styles.breadcrumbCurrent}>{crumb.label}</span>
-                  )}
-                </span>
-              ))}
-            </nav>
-          )}
+          {/* Breadcrumb — siempre visible */}
+          <nav className={styles.breadcrumb} aria-label="Navegación">
+            {breadcrumbs.map((crumb, i) => (
+              <span key={i} className={styles.breadcrumbItem}>
+                {i > 0 && <span className={styles.breadcrumbSep}>/</span>}
+                {crumb.onClick ? (
+                  <button className={styles.breadcrumbLink} onClick={crumb.onClick}>
+                    {crumb.label}
+                  </button>
+                ) : (
+                  <span className={styles.breadcrumbCurrent}>{crumb.label}</span>
+                )}
+              </span>
+            ))}
+          </nav>
 
           <div className={styles.topbarRight}>
             <button className={styles.notifBtn}>
