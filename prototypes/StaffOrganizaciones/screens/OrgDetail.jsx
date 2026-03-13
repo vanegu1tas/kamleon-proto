@@ -5,6 +5,7 @@ import SearchBar from '../../../design-system/components/SearchBar/SearchBar';
 import TabBar from '../../../design-system/components/TabBar/TabBar';
 import ContextMenu from '../../../design-system/components/ContextMenu/ContextMenu';
 import { IconEdit, IconPlus, IconTrash, IconSettings } from '../../../design-system/icons/outline';
+import IconButton from '../../../design-system/components/IconButton/IconButton';
 import { IconUserFilled, IconMailFilled, IconPhoneFilled, IconLocationFilled } from '../../../design-system/icons/filled';
 import { getUserCountForCenter, getProfessionalCountForCenter, getActiveTeamCount } from '../mockData';
 import NewCenterModal from './NewCenterModal';
@@ -274,13 +275,12 @@ function CentersContent({ org, onNavigate }) {
                     ref={openMenuCenterId === center.id ? menuRef : null}
                     onClick={e => e.stopPropagation()}
                   >
-                    <button
-                      className={styles.dotsBtn}
+                    <IconButton
                       aria-label="Más opciones"
                       onClick={e => { e.stopPropagation(); setOpenMenuCenterId(prev => prev === center.id ? null : center.id); }}
                     >
                       <DotsIcon />
-                    </button>
+                    </IconButton>
                     {openMenuCenterId === center.id && (
                       <div className={styles.contextMenuWrap}>
                         <ContextMenu
@@ -378,12 +378,12 @@ export default function OrgDetail({ org, onBack, onNavigate }) {
             </div>
           </div>
           <div className={styles.orgActions}>
-            <button className={`${styles.actionBtn} ${styles.actionBtnTooltip}`} aria-label="Configuración de organización" data-tooltip="Settings" onClick={() => setShowEditDrawer(true)}>
+            <IconButton aria-label="Configuración de organización" tooltip="Settings" onClick={() => setShowEditDrawer(true)}>
               <IconSettings size={16} />
-            </button>
-            <button className={`${styles.actionBtn} ${styles.actionBtnTooltip}`} aria-label="Eliminar organización" data-tooltip="Delete">
+            </IconButton>
+            <IconButton aria-label="Eliminar organización" tooltip="Delete" variant="danger">
               <IconTrash size={16} />
-            </button>
+            </IconButton>
           </div>
         </div>
 

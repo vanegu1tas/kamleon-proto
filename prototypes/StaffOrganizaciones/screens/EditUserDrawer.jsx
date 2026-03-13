@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Button from '../../../design-system/components/Button/Button';
 import { IconClose } from '../../../design-system/icons/outline';
+import IconButton from '../../../design-system/components/IconButton/IconButton';
 import styles from './EditUserDrawer.module.css';
 
 // ─── Toggle ──────────────────────────────────────────────
@@ -65,9 +66,9 @@ export default function EditUserDrawer({ user, team, onClose }) {
         {/* ── Header ── */}
         <div className={styles.header}>
           <h2 className={styles.title}>Edit User</h2>
-          <button className={styles.closeBtn} onClick={onClose} aria-label="Close">
+          <IconButton aria-label="Close" onClick={onClose}>
             <IconClose size={16} />
-          </button>
+          </IconButton>
         </div>
 
         {/* ── Body ── */}

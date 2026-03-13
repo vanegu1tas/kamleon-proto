@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Button from '../../../design-system/components/Button/Button';
 import { IconClose, IconPlus } from '../../../design-system/icons/outline';
+import IconButton from '../../../design-system/components/IconButton/IconButton';
 import styles from './EditCenterDrawer.module.css';
 
 export default function EditCenterDrawer({ center, org, onClose }) {
@@ -27,9 +28,9 @@ export default function EditCenterDrawer({ center, org, onClose }) {
         {/* ── Header ── */}
         <div className={styles.header}>
           <h2 className={styles.title}>Edit Center</h2>
-          <button className={styles.closeBtn} onClick={onClose} aria-label="Close">
+          <IconButton aria-label="Close" onClick={onClose}>
             <IconClose size={16} />
-          </button>
+          </IconButton>
         </div>
 
         {/* ── Body ── */}

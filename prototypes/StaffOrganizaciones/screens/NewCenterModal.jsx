@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Button from '../../../design-system/components/Button/Button';
 import { IconClose, IconAddImage, IconPlus, IconChevronDown } from '../../../design-system/icons/outline';
 import { ORGS } from '../mockData';
+import IconButton from '../../../design-system/components/IconButton/IconButton';
 import styles from './NewCenterModal.module.css';
 
 export default function NewCenterModal({ org, onClose }) {
@@ -48,9 +49,9 @@ export default function NewCenterModal({ org, onClose }) {
         {/* ── Header ── */}
         <div className={styles.header}>
           <h2 className={styles.title}>New Center</h2>
-          <button className={styles.closeBtn} onClick={onClose} aria-label="Close">
+          <IconButton aria-label="Close" onClick={onClose}>
             <IconClose size={16} />
-          </button>
+          </IconButton>
         </div>
 
         {/* ── Body ── */}

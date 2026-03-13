@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import Button from '../../../design-system/components/Button/Button';
 import { IconClose, IconAddImage } from '../../../design-system/icons/outline';
+import IconButton from '../../../design-system/components/IconButton/IconButton';
 import styles from './NewTeamDrawer.module.css';
 
 export default function NewTeamDrawer({ center, onClose }) {
   const [name,    setName]    = useState('');
-  const [rfid,    setRfid]    = useState(false);
   const [setPin,  setSetPin]  = useState(false);
 
   const canCreate = name.trim().length > 0;
@@ -17,9 +17,9 @@ export default function NewTeamDrawer({ center, onClose }) {
         {/* ── Header ── */}
         <div className={styles.header}>
           <h2 className={styles.title}>New Team</h2>
-          <button className={styles.closeBtn} onClick={onClose} aria-label="Close">
+          <IconButton aria-label="Close" onClick={onClose}>
             <IconClose size={16} />
-          </button>
+          </IconButton>
         </div>
 
         {/* ── Body ── */}
@@ -60,23 +60,6 @@ export default function NewTeamDrawer({ center, onClose }) {
 
           {/* Settings */}
           <div className={styles.settingsList}>
-
-            <div className={styles.settingRow}>
-              <div className={styles.settingInfo}>
-                <span className={styles.settingLabel}>RFID</span>
-                <span className={styles.settingDesc}>Enable proximity device access for this user.</span>
-              </div>
-              <div className={styles.settingControl}>
-                <span className={styles.toggleLabel}>{rfid ? 'ON' : 'OFF'}</span>
-                <button
-                  role="switch"
-                  aria-checked={rfid}
-                  className={`${styles.toggle} ${rfid ? styles.toggleOn : ''}`}
-                  onClick={() => setRfid(v => !v)}
-                  type="button"
-                />
-              </div>
-            </div>
 
             <div className={styles.settingRow}>
               <div className={styles.settingInfo}>

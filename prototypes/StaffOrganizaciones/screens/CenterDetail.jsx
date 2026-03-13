@@ -5,6 +5,7 @@ import SearchBar from '../../../design-system/components/SearchBar/SearchBar';
 import TabBar from '../../../design-system/components/TabBar/TabBar';
 import ContextMenu from '../../../design-system/components/ContextMenu/ContextMenu';
 import { IconEdit, IconPlus, IconTrash, IconSettings } from '../../../design-system/icons/outline';
+import IconButton from '../../../design-system/components/IconButton/IconButton';
 import { IconMailFilled, IconPhoneFilled, IconLocationFilled } from '../../../design-system/icons/filled';
 import { getUsersForTeam, getProfessionalsForTeam } from '../mockData';
 import EditCenterDrawer from './EditCenterDrawer';
@@ -187,13 +188,12 @@ function TeamsContent({ center, org, onNavigate }) {
                 className={styles.moreMenuAnchor}
                 ref={openMenuTeamId === team.id ? menuRef : null}
               >
-                <button
-                  className={styles.dotsBtn}
+                <IconButton
                   aria-label="Más opciones"
                   onClick={e => { e.stopPropagation(); setOpenMenuTeamId(prev => prev === team.id ? null : team.id); }}
                 >
                   <DotsIcon />
-                </button>
+                </IconButton>
                 {openMenuTeamId === team.id && (
                   <div className={styles.contextMenuWrap}>
                     <ContextMenu
@@ -269,12 +269,12 @@ export default function CenterDetail({ center, org, onBack, onNavigate }) {
             </div>
           </div>
           <div className={styles.centerActions}>
-            <button className={`${styles.actionBtn} ${styles.actionBtnTooltip}`} aria-label="Configuración de centro" data-tooltip="Settings" onClick={() => setShowEditDrawer(true)}>
+            <IconButton aria-label="Configuración de centro" tooltip="Settings" onClick={() => setShowEditDrawer(true)}>
               <IconSettings size={16} />
-            </button>
-            <button className={`${styles.actionBtn} ${styles.actionBtnTooltip}`} aria-label="Eliminar centro" data-tooltip="Delete">
+            </IconButton>
+            <IconButton aria-label="Eliminar centro" tooltip="Delete" variant="danger">
               <IconTrash size={16} />
-            </button>
+            </IconButton>
           </div>
         </div>
 

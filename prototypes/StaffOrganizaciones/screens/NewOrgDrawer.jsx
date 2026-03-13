@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Button from '../../../design-system/components/Button/Button';
 import { IconClose, IconAddImage, IconPlus, IconChevronDown } from '../../../design-system/icons/outline';
+import IconButton from '../../../design-system/components/IconButton/IconButton';
 import styles from './NewOrgDrawer.module.css';
 
 const SEGMENTS = ['Sport', 'Fitness'];
@@ -33,9 +34,9 @@ export default function NewOrgDrawer({ onClose }) {
         {/* ── Header ── */}
         <div className={styles.header}>
           <h2 className={styles.title}>New Organization</h2>
-          <button className={styles.closeBtn} onClick={onClose} aria-label="Close">
+          <IconButton aria-label="Close" onClick={onClose}>
             <IconClose size={16} />
-          </button>
+          </IconButton>
         </div>
 
         {/* ── Body ── */}

@@ -1,0 +1,150 @@
+/* ─── Base ────────────────────────────────────────────── */
+
+.btn {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-s);
+  padding: 0;
+  cursor: pointer;
+  color: var(--color-text-subtle);
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+
+.btn:disabled {
+  background: var(--color-bg-surface-disabled);
+  border-color: transparent;
+  color: var(--color-text-disabled);
+  cursor: default;
+  pointer-events: none;
+}
+
+/* ─── Default hover ───────────────────────────────────── */
+
+.default:hover {
+  background: var(--color-bg-surface-subtle);
+  border-color: var(--color-border-strong);
+  color: var(--color-text-strong);
+}
+
+/* ─── Danger hover ────────────────────────────────────── */
+
+.danger:hover {
+  background: var(--color-bg-surface-subtle);
+  border-color: var(--color-border-error);
+  color: var(--color-status-error);
+}
+
+/* ─── Tooltip shared ──────────────────────────────────── */
+
+[class*='tooltip-']::before,
+[class*='tooltip-']::after {
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+[class*='tooltip-']:hover::before,
+[class*='tooltip-']:hover::after {
+  opacity: 1;
+}
+
+/* Arrow */
+[class*='tooltip-']::before {
+  content: '';
+  position: absolute;
+  border: 5px solid transparent;
+}
+
+/* Label */
+[class*='tooltip-']::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  background: var(--color-text-strong);
+  color: var(--color-text-inverse);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+  padding: 4px 8px;
+  border-radius: 6px;
+  z-index: 100;
+}
+
+/* ─── Tooltip bottom (default) ────────────────────────── */
+
+.tooltip-bottom::before {
+  top: calc(100% + 2px);
+  left: 50%;
+  transform: translateX(-50%) translateY(-4px);
+  border-bottom-color: var(--color-text-strong);
+}
+
+.tooltip-bottom::after {
+  top: calc(100% + 12px);
+  left: 50%;
+  transform: translateX(-50%) translateY(-4px);
+}
+
+.tooltip-bottom:hover::before { transform: translateX(-50%) translateY(0); }
+.tooltip-bottom:hover::after  { transform: translateX(-50%) translateY(0); }
+
+/* ─── Tooltip top ─────────────────────────────────────── */
+
+.tooltip-top::before {
+  bottom: calc(100% + 2px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  border-top-color: var(--color-text-strong);
+}
+
+.tooltip-top::after {
+  bottom: calc(100% + 12px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+}
+
+.tooltip-top:hover::before { transform: translateX(-50%) translateY(0); }
+.tooltip-top:hover::after  { transform: translateX(-50%) translateY(0); }
+
+/* ─── Tooltip left ────────────────────────────────────── */
+
+.tooltip-left::before {
+  right: calc(100% + 2px);
+  top: 50%;
+  transform: translateY(-50%) translateX(4px);
+  border-left-color: var(--color-text-strong);
+}
+
+.tooltip-left::after {
+  right: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%) translateX(4px);
+}
+
+.tooltip-left:hover::before { transform: translateY(-50%) translateX(0); }
+.tooltip-left:hover::after  { transform: translateY(-50%) translateX(0); }
+
+/* ─── Tooltip right ───────────────────────────────────── */
+
+.tooltip-right::before {
+  left: calc(100% + 2px);
+  top: 50%;
+  transform: translateY(-50%) translateX(-4px);
+  border-right-color: var(--color-text-strong);
+}
+
+.tooltip-right::after {
+  left: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%) translateX(-4px);
+}
+
+.tooltip-right:hover::before { transform: translateY(-50%) translateX(0); }
+.tooltip-right:hover::after  { transform: translateY(-50%) translateX(0); }

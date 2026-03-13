@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Button from '../../../design-system/components/Button/Button';
 import { IconClose, IconChevronDown, IconPlus } from '../../../design-system/icons/outline';
+import IconButton from '../../../design-system/components/IconButton/IconButton';
 import styles from './EditOrgDrawer.module.css';
 
 const SEGMENTS = ['Sport', 'Fitness'];
@@ -59,13 +60,13 @@ function KamleonContent() {
               value={maxTokens}
               onChange={e => setMaxTokens(e.target.value)}
             />
-            <button className={styles.iconBtn} type="button" aria-label="Save">
+            <IconButton aria-label="Save" tooltip="Save">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                 <path d="M2 2h9l3 3v9H2V2z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
                 <rect x="5" y="9" width="6" height="5" rx="0.5" stroke="currentColor" strokeWidth="1.5"/>
                 <rect x="4" y="2" width="5" height="4" rx="0.5" stroke="currentColor" strokeWidth="1.5"/>
               </svg>
-            </button>
+            </IconButton>
           </div>
         </div>
         <div className={styles.field}>
@@ -77,12 +78,12 @@ function KamleonContent() {
               value={apiToken}
               onChange={e => setApiToken(e.target.value)}
             />
-            <button className={styles.iconBtn} type="button" aria-label="Copy">
+            <IconButton aria-label="Copy" tooltip="Copy">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                 <rect x="5" y="5" width="9" height="9" rx="1.5" stroke="currentColor" strokeWidth="1.5"/>
                 <path d="M11 5V3.5A1.5 1.5 0 009.5 2h-7A1.5 1.5 0 001 3.5v7A1.5 1.5 0 002.5 12H4" stroke="currentColor" strokeWidth="1.5"/>
               </svg>
-            </button>
+            </IconButton>
           </div>
         </div>
       </div>
@@ -171,9 +172,9 @@ export default function EditOrgDrawer({ org, onClose }) {
         {/* ── Header ── */}
         <div className={styles.header}>
           <h2 className={styles.title}>Edit Organization</h2>
-          <button className={styles.closeBtn} onClick={onClose} aria-label="Close">
+          <IconButton aria-label="Close" onClick={onClose}>
             <IconClose size={16} />
-          </button>
+          </IconButton>
         </div>
 
         {/* ── Body ── */}

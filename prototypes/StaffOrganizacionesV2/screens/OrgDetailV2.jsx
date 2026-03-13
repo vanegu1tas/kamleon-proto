@@ -7,6 +7,7 @@ import { IconUserFilled, IconMailFilled, IconPhoneFilled, IconLocationFilled } f
 import { getUserCountForCenter, getProfessionalCountForCenter, getActiveTeamCount, USERS_POOL } from '../../StaffOrganizaciones/mockData';
 import ContextMenu      from '../../../design-system/components/ContextMenu/ContextMenu';
 import EditOrgDrawer    from '../../StaffOrganizaciones/screens/EditOrgDrawer';
+import IconButton       from '../../../design-system/components/IconButton/IconButton';
 import EditCenterDrawer from '../../StaffOrganizaciones/screens/EditCenterDrawer';
 import NewCenterModal   from '../../StaffOrganizaciones/screens/NewCenterModal';
 import NewTeamDrawer    from '../../StaffOrganizaciones/screens/NewTeamDrawer';
@@ -434,14 +435,13 @@ function CenterCard({ center, org, onEdit, onNewTeam, onNewUser, onSelectTeam, o
           </div>
           <div className={styles.cardActions}>
             <div className={styles.createMenuAnchor} ref={createMenuRef}>
-              <button
-                className={`${styles.cardActionBtn} ${styles.cardActionBtnTooltip}`}
-                data-tooltip="Create"
+              <IconButton
                 aria-label="Create"
+                tooltip="Create"
                 onClick={() => setCreateMenuOpen(v => !v)}
               >
                 <IconPlus size={16} />
-              </button>
+              </IconButton>
               {createMenuOpen && (
                 <div className={styles.cardCreateMenu}>
                   <ContextMenu
@@ -454,21 +454,12 @@ function CenterCard({ center, org, onEdit, onNewTeam, onNewUser, onSelectTeam, o
                 </div>
               )}
             </div>
-            <button
-              className={`${styles.cardActionBtn} ${styles.cardActionBtnTooltip}`}
-              data-tooltip="Edit"
-              aria-label="Edit center"
-              onClick={onEdit}
-            >
+            <IconButton aria-label="Edit center" tooltip="Edit" onClick={onEdit}>
               <IconEdit size={16} />
-            </button>
-            <button
-              className={`${styles.cardActionBtn} ${styles.cardActionBtnTooltip}`}
-              data-tooltip="Delete"
-              aria-label="Delete center"
-            >
+            </IconButton>
+            <IconButton aria-label="Delete center" tooltip="Delete" variant="danger">
               <IconTrash size={16} />
-            </button>
+            </IconButton>
           </div>
         </div>
       </div>
@@ -699,28 +690,15 @@ function TeamCard({ team, center, org, onBack, onSelectUser, onNewUser }) {
             </div>
           </div>
           <div className={styles.cardActions}>
-            <button
-              className={`${styles.cardActionBtn} ${styles.cardActionBtnTooltip}`}
-              data-tooltip="New User"
-              aria-label="New User"
-              onClick={onNewUser}
-            >
+            <IconButton aria-label="New User" tooltip="New User" onClick={onNewUser}>
               <IconPlus size={16} />
-            </button>
-            <button
-              className={`${styles.cardActionBtn} ${styles.cardActionBtnTooltip}`}
-              data-tooltip="Settings"
-              aria-label="Team settings"
-            >
+            </IconButton>
+            <IconButton aria-label="Team settings" tooltip="Settings">
               <IconSettings size={16} />
-            </button>
-            <button
-              className={`${styles.cardActionBtn} ${styles.cardActionBtnTooltip}`}
-              data-tooltip="Delete"
-              aria-label="Delete team"
-            >
+            </IconButton>
+            <IconButton aria-label="Delete team" tooltip="Delete" variant="danger">
               <IconTrash size={16} />
-            </button>
+            </IconButton>
           </div>
         </div>
 
@@ -843,21 +821,12 @@ function UserCard({ user, team, backLabel, onBack }) {
             </div>
           </div>
           <div className={styles.cardActions}>
-            <button
-              className={`${styles.cardActionBtn} ${styles.cardActionBtnTooltip}`}
-              data-tooltip="Settings"
-              aria-label="User settings"
-              onClick={() => setShowEdit(true)}
-            >
+            <IconButton aria-label="User settings" tooltip="Settings" onClick={() => setShowEdit(true)}>
               <IconSettings size={16} />
-            </button>
-            <button
-              className={`${styles.cardActionBtn} ${styles.cardActionBtnTooltip}`}
-              data-tooltip="Delete"
-              aria-label="Delete user"
-            >
+            </IconButton>
+            <IconButton aria-label="Delete user" tooltip="Delete" variant="danger">
               <IconTrash size={16} />
-            </button>
+            </IconButton>
           </div>
         </div>
 
@@ -964,21 +933,12 @@ export default function OrgDetailV2({ org, onBack, initialCenter, initialTeam, i
               </div>
             </div>
             <div className={styles.orgActions}>
-              <button
-                className={`${styles.actionBtn} ${styles.actionBtnTooltip}`}
-                data-tooltip="Settings"
-                aria-label="Configuración"
-                onClick={() => setShowEditDrawer(true)}
-              >
+              <IconButton aria-label="Configuración" tooltip="Settings" onClick={() => setShowEditDrawer(true)}>
                 <IconSettings size={16} />
-              </button>
-              <button
-                className={`${styles.actionBtn} ${styles.actionBtnTooltip}`}
-                data-tooltip="Delete"
-                aria-label="Eliminar organización"
-              >
+              </IconButton>
+              <IconButton aria-label="Eliminar organización" tooltip="Delete" variant="danger">
                 <IconTrash size={16} />
-              </button>
+              </IconButton>
             </div>
           </div>
 

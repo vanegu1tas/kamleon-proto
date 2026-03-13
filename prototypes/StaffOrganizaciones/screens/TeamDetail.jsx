@@ -6,6 +6,7 @@ import TabBar from '../../../design-system/components/TabBar/TabBar';
 import ToolbarButton from '../../../design-system/components/ToolbarButton/ToolbarButton';
 import { getMembersForTeam } from '../mockData';
 import { IconSettings, IconTrash, IconFilter, IconPlus } from '../../../design-system/icons/outline';
+import IconButton from '../../../design-system/components/IconButton/IconButton';
 import { IconMailFilled, IconPhoneFilled, IconLocationFilled } from '../../../design-system/icons/filled';
 import EditTeamDrawer from './EditTeamDrawer';
 import styles from './TeamDetail.module.css';
@@ -235,9 +236,9 @@ function UsersContent({ team, center, onNavigate }) {
             </div>
             <div className={`${styles.dateCell} ${styles.colDate}`}>{user.dateAdded}</div>
             <div className={`${styles.actionsCell} ${styles.colActions}`}>
-              <button className={styles.dotsBtn} aria-label="Más opciones">
+              <IconButton aria-label="Más opciones">
                 <DotsIcon />
-              </button>
+              </IconButton>
             </div>
           </div>
         ))}
@@ -297,12 +298,12 @@ export default function TeamDetail({ team, center, onBack, onNavigate }) {
             </div>
           </div>
           <div className={styles.teamActions}>
-            <button className={`${styles.actionBtn} ${styles.actionBtnTooltip}`} aria-label="Configuración de equipo" data-tooltip="Settings" onClick={() => setShowEditDrawer(true)}>
+            <IconButton aria-label="Configuración de equipo" tooltip="Settings" onClick={() => setShowEditDrawer(true)}>
               <IconSettings size={16} />
-            </button>
-            <button className={`${styles.actionBtn} ${styles.actionBtnTooltip}`} aria-label="Eliminar equipo" data-tooltip="Delete">
+            </IconButton>
+            <IconButton aria-label="Eliminar equipo" tooltip="Delete" variant="danger">
               <IconTrash size={16} />
-            </button>
+            </IconButton>
           </div>
         </div>
 
