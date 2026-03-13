@@ -11,6 +11,19 @@ export default function NewCenterModal({ org, onClose }) {
   const [phone, setPhone]             = useState('');
   const [address, setAddress]         = useState('');
   const [adminEmails, setAdminEmails] = useState([]);
+  const [units, setUnits]             = useState([]);
+
+  function addUnit() {
+    setUnits(prev => [...prev, '']);
+  }
+
+  function updateUnit(i, val) {
+    setUnits(prev => prev.map((u, idx) => idx === i ? val : u));
+  }
+
+  function removeUnit(i) {
+    setUnits(prev => prev.filter((_, idx) => idx !== i));
+  }
 
   const activeOrg = selectedOrg;
 
@@ -172,6 +185,39 @@ export default function NewCenterModal({ org, onClose }) {
               Add administrator
             </button>
           </div>
+
+          {/* Link units */}
+          <div className={styles.inviteSection}>
+            <div className={styles.inviteInfo}>
+              <p className={styles.inviteLabel}>Link unit</p>
+              <p className={styles.inviteSubtitle}>description</p>
+            </div>
+
+            {units.map((unit, i) => (
+              <div key={i} className={styles.adminEmailRow}>
+                <input
+                  className={styles.input}
+                  placeholder="Unit ID or name"
+                  value={unit}
+                  onChange={e => updateUnit(i, e.target.value)}
+                />
+                <button
+                  className={styles.removeAdminBtn}
+                  type="button"
+                  onClick={() => removeUnit(i)}
+                  aria-label="Remove"
+                >
+                  <IconClose size={14} />
+                </button>
+              </div>
+            ))}
+
+            <button className={styles.addAdminBtn} type="button" onClick={addUnit}>
+              <IconPlus size={16} />
+              Add new unit
+            </button>
+          </div>
+
         </div>
 
         {/* ── Footer ── */}

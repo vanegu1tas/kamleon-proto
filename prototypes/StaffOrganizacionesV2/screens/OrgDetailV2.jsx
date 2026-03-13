@@ -10,6 +10,7 @@ import EditOrgDrawer    from '../../StaffOrganizaciones/screens/EditOrgDrawer';
 import EditCenterDrawer from '../../StaffOrganizaciones/screens/EditCenterDrawer';
 import NewCenterModal   from '../../StaffOrganizaciones/screens/NewCenterModal';
 import NewTeamDrawer    from '../../StaffOrganizaciones/screens/NewTeamDrawer';
+import NewUserDrawer    from '../../StaffOrganizaciones/screens/NewUserDrawer';
 import EditUserDrawer   from '../../StaffOrganizaciones/screens/EditUserDrawer';
 import styles from './OrgDetailV2.module.css';
 
@@ -120,6 +121,12 @@ function CentersContent({ org, initialCenter, initialTeam, initialUser }) {
   const [selectedUserTeam, setSelectedUserTeam]     = useState(null); // set when navigating from Users tab
   const [editCenterTarget, setEditCenterTarget]     = useState(null);
   const [newTeamCenter, setNewTeamCenter]           = useState(null);
+  const [newUserContext, setNewUserContext]          = useState(null); // { center, team? }
+  const [centerSearch, setCenterSearch]             = useState('');
+
+  const filteredCenters = centerSearch.trim()
+    ? centers.filter(c => c.name.toLowerCase().includes(centerSearch.trim().toLowerCase()))
+    : centers;
 
   const selected = centers.find(c => c.id === selectedId) ?? null;
 
@@ -158,10 +165,15 @@ function CentersContent({ org, initialCenter, initialTeam, initialUser }) {
                 <IconPlus size={14} />
               </button>
             </div>
-            <SearchBar placeholder="Search..." />
+            <SearchBar
+              placeholder="Search..."
+              value={centerSearch}
+              onChange={e => setCenterSearch(e.target.value)}
+              onClear={() => setCenterSearch('')}
+            />
           </div>
           <div className={styles.listItems}>
-            {centers.map(center => (
+            {filteredCenters.map(center => (
               <button
                 key={center.id}
                 className={`${styles.listItem} ${selectedId === center.id ? styles.listItemSelected : ''}`}
@@ -198,6 +210,7 @@ function CentersContent({ org, initialCenter, initialTeam, initialUser }) {
               org={org}
               onBack={() => { setSelectedTeam(null); setSelectedUser(null); setSelectedUserTeam(null); }}
               onSelectUser={(user) => setSelectedUser(user)}
+              onNewUser={() => setNewUserContext({ center: selectedTeamCenter, team: selectedTeam })}
             />
           ) : selected ? (
             <CenterCard
@@ -205,6 +218,7 @@ function CentersContent({ org, initialCenter, initialTeam, initialUser }) {
               org={org}
               onEdit={() => setEditCenterTarget(selected)}
               onNewTeam={() => setNewTeamCenter(selected)}
+              onNewUser={() => setNewUserContext({ center: selected })}
               onSelectTeam={(team) => {
                 setSelectedTeam(team);
                 setSelectedTeamCenter(selected);
@@ -226,6 +240,14 @@ function CentersContent({ org, initialCenter, initialTeam, initialUser }) {
       {showNewCenter    && <NewCenterModal org={org} onClose={() => setShowNewCenter(false)} />}
       {editCenterTarget && <EditCenterDrawer center={editCenterTarget} org={org} onClose={() => setEditCenterTarget(null)} />}
       {newTeamCenter    && <NewTeamDrawer center={newTeamCenter} onClose={() => setNewTeamCenter(null)} />}
+      {newUserContext   && (
+        <NewUserDrawer
+          center={newUserContext.center}
+          team={newUserContext.team}
+          teams={newUserContext.center?.teams ?? []}
+          onClose={() => setNewUserContext(null)}
+        />
+      )}
     </>
   );
 }
@@ -358,7 +380,7 @@ function getScrollParent(el) {
   return null;
 }
 
-function CenterCard({ center, org, onEdit, onNewTeam, onSelectTeam, onSelectUser }) {
+function CenterCard({ center, org, onEdit, onNewTeam, onNewUser, onSelectTeam, onSelectUser }) {
   const [innerTab, setInnerTab]         = useState('details');
   const [createMenuOpen, setCreateMenuOpen] = useState(false);
   const createMenuRef  = useRef(null);
@@ -425,7 +447,7 @@ function CenterCard({ center, org, onEdit, onNewTeam, onSelectTeam, onSelectUser
                   <ContextMenu
                     items={[
                       { label: 'New Team', icon: <IconPlus size={16} />, onClick: () => { setCreateMenuOpen(false); onNewTeam(); } },
-                      { label: 'New User', icon: <IconPlus size={16} />, onClick: () => setCreateMenuOpen(false) },
+                      { label: 'New User', icon: <IconPlus size={16} />, onClick: () => { setCreateMenuOpen(false); onNewUser(); } },
                       { label: 'New Unit', icon: <IconPlus size={16} />, onClick: () => setCreateMenuOpen(false) },
                     ]}
                   />
@@ -621,7 +643,7 @@ function UsersTab({ center, onSelectUser }) {
 
 const TEAM_PAGE_SIZE = 10;
 
-function TeamCard({ team, center, org, onBack, onSelectUser }) {
+function TeamCard({ team, center, org, onBack, onSelectUser, onNewUser }) {
   const [search, setSearch] = useState('');
   const [page, setPage]     = useState(1);
 
@@ -681,6 +703,7 @@ function TeamCard({ team, center, org, onBack, onSelectUser }) {
               className={`${styles.cardActionBtn} ${styles.cardActionBtnTooltip}`}
               data-tooltip="New User"
               aria-label="New User"
+              onClick={onNewUser}
             >
               <IconPlus size={16} />
             </button>
