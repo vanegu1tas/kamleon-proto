@@ -466,7 +466,7 @@ function CenterCard({ center, org, onEdit, onNewTeam, onNewUser, onSelectTeam, o
 
       {/* ── Inner TabBar ── */}
       <div ref={tabBarRef} className={styles.innerTabBarWrap}>
-        <TabBar tabs={CENTER_TABS} activeTab={innerTab} onChange={handleTabChange} />
+        <TabBar tabs={CENTER_TABS} activeTab={innerTab} onChange={handleTabChange} size="s" />
       </div>
 
       {/* ── Scrollable tab content ── */}

@@ -6,12 +6,17 @@
   overflow: hidden;
 }
 
+.tabBarS {
+  height: auto;
+}
+
 .tab {
+  flex: 1;
+  min-width: 122px;
   height: 100%;
-  padding: 0 32px 3px;
+  padding: 8px 4px 4px;
   background: none;
   border: none;
-  border-bottom: 3px solid transparent;
   cursor: pointer;
   font-family: var(--font-family-primary);
   font-size: var(--font-size-16);
@@ -23,21 +28,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: color 0.2s ease, font-weight 0s;
+  transition: color 0.2s ease;
 }
 
-.tab::before {
-  content: '';
-  position: absolute;
-  inset: 8px 16px;
-  background: var(--color-bg-surface-raised);
-  border-radius: var(--radius-s);
-  opacity: 0;
-  transition: opacity 0.15s ease;
-  z-index: -1;
+/* ─── Size S ─────────────────────────────────────────── */
+
+.tabS {
+  padding: 4px;
+  font-size: var(--font-size-14);
+  height: auto;
 }
 
-.tab:hover:not(.tabActive)::before { opacity: 1; }
 .tab:hover:not(.tabActive) { color: var(--color-text-strong); }
 
 .tabActive {
@@ -53,9 +54,13 @@
   height: 4px;
   width: 56px;
   background: var(--color-status-active);
-  border-radius: 12px 12px 0 0;
+  border-radius: var(--radius-s) var(--radius-s) 0 0;
   pointer-events: none;
   transition: left 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tabIndicatorS {
+  height: 2px;
 }
 
 /* ─── Glow ──────────────────────────────────────────── */
