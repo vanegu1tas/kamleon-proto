@@ -1,6 +1,6 @@
 # Project Summary — Kamleon Design System
 
-Estado del proyecto al 2026-03-17. Referencia rápida para retomar el trabajo.
+Estado del proyecto al 2026-03-18. Referencia rápida para retomar el trabajo.
 
 ---
 
@@ -119,32 +119,61 @@ kamleon/
 │   │   │   └── TabBar.stories.jsx      ✅
 │   │   ├── ContextMenu/
 │   │   │   ├── ContextMenu.jsx         ✅ menú contextual · items con icon · variante danger
-│   │   │   └── ContextMenu.module.css
-│   │   └── ToolbarButton/
-│   │       ├── ToolbarButton.jsx       ✅ botón de toolbar · selected state · badge de filtros
-│   │       └── ToolbarButton.module.css
+│   │   │   ├── ContextMenu.module.css
+│   │   │   └── ContextMenu.stories.jsx ✅
+│   │   ├── ToolbarButton/
+│   │   │   ├── ToolbarButton.jsx       ✅ botón de toolbar · selected state · badge de filtros
+│   │   │   └── ToolbarButton.module.css
+│   │   ├── Toggle/
+│   │   │   ├── Toggle.jsx              ✅ switch ON/OFF · tamaños S (40×24) y M (56×32) · label opcional
+│   │   │   ├── Toggle.module.css
+│   │   │   └── Toggle.stories.jsx      ✅
+│   │   ├── SegmentedControl/
+│   │   │   ├── SegmentedControl.jsx    ✅ control de selección exclusiva · pill activo negro
+│   │   │   ├── SegmentedControl.module.css
+│   │   │   └── SegmentedControl.stories.jsx ✅
+│   │   ├── Input/
+│   │   │   ├── Input.jsx               ✅ campo de texto · label/description/error/disabled · focus ring solo teclado · type="tel" filtra no numéricos
+│   │   │   ├── Input.module.css
+│   │   │   └── Input.stories.jsx       ✅
+│   │   ├── Dropdown/
+│   │   │   ├── Dropdown.jsx            ✅ select nativo estilizado · label/description/error/disabled · IconChevronDown
+│   │   │   ├── Dropdown.module.css
+│   │   │   └── Dropdown.stories.jsx    ✅
+│   │   ├── Textarea/
+│   │   │   ├── Textarea.jsx            ✅ textarea · label/description/error/disabled · focus ring solo teclado · min-height 120px · radius-s
+│   │   │   ├── Textarea.module.css
+│   │   │   └── Textarea.stories.jsx    ✅
+│   │   └── Toast/
+│   │       ├── Toast.jsx               ✅ notificación pill · modo success/critic · prop onUndo · auto-dismiss
+│   │       ├── Toast.module.css
+│   │       └── Toast.stories.jsx       ✅
 │   └── icons/
 │       ├── outline/
-│       │   ├── IconCollapse.jsx      ✅ doble chevron izquierda (colapsar sidebar)
-│       │   ├── IconExpand.jsx        ✅ doble chevron derecha (expandir sidebar)
-│       │   ├── IconChevronRight.jsx  ✅ chevron simple derecha
-│       │   ├── IconChevronDown.jsx   ✅ chevron simple abajo
-│       │   ├── IconSearch.jsx        ✅ lupa
-│       │   ├── IconClose.jsx         ✅ X (cerrar / limpiar)
-│       │   ├── IconUser.jsx          ✅ persona
-│       │   ├── IconTeams.jsx         ✅ dos personas
-│       │   ├── IconBuilding.jsx      ✅ edificio / centro
-│       │   ├── IconDevices.jsx       ✅ dispositivo
-│       │   ├── IconAnalytics.jsx     ✅ gráfico de barras con línea de tendencia
-│       │   ├── IconEye.jsx           ✅ ojo (mostrar)
-│       │   ├── IconEyeClosed.jsx     ✅ ojo cerrado (ocultar)
-│       │   ├── IconAddImage.jsx      ✅ añadir imagen
-│       │   ├── IconEdit.jsx          ✅ lápiz (editar)
-│       │   ├── IconPlus.jsx          ✅ cruz / añadir
-│       │   ├── IconTrash.jsx         ✅ papelera (eliminar)
-│       │   ├── IconSettings.jsx      ✅ engranaje (configuración)
-│       │   ├── IconFilter.jsx        ✅ embudo (filtros)
-│       │   └── index.js              ✅
+│       │   ├── IconCollapse.jsx        ✅ doble chevron izquierda (colapsar sidebar)
+│       │   ├── IconExpand.jsx          ✅ doble chevron derecha (expandir sidebar)
+│       │   ├── IconChevronMiniRight.jsx ✅ chevron mini derecha (navegación, breadcrumbs)
+│       │   ├── IconChevronMiniDown.jsx  ✅ chevron mini abajo (accordions, integrations)
+│       │   ├── IconChevronDown.jsx      ✅ chevron del Dropdown (más abierto, 14×8 en 24×24)
+│       │   ├── IconSearch.jsx          ✅ lupa
+│       │   ├── IconClose.jsx           ✅ X (cerrar / limpiar)
+│       │   ├── IconUser.jsx            ✅ persona
+│       │   ├── IconTeams.jsx           ✅ dos personas
+│       │   ├── IconBuilding.jsx        ✅ edificio / centro
+│       │   ├── IconDevices.jsx         ✅ dispositivo
+│       │   ├── IconAnalytics.jsx       ✅ gráfico de barras con línea de tendencia
+│       │   ├── IconEye.jsx             ✅ ojo (mostrar)
+│       │   ├── IconEyeClosed.jsx       ✅ ojo cerrado (ocultar)
+│       │   ├── IconAddImage.jsx        ✅ añadir imagen
+│       │   ├── IconEdit.jsx            ✅ lápiz (editar)
+│       │   ├── IconPlus.jsx            ✅ cruz / añadir
+│       │   ├── IconTrash.jsx           ✅ papelera (eliminar)
+│       │   ├── IconSettings.jsx        ✅ engranaje (configuración)
+│       │   ├── IconFilter.jsx          ✅ embudo (filtros)
+│       │   ├── IconBell.jsx            ✅ campana (notificaciones)
+│       │   ├── IconMenu.jsx            ✅ hamburger (menú móvil)
+│       │   ├── IconWarning2.jsx        ✅ círculo con signo de exclamación (alerta)
+│       │   └── index.js               ✅
 │       ├── filled/
 │       │   ├── IconUserFilled.jsx    ✅ persona (filled)
 │       │   ├── IconMailFilled.jsx    ✅ correo (filled)
@@ -369,38 +398,37 @@ Nodos relevantes:
 ### Design System — Componentes
 - [x] Button — primary/secondary · s/m · default/hover/disabled
 - [x] Tag — active/inactive/professional/user · dot + label
-- [x] SidebarItem — icon + label · default/selected · expanded/collapsed
+- [x] SidebarItem — icon + label · default/selected · expanded/collapsed · tooltips portal
 - [x] Sidebar — shell completo con header (logo SVG), toggle, secciones y nav
-- [x] SearchBar — lupa + placeholder + clear button · estados: default/hover/focus/error/disabled · focus ring para click y teclado
+- [x] SearchBar — lupa + placeholder + clear button · estados: default/hover/focus/error/disabled
 - [x] TabBar — indicador deslizante + glow animado · variantes 2/3/4 tabs · controlled
 - [x] ContextMenu — menú contextual flotante · items con icono · variante danger · click-outside
 - [x] ToolbarButton — botón de toolbar con selected state y badge de filtros
-- [x] SidebarItem — tooltips portal al colapsar (createPortal en body, fondo oscuro, flecha izquierda)
 - [x] IconButton — botón de icono con borde · variante danger · tooltip opcional
-- [x] Toast — notificación temporal con auto-dismiss · animación entrada/salida
-- [ ] **Input** — campo de texto base · estados: default/focus/error/disabled · con label y helper text
-- [ ] **Select** — dropdown nativo estilizado · mismos estados que Input
-- [ ] **Toggle / Switch** — usado en drawers (RFID, Set PIN, Status) · ON/OFF label
-- [ ] **SegmentedControl** — control de selección exclusiva · activo = pill negro · actualmente inline en NewUserDrawer
-- [ ] **Textarea** — campo de texto multilínea · usado en bulk invite · border-radius s
+- [x] Toggle — switch ON/OFF · tamaños S/M · label opcional · usado en drawers
+- [x] SegmentedControl — control de selección exclusiva · pill activo negro
+- [x] Input — campo de texto base · label/description/error/disabled · focus ring solo teclado · tel filtra caracteres
+- [x] Dropdown — select nativo estilizado · label/description/error/disabled · IconChevronDown
+- [x] Textarea — campo multilínea · label/description/error/disabled · min-height 120px · radius-s
+- [x] Toast — success/critic · prop onUndo · auto-dismiss · posición top 52px · animación desde arriba
 - [ ] Configurar Figma Code Connect
 
 ### Design System — Iconos
 - [x] Duotono (`IconSb*`) — 5 iconos para sidebar
-- [x] Outline (`Icon*`) — 19 iconos con SVG exacto de Figma · todos 24x24 · stroke + currentColor
+- [x] Outline (`Icon*`) — 22 iconos · todos 24×24 · stroke + currentColor · ChevronMiniRight/Down renombrados · ChevronDown (Dropdown) · Bell · Menu · Warning2
 - [x] Filled (`Icon*Filled`) — 4 iconos · fill + currentColor
 
 ### Storybook
 - [x] Setup + stories para Button, Tag, SidebarItem, Sidebar, SearchBar, TabBar
-- [ ] **IconButton** — falta story (componente existe en `design-system/components/IconButton/`)
-- [ ] **Toast** — falta story (componente existe en `design-system/components/Toast/`)
-- [ ] **ContextMenu** — falta story (componente existe, sin .stories.jsx)
-- [ ] **ToolbarButton** — falta story (componente existe, sin .stories.jsx)
-- [ ] **Input** — crear componente DS + story
-- [ ] **Select** — crear componente DS + story
-- [ ] **Toggle** — crear componente DS + story
-- [ ] **SegmentedControl** — crear componente DS + story
-- [ ] **Textarea** — crear componente DS + story
+- [x] ContextMenu — stories añadidas
+- [x] Toast — stories añadidas (success, critic, with undo, all states)
+- [x] Toggle — stories añadidas
+- [x] SegmentedControl — stories añadidas
+- [x] Input — stories añadidas
+- [x] Dropdown — stories añadidas
+- [x] Textarea — stories añadidas
+- [ ] **IconButton** — falta story
+- [ ] **ToolbarButton** — falta story
 
 ### Prototipos
 - [x] StaffOrganizaciones (V1) — sidebar + KPI cards + tabla expandible + filtros + ContextMenu · todos los drawers CRUD
@@ -498,38 +526,33 @@ Archivo: `landing.html` — HTML estático, sin build, se copia directamente a `
 
 ## Estado al 2026-03-18
 
+### Design System — completo
+Todos los componentes de formulario implementados. Drawers del prototipo migrados a DS Input/Dropdown. Toast actualizado a spec Figma (success/critic, undo).
+
 ### Responsive V2 — estado actual
 - **768px**: implementado y funcionando. Pendiente: drawers (NewCenterDrawer, NewOrgDrawer, EditOrgDrawer, etc.)
 - **390px**: implementado en CSS. Pendiente verificación visual en browser.
 
-### Figma — capturas recientes (Web App `sklnDzfw72Z1tDM46vkTGl`)
-- Nodo `3268:2` — Org list desktop
-- Nodo `3271:2` — Org list 390px (verificar que quedó bien)
-- OrgDetail: pendiente de capturar
+### Figma — capturas en Web App (`sklnDzfw72Z1tDM46vkTGl`)
+- Nodo `3268:2` — Org list desktop (2026-03-18)
+- Nodo `3271:2` — Org list 390px (2026-03-18)
+- Nodo `3274:2` — Center Detail 390px / Training Ground · Astonia FC (2026-03-18)
 
 ## Próximos pasos sugeridos
 
-### Prioridad inmediata
-1. **Verificar 390px** en browser (org list + org detail) y ajustar
-2. **Recapturar / capturar a Figma** — 390px org list (confirmar) + OrgDetail desktop + 390px
-3. **Componentes DS** — una vez cerrado el 390px:
-
-### Design System — Componentes pendientes
-- [ ] **Input** — campo de texto base · estados: default/focus/error/disabled · label + helper text
-- [ ] **Select** — dropdown nativo estilizado · mismos estados que Input
-- [ ] **Toggle / Switch** — usado en drawers (RFID, Set PIN, Status)
-- [ ] **SegmentedControl** — control de selección exclusiva · actualmente inline en NewUserDrawer
-- [ ] **Textarea** — campo multilínea · usado en bulk invite
-
-### Storybook — stories pendientes
-- [ ] **IconButton** — componente existe, falta story
-- [ ] **Toast** — componente existe, falta story
-- [ ] **ContextMenu** — componente existe, falta story
-- [ ] **ToolbarButton** — componente existe, falta story
-- [ ] Stories para los nuevos componentes de arriba
+### Design System
+- [ ] **IconButton** — story pendiente
+- [ ] **ToolbarButton** — story pendiente
+- [ ] Code Connect mappings completos
 
 ### V2 — pendientes
-- [ ] **Empty states V2** — CenterCard sin equipos · TeamCard sin usuarios
-- [ ] **Admin de Centro** — prototipo separado (panel de Admin de Centro)
-- [ ] **NewCenterGlobalDrawer — reset datos mock** — contacts pre-rellenos deben volver a `[]`
+- [ ] **Empty states** — CenterCard sin equipos · TeamCard sin usuarios
 - [ ] **Drawers responsive 768px** — NewCenterDrawer, NewOrgDrawer, EditOrgDrawer, etc.
+- [ ] **Panel Admin de Centro** — prototipo separado (no existe aún)
+
+### Docs / definición
+- [ ] Lista de permisos del Admin de Centro restringido
+- [ ] Qué campos puede editar el Admin CTR sobre su propio centro
+- [ ] Dashboard/home o entrada directa a lista
+- [ ] Flujo de onboarding de nueva organización
+- [ ] Flujo de activación de cuenta de admin de centro
