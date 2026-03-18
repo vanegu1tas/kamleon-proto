@@ -1,5 +1,6 @@
 export { default as IconCollapse } from './IconCollapse';
-export { default as IconChevronRight } from './IconChevronRight';
+export { default as IconChevronMiniRight } from './IconChevronMiniRight';
+export { default as IconChevronMiniDown } from './IconChevronMiniDown';
 export { default as IconChevronDown } from './IconChevronDown';
 export { default as IconExpand } from './IconExpand';
 export { default as IconSearch } from './IconSearch';
@@ -17,3 +18,6 @@ export { default as IconEdit } from './IconEdit';
 export { default as IconPlus } from './IconPlus';
 export { default as IconTrash } from './IconTrash';
 export { default as IconSettings } from './IconSettings';
+export { default as IconBell } from './IconBell';
+export { default as IconMenu } from './IconMenu';
+export { default as IconWarning2 } from './IconWarning2';

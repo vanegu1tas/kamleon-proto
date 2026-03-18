@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { IconSettings, IconTrash } from '../../../design-system/icons/outline';
 import { IconMailFilled, IconPhoneFilled } from '../../../design-system/icons/filled';
+import Toggle from '../../../design-system/components/Toggle/Toggle';
 import styles from './UserDetail.module.css';
 
 // ─── Icons ──────────────────────────────────────────────
@@ -119,20 +120,6 @@ function AddImageIcon() {
   );
 }
 
-// ─── Toggle ──────────────────────────────────────────────
-
-function Toggle({ checked, onChange }) {
-  return (
-    <button
-      role="switch"
-      aria-checked={checked}
-      className={`${styles.toggle} ${checked ? styles.toggleOn : ''}`}
-      onClick={() => onChange(!checked)}
-      type="button"
-    />
-  );
-}
-
 // ─── Field group ─────────────────────────────────────────
 
 function Field({ label, required, children }) {
@@ -155,10 +142,7 @@ function SettingRow({ label, description, checked, onChange }) {
         <span className={styles.settingLabel}>{label}</span>
         <span className={styles.settingDesc}>{description}</span>
       </div>
-      <div className={styles.settingControl}>
-        <span className={styles.toggleLabel}>{checked ? 'ON' : 'OFF'}</span>
-        <Toggle checked={checked} onChange={onChange} />
-      </div>
+      <Toggle checked={checked} onChange={onChange} />
     </div>
   );
 }

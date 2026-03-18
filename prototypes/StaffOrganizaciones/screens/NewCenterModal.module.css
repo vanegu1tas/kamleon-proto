@@ -21,6 +21,7 @@
   right: 12px;
   bottom: 12px;
   width: 520px;
+  max-width: calc(100% - 24px);
   background: var(--color-bg-surface);
   border: 1px solid var(--color-border-default);
   border-radius: var(--radius-m);
@@ -28,12 +29,14 @@
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  animation: slideIn 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: slideIn 0.28s ease-out;
+  will-change: transform;
 }
 
 @keyframes slideIn {
-  from { transform: translateX(100%); }
-  to   { transform: translateX(0);    }
+  0%   { transform: translateX(100%); }
+  70%  { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
 }
 
 /* ─── Header ──────────────────────────────────────────── */
@@ -83,9 +86,9 @@
   padding: 24px;
 }
 
-/* ─── Subtitle ────────────────────────────────────────── */
+/* ─── Context line (org-context drawer) ──────────────── */
 
-.subtitle {
+.contextLine {
   font-family: var(--font-family-primary);
   font-size: var(--font-size-14);
   font-weight: var(--font-weight-book);
@@ -93,7 +96,7 @@
   margin: 0;
 }
 
-.subtitleOrg {
+.contextOrg {
   font-weight: var(--font-weight-medium);
   color: var(--color-text-strong);
 }
@@ -151,7 +154,7 @@
 .fields {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 16px;
 }
 
 .formRow {
@@ -242,48 +245,49 @@
   color: var(--color-text-subtle);
 }
 
-/* ─── Invite administrators ───────────────────────────── */
+/* ─── Sections (contact, units, admins) ───────────────── */
 
-.inviteSection {
+.section {
   display: flex;
   flex-direction: column;
   gap: 12px;
   padding-left: 12px;
 }
 
-.inviteInfo {
+.sectionInfo {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
-.inviteLabel {
+.sectionLabel {
   font-family: var(--font-family-primary);
   font-size: var(--font-size-14);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-medium);
   color: var(--color-text-strong);
   margin: 0;
 }
 
-.inviteSubtitle {
+.sectionSubtitle {
   font-family: var(--font-family-primary);
   font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
   color: var(--color-text-subtle);
   margin: 0;
 }
 
-.adminEmailRow {
+.addItemRow {
   display: flex;
   gap: 8px;
   align-items: center;
   padding-right: 12px;
 }
 
-.adminEmailRow .input {
+.addItemRow .input {
   flex: 1;
 }
 
-.removeAdminBtn {
+.removeItemBtn {
   background: none;
   border: none;
   padding: 4px;
@@ -297,17 +301,18 @@
   transition: color 0.15s ease;
 }
 
-.removeAdminBtn:hover {
+.removeItemBtn:hover {
   color: var(--color-text-strong);
 }
 
-.addAdminBtn {
+.addBtn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   background: none;
   border: none;
   padding: 0;
+  padding-left: 0;
   cursor: pointer;
   font-family: var(--font-family-primary);
   font-size: var(--font-size-14);
@@ -316,7 +321,16 @@
   transition: opacity 0.15s ease;
 }
 
-.addAdminBtn:hover { opacity: 0.75; }
+.addBtn:hover { opacity: 0.75; }
+
+/* addBtn dentro de .fields (fuera de .section) necesita el mismo indent */
+.fields .addBtn {
+  padding-left: 12px;
+}
+
+.fields .addItemRow {
+  padding-right: 0;
+}
 
 /* ─── Footer ──────────────────────────────────────────── */
 

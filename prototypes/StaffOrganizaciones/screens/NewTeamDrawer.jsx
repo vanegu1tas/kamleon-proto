@@ -2,6 +2,8 @@ import { useState } from 'react';
 import Button from '../../../design-system/components/Button/Button';
 import { IconClose, IconAddImage } from '../../../design-system/icons/outline';
 import IconButton from '../../../design-system/components/IconButton/IconButton';
+import Toggle from '../../../design-system/components/Toggle/Toggle';
+import Input from '../../../design-system/components/Input/Input';
 import styles from './NewTeamDrawer.module.css';
 
 export default function NewTeamDrawer({ center, onClose }) {
@@ -45,18 +47,14 @@ export default function NewTeamDrawer({ center, onClose }) {
           </div>
 
           {/* Team name */}
-          <div className={styles.field}>
-            <label className={styles.fieldLabel}>
-              Team name <span className={styles.required}>*</span>
-            </label>
-            <input
-              className={styles.input}
-              placeholder="Write here..."
-              value={name}
-              onChange={e => setName(e.target.value)}
-              autoFocus
-            />
-          </div>
+          <Input
+            label="Team name"
+            required
+            placeholder="Write here..."
+            value={name}
+            onChange={setName}
+            autoFocus
+          />
 
           {/* Settings */}
           <div className={styles.settingsList}>
@@ -66,16 +64,7 @@ export default function NewTeamDrawer({ center, onClose }) {
                 <span className={styles.settingLabel}>Set PIN</span>
                 <span className={styles.settingDesc}>Enabling this requires the user to enter a personal PIN to log in.</span>
               </div>
-              <div className={styles.settingControl}>
-                <span className={styles.toggleLabel}>{setPin ? 'ON' : 'OFF'}</span>
-                <button
-                  role="switch"
-                  aria-checked={setPin}
-                  className={`${styles.toggle} ${setPin ? styles.toggleOn : ''}`}
-                  onClick={() => setSetPin(v => !v)}
-                  type="button"
-                />
-              </div>
+              <Toggle checked={setPin} onChange={setSetPin} />
             </div>
 
           </div>

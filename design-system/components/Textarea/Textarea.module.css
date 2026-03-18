@@ -1,0 +1,132 @@
+/* ─── Wrapper ─────────────────────────────────────────── */
+
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+/* ─── Label ───────────────────────────────────────────── */
+
+.labelRow {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding-left: 12px;
+}
+
+.label {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+  line-height: 1.25;
+}
+
+.required {
+  font-family: var(--font-family-primary);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-status-error);
+  line-height: 1;
+}
+
+/* ─── Description ─────────────────────────────────────── */
+
+.description {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+  padding-left: 12px;
+  line-height: 1.25;
+  margin-top: -4px;
+}
+
+/* ─── Textarea field ──────────────────────────────────── */
+
+.textarea {
+  width: 100%;
+  min-height: 120px;
+  background: var(--color-bg-surface-subtle);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-s);
+  padding: 13px;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-strong);
+  line-height: 1.5;
+  outline: none;
+  resize: vertical;
+  cursor: text;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  box-sizing: border-box;
+}
+
+.textarea::placeholder {
+  color: var(--color-text-subtle);
+}
+
+.textarea:hover:not(:focus):not(:disabled) {
+  border-color: var(--color-border-strong);
+}
+
+/* Active — click/mouse */
+.textarea:focus {
+  border-color: var(--color-border-focus);
+}
+
+/* Focus — teclado */
+.textarea:focus-visible {
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--color-border-focus);
+}
+
+/* Suprime el ring cuando el foco vino del mouse */
+.textarea[data-mouse-focus]:focus-visible {
+  box-shadow: none;
+}
+
+/* ─── Error state ─────────────────────────────────────── */
+
+.textareaError {
+  border-color: var(--color-border-error);
+}
+
+.textareaError:hover:not(:focus):not(:disabled) {
+  border-color: var(--color-border-error);
+}
+
+.textareaError:focus {
+  border-color: var(--color-border-error);
+}
+
+.textareaError:focus-visible {
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--color-border-error);
+}
+
+.textareaError[data-mouse-focus]:focus-visible {
+  box-shadow: none;
+}
+
+/* ─── Disabled state ──────────────────────────────────── */
+
+.textareaDisabled,
+.textarea:disabled {
+  background: var(--color-bg-surface-disabled);
+  border-color: var(--color-bg-surface-disabled);
+  color: var(--color-text-disabled);
+  cursor: not-allowed;
+  resize: none;
+}
+
+/* ─── Error message ───────────────────────────────────── */
+
+.errorMsg {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-status-error);
+  padding-left: 12px;
+  line-height: 1.25;
+}

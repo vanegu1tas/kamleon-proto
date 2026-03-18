@@ -1,6 +1,6 @@
 # Project Summary — Kamleon Design System
 
-Estado del proyecto al 2026-03-13. Referencia rápida para retomar el trabajo.
+Estado del proyecto al 2026-03-17. Referencia rápida para retomar el trabajo.
 
 ---
 
@@ -376,8 +376,13 @@ Nodos relevantes:
 - [x] ContextMenu — menú contextual flotante · items con icono · variante danger · click-outside
 - [x] ToolbarButton — botón de toolbar con selected state y badge de filtros
 - [x] SidebarItem — tooltips portal al colapsar (createPortal en body, fondo oscuro, flecha izquierda)
-- [ ] Input — campo de texto base para formularios
-- [ ] Toggle / Switch — para pantalla de permisos del Admin restringido
+- [x] IconButton — botón de icono con borde · variante danger · tooltip opcional
+- [x] Toast — notificación temporal con auto-dismiss · animación entrada/salida
+- [ ] **Input** — campo de texto base · estados: default/focus/error/disabled · con label y helper text
+- [ ] **Select** — dropdown nativo estilizado · mismos estados que Input
+- [ ] **Toggle / Switch** — usado en drawers (RFID, Set PIN, Status) · ON/OFF label
+- [ ] **SegmentedControl** — control de selección exclusiva · activo = pill negro · actualmente inline en NewUserDrawer
+- [ ] **Textarea** — campo de texto multilínea · usado en bulk invite · border-radius s
 - [ ] Configurar Figma Code Connect
 
 ### Design System — Iconos
@@ -386,8 +391,16 @@ Nodos relevantes:
 - [x] Filled (`Icon*Filled`) — 4 iconos · fill + currentColor
 
 ### Storybook
-- [x] Setup + stories para los 6 componentes
-- [ ] Añadir story por cada componente nuevo
+- [x] Setup + stories para Button, Tag, SidebarItem, Sidebar, SearchBar, TabBar
+- [ ] **IconButton** — falta story (componente existe en `design-system/components/IconButton/`)
+- [ ] **Toast** — falta story (componente existe en `design-system/components/Toast/`)
+- [ ] **ContextMenu** — falta story (componente existe, sin .stories.jsx)
+- [ ] **ToolbarButton** — falta story (componente existe, sin .stories.jsx)
+- [ ] **Input** — crear componente DS + story
+- [ ] **Select** — crear componente DS + story
+- [ ] **Toggle** — crear componente DS + story
+- [ ] **SegmentedControl** — crear componente DS + story
+- [ ] **Textarea** — crear componente DS + story
 
 ### Prototipos
 - [x] StaffOrganizaciones (V1) — sidebar + KPI cards + tabla expandible + filtros + ContextMenu · todos los drawers CRUD
@@ -398,14 +411,21 @@ Nodos relevantes:
 - [x] UserDetail — vista/edición · toggles de permisos
 - [x] NewCenterModal, NewOrgDrawer, NewTeamDrawer — drawers de creación
 - [x] EditCenterDrawer, EditTeamDrawer, EditOrgDrawer — drawers de edición
-- [x] StaffOrganizacionesV2 (V2) — shell completa · SearchPalette ⌘K · search pill topbar (fondo blanco + sombra)
-- [x] OrgDetailV2 — layout master-detail en dos paneles
-- [x] CenterCard (V2) — tabs: Teams · Users · Monitoring · botón Create dropdown (New Team/New User/New Unit)
-- [x] Tab Users en CenterCard — lista todos los usuarios del centro (todos los equipos) · búsqueda + filter pills por equipo · paginación · click navega a UserCard
-- [x] TeamCard (V2) — tabs: Users · Administrators
+- [x] StaffOrganizacionesV2 (V2) — shell completa · SearchPalette ⌘K · search pill topbar (fondo blanco + sombra) · responsive 768px (slide lateral Opción C)
+- [x] OrgDetailV2 — layout master-detail en dos paneles · responsive: listPanel/detailPanel con translateX + detailVisible state + botón "← Centers" en mobile
+- [x] CenterCard (V2) — tabs: Details · Teams · Users · Monitoring · botón Create dropdown · Tab Teams: tabla con search + Filters + context menu por equipo (Edit Team → EditTeamDrawer, New User, Delete Team)
+- [x] Tab Details CenterCard — sección Overview (stats clickables) + sección Contact (Center info + People con admins y contactos separados por dividers)
+- [x] Tab Users en CenterCard — lista todos los usuarios del centro · búsqueda + filter pills por equipo · paginación · click navega a UserCard
+- [x] TeamCard (V2) — tabla de miembros con search + Filters button + context menu por fila (Edit User → EditUserDrawer, Delete User stub) · back button "Back to Teams" vuelve al tab Teams del CenterCard
 - [x] UserCard (V2) — vista de usuario · Settings button → EditUserDrawer
-- [x] Panel izquierdo (V2) — botón "+" junto al overline "Centers" · tooltip "New Center" posicionado a la izquierda (flecha derecha)
-- [x] Center rows expandidos (OrgList V2) — click navega a OrgDetailV2 con `initialCenter` (no al CenterDetail V1)
+- [x] Panel izquierdo (V2) — botón "+" junto al overline "Centers" · tooltip "New Center" posicionado a la izquierda
+- [x] Center rows expandidos (OrgList V2) — click navega a OrgDetailV2 con `initialCenter`
+- [x] NewUserDrawer (V1) — rediseñado con segmented control "By invite / Manually" · modo Invite: email + rol + bulk (textarea libre de emails + CSV upload) · modo Manual: avatar + Name/Role/Email/Phone/Date of birth (Day/Month/Year) + Gender select + Height/Weight + Settings (RFID/PIN)
+- [x] NewCenterGlobalDrawer — drawer global con selector de org · sección contactos con tarjetas de 4 campos (Name, Position, Email, Phone)
+- [x] NewCenterDrawer — drawer con contexto de org (sin selector) · muestra "Creating center for [org]"
+- [x] DeleteOrgModal — modal de confirmación centrado · conectado a OrgDetailV2 y context menu de lista
+- [x] EditCenterDrawer — reescrito completo con estructura de NewCenter: todos los campos + contactos pre-rellenos + admins confirmados (read-only) + invitaciones pendientes
+- [x] mockData.js Arsenal center 201 — contacts[] (James Wright/Director, Sarah Collins/Coordinator) + admins[] (Michael Porter/Center Admin)
 - [x] mockData.js — IDs únicos y no solapantes por organización (1-12 Astonia, 19-31 Arsenal, 32-52 Baskonia, 53-63 CAR Sant Cugat, 64-70 Sierra Nevada, 71-74 CEAR, 75-87 CEM Joan Miró, 88-90 CNEA, 91-94 Dynatech)
 - [x] Desplegado V2 en GitHub Pages (/prototype-v2/) · builds separados con vite.config.v1/v2.js · mv para renombrar index.html
 - [x] Fix 404 en V2: mv del HTML de salida para que GitHub Pages sirva index.html correctamente
@@ -476,12 +496,40 @@ Archivo: `landing.html` — HTML estático, sin build, se copia directamente a `
 3. `npm run storybook` → http://localhost:6006 para inspeccionar componentes en aislamiento
 4. V2 en producción: https://vanegu1tas.github.io/kamleon-proto/prototype-v2/
 
-## Próximos pasos sugeridos (V2)
+## Estado al 2026-03-18
 
-- [ ] **NewUserDrawer** — drawer crear usuario (análogo a EditUserDrawer pero en modo creación) · conectar desde el botón "New User" del Create dropdown en CenterCard
-- [ ] **NewCenterDrawer en V2** — conectar el botón "+" del panel izquierdo al flujo de creación de centro
-- [ ] **Empty states V2** — CenterCard sin equipos · TeamCard sin usuarios · UserCard estado vacío
-- [ ] **Tab Administrators** — implementar el tab en CenterCard y TeamCard (hoy muestra empty state)
-- [ ] **Tab Monitoring** — placeholder o primer contenido de monitoreo
-- [ ] **Paginación real** — conectar la paginación del tab Users a los datos mock
-- [ ] **Admin de Centro** — comenzar el prototipo del panel de Admin de Centro (separado del panel Staff)
+### Responsive V2 — estado actual
+- **768px**: implementado y funcionando. Pendiente: drawers (NewCenterDrawer, NewOrgDrawer, EditOrgDrawer, etc.)
+- **390px**: implementado en CSS. Pendiente verificación visual en browser.
+
+### Figma — capturas recientes (Web App `sklnDzfw72Z1tDM46vkTGl`)
+- Nodo `3268:2` — Org list desktop
+- Nodo `3271:2` — Org list 390px (verificar que quedó bien)
+- OrgDetail: pendiente de capturar
+
+## Próximos pasos sugeridos
+
+### Prioridad inmediata
+1. **Verificar 390px** en browser (org list + org detail) y ajustar
+2. **Recapturar / capturar a Figma** — 390px org list (confirmar) + OrgDetail desktop + 390px
+3. **Componentes DS** — una vez cerrado el 390px:
+
+### Design System — Componentes pendientes
+- [ ] **Input** — campo de texto base · estados: default/focus/error/disabled · label + helper text
+- [ ] **Select** — dropdown nativo estilizado · mismos estados que Input
+- [ ] **Toggle / Switch** — usado en drawers (RFID, Set PIN, Status)
+- [ ] **SegmentedControl** — control de selección exclusiva · actualmente inline en NewUserDrawer
+- [ ] **Textarea** — campo multilínea · usado en bulk invite
+
+### Storybook — stories pendientes
+- [ ] **IconButton** — componente existe, falta story
+- [ ] **Toast** — componente existe, falta story
+- [ ] **ContextMenu** — componente existe, falta story
+- [ ] **ToolbarButton** — componente existe, falta story
+- [ ] Stories para los nuevos componentes de arriba
+
+### V2 — pendientes
+- [ ] **Empty states V2** — CenterCard sin equipos · TeamCard sin usuarios
+- [ ] **Admin de Centro** — prototipo separado (panel de Admin de Centro)
+- [ ] **NewCenterGlobalDrawer — reset datos mock** — contacts pre-rellenos deben volver a `[]`
+- [ ] **Drawers responsive 768px** — NewCenterDrawer, NewOrgDrawer, EditOrgDrawer, etc.

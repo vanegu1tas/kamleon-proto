@@ -13,7 +13,7 @@ import {
   IconSbUnit,
 } from '../../design-system/icons';
 import OrgDetail from './screens/OrgDetail';
-import NewCenterModal from './screens/NewCenterModal';
+import NewCenterGlobalDrawer from './screens/NewCenterGlobalDrawer';
 import NewOrgDrawer from './screens/NewOrgDrawer';
 import EditOrgDrawer from './screens/EditOrgDrawer';
 import CenterDetail from './screens/CenterDetail';
@@ -652,7 +652,7 @@ export default function StaffOrganizaciones() {
 
       </div>
 
-      {showNewCenterModal && <NewCenterModal org={newCenterOrg} onClose={() => { setShowNewCenterModal(false); setNewCenterOrg(null); }} />}
+      {showNewCenterModal && <NewCenterGlobalDrawer org={newCenterOrg} onClose={() => { setShowNewCenterModal(false); setNewCenterOrg(null); }} />}
       {showNewOrgDrawer   && <NewOrgDrawer   onClose={() => setShowNewOrgDrawer(false)}   />}
       {editOrgTarget      && <EditOrgDrawer  org={editOrgTarget} onClose={() => setEditOrgTarget(null)} />}
 

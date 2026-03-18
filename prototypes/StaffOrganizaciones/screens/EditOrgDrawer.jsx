@@ -1,29 +1,13 @@
 import { useState } from 'react';
 import Button from '../../../design-system/components/Button/Button';
-import { IconClose, IconChevronDown, IconPlus } from '../../../design-system/icons/outline';
+import { IconClose, IconChevronMiniDown, IconPlus } from '../../../design-system/icons/outline';
 import IconButton from '../../../design-system/components/IconButton/IconButton';
+import Toggle from '../../../design-system/components/Toggle/Toggle';
+import Input from '../../../design-system/components/Input/Input';
+import Dropdown from '../../../design-system/components/Dropdown/Dropdown';
 import styles from './EditOrgDrawer.module.css';
 
 const SEGMENTS = ['Sport', 'Fitness'];
-
-// ─── Select ──────────────────────────────────────────────
-
-function SelectField({ value, onChange, options, renderOption }) {
-  return (
-    <div className={styles.selectWrap}>
-      <select
-        className={styles.select}
-        value={value}
-        onChange={e => onChange(e.target.value)}
-      >
-        {options.map(opt => (
-          <option key={opt} value={opt}>{renderOption ? renderOption(opt) : opt}</option>
-        ))}
-      </select>
-      <span className={styles.selectIcon}><IconChevronDown size={16} /></span>
-    </div>
-  );
-}
 
 // ─── Kamleon API expanded content ────────────────────────
 
@@ -41,13 +25,7 @@ function KamleonContent() {
           <span className={styles.integrationSettingLabel}>Enable API</span>
           <span className={styles.integrationSettingDesc}>Short Description</span>
         </div>
-        <button
-          role="switch"
-          aria-checked={enabled}
-          className={`${styles.toggle} ${enabled ? styles.toggleOn : ''}`}
-          onClick={() => setEnabled(v => !v)}
-          type="button"
-        />
+        <Toggle checked={enabled} onChange={setEnabled} label={false} />
       </div>
 
       {/* Max tokens + API Token — stacked verticalmente */}
@@ -133,7 +111,7 @@ function IntegrationRow({ logo, name, children }) {
           </div>
         </div>
         <span className={`${styles.integrationChevron} ${open ? styles.integrationChevronOpen : ''}`}>
-          <IconChevronDown size={24} />
+          <IconChevronMiniDown size={24} />
         </span>
       </button>
       {open && children}
@@ -197,52 +175,39 @@ export default function EditOrgDrawer({ org, onClose }) {
 
               {/* Name + Segment */}
               <div className={styles.formRow}>
-                <div className={styles.field}>
-                  <label className={styles.fieldLabel}>
-                    <span>Name <span className={styles.required}>*</span></span>
-                  </label>
-                  <input
-                    className={styles.input}
-                    placeholder="Write here..."
-                    value={name}
-                    onChange={e => setName(e.target.value)}
-                    autoFocus
-                  />
-                </div>
-                <div className={styles.field}>
-                  <label className={styles.fieldLabel}>
-                    <span>Segment <span className={styles.required}>*</span></span>
-                  </label>
-                  <SelectField
-                    value={segment}
-                    onChange={setSegment}
-                    options={SEGMENTS}
-                  />
-                </div>
+                <Input
+                  label="Name"
+                  required
+                  placeholder="Write here..."
+                  value={name}
+                  onChange={setName}
+                  autoFocus
+                />
+                <Dropdown
+                  label="Segment"
+                  required
+                  options={SEGMENTS}
+                  value={segment}
+                  onChange={setSegment}
+                />
               </div>
 
               {/* Email + Phone */}
               <div className={styles.formRow}>
-                <div className={styles.field}>
-                  <label className={styles.fieldLabel}>Email</label>
-                  <input
-                    className={styles.input}
-                    type="email"
-                    placeholder="Write here..."
-                    value={email}
-                    onChange={e => setEmail(e.target.value)}
-                  />
-                </div>
-                <div className={styles.field}>
-                  <label className={styles.fieldLabel}>Phone number</label>
-                  <input
-                    className={styles.input}
-                    type="tel"
-                    placeholder="Write here..."
-                    value={phone}
-                    onChange={e => setPhone(e.target.value)}
-                  />
-                </div>
+                <Input
+                  label="Email"
+                  type="email"
+                  placeholder="Write here..."
+                  value={email}
+                  onChange={setEmail}
+                />
+                <Input
+                  label="Phone number"
+                  type="tel"
+                  placeholder="Write here..."
+                  value={phone}
+                  onChange={setPhone}
+                />
               </div>
 
               {/* Address(es) */}
@@ -304,7 +269,7 @@ export default function EditOrgDrawer({ org, onClose }) {
                   <option value="active">Active</option>
                   <option value="inactive">Inactive</option>
                 </select>
-                <span className={styles.selectIcon}><IconChevronDown size={16} /></span>
+                <span className={styles.selectIcon}><IconChevronMiniDown size={16} /></span>
               </div>
             </div>
 

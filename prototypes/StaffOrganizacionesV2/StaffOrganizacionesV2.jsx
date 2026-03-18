@@ -19,15 +19,18 @@ import CenterDetail from '../StaffOrganizaciones/screens/CenterDetail';
 import TeamDetail   from '../StaffOrganizaciones/screens/TeamDetail';
 import UserDetail   from '../StaffOrganizaciones/screens/UserDetail';
 // Shared drawers from V1
-import NewCenterModal from '../StaffOrganizaciones/screens/NewCenterModal';
+import NewCenterGlobalDrawer from '../StaffOrganizaciones/screens/NewCenterGlobalDrawer';
+import NewCenterDrawer       from '../StaffOrganizaciones/screens/NewCenterDrawer';
+import DeleteOrgModal        from '../StaffOrganizaciones/screens/DeleteOrgModal';
 import NewOrgDrawer   from '../StaffOrganizaciones/screens/NewOrgDrawer';
 import EditOrgDrawer  from '../StaffOrganizaciones/screens/EditOrgDrawer';
 // Shared mock data and helpers from V1
 import { ORGS, getUserCountForOrg, getUserCountForCenter, getProfessionalCountForCenter, getActiveTeamCount } from '../StaffOrganizaciones/mockData';
-import { IconFilter, IconEdit, IconPlus, IconTrash, IconSearch } from '../../design-system/icons/outline';
+import { IconFilter, IconEdit, IconPlus, IconTrash, IconSearch, IconBell, IconMenu } from '../../design-system/icons/outline';
 import SearchPalette from './components/SearchPalette';
 import ToolbarButton from '../../design-system/components/ToolbarButton/ToolbarButton';
 import ContextMenu from '../../design-system/components/ContextMenu/ContextMenu';
+import Toast from '../../design-system/components/Toast/Toast';
 // Shared styles from V1 (OrgList is the same)
 import styles from '../StaffOrganizaciones/StaffOrganizaciones.module.css';
 
@@ -37,6 +40,7 @@ const NAV_SECTIONS = [
     label: 'Management',
     items: [
       { id: 'center', label: 'Center control', icon: <IconSbCenter />, active: true  },
+      { id: 'units',  label: 'Units',          icon: <IconSbUnit />,  active: false },
     ],
   },
   {
@@ -45,13 +49,6 @@ const NAV_SECTIONS = [
     items: [
       { id: 'hydration', label: 'Hydration',    icon: <IconSbDrop />,  active: false },
       { id: 'uro',       label: 'Uroflowmetry', icon: <IconSbChart />, active: false },
-    ],
-  },
-  {
-    id: 'units',
-    label: 'Units',
-    items: [
-      { id: 'devices', label: 'Devices', icon: <IconSbUnit />, active: false },
     ],
   },
 ];
@@ -82,22 +79,6 @@ function PlusIcon() {
   );
 }
 
-function MenuIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-      <path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function BellIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-      <path d="M10 2a6 6 0 00-6 6v3l-1.5 2.5h15L16 11V8a6 6 0 00-6-6z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-      <path d="M8.5 16.5a1.5 1.5 0 003 0" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  );
-}
 
 function SortIcon({ col, activeCol, dir }) {
   const isActive = col === activeCol;
@@ -111,8 +92,14 @@ function SortIcon({ col, activeCol, dir }) {
   );
 }
 
-export default function StaffOrganizacionesV2() {
-  const [navStack, setNavStack] = useState([{ screen: 'orgs' }]);
+export default function StaffOrganizacionesV2({ initialOrgId, initialCenterId } = {}) {
+  const [navStack, setNavStack] = useState(() => {
+    if (initialOrgId) {
+      const org = ORGS.find(o => o.id === initialOrgId);
+      if (org) return [{ screen: 'org-detail', key: org.id, params: { org, initialCenter: initialCenterId ?? null } }];
+    }
+    return [{ screen: 'orgs' }];
+  });
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isTablet, setIsTablet] = useState(() => window.matchMedia('(max-width: 768px)').matches);
@@ -131,19 +118,27 @@ export default function StaffOrganizacionesV2() {
   const [newCenterOrg, setNewCenterOrg] = useState(null);
   const [showNewOrgDrawer, setShowNewOrgDrawer]   = useState(false);
   const [editOrgTarget,   setEditOrgTarget]       = useState(null);
+  const [deleteOrgTarget, setDeleteOrgTarget]     = useState(null);
+  const [newCenterOrg2,   setNewCenterOrg2]       = useState(null);
   const [createMenuOpen, setCreateMenuOpen] = useState(false);
   const createMenuRef = useRef(null);
   const [showPalette, setShowPalette] = useState(false);
   const [tableSearch, setTableSearch] = useState('');
+  const [toast, setToast] = useState(null);
 
   const currentScreen = navStack[navStack.length - 1];
+  const [slideDirection, setSlideDirection] = useState('forward');
 
   function navigate(screen, params = {}) {
+    setSlideDirection('forward');
     setNavStack(prev => [...prev, { screen, params, key: Date.now() }]);
+    if (isTablet) setDrawerOpen(false);
   }
 
   function goBack() {
+    setSlideDirection('back');
     setNavStack(prev => prev.length > 1 ? prev.slice(0, -1) : prev);
+    if (isTablet) setDrawerOpen(false);
   }
 
   const SCREEN_LABELS = {
@@ -305,7 +300,7 @@ export default function StaffOrganizacionesV2() {
             onClick={() => setDrawerOpen(true)}
             aria-label="Abrir menú"
           >
-            <MenuIcon />
+            <IconMenu size={20} />
           </button>
           <div className={styles.topbarLogo}>
             <LogoKamleon />
@@ -339,7 +334,7 @@ export default function StaffOrganizacionesV2() {
               <span className={styles.searchTriggerKbd}>⌘K</span>
             </button>
             <button className={styles.notifBtn}>
-              <BellIcon />
+              <IconBell size={20} />
               <span className={styles.notifDot} />
             </button>
             <div className={styles.avatar}>D</div>
@@ -347,6 +342,11 @@ export default function StaffOrganizacionesV2() {
         </div>
 
         {/* ── Screens ── */}
+
+        <div
+          key={currentScreen.key ?? currentScreen.screen}
+          className={`${styles.screenWrapper} ${isTablet ? styles[`screenSlide_${slideDirection}`] : ''}`}
+        >
 
         {currentScreen.screen === 'org-detail' && (
           <OrgDetailV2
@@ -356,6 +356,7 @@ export default function StaffOrganizacionesV2() {
             initialCenter={currentScreen.params.initialCenter}
             initialTeam={currentScreen.params.initialTeam}
             initialUser={currentScreen.params.initialUser}
+            isMobile={isTablet}
           />
         )}
 
@@ -552,7 +553,7 @@ export default function StaffOrganizacionesV2() {
                       Units <SortIcon col="units" activeCol={sortCol} dir={sortDir} />
                     </button>
                   </div>
-                  <div className={`${styles.colHead} ${styles.colUsers} ${styles.cellCenter}`}>Segments</div>
+                  <div className={`${styles.colHead} ${styles.colUsers} ${styles.cellCenter}`}>Segment</div>
                   <div className={`${styles.colHead} ${styles.colActions}`} />
                 </div>
 
@@ -574,7 +575,13 @@ export default function StaffOrganizacionesV2() {
                             <ChevronIcon />
                           </button>
                           <div className={styles.orgLogo}>{org.name.charAt(0)}</div>
-                          <span className={styles.orgName}>{org.name}</span>
+                          <div className={styles.orgNameWrap}>
+                            <span className={styles.orgName}>{org.name}</span>
+                            <span className={`${styles.orgNameTag} ${styles[`orgStatus_${org.status}`]}`}>
+                              <span className={styles.orgStatusDot} />
+                              {org.status === 'active' ? 'Active' : 'Inactive'}
+                            </span>
+                          </div>
                         </div>
                         <div className={`${styles.cell} ${styles.colStatus} ${styles.cellCenter}`}>
                           <Tag status={org.status} />
@@ -649,20 +656,30 @@ export default function StaffOrganizacionesV2() {
           </div>
         )}
 
+        </div> {/* screenWrapper */}
+
       </div>
 
-      {showNewCenterModal && <NewCenterModal org={newCenterOrg} onClose={() => { setShowNewCenterModal(false); setNewCenterOrg(null); }} />}
-      {showNewOrgDrawer   && <NewOrgDrawer   onClose={() => setShowNewOrgDrawer(false)} />}
-      {editOrgTarget      && <EditOrgDrawer  org={editOrgTarget} onClose={() => setEditOrgTarget(null)} />}
+      {showNewCenterModal && <NewCenterGlobalDrawer org={newCenterOrg} onClose={() => { setShowNewCenterModal(false); setNewCenterOrg(null); }} />}
+      {showNewOrgDrawer   && <NewOrgDrawer   onClose={(created) => { setShowNewOrgDrawer(false); if (created) setToast('New organization created'); }} />}
+      {editOrgTarget      && <EditOrgDrawer  org={editOrgTarget}  onClose={() => setEditOrgTarget(null)} />}
+      {deleteOrgTarget    && <DeleteOrgModal  org={deleteOrgTarget} onClose={() => setDeleteOrgTarget(null)} />}
+      {newCenterOrg2      && <NewCenterDrawer org={newCenterOrg2}  onClose={() => setNewCenterOrg2(null)} />}
       {showPalette && <SearchPalette onClose={() => setShowPalette(false)} onNavigate={navigate} />}
+
+      {toast && (
+        <div className={styles.toastWrap}>
+          <Toast message={toast} onClose={() => setToast(null)} />
+        </div>
+      )}
 
       {openMenuOrgId && createPortal(
         <div className={styles.contextMenuWrap} style={{ top: menuPos.top, right: menuPos.right }} ref={menuRef}>
           <ContextMenu
             items={[
               { label: 'Edit',       icon: <IconEdit  size={16} />, onClick: () => { setEditOrgTarget(openMenuOrg); setOpenMenuOrg(null); } },
-              { label: 'New Center', icon: <IconPlus  size={16} />, onClick: () => { setNewCenterOrg(openMenuOrg); setOpenMenuOrg(null); setShowNewCenterModal(true); } },
-              { label: 'Delete',     icon: <IconTrash size={16} />, variant: 'danger', onClick: () => setOpenMenuOrg(null) },
+              { label: 'New Center', icon: <IconPlus  size={16} />, onClick: () => { setNewCenterOrg2(openMenuOrg); setOpenMenuOrg(null); } },
+              { label: 'Delete',     icon: <IconTrash size={16} />, variant: 'danger', onClick: () => { setDeleteOrgTarget(openMenuOrg); setOpenMenuOrg(null); } },
             ]}
           />
         </div>,

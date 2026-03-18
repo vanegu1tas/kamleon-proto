@@ -135,6 +135,7 @@
   height: 8px;
   border-radius: 50%;
   flex-shrink: 0;
+  align-self: center;
 }
 
 .statusDot.active   { background: var(--color-status-active); }
@@ -218,7 +219,8 @@
 .metadata {
   display: flex;
   align-items: center;
-  gap: 24px;
+  column-gap: 24px;
+  row-gap: 12px;
   flex-wrap: wrap;
   padding-left: 64px;
 }
@@ -367,8 +369,8 @@
 .listPanelTop {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 24px 16px 12px;
+  gap: 16px;
+  padding: 24px 12px 12px 16px;
   flex-shrink: 0;
 }
 
@@ -459,6 +461,20 @@
   padding: 4px 0;
 }
 
+.listEmpty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+}
+
+.listEmptyText {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  color: var(--color-text-subtle);
+  text-align: center;
+}
+
 .listItem {
   width: 100%;
   display: flex;
@@ -522,13 +538,15 @@
   display: flex;
   align-items: center;
   gap: 6px;
+  padding-top: 1px;
 }
 
 .listItemDot {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   flex-shrink: 0;
+  align-self: center;
 }
 
 .listItemDot.active   { background: var(--color-status-active); }
@@ -577,7 +595,7 @@
 /* ── Inner header (fixed, above tab bar) ── */
 
 .innerHeader {
-  padding: 20px 20px 0;
+  padding: 24px 16px 0;
   flex-shrink: 0;
 }
 
@@ -585,14 +603,15 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  margin-bottom: 16px;
 }
 
 /* ── Inner tab bar ── */
 
 .innerTabBarWrap {
   flex-shrink: 0;
-  margin: 0 -1px;
+  width: 100%;
+  max-width: 320px;
+  margin: 24px 0 0 16px;
 }
 
 /* ── Inner tab content (scrollable) ── */
@@ -600,7 +619,7 @@
 .innerTabContent {
   flex: 1;
   overflow-y: auto;
-  padding: 16px 20px;
+  padding: 24px 16px;
 }
 
 .cardHeaderLeft {
@@ -653,6 +672,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
+  padding-top: 1px;
   font-size: var(--font-size-16);
   color: var(--color-text-subtle);
 }
@@ -817,11 +837,31 @@
   position: relative;
 }
 
+.createTriggerHidden {
+  opacity: 0;
+  pointer-events: none;
+  display: inline-flex;
+}
+
 .cardCreateMenu {
   position: absolute;
-  top: calc(100% + 6px);
+  top: 0;
   right: 0;
   z-index: 200;
+  transform-origin: top right;
+  animation: menuMorph 0.28s cubic-bezier(0.34, 1.25, 0.64, 1) both;
+  will-change: transform, opacity;
+}
+
+@keyframes menuMorph {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 /* ─── Inner tab: teams list ──────────────────────────── */
@@ -894,6 +934,23 @@
   color: var(--color-text-subtle);
 }
 
+/* ─── Team row context menu ───────────────────────────── */
+
+.teamRowMenuAnchor {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.teamRowMenu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  z-index: 200;
+  transform-origin: top right;
+  animation: menuMorph 0.28s cubic-bezier(0.34, 1.25, 0.64, 1) both;
+  will-change: transform, opacity;
+}
+
 /* ─── Inner empty state ───────────────────────────────── */
 
 .innerEmpty {
@@ -911,13 +968,13 @@
 .detailsTab {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 40px;
 }
 
 .detailsSection {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 24px;
 }
 
 .sectionLabel {
@@ -930,16 +987,51 @@
 }
 
 .statsGrid {
-  display: flex;
-  align-items: center;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  background: var(--color-bg-surface-subtle);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-m);
+  overflow: hidden;
 }
 
 .statBlock {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  flex: 1;
-  padding-right: 24px;
+  gap: 4px;
+  padding: 16px;
+  border-right: 1px solid var(--color-border-default);
+}
+
+.statBlock:last-child {
+  border-right: none;
+}
+
+.statBlockClickable {
+  background: none;
+  border: none;
+  border-right: 1px solid var(--color-border-default);
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  padding: 16px;
+}
+
+.statBlockClickable:last-child {
+  border-right: none;
+}
+
+.statBlockClickable:hover {
+  background: var(--color-bg-surface-raised);
+}
+
+.statBlockClickable:hover .statNum {
+  color: var(--color-turquoise-30);
+}
+
+.statBlockClickable:active .statNum {
+  color: var(--color-turquoise-30);
+  opacity: 0.8;
 }
 
 .statNum {
@@ -947,22 +1039,21 @@
   font-size: var(--font-size-24);
   font-weight: var(--font-weight-bold);
   color: var(--color-text-strong);
-  line-height: 1.25;
+  line-height: 1;
+  transition: color 0.15s ease;
 }
 
 .statName {
   font-family: var(--font-family-primary);
-  font-size: var(--font-size-14);
+  font-size: var(--font-size-12);
   font-weight: var(--font-weight-medium);
   color: var(--color-text-subtle);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .statDividerV {
-  width: 1px;
-  height: 40px;
-  background: var(--color-border-default);
-  flex-shrink: 0;
-  margin-right: 24px;
+  display: none;
 }
 
 .infoList {
@@ -982,6 +1073,41 @@
 }
 
 .infoRow svg { flex-shrink: 0; }
+
+.peopleSectionTitle {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+  margin: 0;
+}
+
+.peopleList {
+  display: flex;
+  flex-direction: column;
+}
+
+.personEntry {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 0;
+  border-top: 1px solid var(--color-border-default);
+}
+
+.personEntryFirst {
+  padding-top: 0;
+  border-top: none;
+}
+
+.contactEntryTitle {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-subtle);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
 
 /* ─── Team card ───────────────────────────────────────── */
 
@@ -1026,6 +1152,7 @@
   padding: 16px 20px 12px;
   flex-shrink: 0;
   border-bottom: 1px solid var(--color-border-default);
+  width: 100%;
 }
 
 .teamCount {
@@ -1046,11 +1173,8 @@
 
 .teamTableHead {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   padding: 0 20px;
-  height: 36px;
-  background: var(--color-bg-surface-subtle);
-  border-bottom: 1px solid var(--color-border-default);
   flex-shrink: 0;
 }
 
@@ -1060,7 +1184,6 @@
   padding: 0 20px;
   height: 56px;
   border-bottom: 1px solid var(--color-border-default);
-  transition: background 0.1s ease;
   background: none;
   border-left: none;
   border-right: none;
@@ -1068,10 +1191,23 @@
   width: 100%;
   text-align: left;
   cursor: pointer;
+  position: relative;
+  isolation: isolate;
 }
 
+.teamTableRow::before {
+  content: '';
+  position: absolute;
+  inset: 4px 0 5px;
+  background: var(--color-bg-surface-subtle);
+  border-radius: var(--radius-s);
+  opacity: 0;
+  transition: opacity 0.1s ease;
+  z-index: -1;
+}
+
+.teamTableRow:hover::before { opacity: 1; }
 .teamTableRow:last-child { border-bottom: none; }
-.teamTableRow:hover { background: var(--color-bg-surface-subtle); }
 
 .teamTableRow:focus-visible {
   outline: 2px solid var(--color-action-primary-bg);
@@ -1092,7 +1228,7 @@
 }
 
 .teamColStatus {
-  width: 100px;
+  width: 80px;
   flex-shrink: 0;
 }
 
@@ -1114,8 +1250,14 @@
   font-size: var(--font-size-12);
   font-weight: var(--font-weight-medium);
   color: var(--color-text-subtle);
-  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  letter-spacing: 0.24px;
+  background: var(--color-bg-surface-subtle);
+  padding: 12px 12px;
 }
+
+.teamTableHead .teamCol:first-child { border-radius: var(--radius-s) 0 0 var(--radius-s); }
+.teamTableHead .teamCol:last-child  { border-radius: 0 var(--radius-s) var(--radius-s) 0; }
 
 /* ── Member cell ── */
 
@@ -1244,6 +1386,147 @@
 .paginationBtn:focus-visible {
   outline: 2px solid var(--color-action-primary-bg);
   outline-offset: 2px;
+}
+
+/* ─── Users tab (center-level) ───────────────────────── */
+
+.teamsTab {
+  margin: -16px -20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.teamsTab .teamToolbar {
+  border-bottom: none;
+  padding: 12px 24px 16px;
+}
+
+.teamsTab .teamToolbar > :first-child {
+  width: 223px;
+  flex-shrink: 0;
+}
+
+/* ── teamsTab: header row ── */
+
+.teamsTab .teamTableHead {
+  padding: 0;
+  height: 39px;
+  align-items: center;
+}
+
+.teamsTab .teamTableHead .teamCol {
+  padding: 0 12px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.teamsTab .teamTableHead .teamCol:first-child { border-radius: var(--radius-s) 0 0 var(--radius-s); }
+.teamsTab .teamTableHead .teamCol:last-child  { border-radius: 0 var(--radius-s) var(--radius-s) 0; }
+
+/* ── teamsTab: column widths ── */
+
+.teamsTab .teamColName {
+  width: 240px;
+  flex: 0 0 240px;
+}
+
+.teamsTab .teamColStatus {
+  width: 89px;
+  flex: 0 0 89px;
+  justify-content: center;
+}
+
+.teamsTab .teamColActions {
+  flex: 1;
+  width: auto;
+  flex-shrink: 1;
+  justify-content: flex-end;
+}
+
+/* ── teamsTab: data rows ── */
+
+.teamsTab .teamTable {
+  padding: 0 24px;
+}
+
+.teamsTab .teamTableRow {
+  height: 64px;
+  padding: 0;
+  width: auto;
+}
+
+.teamsTab .teamTableRow .teamCol {
+  padding: 12px;
+}
+
+.teamsTab .teamTableRow .teamColActions {
+  padding: 8px 12px;
+}
+
+
+/* ─── Members tab (team-level) ───────────────────────── */
+
+.membersTab .teamToolbar {
+  border-bottom: none;
+  padding: 40px 24px 16px;
+}
+
+.membersTab .teamToolbar > :first-child {
+  width: 223px;
+  flex-shrink: 0;
+}
+
+.membersTab .teamTable {
+  padding: 0 24px;
+}
+
+.membersTab .teamTableHead {
+  padding: 0;
+  height: 39px;
+  align-items: center;
+}
+
+.membersTab .teamTableHead .teamCol {
+  padding: 0 12px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.membersTab .teamTableHead .teamCol:first-child { border-radius: var(--radius-s) 0 0 var(--radius-s); }
+.membersTab .teamTableHead .teamCol:last-child  { border-radius: 0 var(--radius-s) var(--radius-s) 0; }
+
+.membersTab .teamColName {
+  width: 240px;
+  flex: 0 0 240px;
+}
+
+.membersTab .teamColStatus {
+  width: 89px;
+  flex: 0 0 89px;
+  justify-content: center;
+}
+
+.membersTab .teamColActions {
+  flex: 1;
+  width: auto;
+  flex-shrink: 1;
+  justify-content: flex-end;
+}
+
+.membersTab .teamTableRow {
+  height: 64px;
+  padding: 0;
+  width: auto;
+}
+
+.membersTab .teamTableRow .teamCol {
+  padding: 12px;
+}
+
+.membersTab .teamTableRow .teamColActions {
+  padding: 8px 12px;
 }
 
 /* ─── Users tab (center-level) ───────────────────────── */
@@ -1381,7 +1664,292 @@
 
 .permItem svg { flex-shrink: 0; }
 
-.permItem strong {
-  font-weight: var(--font-weight-medium);
-  color: var(--color-text-strong);
+
+
+/* ═══════════════════════════════════════════════════════
+   RESPONSIVE — 768px
+   ═══════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+
+  /* ── Container ── */
+
+  .container {
+    padding: 16px;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+
+  /* ── Content card ── */
+
+  .contentCard {
+    overflow: hidden;
+    min-height: 0;
+    flex: none;
+  }
+
+  /* ── Master-detail: flujo normal (sin absolute positioning) ── */
+
+  .masterDetail {
+    position: static;
+    overflow: visible;
+    min-height: 0;
+    display: block;
+  }
+
+  /* listPanel: flujo normal, crece con su contenido */
+  .listPanel {
+    position: static;
+    width: 100%;
+    border-right: none;
+    box-shadow: none;
+    overflow: visible;
+    transform: none;
+    transition: none;
+    z-index: auto;
+  }
+
+  /* listItems: sin scroll interno, crece con el contenido */
+  .listItems {
+    overflow: visible;
+    flex: none;
+  }
+
+  /* listPanel hidden: ocultar cuando el detailPanel está visible */
+  .listPanelHidden {
+    display: none;
+  }
+
+  /* detailPanel: oculto por defecto, aparece en flujo normal al seleccionar un centro */
+  .detailPanel {
+    display: none;
+    position: static;
+    transform: none;
+    overflow: visible;
+    background: none;
+    inset: auto;
+    z-index: auto;
+    transition: none;
+  }
+
+  /* Cuando hay un centro seleccionado, reemplaza el listPanel en el mismo card */
+  .detailPanelVisible {
+    display: flex;
+    flex-direction: column;
+    transform: none;
+    animation: detailFadeSlideIn 0.22s cubic-bezier(0.4, 0, 0.2, 1) both;
+  }
+
+  @keyframes detailFadeSlideIn {
+    from { opacity: 0; transform: translateX(20px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  /* ── Sub-niveles dentro del detailPanel ── */
+
+  .detailSlideIn {
+    animation: subSlideInRight 0.28s cubic-bezier(0.4, 0, 0.2, 1) both;
+  }
+
+  .detailSlideBack {
+    animation: subSlideInLeft 0.28s cubic-bezier(0.4, 0, 0.2, 1) both;
+  }
+
+  @keyframes subSlideInRight {
+    from { transform: translateX(100%); }
+    to   { transform: translateX(0); }
+  }
+
+  @keyframes subSlideInLeft {
+    from { transform: translateX(-100%); }
+    to   { transform: translateX(0); }
+  }
+
+  /* ── listPanelTop ── */
+
+  .listPanelTop {
+    padding: 16px;
+  }
+
+  /* ── Back button (headerCard) ── */
+
+  .backBtn {
+    gap: 12px;
+  }
+
+  /* ── Back button dentro del detailPanel ── */
+
+  .mobilePanelBack {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 16px 17px;
+    background: none;
+    border: none;
+    border-bottom: 1px solid var(--color-border-default);
+    cursor: pointer;
+    font-family: var(--font-family-primary);
+    font-size: var(--font-size-14);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-strong);
+    width: 100%;
+    flex-shrink: 0;
+    text-align: left;
+  }
+
+  .mobilePanelBack:active { opacity: 0.6; }
+
+  .mobilePanelBackIcon {
+    width: 24px;
+    height: 24px;
+    background: var(--color-bg-surface);
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-xs);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  /* ── cardHeaderLeft: alinear al top (no centrado) ── */
+
+  .cardHeaderLeft {
+    align-items: flex-start;
+  }
+
+  /* ── Inner tab bar: full width con border-bottom ── */
+
+  .innerTabBarWrap {
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+    padding: 0 0 0 16px;
+    box-sizing: border-box;
+    border-bottom: 1px solid var(--color-border-default);
+  }
+
+  .innerTabBarWrap > * {
+    width: 320px;
+  }
+
+  /* ── centerCard: liberar overflow para scroll de página ── */
+
+  .centerCard {
+    overflow: visible;
+    flex: none;
+  }
+
+  /* ── Inner tab content: gap desde border-bottom ── */
+
+  .innerTabContent {
+    padding-top: 40px;
+    overflow: visible;
+    flex: none;
+  }
+
+  .teamsTab .teamToolbar,
+  .membersTab .teamToolbar {
+    width: 100%;
+  }
+
+  .teamsTab .teamToolbar > :first-child,
+  .membersTab .teamToolbar > :first-child {
+    flex: 1;
+    width: auto;
+  }
+
+  /* ── Team detail: igualar layout al detalle de centro ── */
+
+  .teamContent {
+    overflow: visible;
+    flex: none;
+  }
+
+  .membersTab .teamToolbar {
+    padding: 40px 16px 16px;
+    border-bottom: none;
+  }
+
+  /* ── User detail ── */
+
+  .userContent {
+    overflow: visible;
+    flex: none;
+    padding: 24px 16px;
+  }
+
+  .userInfoGrid {
+    flex-wrap: wrap;
+    gap: 16px 40px;
+  }
+
+  /* ── Reduced motion ── */
+
+  @media (prefers-reduced-motion: reduce) {
+    .listPanel,
+    .detailPanel,
+    .detailSlideIn,
+    .detailSlideBack {
+      transition: none;
+      animation: none;
+    }
+  }
+
+}
+
+/* ─── Keyscreen 390px ─────────────────────────────────── */
+
+@media (max-width: 390px) {
+
+  /* ── Org/center header: quitar indent de avatar ── */
+  .metadata {
+    padding-left: 0;
+  }
+
+  /* ── Tab bar: ancho completo ── */
+  .innerTabBarWrap {
+    padding: 0;
+  }
+
+  .innerTabBarWrap > * {
+    width: 100%;
+  }
+
+  /* ── User info: apilar verticalmente ── */
+  .userInfoGrid {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /* ── Team tables: columna nombre flexible, acciones fijas ── */
+  .teamsTab .teamColName,
+  .membersTab .teamColName {
+    flex: 1;
+    width: auto;
+  }
+
+  .teamsTab .teamColActions,
+  .membersTab .teamColActions {
+    flex: none;
+    width: 48px;
+  }
+
+  /* ── Team tables: reducir padding horizontal ── */
+  .teamsTab .teamTable,
+  .membersTab .teamTable {
+    padding: 0 16px;
+  }
+
+  /* ── Toolbar: padding horizontal compacto ── */
+  .teamToolbar {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  /* ── listPanelAddBtn: touch target mínimo 44×44px ── */
+  .listPanelAddBtn {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
 }

@@ -15,7 +15,7 @@ export default function TabBar({ tabs = [], activeTab, onChange, size = 'm' }) {
   const [glowStyle, setGlowStyle] = useState({ left: 0, width: 0 });
   const [glowVisible, setGlowVisible] = useState(false);
 
-  const INDICATOR_W = 56;
+  const INDICATOR_W = size === 's' ? 48 : 56;
   const INDICATOR_DURATION = 280;
 
   useLayoutEffect(() => {

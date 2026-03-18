@@ -12,7 +12,6 @@
 
 .tab {
   flex: 1;
-  min-width: 122px;
   height: 100%;
   padding: 8px 4px 4px;
   background: none;
@@ -34,7 +33,7 @@
 /* ─── Size S ─────────────────────────────────────────── */
 
 .tabS {
-  padding: 4px;
+  padding: 9px 4px;
   font-size: var(--font-size-14);
   height: auto;
 }

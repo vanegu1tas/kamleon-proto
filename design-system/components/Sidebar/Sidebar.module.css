@@ -16,8 +16,13 @@
 }
 
 .collapsed {
-  width: 82px;
+  width: 66px;
   background: linear-gradient(134.24deg, #0b0f12 63.877%, #161d24 100%);
+}
+
+.collapsed .nav {
+  padding-left: 12px;
+  padding-right: 12px;
 }
 
 /* ─── Header ─────────────────────────────────────── */
@@ -105,7 +110,7 @@
     height: 100%;
     z-index: 200;
     border-radius: 0 20px 20px 0;
-    transform: translateX(-100%);
+    transform: translateX(calc(-100% - 32px));
     transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
   }
 

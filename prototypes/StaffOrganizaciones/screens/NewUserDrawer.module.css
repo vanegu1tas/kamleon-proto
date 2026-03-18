@@ -21,6 +21,7 @@
   right: 12px;
   bottom: 12px;
   width: 520px;
+  max-width: calc(100% - 24px);
   background: var(--color-bg-surface);
   border: 1px solid var(--color-border-default);
   border-radius: var(--radius-m);
@@ -28,12 +29,14 @@
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  animation: slideIn 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: slideIn 0.28s ease-out;
+  will-change: transform;
 }
 
 @keyframes slideIn {
-  from { transform: translateX(100%); }
-  to   { transform: translateX(0);    }
+  0%   { transform: translateX(100%); }
+  70%  { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
 }
 
 /* ─── Header ──────────────────────────────────────────── */
@@ -82,6 +85,22 @@
   gap: 32px;
   padding: 24px;
   flex: 1;
+}
+
+/* ─── Manual description ──────────────────────────────── */
+
+.manualDesc {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.manualDesc strong {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
 }
 
 /* ─── Context subtitle ────────────────────────────────── */
@@ -176,6 +195,12 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
+}
+
+.dateInputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 4px;
 }
 
 .field {
@@ -331,6 +356,217 @@
 
 .toggleOn::after {
   transform: translateX(22px);
+}
+
+/* ─── Segmented control ───────────────────────────────── */
+
+.segmented {
+  display: flex;
+  background: var(--color-bg-surface-subtle);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-l);
+  padding: 3px;
+  gap: 2px;
+}
+
+.segmentedOption {
+  flex: 1;
+  height: 30px;
+  background: none;
+  border: none;
+  border-radius: calc(var(--radius-l) - 2px);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-subtle);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.segmentedOption:hover:not(.segmentedActive) {
+  color: var(--color-text-strong);
+}
+
+.segmentedActive {
+  background: var(--color-text-strong);
+  color: #fff;
+}
+
+/* ─── Invite helpers ──────────────────────────────────── */
+
+.inviteDesc {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+  margin: 0;
+}
+
+.fieldSubDesc {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+  padding-left: 12px;
+  margin-top: -2px;
+  margin-bottom: 4px;
+}
+
+.addMoreLink {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-turquoise-30);
+  text-align: left;
+  transition: opacity 0.15s ease;
+}
+
+.addMoreLink:hover {
+  opacity: 0.75;
+}
+
+.backLink {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-turquoise-30);
+  transition: opacity 0.15s ease;
+}
+
+.backLink:hover {
+  opacity: 0.75;
+}
+
+/* ─── Bulk textarea ───────────────────────────────────── */
+
+.bulkTextarea {
+  width: 100%;
+  min-height: 120px;
+  background: var(--color-bg-surface-subtle);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-s);
+  padding: 10px 13px;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  color: var(--color-text-strong);
+  outline: none;
+  resize: vertical;
+  transition: border-color 0.15s ease;
+  box-sizing: border-box;
+  line-height: 1.5;
+}
+
+.bulkTextarea::placeholder {
+  color: var(--color-text-placeholder);
+}
+
+.bulkTextarea:focus {
+  border-color: var(--color-border-focus);
+}
+
+.bulkFeedback {
+  display: flex;
+  gap: 12px;
+  margin-top: 6px;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+}
+
+.bulkValid {
+  color: var(--color-status-active);
+  font-weight: var(--font-weight-medium);
+}
+
+.bulkInvalid {
+  color: var(--color-status-error);
+  font-weight: var(--font-weight-medium);
+}
+
+/* ─── Bulk "or" divider ───────────────────────────────── */
+
+.bulkOr {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.bulkOrLine {
+  flex: 1;
+  height: 1px;
+  background: var(--color-border-default);
+}
+
+.bulkOrText {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  color: var(--color-text-subtle);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ─── CSV upload button ───────────────────────────────── */
+
+.csvUploadBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 36px;
+  background: var(--color-text-strong);
+  border: none;
+  border-radius: var(--radius-l);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+  color: #fff;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.csvUploadBtn:hover {
+  opacity: 0.85;
+}
+
+.csvHelperText {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.csvTemplateLink {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-turquoise-30);
+  text-decoration: underline;
+  transition: opacity 0.15s ease;
+}
+
+.csvTemplateLink:hover {
+  opacity: 0.75;
+}
+
+.hiddenFileInput {
+  display: none;
 }
 
 /* ─── Footer ──────────────────────────────────────────── */

@@ -25,6 +25,11 @@
   position: relative;
 }
 
+/* Wrapper transparente en desktop, flex container animado en mobile */
+.screenWrapper {
+  display: contents;
+}
+
 /* ─── Topbar ──────────────────────────────────────────── */
 
 .topbar {
@@ -543,17 +548,15 @@
 
 .sortIcon {
   flex-shrink: 0;
-  display: flex;
-  opacity: 0;
-  transition: opacity 0.12s ease;
+  display: none;
 }
 
 .sortBtn:hover .sortIcon {
-  opacity: 1;
+  display: flex;
 }
 
 .sortBtnActive .sortIcon {
-  opacity: 1;
+  display: flex;
 }
 
 /* ─── Search ──────────────────────────────────────────── */
@@ -686,6 +689,14 @@
   flex-shrink: 0;
 }
 
+.orgNameWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  flex: 1;
+}
+
 .orgName {
   font-family: var(--font-family-primary);
   font-size: var(--font-size-14);
@@ -695,6 +706,26 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.orgNameTag {
+  display: none;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+}
+
+.orgStatusDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.orgStatus_active .orgStatusDot   { background: var(--color-status-active); }
+.orgStatus_inactive .orgStatusDot { background: var(--color-status-inactive); }
 
 .cell {
   flex: 1;
@@ -828,6 +859,102 @@
   color: var(--color-border-strong);
 }
 
+/* ─── Org card list (mobile) ─────────────────────────── */
+
+.orgListMobile {
+  margin-top: -12px;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-m);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.orgListMobileHeader {
+  padding: 20px 16px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-bottom: 1px solid var(--color-border-default);
+}
+
+.orgCardListBody {
+  display: flex;
+  flex-direction: column;
+}
+
+.orgCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border: none;
+  border-bottom: 1px solid var(--color-border-default);
+  background: none;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  transition: background 0.12s ease;
+}
+
+.orgCard:last-child {
+  border-bottom: none;
+}
+
+.orgCard:hover {
+  background: var(--color-bg-surface-subtle);
+}
+
+.orgCardAvatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--color-bg-surface-subtle);
+  border: 1px solid var(--color-border-default);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-subtle);
+  flex-shrink: 0;
+}
+
+.orgCardInfo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.orgCardName {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.orgCardStats {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+}
+
+.orgCardRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
 /* ─── Backdrop (tablet drawer) ───────────────────────── */
 
 .backdrop {
@@ -896,19 +1023,90 @@
     height: 0;
     padding: 0;
     overflow: visible;
+    z-index: auto;
   }
 
   .topbar {
-    padding: 0 20px;
+    margin: 16px 16px 0;
+    padding: 8px 16px;
+    background: var(--color-bg-sidebar);
+    border: 1px solid #32404d;
+    border-radius: 12px;
+    box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.80), 0 0 16px 0 rgba(0, 0, 0, 0.25);
+    color: #ffffff;
     justify-content: space-between;
   }
 
   .menuBtn {
     display: flex;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 1px solid #32404d;
+    border-radius: 8px;
+    color: #ffffff;
+  }
+
+  .menuBtn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
   }
 
   .topbarLogo {
     display: flex;
+  }
+
+  .topbarRight {
+    gap: 12px;
+  }
+
+  .searchTriggerText,
+  .searchTriggerKbd {
+    display: none;
+  }
+
+  .searchTrigger {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border-radius: 50%;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    color: #ffffff;
+    justify-content: center;
+  }
+
+  .searchTrigger svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .searchTrigger:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border: none;
+    box-shadow: none;
+    color: #ffffff;
+  }
+
+  .notifBtn {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    color: #ffffff;
+    justify-content: center;
+  }
+
+  .notifBtn:hover {
+    color: #ffffff;
+  }
+
+  .notifDot {
+    border: 1.5px solid var(--color-bg-sidebar);
+  }
+
+  .avatar {
+    color: #ffffff;
   }
 
   .breadcrumb {
@@ -916,7 +1114,95 @@
   }
 
   .content {
-    padding: 24px 20px 48px;
+    padding: 32px 20px 48px;
+    flex: none;
+    overflow: visible;
+  }
+
+  .tableCard {
+    min-height: auto;
+  }
+
+  /* ── Optimización de columnas en tablet ── */
+
+  /* Ocultar columna Status */
+  .colStatus {
+    display: none;
+  }
+
+  /* Mostrar tag de status bajo el nombre */
+  .orgNameTag {
+    display: flex;
+  }
+
+  /* Columna nombre: más compacta pero cómoda */
+  .colName {
+    width: 240px;
+  }
+
+  /* Columna actions: ajustada al botón */
+  .colActions,
+  .cellActions {
+    width: 48px;
+  }
+
+  /* ── Screen wrapper ── */
+
+  .screenWrapper {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  /* ── Slide animations (nivel 1: entre screens del navStack) ── */
+
+  .screenSlide_forward {
+    animation: screenSlideInRight 0.28s cubic-bezier(0.4, 0, 0.2, 1) both;
+  }
+
+  .screenSlide_back {
+    animation: screenSlideInLeft 0.28s cubic-bezier(0.4, 0, 0.2, 1) both;
+  }
+
+  @keyframes screenSlideInRight {
+    from { transform: translateX(100%); }
+    to   { transform: translateX(0); }
+  }
+
+  @keyframes screenSlideInLeft {
+    from { transform: translateX(-100%); }
+    to   { transform: translateX(0); }
+  }
+
+  /* ── main: no overflow en mobile para que el slide no haga scroll ── */
+
+  .main {
+    overflow: hidden;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .screenSlide_forward,
+    .screenSlide_back {
+      animation: none;
+    }
+  }
+
+}
+
+
+/* ─── Mobile (≤480px) ────────────────────────────────── */
+
+@media (max-width: 480px) {
+
+  .content {
+    padding: 24px 16px 48px;
+  }
+
+  .pageTitle {
+    font-size: var(--font-size-24);
   }
 
   .kpiRow {
@@ -926,5 +1212,56 @@
   .kpiCard {
     flex: 1 1 calc(50% - 6px);
     min-width: calc(50% - 6px);
+    min-height: 80px;
+    padding: 12px 16px;
   }
+
+  .kpiValue {
+    font-size: var(--font-size-20);
+  }
+
+}
+
+/* ─── Keyscreen 390px ────────────────────────────────── */
+
+@media (max-width: 390px) {
+
+  .content {
+    padding: 16px 16px 48px;
+  }
+
+  /* Reducir padding horizontal para ganar espacio */
+  .tableTop {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .tableBody {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  /* Tabla de orgs: ocultar columnas de stats, nombre ocupa todo el ancho */
+  .colPlan,
+  .colCenters,
+  .colTeams,
+  .colUsers {
+    display: none;
+  }
+
+  .colName {
+    flex: 1;
+    width: auto;
+  }
+
+}
+
+/* ─── Toast ───────────────────────────────────────────── */
+
+.toastWrap {
+  position: fixed;
+  top: 52px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 500;
 }

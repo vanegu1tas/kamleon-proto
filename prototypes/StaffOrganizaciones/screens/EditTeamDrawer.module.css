@@ -21,6 +21,7 @@
   right: 12px;
   bottom: 12px;
   width: 520px;
+  max-width: calc(100% - 24px);
   background: var(--color-bg-surface);
   border: 1px solid var(--color-border-default);
   border-radius: var(--radius-m);
@@ -28,12 +29,14 @@
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  animation: slideIn 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: slideIn 0.28s ease-out;
+  will-change: transform;
 }
 
 @keyframes slideIn {
-  from { transform: translateX(100%); }
-  to   { transform: translateX(0);    }
+  0%   { transform: translateX(100%); }
+  70%  { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
 }
 
 /* ─── Header ──────────────────────────────────────────── */

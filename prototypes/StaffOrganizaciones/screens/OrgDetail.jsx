@@ -8,7 +8,7 @@ import { IconEdit, IconPlus, IconTrash, IconSettings } from '../../../design-sys
 import IconButton from '../../../design-system/components/IconButton/IconButton';
 import { IconUserFilled, IconMailFilled, IconPhoneFilled, IconLocationFilled } from '../../../design-system/icons/filled';
 import { getUserCountForCenter, getProfessionalCountForCenter, getActiveTeamCount } from '../mockData';
-import NewCenterModal from './NewCenterModal';
+import NewCenterGlobalDrawer from './NewCenterGlobalDrawer';
 import EditOrgDrawer from './EditOrgDrawer';
 import EditCenterDrawer from './EditCenterDrawer';
 import NewTeamDrawer from './NewTeamDrawer';
@@ -212,7 +212,7 @@ function CentersContent({ org, onNavigate }) {
             }
           />
         </div>
-        {showNewCenterModal && <NewCenterModal onClose={() => setShowNewCenterModal(false)} />}
+        {showNewCenterModal && <NewCenterGlobalDrawer onClose={() => setShowNewCenterModal(false)} />}
       </>
     );
   }
@@ -314,7 +314,7 @@ function CentersContent({ org, onNavigate }) {
         })}
       </div>
 
-      {showNewCenterModal && <NewCenterModal onClose={() => setShowNewCenterModal(false)} />}
+      {showNewCenterModal && <NewCenterGlobalDrawer onClose={() => setShowNewCenterModal(false)} />}
       {editCenterTarget && (
         <EditCenterDrawer
           center={editCenterTarget}

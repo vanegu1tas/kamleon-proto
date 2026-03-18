@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import Button from '../../../design-system/components/Button/Button';
-import { IconClose, IconAddImage, IconPlus, IconChevronDown } from '../../../design-system/icons/outline';
+import { IconClose, IconAddImage, IconPlus } from '../../../design-system/icons/outline';
 import { ORGS } from '../mockData';
 import IconButton from '../../../design-system/components/IconButton/IconButton';
+import Input from '../../../design-system/components/Input/Input';
+import Dropdown from '../../../design-system/components/Dropdown/Dropdown';
 import styles from './NewCenterModal.module.css';
 
 export default function NewCenterModal({ org, onClose }) {
@@ -10,37 +12,32 @@ export default function NewCenterModal({ org, onClose }) {
   const [name, setName]               = useState('');
   const [email, setEmail]             = useState('');
   const [phone, setPhone]             = useState('');
-  const [address, setAddress]         = useState('');
-  const [adminEmails, setAdminEmails] = useState([]);
+  const [addresses, setAddresses]     = useState([]);
+  const [contacts, setContacts]       = useState([]);
   const [units, setUnits]             = useState([]);
+  const [adminEmails, setAdminEmails] = useState([]);
 
-  function addUnit() {
-    setUnits(prev => [...prev, '']);
-  }
+  // addresses
+  function addAddress()          { setAddresses(prev => [...prev, '']); }
+  function updateAddress(i, val) { setAddresses(prev => prev.map((a, idx) => idx === i ? val : a)); }
+  function removeAddress(i)      { setAddresses(prev => prev.filter((_, idx) => idx !== i)); }
 
-  function updateUnit(i, val) {
-    setUnits(prev => prev.map((u, idx) => idx === i ? val : u));
-  }
+  // contacts
+  function addContact()          { setContacts(prev => [...prev, '']); }
+  function updateContact(i, val) { setContacts(prev => prev.map((c, idx) => idx === i ? val : c)); }
+  function removeContact(i)      { setContacts(prev => prev.filter((_, idx) => idx !== i)); }
 
-  function removeUnit(i) {
-    setUnits(prev => prev.filter((_, idx) => idx !== i));
-  }
+  // units
+  function addUnit()          { setUnits(prev => [...prev, '']); }
+  function updateUnit(i, val) { setUnits(prev => prev.map((u, idx) => idx === i ? val : u)); }
+  function removeUnit(i)      { setUnits(prev => prev.filter((_, idx) => idx !== i)); }
 
-  const activeOrg = selectedOrg;
+  // admin emails
+  function addAdmin()          { setAdminEmails(prev => [...prev, '']); }
+  function updateAdmin(i, val) { setAdminEmails(prev => prev.map((e, idx) => idx === i ? val : e)); }
+  function removeAdmin(i)      { setAdminEmails(prev => prev.filter((_, idx) => idx !== i)); }
 
-  function addAdmin() {
-    setAdminEmails(prev => [...prev, '']);
-  }
-
-  function updateAdmin(i, val) {
-    setAdminEmails(prev => prev.map((e, idx) => idx === i ? val : e));
-  }
-
-  function removeAdmin(i) {
-    setAdminEmails(prev => prev.filter((_, idx) => idx !== i));
-  }
-
-  const canCreate = name.trim() && activeOrg;
+  const canCreate = name.trim() && selectedOrg;
 
   return (
     <div className={styles.overlay} onMouseDown={onClose}>
@@ -57,13 +54,6 @@ export default function NewCenterModal({ org, onClose }) {
         {/* ── Body ── */}
         <div className={styles.body}>
 
-          {/* Subtitle dinámica */}
-          <p className={styles.subtitle}>
-            {activeOrg
-              ? <>New Center for <span className={styles.subtitleOrg}>{activeOrg.name}</span></>
-              : 'New Center for…'}
-          </p>
-
           {/* Avatar row */}
           <div className={styles.avatarRow}>
             <div className={styles.avatar}>
@@ -79,101 +69,65 @@ export default function NewCenterModal({ org, onClose }) {
           {/* Fields */}
           <div className={styles.fields}>
 
-            {/* Organization selector — solo cuando no viene con org pre-seleccionada */}
-            {!org && (
-              <div className={styles.field}>
-                <label className={styles.fieldLabel}>
-                  Organization <span className={styles.required}>*</span>
-                </label>
-                <div className={styles.selectWrap}>
-                  <select
-                    className={styles.select}
-                    value={selectedOrg?.id ?? ''}
-                    onChange={e => {
-                      const found = ORGS.find(o => String(o.id) === e.target.value);
-                      setSelectedOrg(found || null);
-                    }}
-                  >
-                    <option value="" disabled>Select organization</option>
-                    {ORGS.map(o => (
-                      <option key={o.id} value={o.id}>{o.name}</option>
-                    ))}
-                  </select>
-                  <IconChevronDown size={16} className={styles.selectIcon} />
-                </div>
-              </div>
-            )}
+            {/* Organization — siempre visible */}
+            <Dropdown
+              label="Organization"
+              required
+              placeholder="Select organization"
+              options={ORGS.map(o => ({ label: o.name, value: String(o.id) }))}
+              value={selectedOrg ? String(selectedOrg.id) : ''}
+              onChange={v => setSelectedOrg(ORGS.find(o => String(o.id) === v) || null)}
+            />
 
-            <div className={styles.field}>
-              <label className={styles.fieldLabel}>
-                Name <span className={styles.required}>*</span>
-              </label>
-              <input
-                className={styles.input}
+            {/* Name */}
+            <Input
+              label="Name"
+              required
+              placeholder="Write here..."
+              value={name}
+              onChange={setName}
+              autoFocus
+            />
+
+            {/* Email + Phone */}
+            <div className={styles.formRow}>
+              <Input
+                label="Email"
+                type="email"
                 placeholder="Write here..."
-                value={name}
-                onChange={e => setName(e.target.value)}
-                autoFocus
+                value={email}
+                onChange={setEmail}
+              />
+              <Input
+                label="Phone number"
+                type="tel"
+                placeholder="Write here..."
+                value={phone}
+                onChange={setPhone}
               />
             </div>
 
-            <div className={styles.formRow}>
-              <div className={styles.field}>
-                <label className={styles.fieldLabel}>Email</label>
-                <input
-                  className={styles.input}
-                  type="email"
-                  placeholder="Write here..."
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                />
-              </div>
-              <div className={styles.field}>
-                <label className={styles.fieldLabel}>Phone number</label>
-                <input
-                  className={styles.input}
-                  type="tel"
-                  placeholder="Write here..."
-                  value={phone}
-                  onChange={e => setPhone(e.target.value)}
-                />
-              </div>
-            </div>
-
+            {/* Address (múltiple) */}
             <div className={styles.field}>
               <label className={styles.fieldLabel}>Address</label>
               <input
                 className={styles.input}
                 placeholder="Write your address here..."
-                value={address}
-                onChange={e => setAddress(e.target.value)}
               />
             </div>
 
-          </div>
-
-          {/* Invite administrators */}
-          <div className={styles.inviteSection}>
-            <div className={styles.inviteInfo}>
-              <p className={styles.inviteLabel}>Invite administrators</p>
-              <p className={styles.inviteSubtitle}>
-                Send email invitations to your center administrators
-              </p>
-            </div>
-
-            {adminEmails.map((adminEmail, i) => (
-              <div key={i} className={styles.adminEmailRow}>
+            {addresses.map((addr, i) => (
+              <div key={i} className={styles.addItemRow}>
                 <input
                   className={styles.input}
-                  type="email"
-                  placeholder="admin@example.com"
-                  value={adminEmail}
-                  onChange={e => updateAdmin(i, e.target.value)}
+                  placeholder="Write your address here..."
+                  value={addr}
+                  onChange={e => updateAddress(i, e.target.value)}
                 />
                 <button
-                  className={styles.removeAdminBtn}
+                  className={styles.removeItemBtn}
                   type="button"
-                  onClick={() => removeAdmin(i)}
+                  onClick={() => removeAddress(i)}
                   aria-label="Remove"
                 >
                   <IconClose size={14} />
@@ -181,21 +135,55 @@ export default function NewCenterModal({ org, onClose }) {
               </div>
             ))}
 
-            <button className={styles.addAdminBtn} type="button" onClick={addAdmin}>
+            <button className={styles.addBtn} type="button" onClick={addAddress}>
               <IconPlus size={16} />
-              Add administrator
+              Add new address
+            </button>
+
+          </div>
+
+          {/* Add contact information */}
+          <div className={styles.section}>
+            <div className={styles.sectionInfo}>
+              <p className={styles.sectionLabel}>Add contact information</p>
+              <p className={styles.sectionSubtitle}>Add the people to contact for this center.</p>
+            </div>
+
+            {contacts.map((contact, i) => (
+              <div key={i} className={styles.addItemRow}>
+                <input
+                  className={styles.input}
+                  type="email"
+                  placeholder="contact@example.com"
+                  value={contact}
+                  onChange={e => updateContact(i, e.target.value)}
+                />
+                <button
+                  className={styles.removeItemBtn}
+                  type="button"
+                  onClick={() => removeContact(i)}
+                  aria-label="Remove"
+                >
+                  <IconClose size={14} />
+                </button>
+              </div>
+            ))}
+
+            <button className={styles.addBtn} type="button" onClick={addContact}>
+              <IconPlus size={16} />
+              Add Contact
             </button>
           </div>
 
-          {/* Link units */}
-          <div className={styles.inviteSection}>
-            <div className={styles.inviteInfo}>
-              <p className={styles.inviteLabel}>Link unit</p>
-              <p className={styles.inviteSubtitle}>description</p>
+          {/* Link a Unit */}
+          <div className={styles.section}>
+            <div className={styles.sectionInfo}>
+              <p className={styles.sectionLabel}>Link a Unit</p>
+              <p className={styles.sectionSubtitle}>Assign the unit that this center will use.</p>
             </div>
 
             {units.map((unit, i) => (
-              <div key={i} className={styles.adminEmailRow}>
+              <div key={i} className={styles.addItemRow}>
                 <input
                   className={styles.input}
                   placeholder="Unit ID or name"
@@ -203,7 +191,7 @@ export default function NewCenterModal({ org, onClose }) {
                   onChange={e => updateUnit(i, e.target.value)}
                 />
                 <button
-                  className={styles.removeAdminBtn}
+                  className={styles.removeItemBtn}
                   type="button"
                   onClick={() => removeUnit(i)}
                   aria-label="Remove"
@@ -213,9 +201,44 @@ export default function NewCenterModal({ org, onClose }) {
               </div>
             ))}
 
-            <button className={styles.addAdminBtn} type="button" onClick={addUnit}>
+            <button className={styles.addBtn} type="button" onClick={addUnit}>
               <IconPlus size={16} />
               Add new unit
+            </button>
+          </div>
+
+          {/* Invite administrators */}
+          <div className={styles.section}>
+            <div className={styles.sectionInfo}>
+              <p className={styles.sectionLabel}>Invite administrators</p>
+              <p className={styles.sectionSubtitle}>
+                Send email invitations to your center administrators
+              </p>
+            </div>
+
+            {adminEmails.map((adminEmail, i) => (
+              <div key={i} className={styles.addItemRow}>
+                <input
+                  className={styles.input}
+                  type="email"
+                  placeholder="admin@example.com"
+                  value={adminEmail}
+                  onChange={e => updateAdmin(i, e.target.value)}
+                />
+                <button
+                  className={styles.removeItemBtn}
+                  type="button"
+                  onClick={() => removeAdmin(i)}
+                  aria-label="Remove"
+                >
+                  <IconClose size={14} />
+                </button>
+              </div>
+            ))}
+
+            <button className={styles.addBtn} type="button" onClick={addAdmin}>
+              <IconPlus size={16} />
+              Add administrator
             </button>
           </div>
 

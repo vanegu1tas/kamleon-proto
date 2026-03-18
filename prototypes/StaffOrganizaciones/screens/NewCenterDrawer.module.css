@@ -1,0 +1,414 @@
+/* ─── Overlay ─────────────────────────────────────────── */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.25);
+  z-index: 300;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ─── Panel ───────────────────────────────────────────── */
+
+.modal {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  bottom: 12px;
+  width: 520px;
+  max-width: calc(100% - 24px);
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-m);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), -8px 0 32px rgba(0, 0, 0, 0.08);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  animation: slideIn 0.28s ease-out;
+  will-change: transform;
+}
+
+@keyframes slideIn {
+  0%   { transform: translateX(100%); }
+  70%  { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
+}
+
+/* ─── Header ──────────────────────────────────────────── */
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 16px 16px 24px;
+  border-bottom: 1px solid var(--color-border-default);
+  flex-shrink: 0;
+}
+
+.title {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-24);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+  margin: 0;
+}
+
+.closeBtn {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: 8px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--color-text-subtle);
+  transition: border-color 0.15s ease, color 0.15s ease;
+  flex-shrink: 0;
+}
+
+.closeBtn:hover {
+  border-color: var(--color-border-strong);
+  color: var(--color-text-strong);
+}
+
+/* ─── Body ────────────────────────────────────────────── */
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px;
+}
+
+/* ─── Context line (org-context drawer) ──────────────── */
+
+.contextLine {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+  margin: 0;
+}
+
+.contextOrg {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+}
+
+/* ─── Avatar row ──────────────────────────────────────── */
+
+.avatarRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--color-bg-surface-subtle);
+  border: 1px solid var(--color-border-default);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--color-text-subtle);
+}
+
+.avatarLetter {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-24);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+}
+
+.avatarText {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-16);
+}
+
+.addPictureBtn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-turquoise-30);
+  transition: opacity 0.15s ease;
+}
+
+.addPictureBtn:hover { opacity: 0.75; }
+
+.avatarSep,
+.avatarOptional {
+  color: var(--color-text-subtle);
+}
+
+/* ─── Fields ──────────────────────────────────────────── */
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.formRow {
+  display: flex;
+  gap: 24px;
+}
+
+.formRow > * {
+  flex: 1;
+  min-width: 0;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.fieldLabel {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-strong);
+  padding-left: 12px;
+}
+
+.required {
+  color: var(--color-status-error);
+}
+
+.input {
+  width: 100%;
+  height: 36px;
+  background: var(--color-bg-surface-subtle);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-l);
+  padding: 0 13px;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  color: var(--color-text-strong);
+  outline: none;
+  transition: border-color 0.15s ease;
+  box-sizing: border-box;
+}
+
+.input::placeholder {
+  color: var(--color-text-placeholder);
+}
+
+.input:focus {
+  border-color: var(--color-border-focus);
+}
+
+/* ─── Select ──────────────────────────────────────────── */
+
+.selectWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.select {
+  width: 100%;
+  height: 36px;
+  background: var(--color-bg-surface-subtle);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-l);
+  padding: 0 32px 0 13px;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  color: var(--color-text-strong);
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+  box-sizing: border-box;
+}
+
+.select:focus {
+  border-color: var(--color-border-focus);
+}
+
+.selectIcon {
+  position: absolute;
+  right: 10px;
+  pointer-events: none;
+  color: var(--color-text-subtle);
+}
+
+/* ─── Sections (contact, units, admins) ───────────────── */
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-left: 12px;
+}
+
+.sectionInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sectionLabel {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+  margin: 0;
+}
+
+.sectionSubtitle {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+  margin: 0;
+}
+
+.addItemRow {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding-right: 12px;
+}
+
+.addItemRow .input {
+  flex: 1;
+}
+
+.removeItemBtn {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  color: var(--color-text-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 4px;
+  transition: color 0.15s ease;
+}
+
+.removeItemBtn:hover {
+  color: var(--color-text-strong);
+}
+
+.addBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  padding: 0;
+  padding-left: 0;
+  cursor: pointer;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-turquoise-30);
+  transition: opacity 0.15s ease;
+}
+
+.addBtn:hover { opacity: 0.75; }
+
+/* addBtn dentro de .fields (fuera de .section) necesita el mismo indent */
+.fields .addBtn {
+  padding-left: 12px;
+}
+
+.fields .addItemRow {
+  padding-right: 0;
+}
+
+/* ─── Contact card ────────────────────────────────────── */
+
+.contactCard {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 12px;
+  background: var(--color-bg-surface-subtle);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-s);
+}
+
+.contactCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.contactCard .formRow {
+  gap: 16px;
+}
+
+.contactCard .input {
+  background: var(--color-bg-surface);
+}
+
+.contactCardTitle {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-subtle);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+/* ─── Admin entry (confirmed, read-only) ─────────────── */
+
+.adminEntry {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px;
+  background: var(--color-bg-surface-subtle);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-s);
+}
+
+.adminEntryName {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+}
+
+.adminEntryMeta {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+}
+
+/* ─── Footer ──────────────────────────────────────────── */
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 24px 24px;
+  border-top: 1px solid var(--color-border-default);
+  flex-shrink: 0;
+  margin-top: auto;
+}

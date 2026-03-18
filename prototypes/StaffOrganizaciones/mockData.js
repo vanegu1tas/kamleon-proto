@@ -172,6 +172,13 @@ export const ORGS = [
         id: 201, name: 'Sobha Realty Training Centre', status: 'active',
         contact: 'James Wright',
         email: 'training@arsenal.com', phone: '+44 1727 730 000', address: 'Shenley Road, London Colney, St. Albans AL2 1DR',
+        contacts: [
+          { name: 'James Wright', cargo: 'Director', email: 'j.wright@arsenal.com', phone: '+44 1727 730 001' },
+          { name: 'Sarah Collins', cargo: 'Coordinator', email: 's.collins@arsenal.com', phone: '+44 1727 730 002' },
+        ],
+        admins: [
+          { name: 'Michael Porter', email: 'm.porter@arsenal.com', phone: '+44 1727 730 010' },
+        ],
         teams: [
           {
             id: 2011, name: 'Arsenal First Team', status: 'active',

@@ -2,21 +2,8 @@ import { useState } from 'react';
 import Button from '../../../design-system/components/Button/Button';
 import { IconClose } from '../../../design-system/icons/outline';
 import IconButton from '../../../design-system/components/IconButton/IconButton';
+import Toggle from '../../../design-system/components/Toggle/Toggle';
 import styles from './EditUserDrawer.module.css';
-
-// ─── Toggle ──────────────────────────────────────────────
-
-function Toggle({ checked, onChange }) {
-  return (
-    <button
-      role="switch"
-      aria-checked={checked}
-      className={`${styles.toggle} ${checked ? styles.toggleOn : ''}`}
-      onClick={() => onChange(!checked)}
-      type="button"
-    />
-  );
-}
 
 function SettingRow({ label, description, checked, onChange }) {
   return (
@@ -25,10 +12,7 @@ function SettingRow({ label, description, checked, onChange }) {
         <span className={styles.settingLabel}>{label}</span>
         <span className={styles.settingDesc}>{description}</span>
       </div>
-      <div className={styles.settingControl}>
-        <span className={styles.toggleLabel}>{checked ? 'ON' : 'OFF'}</span>
-        <Toggle checked={checked} onChange={onChange} />
-      </div>
+      <Toggle checked={checked} onChange={onChange} />
     </div>
   );
 }

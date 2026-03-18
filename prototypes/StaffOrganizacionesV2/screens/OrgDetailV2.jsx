@@ -2,20 +2,34 @@ import { useState, useMemo, useRef, useEffect, useLayoutEffect } from 'react';
 import Tag from '../../../design-system/components/Tag/Tag';
 import TabBar from '../../../design-system/components/TabBar/TabBar';
 import SearchBar from '../../../design-system/components/SearchBar/SearchBar';
-import { IconEdit, IconPlus, IconTrash, IconSettings } from '../../../design-system/icons/outline';
+import { IconEdit, IconPlus, IconTrash, IconSettings, IconFilter } from '../../../design-system/icons/outline';
+import Button from '../../../design-system/components/Button/Button';
 import { IconUserFilled, IconMailFilled, IconPhoneFilled, IconLocationFilled } from '../../../design-system/icons/filled';
 import { getUserCountForCenter, getProfessionalCountForCenter, getActiveTeamCount, USERS_POOL } from '../../StaffOrganizaciones/mockData';
 import ContextMenu      from '../../../design-system/components/ContextMenu/ContextMenu';
+import ToolbarButton    from '../../../design-system/components/ToolbarButton/ToolbarButton';
 import EditOrgDrawer    from '../../StaffOrganizaciones/screens/EditOrgDrawer';
+import DeleteOrgModal   from '../../StaffOrganizaciones/screens/DeleteOrgModal';
 import IconButton       from '../../../design-system/components/IconButton/IconButton';
 import EditCenterDrawer from '../../StaffOrganizaciones/screens/EditCenterDrawer';
-import NewCenterModal   from '../../StaffOrganizaciones/screens/NewCenterModal';
+import EditTeamDrawer   from '../../StaffOrganizaciones/screens/EditTeamDrawer';
+import NewCenterDrawer  from '../../StaffOrganizaciones/screens/NewCenterDrawer';
 import NewTeamDrawer    from '../../StaffOrganizaciones/screens/NewTeamDrawer';
 import NewUserDrawer    from '../../StaffOrganizaciones/screens/NewUserDrawer';
 import EditUserDrawer   from '../../StaffOrganizaciones/screens/EditUserDrawer';
 import styles from './OrgDetailV2.module.css';
 
 // ─── Icons ───────────────────────────────────────────────
+
+function IconMore() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <circle cx="3.5" cy="8" r="1.25" fill="currentColor" />
+      <circle cx="8"   cy="8" r="1.25" fill="currentColor" />
+      <circle cx="12.5" cy="8" r="1.25" fill="currentColor" />
+    </svg>
+  );
+}
 
 function ArrowLeftIcon() {
   return (
@@ -82,7 +96,7 @@ function IconPin() {
 
 // ─── Empty state ──────────────────────────────────────────
 
-function EmptyState({ title, subtitle }) {
+function EmptyState({ title, subtitle, action }) {
   return (
     <div className={styles.emptyFill}>
       <div className={styles.emptyState}>
@@ -91,6 +105,7 @@ function EmptyState({ title, subtitle }) {
           <p className={styles.emptyTitle}>{title}</p>
           <p className={styles.emptySubtitle}>{subtitle}</p>
         </div>
+        {action}
       </div>
     </div>
   );
@@ -112,18 +127,24 @@ function InnerEmptyState({ title, subtitle }) {
 
 // ─── Centers master-detail ────────────────────────────────
 
-function CentersContent({ org, initialCenter, initialTeam, initialUser }) {
+function CentersContent({ org, initialCenter, initialTeam, initialUser, isMobile = false }) {
   const centers = org.centers;
   const [showNewCenter, setShowNewCenter]           = useState(false);
-  const [selectedId, setSelectedId]                 = useState(initialCenter?.id ?? centers[0]?.id ?? null);
+  const [selectedId, setSelectedId]                 = useState(isMobile ? (initialCenter?.id ?? null) : (initialCenter?.id ?? centers[0]?.id ?? null));
   const [selectedTeam, setSelectedTeam]             = useState(initialTeam ?? null);
   const [selectedTeamCenter, setSelectedTeamCenter] = useState(initialTeam ? initialCenter : null);
   const [selectedUser, setSelectedUser]             = useState(initialUser ?? null);
   const [selectedUserTeam, setSelectedUserTeam]     = useState(null); // set when navigating from Users tab
   const [editCenterTarget, setEditCenterTarget]     = useState(null);
+  const [editTeamTarget, setEditTeamTarget]         = useState(null);
   const [newTeamCenter, setNewTeamCenter]           = useState(null);
   const [newUserContext, setNewUserContext]          = useState(null); // { center, team? }
+  const [returnTab, setReturnTab]                   = useState('details');
   const [centerSearch, setCenterSearch]             = useState('');
+
+  // ── Mobile slide state ──
+  const [detailVisible,  setDetailVisible]  = useState(!!initialCenter);
+  const [subSlideDir,    setSubSlideDir]    = useState('forward'); // 'forward' | 'back'
 
   const filteredCenters = centerSearch.trim()
     ? centers.filter(c => c.name.toLowerCase().includes(centerSearch.trim().toLowerCase()))
@@ -137,23 +158,34 @@ function CentersContent({ org, initialCenter, initialTeam, initialUser }) {
     setSelectedTeamCenter(null);
     setSelectedUser(null);
     setSelectedUserTeam(null);
+    setReturnTab('details');
+    if (isMobile) setDetailVisible(true);
   }
 
-  if (centers.length === 0) {
-    return (
-      <EmptyState
-        title="No centers yet..."
-        subtitle="Use + New Center in the header to create the first one."
-      />
-    );
+  function handleBackToCenters() {
+    setDetailVisible(false);
+    setSelectedTeam(null);
+    setSelectedUser(null);
+    setSelectedUserTeam(null);
   }
+
+  // Clave para animar sub-niveles al cambiar de vista dentro del detailPanel
+  const subKey = selectedUser?.id
+    ? `user-${selectedUser.id}`
+    : selectedTeam?.id
+      ? `team-${selectedTeam.id}`
+      : `center-${selectedId}`;
+
+  const subSlideClass = isMobile
+    ? (subSlideDir === 'forward' ? styles.detailSlideIn : styles.detailSlideBack)
+    : undefined;
 
   return (
     <>
       <div className={styles.masterDetail}>
 
         {/* ── Left: center list ── */}
-        <div className={styles.listPanel}>
+        <div className={`${styles.listPanel} ${isMobile && detailVisible ? styles.listPanelHidden : ''}`}>
           <div className={styles.listPanelTop}>
             <div className={styles.listPanelHeader}>
               <span className={styles.listPanelLabel}>Centers</span>
@@ -166,52 +198,87 @@ function CentersContent({ org, initialCenter, initialTeam, initialUser }) {
                 <IconPlus size={14} />
               </button>
             </div>
-            <SearchBar
-              placeholder="Search..."
-              value={centerSearch}
-              onChange={e => setCenterSearch(e.target.value)}
-              onClear={() => setCenterSearch('')}
-            />
+            {centers.length > 0 && (
+              <SearchBar
+                placeholder="Search..."
+                value={centerSearch}
+                onChange={e => setCenterSearch(e.target.value)}
+                onClear={() => setCenterSearch('')}
+              />
+            )}
           </div>
           <div className={styles.listItems}>
-            {filteredCenters.map(center => (
-              <button
-                key={center.id}
-                className={`${styles.listItem} ${selectedId === center.id ? styles.listItemSelected : ''}`}
-                onClick={() => handleSelectCenter(center.id)}
-              >
-                <div className={styles.listItemAvatar}>{center.name.charAt(0)}</div>
-                <div className={styles.listItemMeta}>
-                  <span className={styles.listItemName}>{center.name}</span>
-                  <div className={styles.listItemStatusRow}>
-                    <div className={`${styles.listItemDot} ${styles[center.status]}`} />
-                    <span className={styles.listItemStatus}>
-                      {center.status === 'active' ? 'Active' : 'Inactive'}
-                    </span>
+            {centers.length === 0 ? (
+              <div className={styles.listEmpty}>
+                <span className={styles.listEmptyText}>No centers yet</span>
+              </div>
+            ) : (
+              filteredCenters.map(center => (
+                <button
+                  key={center.id}
+                  className={`${styles.listItem} ${selectedId === center.id ? styles.listItemSelected : ''}`}
+                  onClick={() => handleSelectCenter(center.id)}
+                >
+                  <div className={styles.listItemAvatar}>{center.name.charAt(0)}</div>
+                  <div className={styles.listItemMeta}>
+                    <span className={styles.listItemName}>{center.name}</span>
+                    <div className={styles.listItemStatusRow}>
+                      <div className={`${styles.listItemDot} ${styles[center.status]}`} />
+                      <span className={styles.listItemStatus}>
+                        {center.status === 'active' ? 'Active' : 'Inactive'}
+                      </span>
+                    </div>
                   </div>
-                </div>
-              </button>
-            ))}
+                </button>
+              ))
+            )}
           </div>
         </div>
 
         {/* ── Right: user / team / center detail ── */}
-        <div className={styles.detailPanel}>
+        <div className={`${styles.detailPanel} ${!isMobile || detailVisible ? styles.detailPanelVisible : ''}`}>
+
+          {/* Back button — solo en mobile, context-aware */}
+          {isMobile && (
+            <button
+              className={styles.mobilePanelBack}
+              onClick={selectedUser
+                ? () => { setSubSlideDir('back'); setSelectedUser(null); setSelectedUserTeam(null); }
+                : selectedTeam
+                  ? () => { setSubSlideDir('back'); setSelectedTeam(null); setSelectedUser(null); setSelectedUserTeam(null); }
+                  : handleBackToCenters
+              }
+            >
+              <span className={styles.mobilePanelBackIcon}><ArrowLeftIcon size={16} /></span>
+              <span>
+                {selectedUser
+                  ? `Back to ${(selectedTeam ?? selectedUserTeam)?.name ?? 'Team'}`
+                  : selectedTeam
+                    ? 'Back to Teams'
+                    : 'Centers'
+                }
+              </span>
+            </button>
+          )}
+
+          <div key={subKey} className={subSlideClass} style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
           {selectedUser ? (
             <UserCard
               user={selectedUser}
               team={selectedTeam ?? selectedUserTeam}
               backLabel={selectedTeam ? selectedTeam.name : selected?.name}
-              onBack={() => { setSelectedUser(null); setSelectedUserTeam(null); }}
+              onBack={() => { setSubSlideDir('back'); setSelectedUser(null); setSelectedUserTeam(null); }}
+              isMobile={isMobile}
             />
           ) : selectedTeam ? (
             <TeamCard
               team={selectedTeam}
               center={selectedTeamCenter}
               org={org}
-              onBack={() => { setSelectedTeam(null); setSelectedUser(null); setSelectedUserTeam(null); }}
-              onSelectUser={(user) => setSelectedUser(user)}
+              onBack={() => { setSubSlideDir('back'); setSelectedTeam(null); setSelectedUser(null); setSelectedUserTeam(null); }}
+              onSelectUser={(user) => { setSubSlideDir('forward'); setSelectedUser(user); }}
               onNewUser={() => setNewUserContext({ center: selectedTeamCenter, team: selectedTeam })}
+              isMobile={isMobile}
             />
           ) : selected ? (
             <CenterCard
@@ -220,26 +287,49 @@ function CentersContent({ org, initialCenter, initialTeam, initialUser }) {
               onEdit={() => setEditCenterTarget(selected)}
               onNewTeam={() => setNewTeamCenter(selected)}
               onNewUser={() => setNewUserContext({ center: selected })}
+              onEditTeam={(team) => setEditTeamTarget(team)}
+              onNewUserForTeam={(team) => setNewUserContext({ center: selected, team })}
+              initialTab={returnTab}
               onSelectTeam={(team) => {
+                setSubSlideDir('forward');
                 setSelectedTeam(team);
                 setSelectedTeamCenter(selected);
+                setReturnTab('teams');
               }}
               onSelectUser={(user, team) => {
+                setSubSlideDir('forward');
                 setSelectedUser(user);
                 setSelectedUserTeam(team);
               }}
+            />
+          ) : centers.length === 0 ? (
+            <EmptyState
+              title="No centers yet"
+              subtitle="Create the first center for this organization."
+              action={
+                <Button
+                  variant="primary"
+                  size="s"
+                  leftIcon={<IconPlus size={14} />}
+                  onClick={() => setShowNewCenter(true)}
+                >
+                  New center
+                </Button>
+              }
             />
           ) : (
             <div className={styles.detailEmpty}>
               <span className={styles.detailEmptyText}>Select a center to view its details</span>
             </div>
           )}
+          </div>
         </div>
 
       </div>
 
-      {showNewCenter    && <NewCenterModal org={org} onClose={() => setShowNewCenter(false)} />}
+      {showNewCenter    && <NewCenterDrawer org={org} onClose={() => setShowNewCenter(false)} />}
       {editCenterTarget && <EditCenterDrawer center={editCenterTarget} org={org} onClose={() => setEditCenterTarget(null)} />}
+      {editTeamTarget   && <EditTeamDrawer team={editTeamTarget} onClose={() => setEditTeamTarget(null)} />}
       {newTeamCenter    && <NewTeamDrawer center={newTeamCenter} onClose={() => setNewTeamCenter(null)} />}
       {newUserContext   && (
         <NewUserDrawer
@@ -264,9 +354,27 @@ const CENTER_TABS = [
 
 // ─── Teams tab ────────────────────────────────────────────
 
-function TeamsTab({ center, onSelectTeam }) {
-  const teams = center.teams ?? [];
-  if (teams.length === 0) {
+function TeamsTab({ center, onSelectTeam, onEditTeam, onNewUserForTeam }) {
+  const [search, setSearch]       = useState('');
+  const [openMenuId, setOpenMenuId] = useState(null);
+  const menuRefs = useRef({});
+
+  useEffect(() => {
+    if (!openMenuId) return;
+    function handleClick(e) {
+      const ref = menuRefs.current[openMenuId];
+      if (ref && !ref.contains(e.target)) setOpenMenuId(null);
+    }
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [openMenuId]);
+
+  const allTeams = center.teams ?? [];
+  const teams = search.trim()
+    ? allTeams.filter(t => t.name.toLowerCase().includes(search.trim().toLowerCase()))
+    : allTeams;
+
+  if (allTeams.length === 0) {
     return (
       <InnerEmptyState
         title="No teams yet..."
@@ -274,35 +382,96 @@ function TeamsTab({ center, onSelectTeam }) {
       />
     );
   }
+
   return (
-    <div className={styles.innerList}>
-      {teams.map(team => {
-        const userCount = (team.users ?? []).length;
-        const profCount = (team.professionalIds ?? []).length;
-        return (
-          <button
-            key={team.id}
-            className={styles.innerRow}
-            onClick={() => onSelectTeam(team)}
-          >
-            <div className={styles.innerRowAvatar}>{team.name.charAt(0)}</div>
-            <div className={styles.innerRowMeta}>
-              <span className={styles.innerRowName}>{team.name}</span>
-              <span className={styles.innerRowSub}>
-                {userCount} {userCount === 1 ? 'user' : 'users'} · {profCount} {profCount === 1 ? 'professional' : 'professionals'}
-              </span>
-            </div>
-            <Tag status={team.status} />
-          </button>
-        );
-      })}
+    <div className={styles.teamsTab}>
+
+      <div className={styles.teamToolbar}>
+        <SearchBar
+          placeholder="Search by name..."
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          onClear={() => setSearch('')}
+        />
+        <ToolbarButton icon={<IconFilter size={16} />}>Filters</ToolbarButton>
+      </div>
+
+      {teams.length > 0 ? (
+        <div className={styles.teamTable}>
+          <div className={styles.teamTableHead}>
+            <span className={`${styles.teamCol} ${styles.teamColName}`}>Team Name</span>
+            <span className={`${styles.teamCol} ${styles.teamColStatus}`}>Status</span>
+            <span className={`${styles.teamCol} ${styles.teamColActions}`} />
+          </div>
+          {teams.map(team => {
+            const userCount = (team.users ?? []).length;
+            const profCount = (team.professionalIds ?? []).length;
+            const isOpen = openMenuId === team.id;
+            return (
+              <div
+                key={team.id}
+                className={styles.teamTableRow}
+                role="button"
+                tabIndex={0}
+                onClick={() => onSelectTeam(team)}
+                onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') onSelectTeam(team); }}
+              >
+                <div className={`${styles.teamCol} ${styles.teamColName}`}>
+                  <div className={styles.memberAvatar}>{team.name.charAt(0)}</div>
+                  <div className={styles.memberMeta}>
+                    <span className={styles.memberName}>{team.name}</span>
+                    <span className={styles.memberSub}>
+                      {userCount} {userCount === 1 ? 'user' : 'users'} · {profCount} {profCount === 1 ? 'professional' : 'professionals'}
+                    </span>
+                  </div>
+                </div>
+                <div className={`${styles.teamCol} ${styles.teamColStatus}`}>
+                  <Tag status={team.status} />
+                </div>
+                <div
+                  className={`${styles.teamCol} ${styles.teamColActions}`}
+                  ref={el => { menuRefs.current[team.id] = el; }}
+                  onClick={e => e.stopPropagation()}
+                >
+                  <div className={styles.teamRowMenuAnchor}>
+                    <IconButton
+                      aria-label="Team options"
+                      tooltip="More"
+                      onClick={() => setOpenMenuId(isOpen ? null : team.id)}
+                    >
+                      <IconMore />
+                    </IconButton>
+                    {isOpen && (
+                      <div className={styles.teamRowMenu}>
+                        <ContextMenu
+                          items={[
+                            { label: 'Edit Team',   icon: <IconEdit  size={16} />, onClick: () => { setOpenMenuId(null); onEditTeam(team); } },
+                            { label: 'New User',    icon: <IconPlus  size={16} />, onClick: () => { setOpenMenuId(null); onNewUserForTeam(team); } },
+                            { label: 'Delete Team', icon: <IconTrash size={16} />, variant: 'danger', onClick: () => setOpenMenuId(null) },
+                          ]}
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <InnerEmptyState
+          title="No results"
+          subtitle={`No teams match "${search}"`}
+        />
+      )}
+
     </div>
   );
 }
 
 // ─── Details tab ─────────────────────────────────────────
 
-function DetailsTab({ center, org }) {
+function DetailsTab({ center, org, onTabChange }) {
   const teams = getActiveTeamCount(center);
   const users = getUserCountForCenter(center);
   const profs = getProfessionalCountForCenter(center);
@@ -311,17 +480,17 @@ function DetailsTab({ center, org }) {
     <div className={styles.detailsTab}>
 
       <div className={styles.detailsSection}>
-        <span className={styles.sectionLabel}>Overview</span>
+        <h3 className={styles.peopleSectionTitle}>Overview</h3>
         <div className={styles.statsGrid}>
-          <div className={styles.statBlock}>
+          <button className={`${styles.statBlock} ${styles.statBlockClickable}`} onClick={() => onTabChange('teams')}>
             <span className={styles.statNum}>{teams}</span>
             <span className={styles.statName}>Teams</span>
-          </div>
+          </button>
           <div className={styles.statDividerV} />
-          <div className={styles.statBlock}>
+          <button className={`${styles.statBlock} ${styles.statBlockClickable}`} onClick={() => onTabChange('users')}>
             <span className={styles.statNum}>{users}</span>
             <span className={styles.statName}>Users</span>
-          </div>
+          </button>
           <div className={styles.statDividerV} />
           <div className={styles.statBlock}>
             <span className={styles.statNum}>{profs}</span>
@@ -330,41 +499,44 @@ function DetailsTab({ center, org }) {
         </div>
       </div>
 
-      <div className={styles.detailsSection}>
-        <span className={styles.sectionLabel}>Administrator</span>
-        <div className={styles.infoList}>
-          <div className={styles.infoRow}>
-            <IconUserFilled size={14} />
-            <span>{center.contact ?? org.contact}</span>
-          </div>
-          <div className={styles.infoRow}>
-            <IconMailFilled size={14} />
-            <span>{center.email}</span>
-          </div>
-        </div>
-      </div>
+      {(() => {
+        const people = [
+          ...(center.admins  ?? []).map(a => ({ role: 'Center Admin', name: a.name, email: a.email, phone: a.phone })),
+          ...(center.contacts ?? []).map(c => ({ role: c.cargo, name: c.name, email: c.email, phone: c.phone })),
+        ];
+        const hasCenterInfo = center.email || center.phone || center.address;
+        if (!hasCenterInfo && people.length === 0) return null;
+        return (
+          <div className={styles.detailsSection}>
+            <h3 className={styles.peopleSectionTitle}>Contact</h3>
+            <div className={styles.peopleList}>
 
-      <div className={styles.detailsSection}>
-        <span className={styles.sectionLabel}>Contact</span>
-        <div className={styles.infoList}>
-          <div className={styles.infoRow}>
-            <IconUserFilled size={14} />
-            <span>{center.contact ?? org.contact}</span>
+              {hasCenterInfo && (
+                <div className={`${styles.personEntry} ${styles.personEntryFirst}`}>
+                  <span className={styles.contactEntryTitle}>Center info</span>
+                  <div className={styles.infoList}>
+                    {center.email && <div className={styles.infoRow}><IconMailFilled size={14} /><span>{center.email}</span></div>}
+                    {center.phone && <div className={styles.infoRow}><IconPhoneFilled size={14} /><span>{center.phone}</span></div>}
+                    {center.address && <div className={styles.infoRow}><IconLocationFilled size={14} /><span>{center.address}</span></div>}
+                  </div>
+                </div>
+              )}
+
+              {people.map((p, i) => (
+                <div key={i} className={`${styles.personEntry} ${!hasCenterInfo && i === 0 ? styles.personEntryFirst : ''}`}>
+                  <span className={styles.contactEntryTitle}>{p.role}</span>
+                  <div className={styles.infoList}>
+                    <div className={styles.infoRow}><IconUserFilled size={14} /><span>{p.name}</span></div>
+                    <div className={styles.infoRow}><IconMailFilled size={14} /><span>{p.email}</span></div>
+                    {p.phone && <div className={styles.infoRow}><IconPhoneFilled size={14} /><span>{p.phone}</span></div>}
+                  </div>
+                </div>
+              ))}
+
+            </div>
           </div>
-          <div className={styles.infoRow}>
-            <IconMailFilled size={14} />
-            <span>{center.email}</span>
-          </div>
-          <div className={styles.infoRow}>
-            <IconPhoneFilled size={14} />
-            <span>{center.phone}</span>
-          </div>
-          <div className={styles.infoRow}>
-            <IconLocationFilled size={14} />
-            <span>{center.address}</span>
-          </div>
-        </div>
-      </div>
+        );
+      })()}
 
     </div>
   );
@@ -381,8 +553,8 @@ function getScrollParent(el) {
   return null;
 }
 
-function CenterCard({ center, org, onEdit, onNewTeam, onNewUser, onSelectTeam, onSelectUser }) {
-  const [innerTab, setInnerTab]         = useState('details');
+function CenterCard({ center, org, onEdit, onNewTeam, onNewUser, onEditTeam, onNewUserForTeam, onSelectTeam, onSelectUser, initialTab = 'details' }) {
+  const [innerTab, setInnerTab]         = useState(initialTab);
   const [createMenuOpen, setCreateMenuOpen] = useState(false);
   const createMenuRef  = useRef(null);
   const tabBarRef      = useRef(null);
@@ -424,8 +596,6 @@ function CenterCard({ center, org, onEdit, onNewTeam, onNewUser, onSelectTeam, o
             <div className={styles.cardTitleGroup}>
               <h2 className={styles.cardTitle}>{center.name}</h2>
               <div className={styles.cardSubtitle}>
-                <span>{org.name}</span>
-                <span className={styles.separator}>|</span>
                 <div className={styles.statusBadgeSmall}>
                   <div className={`${styles.statusDot} ${styles[center.status]}`} />
                   <span>{center.status === 'active' ? 'Active' : 'Inactive'}</span>
@@ -435,13 +605,15 @@ function CenterCard({ center, org, onEdit, onNewTeam, onNewUser, onSelectTeam, o
           </div>
           <div className={styles.cardActions}>
             <div className={styles.createMenuAnchor} ref={createMenuRef}>
-              <IconButton
-                aria-label="Create"
-                tooltip="Create"
-                onClick={() => setCreateMenuOpen(v => !v)}
-              >
-                <IconPlus size={16} />
-              </IconButton>
+              <span className={createMenuOpen ? styles.createTriggerHidden : ''}>
+                <IconButton
+                  aria-label="Create"
+                  tooltip="Create"
+                  onClick={() => setCreateMenuOpen(v => !v)}
+                >
+                  <IconPlus size={16} />
+                </IconButton>
+              </span>
               {createMenuOpen && (
                 <div className={styles.cardCreateMenu}>
                   <ContextMenu
@@ -472,10 +644,15 @@ function CenterCard({ center, org, onEdit, onNewTeam, onNewUser, onSelectTeam, o
       {/* ── Scrollable tab content ── */}
       <div ref={tabContentRef} className={styles.innerTabContent}>
         {innerTab === 'details' && (
-          <DetailsTab center={center} org={org} />
+          <DetailsTab center={center} org={org} onTabChange={handleTabChange} />
         )}
         {innerTab === 'teams' && (
-          <TeamsTab center={center} onSelectTeam={onSelectTeam} />
+          <TeamsTab
+            center={center}
+            onSelectTeam={onSelectTeam}
+            onEditTeam={onEditTeam}
+            onNewUserForTeam={onNewUserForTeam}
+          />
         )}
         {innerTab === 'users' && (
           <UsersTab center={center} onSelectUser={onSelectUser} />
@@ -634,9 +811,22 @@ function UsersTab({ center, onSelectUser }) {
 
 const TEAM_PAGE_SIZE = 10;
 
-function TeamCard({ team, center, org, onBack, onSelectUser, onNewUser }) {
-  const [search, setSearch] = useState('');
-  const [page, setPage]     = useState(1);
+function TeamCard({ team, center, org, onBack, onSelectUser, onNewUser, isMobile = false }) {
+  const [search, setSearch]         = useState('');
+  const [page, setPage]             = useState(1);
+  const [openMenuId, setOpenMenuId] = useState(null);
+  const [editUserTarget, setEditUserTarget] = useState(null);
+  const menuRefs = useRef({});
+
+  useEffect(() => {
+    if (!openMenuId) return;
+    function handleClick(e) {
+      const ref = menuRefs.current[openMenuId];
+      if (ref && !ref.contains(e.target)) setOpenMenuId(null);
+    }
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [openMenuId]);
 
   const allMembers = useMemo(() => {
     const userIds = new Set(team.users ?? []);
@@ -658,10 +848,7 @@ function TeamCard({ team, center, org, onBack, onSelectUser, onNewUser }) {
   const safePage    = Math.min(page, totalPages);
   const pageMembers = filtered.slice((safePage - 1) * TEAM_PAGE_SIZE, safePage * TEAM_PAGE_SIZE);
 
-  function handleSearch(val) {
-    setSearch(val);
-    setPage(1);
-  }
+  function handleSearch(val) { setSearch(val); setPage(1); }
 
   return (
     <div className={styles.centerCard}>
@@ -669,10 +856,12 @@ function TeamCard({ team, center, org, onBack, onSelectUser, onNewUser }) {
       {/* ── Fixed header ── */}
       <div className={styles.innerHeader}>
 
-        <button className={styles.teamBackBtn} onClick={onBack}>
-          <ArrowLeftIcon />
-          <span>Back to {center.name}</span>
-        </button>
+        {!isMobile && (
+          <button className={styles.teamBackBtn} onClick={onBack}>
+            <ArrowLeftIcon />
+            <span>Back to Teams</span>
+          </button>
+        )}
 
         <div className={styles.cardHeader}>
           <div className={styles.cardHeaderLeft}>
@@ -705,57 +894,84 @@ function TeamCard({ team, center, org, onBack, onSelectUser, onNewUser }) {
       </div>
 
       {/* ── Scrollable content ── */}
-      <div className={styles.teamContent}>
+      <div className={`${styles.teamContent} ${styles.membersTab}`}>
 
         <div className={styles.teamToolbar}>
           <SearchBar
-            placeholder="Search members..."
+            placeholder="Search by name..."
             value={search}
             onChange={e => handleSearch(e.target.value)}
             onClear={() => handleSearch('')}
           />
-          <span className={styles.teamCount}>
-            {filtered.length} {filtered.length === 1 ? 'member' : 'members'}
-          </span>
+          <ToolbarButton icon={<IconFilter size={16} />}>Filters</ToolbarButton>
         </div>
 
-        {pageMembers.length > 0 ? (
+        {allMembers.length === 0 ? (
+          <InnerEmptyState
+            title="No members yet..."
+            subtitle="Add users to this team to see them here"
+          />
+        ) : pageMembers.length > 0 ? (
           <div className={styles.teamTable}>
             <div className={styles.teamTableHead}>
-              <span className={`${styles.teamCol} ${styles.teamColName}`}>Name</span>
+              <span className={`${styles.teamCol} ${styles.teamColName}`}>Member</span>
               <span className={`${styles.teamCol} ${styles.teamColStatus}`}>Status</span>
-              <span className={`${styles.teamCol} ${styles.teamColDate}`}>Date Added</span>
               <span className={`${styles.teamCol} ${styles.teamColActions}`} />
             </div>
-            {pageMembers.map(member => (
-              <button
-                key={member.id}
-                className={styles.teamTableRow}
-                onClick={() => onSelectUser(member)}
-              >
-                <div className={`${styles.teamCol} ${styles.teamColName}`}>
-                  <div className={styles.memberAvatar}>{member.name.charAt(0)}</div>
-                  <div className={styles.memberMeta}>
-                    <span className={styles.memberName}>{member.name}</span>
-                    <span className={styles.memberSub}>{member.role}</span>
+            {pageMembers.map(member => {
+              const isOpen = openMenuId === member.id;
+              return (
+                <div
+                  key={member.id}
+                  className={styles.teamTableRow}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => onSelectUser(member)}
+                  onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') onSelectUser(member); }}
+                >
+                  <div className={`${styles.teamCol} ${styles.teamColName}`}>
+                    <div className={styles.memberAvatar}>{member.name.charAt(0)}</div>
+                    <div className={styles.memberMeta}>
+                      <span className={styles.memberName}>{member.name}</span>
+                      <span className={styles.memberSub}>{member.role}</span>
+                    </div>
+                  </div>
+                  <div className={`${styles.teamCol} ${styles.teamColStatus}`}>
+                    <Tag status={member.status} />
+                  </div>
+                  <div
+                    className={`${styles.teamCol} ${styles.teamColActions}`}
+                    ref={el => { menuRefs.current[member.id] = el; }}
+                    onClick={e => e.stopPropagation()}
+                  >
+                    <div className={styles.teamRowMenuAnchor}>
+                      <IconButton
+                        aria-label="Member options"
+                        tooltip="More"
+                        onClick={() => setOpenMenuId(isOpen ? null : member.id)}
+                      >
+                        <IconMore />
+                      </IconButton>
+                      {isOpen && (
+                        <div className={styles.teamRowMenu}>
+                          <ContextMenu
+                            items={[
+                              { label: 'Edit User',   icon: <IconEdit  size={16} />, onClick: () => { setOpenMenuId(null); setEditUserTarget(member); } },
+                              { label: 'Delete User', icon: <IconTrash size={16} />, variant: 'danger', onClick: () => setOpenMenuId(null) },
+                            ]}
+                          />
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
-                <div className={`${styles.teamCol} ${styles.teamColStatus}`}>
-                  <Tag status={member.status} />
-                </div>
-                <div className={`${styles.teamCol} ${styles.teamColDate}`}>
-                  <span className={styles.dateText}>{member.dateAdded}</span>
-                </div>
-                <div className={`${styles.teamCol} ${styles.teamColActions}`}>
-                  <span className={styles.moreBtn} aria-hidden="true">···</span>
-                </div>
-              </button>
-            ))}
+              );
+            })}
           </div>
         ) : (
           <InnerEmptyState
-            title={search ? 'No results' : 'No members yet...'}
-            subtitle={search ? `No members match "${search}"` : 'Add users to this team to see them here'}
+            title="No results"
+            subtitle={`No members match "${search}"`}
           />
         )}
 
@@ -765,25 +981,17 @@ function TeamCard({ team, center, org, onBack, onSelectUser, onNewUser }) {
               Showing {(safePage - 1) * TEAM_PAGE_SIZE + 1}–{Math.min(safePage * TEAM_PAGE_SIZE, filtered.length)} of {filtered.length} members
             </span>
             <div className={styles.paginationBtns}>
-              <button
-                className={styles.paginationBtn}
-                onClick={() => setPage(p => Math.max(1, p - 1))}
-                disabled={safePage === 1}
-              >
-                Previous
-              </button>
-              <button
-                className={styles.paginationBtn}
-                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-                disabled={safePage >= totalPages}
-              >
-                Next
-              </button>
+              <button className={styles.paginationBtn} onClick={() => setPage(p => Math.max(1, p - 1))} disabled={safePage === 1}>Previous</button>
+              <button className={styles.paginationBtn} onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={safePage >= totalPages}>Next</button>
             </div>
           </div>
         )}
 
       </div>
+
+      {editUserTarget && (
+        <EditUserDrawer user={editUserTarget} team={team} onClose={() => setEditUserTarget(null)} />
+      )}
 
     </div>
   );
@@ -791,7 +999,7 @@ function TeamCard({ team, center, org, onBack, onSelectUser, onNewUser }) {
 
 // ─── User detail card ─────────────────────────────────────
 
-function UserCard({ user, team, backLabel, onBack }) {
+function UserCard({ user, team, backLabel, onBack, isMobile = false }) {
   const [showEdit, setShowEdit] = useState(false);
 
   return (
@@ -800,10 +1008,12 @@ function UserCard({ user, team, backLabel, onBack }) {
       {/* ── Fixed header ── */}
       <div className={styles.innerHeader}>
 
-        <button className={styles.teamBackBtn} onClick={onBack}>
-          <ArrowLeftIcon />
-          <span>Back to {backLabel ?? team?.name}</span>
-        </button>
+        {!isMobile && (
+          <button className={styles.teamBackBtn} onClick={onBack}>
+            <ArrowLeftIcon />
+            <span>Back to {backLabel ?? team?.name}</span>
+          </button>
+        )}
 
         <div className={styles.cardHeader}>
           <div className={styles.cardHeaderLeft}>
@@ -811,7 +1021,7 @@ function UserCard({ user, team, backLabel, onBack }) {
             <div className={styles.cardTitleGroup}>
               <h2 className={styles.cardTitle}>{user.name}</h2>
               <div className={styles.cardSubtitle}>
-                <span>{team.name}</span>
+                <span>{user.role ?? team?.name}</span>
                 <span className={styles.separator}>|</span>
                 <div className={styles.statusBadgeSmall}>
                   <div className={`${styles.statusDot} ${styles[user.status]}`} />
@@ -882,11 +1092,11 @@ function UserCard({ user, team, backLabel, onBack }) {
           <div className={styles.userPermissions}>
             <div className={styles.permItem}>
               <IconRfid />
-              <span>RFID: <strong>{user.rfid ? 'On' : 'Off'}</strong></span>
+              <span>RFID: {user.rfid ? 'On' : 'Off'}</span>
             </div>
             <div className={styles.permItem}>
               <IconPin />
-              <span>PIN: <strong>{user.pin ? 'On' : 'Off'}</strong></span>
+              <span>PIN: {user.pin ? 'On' : 'Off'}</span>
             </div>
           </div>
         </div>
@@ -901,8 +1111,9 @@ function UserCard({ user, team, backLabel, onBack }) {
 
 // ─── Main component ───────────────────────────────────────
 
-export default function OrgDetailV2({ org, onBack, initialCenter, initialTeam, initialUser }) {
-  const [showEditDrawer, setShowEditDrawer] = useState(false);
+export default function OrgDetailV2({ org, onBack, initialCenter, initialTeam, initialUser, isMobile = false }) {
+  const [showEditDrawer, setShowEditDrawer]   = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   return (
     <div className={styles.container}>
@@ -936,7 +1147,7 @@ export default function OrgDetailV2({ org, onBack, initialCenter, initialTeam, i
               <IconButton aria-label="Configuración" tooltip="Settings" onClick={() => setShowEditDrawer(true)}>
                 <IconSettings size={16} />
               </IconButton>
-              <IconButton aria-label="Eliminar organización" tooltip="Delete" variant="danger">
+              <IconButton aria-label="Eliminar organización" tooltip="Delete" variant="danger" onClick={() => setShowDeleteModal(true)}>
                 <IconTrash size={16} />
               </IconButton>
             </div>
@@ -962,10 +1173,12 @@ export default function OrgDetailV2({ org, onBack, initialCenter, initialTeam, i
           initialCenter={initialCenter}
           initialTeam={initialTeam}
           initialUser={initialUser}
+          isMobile={isMobile}
         />
       </div>
 
-      {showEditDrawer && <EditOrgDrawer org={org} onClose={() => setShowEditDrawer(false)} />}
+      {showEditDrawer  && <EditOrgDrawer  org={org} onClose={() => setShowEditDrawer(false)} />}
+      {showDeleteModal && <DeleteOrgModal org={org} onClose={() => setShowDeleteModal(false)} onConfirm={onBack} />}
     </div>
   );
 }

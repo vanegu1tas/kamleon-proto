@@ -1,0 +1,45 @@
+/* ─── Container ───────────────────────────────────────── */
+
+.container {
+  display: flex;
+  background: var(--color-bg-surface-subtle);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-l);
+  padding: 5px;
+  gap: 8px;
+}
+
+/* ─── Option ──────────────────────────────────────────── */
+
+.option {
+  flex: 1;
+  padding: 8px 16px;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: var(--radius-l);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+  cursor: pointer;
+  transition: color 0.15s ease;
+  white-space: nowrap;
+}
+
+.option:hover:not(.active) {
+  color: var(--color-text-strong);
+}
+
+.option:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+/* ─── Active ──────────────────────────────────────────── */
+
+.active {
+  background: var(--color-text-strong);
+  border-color: var(--color-border-strong);
+  color: #fff;
+  font-weight: var(--font-weight-medium);
+}

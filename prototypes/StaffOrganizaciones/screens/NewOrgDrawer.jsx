@@ -1,17 +1,21 @@
 import { useState } from 'react';
 import Button from '../../../design-system/components/Button/Button';
-import { IconClose, IconAddImage, IconPlus, IconChevronDown } from '../../../design-system/icons/outline';
+import { IconClose, IconAddImage, IconPlus } from '../../../design-system/icons/outline';
 import IconButton from '../../../design-system/components/IconButton/IconButton';
+import Input from '../../../design-system/components/Input/Input';
+import Dropdown from '../../../design-system/components/Dropdown/Dropdown';
 import styles from './NewOrgDrawer.module.css';
 
 const SEGMENTS = ['Sport', 'Fitness'];
 
 export default function NewOrgDrawer({ onClose }) {
-  const [name, setName]         = useState('');
-  const [segment, setSegment]   = useState('');
-  const [email, setEmail]       = useState('');
-  const [phone, setPhone]       = useState('');
-  const [addresses, setAddresses] = useState(['']);
+  const [name, setName]               = useState('');
+  const [segment, setSegment]         = useState('');
+  const [contactName, setContactName] = useState('');
+  const [position, setPosition]       = useState('');
+  const [email, setEmail]             = useState('');
+  const [phone, setPhone]             = useState('');
+  const [addresses, setAddresses]     = useState(['']);
 
   function addAddress() {
     setAddresses(prev => [...prev, '']);
@@ -57,62 +61,61 @@ export default function NewOrgDrawer({ onClose }) {
           {/* Fields */}
           <div className={styles.fields}>
 
-            {/* Row 1: Name + Segment */}
+            {/* Row 1: Organization Name + Segment */}
             <div className={styles.formRow}>
-              <div className={styles.field}>
-                <label className={styles.fieldLabel}>
-                  Name <span className={styles.required}>*</span>
-                </label>
-                <input
-                  className={styles.input}
-                  placeholder="Write here..."
-                  value={name}
-                  onChange={e => setName(e.target.value)}
-                  autoFocus
-                />
-              </div>
-              <div className={styles.field}>
-                <label className={styles.fieldLabel}>
-                  Segment <span className={styles.required}>*</span>
-                </label>
-                <div className={styles.selectWrap}>
-                  <select
-                    className={styles.select}
-                    value={segment}
-                    onChange={e => setSegment(e.target.value)}
-                  >
-                    <option value="" disabled>Select segment</option>
-                    {SEGMENTS.map(s => (
-                      <option key={s} value={s}>{s}</option>
-                    ))}
-                  </select>
-                  <IconChevronDown size={16} className={styles.selectIcon} />
-                </div>
-              </div>
+              <Input
+                label="Organization Name"
+                required
+                placeholder="Write here..."
+                value={name}
+                onChange={setName}
+                autoFocus
+              />
+              <Dropdown
+                label="Segment"
+                required
+                placeholder="Select segment"
+                options={SEGMENTS}
+                value={segment}
+                onChange={setSegment}
+              />
             </div>
 
-            {/* Row 2: Email + Phone */}
+            {/* Contact information section */}
+            <span className={styles.sectionLabel}>Contact information</span>
+
+            {/* Row 2: Contact Name + Position */}
             <div className={styles.formRow}>
-              <div className={styles.field}>
-                <label className={styles.fieldLabel}>Email</label>
-                <input
-                  className={styles.input}
-                  type="email"
-                  placeholder="Write here..."
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                />
-              </div>
-              <div className={styles.field}>
-                <label className={styles.fieldLabel}>Phone number</label>
-                <input
-                  className={styles.input}
-                  type="tel"
-                  placeholder="Write here..."
-                  value={phone}
-                  onChange={e => setPhone(e.target.value)}
-                />
-              </div>
+              <Input
+                label="Name"
+                placeholder="Write here..."
+                value={contactName}
+                onChange={setContactName}
+              />
+              <Input
+                label="Position"
+                placeholder="Write here..."
+                value={position}
+                onChange={setPosition}
+              />
+            </div>
+
+            {/* Row 3: Email + Phone */}
+            <div className={styles.formRow}>
+              <Input
+                label="Email"
+                type="email"
+                placeholder="Write here..."
+                value={email}
+                onChange={setEmail}
+              />
+              <Input
+                label="Phone number"
+                type="tel"
+                placeholder="Write here..."
+                value={phone}
+                onChange={setPhone}
+              />
             </div>
 
             {/* Row 3: Address(es) */}
@@ -161,7 +164,7 @@ export default function NewOrgDrawer({ onClose }) {
         {/* ── Footer ── */}
         <div className={styles.footer}>
           <Button variant="secondary" size="m" onClick={onClose}>Cancel</Button>
-          <Button variant="primary" size="m" disabled={!canCreate}>Create</Button>
+          <Button variant="primary" size="m" disabled={!canCreate} onClick={() => onClose(true)}>Create</Button>
         </div>
 
       </div>

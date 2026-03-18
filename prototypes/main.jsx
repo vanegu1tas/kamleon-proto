@@ -8,9 +8,24 @@ import '../design-system/tokens/text-styles.css';
 import '../design-system/tokens/tokens.css';
 import StaffOrganizaciones from './StaffOrganizaciones/StaffOrganizaciones';
 import StaffOrganizacionesV2 from './StaffOrganizacionesV2/StaffOrganizacionesV2';
+import { ORGS } from './StaffOrganizaciones/mockData';
+
+// URL param deep-linking: ?proto=v2&org=3&center=301
+const urlParams = new URLSearchParams(window.location.search);
+const paramProto  = urlParams.get('proto');
+const paramOrgId  = urlParams.get('org')    ? Number(urlParams.get('org'))    : null;
+const paramCenter = urlParams.get('center') ? Number(urlParams.get('center')) : null;
 
 function PrototypeSelector() {
   const [active, setActive] = useState(null);
+
+  // Deep-link: skip selector and load the specified prototype/state
+  if (paramProto === 'v1') return <StaffOrganizaciones />;
+  if (paramProto === 'v2') {
+    const org = paramOrgId ? ORGS.find(o => o.id === paramOrgId) : null;
+    const center = org && paramCenter ? org.centers.find(c => c.id === paramCenter) : null;
+    return <StaffOrganizacionesV2 initialOrgId={paramOrgId} initialCenterId={center} />;
+  }
 
   if (active === 'v1') return <StaffOrganizaciones />;
   if (active === 'v2') return <StaffOrganizacionesV2 />;

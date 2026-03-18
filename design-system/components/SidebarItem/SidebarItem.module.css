@@ -25,7 +25,7 @@
 }
 
 .collapsed {
-  padding: 12px;
+  padding: 8px;
   border-radius: var(--radius-l);
   justify-content: center;
 }
@@ -52,8 +52,8 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
 }
 
 /* ─── Label ──────────────────────────────────────── */
@@ -65,7 +65,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   font-family: var(--font-family-primary);
-  font-size: var(--font-size-16);
+  font-size: var(--font-size-14);
   font-weight: var(--font-weight-book);
   line-height: normal;
   color: var(--color-grey-70);
