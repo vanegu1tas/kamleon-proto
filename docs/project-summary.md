@@ -235,7 +235,8 @@ kamleon/
 │   ├── permissions.md          ✅ (con gaps marcados en Admin restringido)
 │   ├── project-summary.md      ✅ este archivo
 │   └── features/
-│       └── user-test-script-navegacion.md  ✅ guión de prueba de usuario (8 tareas)
+│       ├── user-test-script-navegacion.md  ✅ guión prueba V1 (8 tareas: orientación, navegación, filtros, creación)
+│       └── user-test-script-v2.md          ✅ guión prueba V2 (3 tareas: master-detail, add user manually, ⌘K)
 ├── figma/
 │   └── code-connect/           🔲 pendiente
 ├── index.html                  ✅ entry HTML del servidor de prototipos
@@ -544,6 +545,11 @@ Todos los componentes de formulario implementados. Drawers del prototipo migrado
 - [ ] **IconButton** — story pendiente
 - [ ] **ToolbarButton** — story pendiente
 - [ ] Code Connect mappings completos
+
+### Pruebas de usuario
+- [x] Guión V1 — 8 tareas (navegación, filtros, creación)
+- [x] Guión V2 — 3 tareas (master-detail, add user manually, ⌘K)
+- [ ] Ejecutar pruebas con participantes reales
 
 ### V2 — pendientes
 - [ ] **Empty states** — CenterCard sin equipos · TeamCard sin usuarios
