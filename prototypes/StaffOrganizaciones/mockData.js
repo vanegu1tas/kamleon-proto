@@ -187,6 +187,11 @@ export const ORGS = [
             users: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31],
           },
         ],
+        units: [
+          { id: 2001, description: 'Urinal 1 — Main Entrance',  status: 'active',   display: { id: 760101, status: 'active' },   kpod: { id: 2801, status: 'active' } },
+          { id: 2002, description: 'Urinal 2 — Locker Room A',  status: 'active',   display: { id: 760102, status: 'active' },   kpod: { id: 2802, status: 'needs-replacement' } },
+          { id: 2003, description: 'Urinal 3 — Locker Room B',  status: 'inactive', display: { id: 760103, status: 'inactive' }, kpod: { id: 2803, status: 'active' } },
+        ],
       },
     ],
   },
@@ -204,6 +209,11 @@ export const ORGS = [
           { id: 3011, name: 'First Team', status: 'active', professionalIds: [13, 15], email: 'firstteam@astoniafc.com', phone: '+44 121 554 1236', address: '100 Trinity Rd, Birmingham', users: [1, 2, 3, 4, 5] },
           { id: 3012, name: 'Academy',    status: 'active', professionalIds: [17],     email: 'academy@astoniafc.com',   phone: '+44 121 554 1237', address: '100 Trinity Rd, Birmingham', users: [6, 7, 8] },
         ],
+        units: [
+          { id: 3001, description: 'Urinal 1 — Main Entrance',  status: 'active',   display: { id: 767401, status: 'active' },   kpod: { id: 2941, status: 'active' } },
+          { id: 3002, description: 'Urinal 2 — Locker Room A',  status: 'active',   display: { id: 767402, status: 'active' },   kpod: { id: 2942, status: 'needs-replacement' } },
+          { id: 3003, description: 'Urinal 3 — Locker Room B',  status: 'inactive', display: { id: 767403, status: 'inactive' }, kpod: { id: 2943, status: 'active' } },
+        ],
       },
       {
         id: 302, name: 'City Campus', status: 'active',
@@ -211,6 +221,10 @@ export const ORGS = [
         email: 'campus@astoniafc.com', phone: '+44 121 554 2000', address: '45 Broad St, Birmingham B1 2HP',
         teams: [
           { id: 3021, name: 'Women\'s Team', status: 'active', professionalIds: [18], email: 'womens@astoniafc.com', phone: '+44 121 554 2001', address: '45 Broad St, Birmingham', users: [9, 10, 11, 12] },
+        ],
+        units: [
+          { id: 3021, description: 'Urinal 1 — Gym Floor',    status: 'active', display: { id: 767501, status: 'active' }, kpod: { id: 2951, status: 'active' } },
+          { id: 3022, description: 'Urinal 2 — Changing Room', status: 'active', display: { id: 767502, status: 'active' }, kpod: { id: 2952, status: 'active' } },
         ],
       },
     ],

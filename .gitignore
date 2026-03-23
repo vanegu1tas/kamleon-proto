@@ -7,3 +7,6 @@ dist/
 
 *storybook.log
 storybook-static/
+
+# Docs personales / presentaciones
+personal/

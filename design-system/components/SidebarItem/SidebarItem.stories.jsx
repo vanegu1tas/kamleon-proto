@@ -2,7 +2,7 @@ import SidebarItem from './SidebarItem';
 import { IconSbCenter, IconSbTeams } from '../../icons';
 
 export default {
-  title: 'Design System/SidebarItem',
+  title: 'Components/SidebarItem',
   component: SidebarItem,
   tags: ['autodocs'],
   decorators: [

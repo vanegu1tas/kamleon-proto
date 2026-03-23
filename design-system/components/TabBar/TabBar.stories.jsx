@@ -29,7 +29,7 @@ function Controlled({ tabs, defaultTab, size }) {
 }
 
 export default {
-  title: 'Design System/TabBar',
+  title: 'Components/TabBar',
   component: TabBar,
   tags: ['autodocs'],
   parameters: {

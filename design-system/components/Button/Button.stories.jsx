@@ -1,7 +1,7 @@
 import Button from './Button';
 
 export default {
-  title: 'Design System/Button',
+  title: 'Components/Button',
   component: Button,
   tags: ['autodocs'],
   args: {

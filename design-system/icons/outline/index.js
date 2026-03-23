@@ -21,3 +21,4 @@ export { default as IconSettings } from './IconSettings';
 export { default as IconBell } from './IconBell';
 export { default as IconMenu } from './IconMenu';
 export { default as IconWarning2 } from './IconWarning2';
+export { default as IconCheckCircle } from './IconCheckCircle';

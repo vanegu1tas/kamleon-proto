@@ -4,6 +4,7 @@ import TabBar from '../../../design-system/components/TabBar/TabBar';
 import SearchBar from '../../../design-system/components/SearchBar/SearchBar';
 import { IconEdit, IconPlus, IconTrash, IconSettings, IconFilter } from '../../../design-system/icons/outline';
 import Button from '../../../design-system/components/Button/Button';
+import Input from '../../../design-system/components/Input/Input';
 import { IconUserFilled, IconMailFilled, IconPhoneFilled, IconLocationFilled } from '../../../design-system/icons/filled';
 import { getUserCountForCenter, getProfessionalCountForCenter, getActiveTeamCount, USERS_POOL } from '../../StaffOrganizaciones/mockData';
 import ContextMenu      from '../../../design-system/components/ContextMenu/ContextMenu';
@@ -133,6 +134,8 @@ function CentersContent({ org, initialCenter, initialTeam, initialUser, isMobile
   const [selectedId, setSelectedId]                 = useState(isMobile ? (initialCenter?.id ?? null) : (initialCenter?.id ?? centers[0]?.id ?? null));
   const [selectedTeam, setSelectedTeam]             = useState(initialTeam ?? null);
   const [selectedTeamCenter, setSelectedTeamCenter] = useState(initialTeam ? initialCenter : null);
+  const [selectedUnit, setSelectedUnit]             = useState(null);
+  const [selectedUnitCenter, setSelectedUnitCenter] = useState(null);
   const [selectedUser, setSelectedUser]             = useState(initialUser ?? null);
   const [selectedUserTeam, setSelectedUserTeam]     = useState(null); // set when navigating from Users tab
   const [editCenterTarget, setEditCenterTarget]     = useState(null);
@@ -158,6 +161,8 @@ function CentersContent({ org, initialCenter, initialTeam, initialUser, isMobile
     setSelectedTeamCenter(null);
     setSelectedUser(null);
     setSelectedUserTeam(null);
+    setSelectedUnit(null);
+    setSelectedUnitCenter(null);
     setReturnTab('details');
     if (isMobile) setDetailVisible(true);
   }
@@ -167,14 +172,18 @@ function CentersContent({ org, initialCenter, initialTeam, initialUser, isMobile
     setSelectedTeam(null);
     setSelectedUser(null);
     setSelectedUserTeam(null);
+    setSelectedUnit(null);
+    setSelectedUnitCenter(null);
   }
 
   // Clave para animar sub-niveles al cambiar de vista dentro del detailPanel
   const subKey = selectedUser?.id
     ? `user-${selectedUser.id}`
-    : selectedTeam?.id
-      ? `team-${selectedTeam.id}`
-      : `center-${selectedId}`;
+    : selectedUnit?.id
+      ? `unit-${selectedUnit.id}`
+      : selectedTeam?.id
+        ? `team-${selectedTeam.id}`
+        : `center-${selectedId}`;
 
   const subSlideClass = isMobile
     ? (subSlideDir === 'forward' ? styles.detailSlideIn : styles.detailSlideBack)
@@ -244,18 +253,22 @@ function CentersContent({ org, initialCenter, initialTeam, initialUser, isMobile
               className={styles.mobilePanelBack}
               onClick={selectedUser
                 ? () => { setSubSlideDir('back'); setSelectedUser(null); setSelectedUserTeam(null); }
-                : selectedTeam
-                  ? () => { setSubSlideDir('back'); setSelectedTeam(null); setSelectedUser(null); setSelectedUserTeam(null); }
-                  : handleBackToCenters
+                : selectedUnit
+                  ? () => { setSubSlideDir('back'); setSelectedUnit(null); setSelectedUnitCenter(null); }
+                  : selectedTeam
+                    ? () => { setSubSlideDir('back'); setSelectedTeam(null); setSelectedUser(null); setSelectedUserTeam(null); }
+                    : handleBackToCenters
               }
             >
               <span className={styles.mobilePanelBackIcon}><ArrowLeftIcon size={16} /></span>
               <span>
                 {selectedUser
                   ? `Back to ${(selectedTeam ?? selectedUserTeam)?.name ?? 'Team'}`
-                  : selectedTeam
-                    ? 'Back to Teams'
-                    : 'Centers'
+                  : selectedUnit
+                    ? 'Back to Units'
+                    : selectedTeam
+                      ? 'Back to Teams'
+                      : 'Centers'
                 }
               </span>
             </button>
@@ -268,6 +281,13 @@ function CentersContent({ org, initialCenter, initialTeam, initialUser, isMobile
               team={selectedTeam ?? selectedUserTeam}
               backLabel={selectedTeam ? selectedTeam.name : selected?.name}
               onBack={() => { setSubSlideDir('back'); setSelectedUser(null); setSelectedUserTeam(null); }}
+              isMobile={isMobile}
+            />
+          ) : selectedUnit ? (
+            <UnitCard
+              unit={selectedUnit}
+              center={selectedUnitCenter}
+              onBack={() => { setSubSlideDir('back'); setSelectedUnit(null); setSelectedUnitCenter(null); }}
               isMobile={isMobile}
             />
           ) : selectedTeam ? (
@@ -300,6 +320,12 @@ function CentersContent({ org, initialCenter, initialTeam, initialUser, isMobile
                 setSubSlideDir('forward');
                 setSelectedUser(user);
                 setSelectedUserTeam(team);
+              }}
+              onSelectUnit={(unit) => {
+                setSubSlideDir('forward');
+                setSelectedUnit(unit);
+                setSelectedUnitCenter(selected);
+                setReturnTab('units');
               }}
             />
           ) : centers.length === 0 ? (
@@ -542,6 +568,230 @@ function DetailsTab({ center, org, onTabChange }) {
   );
 }
 
+// ─── Units tab ────────────────────────────────────────────
+
+
+function UnitsTab({ center, onSelectUnit }) {
+  const [search, setSearch] = useState('');
+  const [openMenuId, setOpenMenuId] = useState(null);
+  const menuRefs = useRef({});
+
+  useEffect(() => {
+    if (!openMenuId) return;
+    function handleClick(e) {
+      const ref = menuRefs.current[openMenuId];
+      if (ref && !ref.contains(e.target)) setOpenMenuId(null);
+    }
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [openMenuId]);
+
+  const allUnits = center.units ?? [];
+  const units = search.trim()
+    ? allUnits.filter(u => u.description.toLowerCase().includes(search.trim().toLowerCase()) || String(u.id).includes(search.trim()))
+    : allUnits;
+
+  if (allUnits.length === 0) {
+    return (
+      <InnerEmptyState
+        title="No units yet..."
+        subtitle="Hardware units assigned to this center will appear here"
+      />
+    );
+  }
+
+  return (
+    <div className={styles.teamsTab}>
+
+      <div className={styles.teamToolbar}>
+        <SearchBar
+          placeholder="Search by name or ID..."
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          onClear={() => setSearch('')}
+        />
+      </div>
+
+      {units.length > 0 ? (
+        <div className={styles.teamTable}>
+          <div className={styles.teamTableHead}>
+            <span className={`${styles.teamCol} ${styles.teamColName}`}>Unit</span>
+            <span className={`${styles.teamCol} ${styles.teamColStatus}`}>Display</span>
+            <span className={`${styles.teamCol} ${styles.teamColStatus}`}>K-POD</span>
+            <span className={`${styles.teamCol} ${styles.teamColActions}`} />
+          </div>
+          {units.map(unit => {
+            const isOpen = openMenuId === unit.id;
+            return (
+              <div
+                key={unit.id}
+                className={styles.teamTableRow}
+                role="button"
+                tabIndex={0}
+                onClick={() => onSelectUnit(unit)}
+                onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') onSelectUnit(unit); }}
+              >
+                <div className={`${styles.teamCol} ${styles.teamColName}`}>
+                  <div className={styles.memberAvatar}>{unit.id}</div>
+                  <div className={styles.memberMeta}>
+                    <span className={styles.memberName}>{unit.description}</span>
+                    <span className={styles.memberSub}>
+                      <div className={`${styles.statusDot} ${styles[unit.status]}`} style={{ display: 'inline-block', marginRight: 4 }} />
+                      {unit.status === 'active' ? 'Active' : 'Inactive'}
+                    </span>
+                  </div>
+                </div>
+                <div className={`${styles.teamCol} ${styles.teamColStatus}`}>
+                  <Tag status={unit.display.status} />
+                </div>
+                <div className={`${styles.teamCol} ${styles.teamColStatus}`}>
+                  <Tag
+                    status={unit.kpod.status === 'needs-replacement' ? 'inactive' : unit.kpod.status}
+                    label={unit.kpod.status === 'needs-replacement' ? 'Replace' : undefined}
+                  />
+                </div>
+                <div
+                  className={`${styles.teamCol} ${styles.teamColActions}`}
+                  ref={el => { menuRefs.current[unit.id] = el; }}
+                  onClick={e => e.stopPropagation()}
+                >
+                  <div className={styles.teamRowMenuAnchor}>
+                    <IconButton
+                      aria-label="Unit options"
+                      tooltip="More"
+                      onClick={() => setOpenMenuId(isOpen ? null : unit.id)}
+                    >
+                      <IconMore />
+                    </IconButton>
+                    {isOpen && (
+                      <div className={styles.teamRowMenu}>
+                        <ContextMenu
+                          items={[
+                            { label: 'Edit Unit',   icon: <IconEdit  size={16} />, onClick: () => { setOpenMenuId(null); onSelectUnit(unit); } },
+                            { label: 'Delete Unit', icon: <IconTrash size={16} />, variant: 'danger', onClick: () => setOpenMenuId(null) },
+                          ]}
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <InnerEmptyState
+          title="No results"
+          subtitle={`No units match "${search}"`}
+        />
+      )}
+
+    </div>
+  );
+}
+
+// ─── Unit card ─────────────────────────────────────────────
+
+const UNIT_TABS = [
+  { id: 'info',    label: 'Unit Info' },
+  { id: 'display', label: 'Display'   },
+  { id: 'kpod',    label: 'K-POD'     },
+];
+
+function UnitCard({ unit, center, onBack, isMobile = false }) {
+  const [activeTab, setActiveTab] = useState('info');
+
+  return (
+    <div className={styles.centerCard}>
+
+      {/* ── Header ── */}
+      <div className={styles.innerHeader}>
+
+        {!isMobile && (
+          <button className={styles.teamBackBtn} onClick={onBack}>
+            <ArrowLeftIcon />
+            <span>Back to Units</span>
+          </button>
+        )}
+
+        <div className={styles.cardHeader}>
+          <div className={styles.cardHeaderLeft}>
+            <div className={styles.cardAvatar}>{unit.id}</div>
+            <div className={styles.cardTitleGroup}>
+              <h2 className={styles.cardTitle}>{unit.description}</h2>
+              <div className={styles.cardSubtitle}>
+                <span>{center.name}</span>
+                <span className={styles.separator}>|</span>
+                <div className={styles.statusBadgeSmall}>
+                  <div className={`${styles.statusDot} ${styles[unit.status]}`} />
+                  <span>{unit.status === 'active' ? 'Active' : 'Inactive'}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className={styles.cardActions}>
+            <IconButton aria-label="Unit settings" tooltip="Settings">
+              <IconSettings size={16} />
+            </IconButton>
+            <IconButton aria-label="Delete unit" tooltip="Delete" variant="danger">
+              <IconTrash size={16} />
+            </IconButton>
+          </div>
+        </div>
+
+        <div className={styles.innerTabBarWrap}>
+          <TabBar tabs={UNIT_TABS} activeTab={activeTab} onChange={setActiveTab} size="s" />
+        </div>
+
+      </div>
+
+      {/* ── Tab content ── */}
+      <div className={styles.innerTabContent}>
+
+        {activeTab === 'info' && (
+          <div className={styles.drawerFields}>
+            <Input label="ID" value={String(unit.id)} disabled />
+            <Input label="Description" value={unit.description} disabled />
+            <Input label="Center" value={center.name} disabled />
+            <div className={styles.drawerFieldStatus}>
+              <span className={styles.drawerFieldStatusLabel}>Status</span>
+              <Tag status={unit.status} />
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'display' && (
+          <div className={styles.drawerFields}>
+            <Input label="Display ID" value={String(unit.display.id)} disabled />
+            <div className={styles.drawerFieldStatus}>
+              <span className={styles.drawerFieldStatusLabel}>Status</span>
+              <Tag status={unit.display.status} />
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'kpod' && (
+          <div className={styles.drawerFields}>
+            <Input label="K-POD ID" value={String(unit.kpod.id)} disabled />
+            <div className={styles.drawerFieldStatus}>
+              <span className={styles.drawerFieldStatusLabel}>Status</span>
+              <Tag status={unit.kpod.status === 'needs-replacement' ? 'inactive' : unit.kpod.status} label={unit.kpod.status === 'needs-replacement' ? 'Needs replacement' : undefined} />
+            </div>
+            {unit.kpod.status === 'needs-replacement' && (
+              <div className={styles.unitReplaceAlert}>
+                <span>This K-POD needs to be replaced.</span>
+                <button className={styles.unitReplaceBtn}>Replace K-POD</button>
+              </div>
+            )}
+          </div>
+        )}
+
+      </div>
+
+    </div>
+  );
+}
+
 // ─── Center detail card ───────────────────────────────────
 
 function getScrollParent(el) {
@@ -553,7 +803,7 @@ function getScrollParent(el) {
   return null;
 }
 
-function CenterCard({ center, org, onEdit, onNewTeam, onNewUser, onEditTeam, onNewUserForTeam, onSelectTeam, onSelectUser, initialTab = 'details' }) {
+function CenterCard({ center, org, onEdit, onNewTeam, onNewUser, onEditTeam, onNewUserForTeam, onSelectTeam, onSelectUser, onSelectUnit, initialTab = 'details' }) {
   const [innerTab, setInnerTab]         = useState(initialTab);
   const [createMenuOpen, setCreateMenuOpen] = useState(false);
   const createMenuRef  = useRef(null);
@@ -658,10 +908,7 @@ function CenterCard({ center, org, onEdit, onNewTeam, onNewUser, onEditTeam, onN
           <UsersTab center={center} onSelectUser={onSelectUser} />
         )}
         {innerTab === 'units' && (
-          <InnerEmptyState
-            title="No units yet..."
-            subtitle="Hardware units assigned to this center will appear here"
-          />
+          <UnitsTab center={center} onSelectUnit={onSelectUnit} />
         )}
       </div>
 

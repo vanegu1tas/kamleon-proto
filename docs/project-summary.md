@@ -223,9 +223,10 @@ kamleon/
 │           └── OrgDetailV2.jsx             ✅ layout master-detail en dos paneles
 │               ├── Panel izquierdo: lista de centros + botón "+" (New Center) con tooltip izquierda
 │               └── Panel derecho (según selección):
-│                   ├── CenterCard — tabs: Teams · Users · Monitoring
+│                   ├── CenterCard — tabs: Detail · Teams · Users · Units
 │                   │   ├── Tab Teams: lista de equipos · click → TeamCard
 │                   │   ├── Tab Users: todos los usuarios del centro · búsqueda + filter pills por equipo · click → UserCard
+│                   │   ├── Tab Units: lista de units del centro · click → UnitCard (pendiente)
 │                   │   └── Botón "Create" dropdown: New Team / New User / New Unit
 │                   ├── TeamCard — tabs: Users · Administrators
 │                   └── UserCard — vista de usuario · botón Settings → EditUserDrawer
@@ -442,7 +443,7 @@ Nodos relevantes:
 - [x] EditCenterDrawer, EditTeamDrawer, EditOrgDrawer — drawers de edición
 - [x] StaffOrganizacionesV2 (V2) — shell completa · SearchPalette ⌘K · search pill topbar (fondo blanco + sombra) · responsive 768px (slide lateral Opción C)
 - [x] OrgDetailV2 — layout master-detail en dos paneles · responsive: listPanel/detailPanel con translateX + detailVisible state + botón "← Centers" en mobile
-- [x] CenterCard (V2) — tabs: Details · Teams · Users · Monitoring · botón Create dropdown · Tab Teams: tabla con search + Filters + context menu por equipo (Edit Team → EditTeamDrawer, New User, Delete Team)
+- [x] CenterCard (V2) — tabs: Detail · Teams · Users · Units · botón Create dropdown · Tab Teams: tabla con search + Filters + context menu por equipo (Edit Team → EditTeamDrawer, New User, Delete Team)
 - [x] Tab Details CenterCard — sección Overview (stats clickables) + sección Contact (Center info + People con admins y contactos separados por dividers)
 - [x] Tab Users en CenterCard — lista todos los usuarios del centro · búsqueda + filter pills por equipo · paginación · click navega a UserCard
 - [x] TeamCard (V2) — tabla de miembros con search + Filters button + context menu por fila (Edit User → EditUserDrawer, Delete User stub) · back button "Back to Teams" vuelve al tab Teams del CenterCard
@@ -518,6 +519,39 @@ Archivo: `landing.html` — HTML estático, sin build, se copia directamente a `
 
 ---
 
+## Presentación Claude Code
+
+Archivo: `personal/presentacion-claudecode.md`
+**Título:** *From frame to commit. How Claude Code is changing my workflow.*
+Duración: ~25 min + preguntas. **19 diapositivas principales.**
+
+### Estructura
+1. Portada
+2. Pregunta al público *(por definir)*
+3. Claude ≠ Claude Code — Para usar CC necesitas plan Pro
+4. Empezando en VSCode — plugin Anthropic + MCP Figma
+5. "Implementa este diseño" — primera prueba, resultado impreciso
+6. Me sentí estafado — tokens agotados en 15 min
+7. Perdido en el equipo — la metáfora del jugador
+8. Fabio / "Start again with that in mind"
+9. El proyecto: Kamleon
+10. El camino: de cero a sistema *(intro sección)*
+11. Lo que hice antes de escribir código *(12 bullets, expandibles en Figma)*
+12. La landing
+13. La primera estructura + user test + wireframe ASCII
+14. El prototipo en vivo
+15. El sistema de memoria
+16. Aprendizajes
+17. Consejos para empezar mañana
+18. Cierre: volver al jugador
+19. Preguntas
+
+### Material extra
+- **Slides extras A/B/C** — GitHub Actions, ASCII, Design System *(para fusionar)*
+- **Respuestas auditoría** — 4 preguntas del auditor + 6 learnings/aprendizajes
+
+---
+
 ## Cómo retomar
 
 1. Leer este archivo
@@ -552,6 +586,8 @@ Todos los componentes de formulario implementados. Drawers del prototipo migrado
 - [ ] Ejecutar pruebas con participantes reales
 
 ### V2 — pendientes
+- [x] **Units tab en CenterCard** — UnitsTab (tabla con Tag DS) + UnitCard (tabs: Unit Info · Display · K-POD con Input disabled + Tag) · mock data en Training Ground, City Campus, Arsenal
+- [ ] **Units global** — vista en sidebar con tabla filtrable por org/centro · drill-down a UnitCard
 - [ ] **Empty states** — CenterCard sin equipos · TeamCard sin usuarios
 - [ ] **Drawers responsive 768px** — NewCenterDrawer, NewOrgDrawer, EditOrgDrawer, etc.
 - [ ] **Panel Admin de Centro** — prototipo separado (no existe aún)

@@ -40,7 +40,7 @@ function SidebarWithState({ startCollapsed = false }) {
 }
 
 export default {
-  title: 'Design System/Sidebar',
+  title: 'Components/Sidebar',
   component: Sidebar,
   tags: ['autodocs'],
   parameters: {

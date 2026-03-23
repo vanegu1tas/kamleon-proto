@@ -2,7 +2,7 @@ import ToolbarButton from './ToolbarButton';
 import { IconFilter } from '../../icons/outline';
 
 export default {
-  title: 'Design System/ToolbarButton',
+  title: 'Components/ToolbarButton',
   component: ToolbarButton,
   tags: ['autodocs'],
   args: {

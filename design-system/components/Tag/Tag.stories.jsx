@@ -1,7 +1,7 @@
 import Tag from './Tag';
 
 export default {
-  title: 'Design System/Tag',
+  title: 'Components/Tag',
   component: Tag,
   tags: ['autodocs'],
   args: {

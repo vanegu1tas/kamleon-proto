@@ -1,25 +1,6 @@
 import { useEffect } from 'react';
-import { IconClose } from '../../icons/outline';
+import { IconClose, IconCheckCircle, IconWarning2 } from '../../icons/outline';
 import styles from './Toast.module.css';
-
-function IconSuccess() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-      <circle cx="12" cy="12" r="12" fill="var(--color-green-62)" />
-      <path d="M7 12.5l3.5 3.5 6.5-7" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function IconCritic() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-      <circle cx="12" cy="12" r="12" fill="var(--color-red-65)" />
-      <path d="M12 8V12" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M12 16H12.01" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
 
 /**
  * Toast
@@ -42,7 +23,7 @@ export default function Toast({ message, onClose, onUndo, duration = 4000, mode 
   return (
     <div className={styles.toast} role="status" aria-live="polite">
       <span className={styles.iconWrap}>
-        {mode === 'critic' ? <IconCritic /> : <IconSuccess />}
+        {mode === 'critic' ? <IconWarning2 size={22} /> : <IconCheckCircle size={22} />}
       </span>
       <span className={styles.message}>{message}</span>
       {onUndo && (

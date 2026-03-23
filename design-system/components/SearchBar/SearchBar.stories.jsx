@@ -1,7 +1,7 @@
 import SearchBar from './SearchBar';
 
 export default {
-  title: 'Design System/SearchBar',
+  title: 'Components/SearchBar',
   component: SearchBar,
   tags: ['autodocs'],
   args: {
