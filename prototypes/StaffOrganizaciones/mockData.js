@@ -239,6 +239,14 @@ export const ORGS = [
         id: 401, name: 'Buesa Arena', status: 'active',
         contact: 'Joseba Txapartegi',
         email: 'buesa@baskonia.com', phone: '+34 945 123 457', address: 'Portal de Gamarra, 65, Vitoria-Gasteiz',
+        admins: [
+          { name: 'Joseba Txapartegi', email: 'j.txapartegi@baskonia.com', phone: '+34 945 100 001' },
+        ],
+        contacts: [
+          { cargo: 'Director', name: 'Andrés Ruiz', email: 'a.ruiz@baskonia.com', phone: '+34 945 100 002' },
+          { cargo: 'Coordinator', name: 'Laura Mendez', email: 'l.mendez@baskonia.com', phone: '+34 945 100 003' },
+          { cargo: 'Maintenance', name: 'Miguel Ortega', email: 'm.ortega@baskonia.com', phone: '+34 945 100 004' },
+        ],
         teams: [
           { id: 4011, name: 'Basketball A', status: 'active', professionalIds: [14, 16], email: 'bball@baskonia.com', phone: '+34 945 123 458', address: 'Portal de Gamarra, 65', users: [32, 33, 34, 35, 36] },
           { id: 4012, name: 'Basketball B', status: 'active', professionalIds: [17],     email: 'bballb@baskonia.com', phone: '+34 945 123 459', address: 'Portal de Gamarra, 65', users: [37, 38, 39, 40] },

@@ -61,6 +61,11 @@
   box-sizing: border-box;
 }
 
+/* Sobre superficie subtle → fondo default */
+.inputOnSubtle {
+  background: var(--color-bg-surface);
+}
+
 .input::placeholder {
   color: var(--color-text-placeholder);
   font-weight: var(--font-weight-book);

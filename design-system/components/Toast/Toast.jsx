@@ -5,8 +5,6 @@ import styles from './Toast.module.css';
 /**
  * Toast
  *
- * Notificación temporal tipo pill.
- *
  * @param {string}   message   - Texto a mostrar
  * @param {function} onClose   - Callback al cerrar (manual o automático)
  * @param {function} onUndo    - Si se pasa, muestra el enlace "Undo"
@@ -22,17 +20,25 @@ export default function Toast({ message, onClose, onUndo, duration = 4000, mode 
 
   return (
     <div className={styles.toast} role="status" aria-live="polite">
-      <span className={styles.iconWrap}>
-        {mode === 'critic' ? <IconWarning2 size={22} /> : <IconCheckCircle size={22} />}
-      </span>
+
+      <div className={`${styles.iconWrap} ${mode === 'success' ? styles.iconWrapSuccess : styles.iconWrapCritic}`}>
+        {mode === 'critic'
+          ? <IconWarning2 size={24} />
+          : <IconCheckCircle size={24} />}
+      </div>
+
       <span className={styles.message}>{message}</span>
+
       {onUndo && (
         <button className={styles.undoBtn} onClick={onUndo}>Undo</button>
       )}
+
       <span className={styles.divider} />
+
       <button className={styles.closeBtn} onClick={onClose} aria-label="Dismiss">
         <IconClose size={16} />
       </button>
+
     </div>
   );
 }

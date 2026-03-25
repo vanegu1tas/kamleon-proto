@@ -32,6 +32,19 @@ export const Disabled = {
   args: { disabled: true },
 };
 
+export const SecondaryHover = {
+  name: 'Secondary (hover)',
+  render: () => (
+    <Button
+      variant="secondary"
+      size="m"
+      style={{ backgroundColor: 'var(--color-bg-surface-subtle)' }}
+    >
+      Secondary hover
+    </Button>
+  ),
+};
+
 export const AllVariants = {
   render: () => (
     <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>

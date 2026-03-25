@@ -11,6 +11,7 @@ import ContextMenu      from '../../../design-system/components/ContextMenu/Cont
 import ToolbarButton    from '../../../design-system/components/ToolbarButton/ToolbarButton';
 import EditOrgDrawer    from '../../StaffOrganizaciones/screens/EditOrgDrawer';
 import DeleteOrgModal   from '../../StaffOrganizaciones/screens/DeleteOrgModal';
+import Toast            from '../../../design-system/components/Toast/Toast';
 import IconButton       from '../../../design-system/components/IconButton/IconButton';
 import EditCenterDrawer from '../../StaffOrganizaciones/screens/EditCenterDrawer';
 import EditTeamDrawer   from '../../StaffOrganizaciones/screens/EditTeamDrawer';
@@ -204,7 +205,7 @@ function CentersContent({ org, initialCenter, initialTeam, initialUser, isMobile
                 aria-label="New Center"
                 onClick={() => setShowNewCenter(true)}
               >
-                <IconPlus size={14} />
+                <IconPlus size={16} />
               </button>
             </div>
             {centers.length > 0 && (
@@ -305,6 +306,7 @@ function CentersContent({ org, initialCenter, initialTeam, initialUser, isMobile
               center={selected}
               org={org}
               onEdit={() => setEditCenterTarget(selected)}
+              onDelete={() => setSelected(null)}
               onNewTeam={() => setNewTeamCenter(selected)}
               onNewUser={() => setNewUserContext({ center: selected })}
               onEditTeam={(team) => setEditTeamTarget(team)}
@@ -336,7 +338,7 @@ function CentersContent({ org, initialCenter, initialTeam, initialUser, isMobile
                 <Button
                   variant="primary"
                   size="s"
-                  leftIcon={<IconPlus size={14} />}
+                  leftIcon={<IconPlus size={16} />}
                   onClick={() => setShowNewCenter(true)}
                 >
                   New center
@@ -381,9 +383,21 @@ const CENTER_TABS = [
 // ─── Teams tab ────────────────────────────────────────────
 
 function TeamsTab({ center, onSelectTeam, onEditTeam, onNewUserForTeam }) {
-  const [search, setSearch]       = useState('');
+  const [search, setSearch]         = useState('');
+  const [filters, setFilters]       = useState({ status: new Set() });
+  const [filterOpen, setFilterOpen] = useState(false);
   const [openMenuId, setOpenMenuId] = useState(null);
-  const menuRefs = useRef({});
+  const filterRef = useRef(null);
+  const menuRefs  = useRef({});
+
+  useEffect(() => {
+    if (!filterOpen) return;
+    function handleClick(e) {
+      if (filterRef.current && !filterRef.current.contains(e.target)) setFilterOpen(false);
+    }
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [filterOpen]);
 
   useEffect(() => {
     if (!openMenuId) return;
@@ -395,10 +409,24 @@ function TeamsTab({ center, onSelectTeam, onEditTeam, onNewUserForTeam }) {
     return () => document.removeEventListener('mousedown', handleClick);
   }, [openMenuId]);
 
+  function toggleFilter(group, value) {
+    setFilters(prev => {
+      const next = new Set(prev[group]);
+      next.has(value) ? next.delete(value) : next.add(value);
+      return { ...prev, [group]: next };
+    });
+  }
+
+  function clearFilters() { setFilters({ status: new Set() }); }
+
+  const activeFilterCount = filters.status.size;
+
   const allTeams = center.teams ?? [];
-  const teams = search.trim()
-    ? allTeams.filter(t => t.name.toLowerCase().includes(search.trim().toLowerCase()))
-    : allTeams;
+  const teams = allTeams.filter(t => {
+    if (filters.status.size > 0 && !filters.status.has(t.status)) return false;
+    if (search.trim() && !t.name.toLowerCase().includes(search.trim().toLowerCase())) return false;
+    return true;
+  });
 
   if (allTeams.length === 0) {
     return (
@@ -419,7 +447,37 @@ function TeamsTab({ center, onSelectTeam, onEditTeam, onNewUserForTeam }) {
           onChange={e => setSearch(e.target.value)}
           onClear={() => setSearch('')}
         />
-        <ToolbarButton icon={<IconFilter size={16} />}>Filters</ToolbarButton>
+        <div className={styles.filterWrap} ref={filterRef}>
+          <ToolbarButton
+            icon={<IconFilter size={16} />}
+            selected={activeFilterCount > 0}
+            onClick={() => setFilterOpen(v => !v)}
+          >
+            Filters
+            {activeFilterCount > 0 && <span className={styles.filterBadge}>{activeFilterCount}</span>}
+          </ToolbarButton>
+          {filterOpen && (
+            <div className={styles.filterDropdown}>
+              <div className={styles.filterSection}>
+                <p className={styles.filterSectionLabel}>Status</p>
+                {[{ v: 'active', label: 'Active' }, { v: 'inactive', label: 'Inactive' }].map(({ v, label }) => (
+                  <label key={v} className={`${styles.filterOption} ${filters.status.has(v) ? styles.filterOptionChecked : ''}`}>
+                    <input type="checkbox" className={styles.nativeCheck} checked={filters.status.has(v)} onChange={() => toggleFilter('status', v)} />
+                    <span className={styles.checkBox}>
+                      <svg width="10" height="8" viewBox="0 0 10 8" fill="none" className={styles.checkMark} aria-hidden="true">
+                        <path d="M1 3.5L3.5 6.5L9 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </span>
+                    <span className={styles.optionLabel}>{label}</span>
+                  </label>
+                ))}
+              </div>
+              {activeFilterCount > 0 && (
+                <button className={styles.clearFilters} onClick={clearFilters}>Clear filters</button>
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
       {teams.length > 0 ? (
@@ -501,23 +559,25 @@ function DetailsTab({ center, org, onTabChange }) {
   const teams = getActiveTeamCount(center);
   const users = getUserCountForCenter(center);
   const profs = getProfessionalCountForCenter(center);
+  const units = center.units?.length ?? 0;
 
   return (
     <div className={styles.detailsTab}>
 
       <div className={styles.detailsSection}>
-        <h3 className={styles.peopleSectionTitle}>Overview</h3>
         <div className={styles.statsGrid}>
-          <button className={`${styles.statBlock} ${styles.statBlockClickable}`} onClick={() => onTabChange('teams')}>
+          <div className={styles.statBlock}>
             <span className={styles.statNum}>{teams}</span>
             <span className={styles.statName}>Teams</span>
-          </button>
-          <div className={styles.statDividerV} />
-          <button className={`${styles.statBlock} ${styles.statBlockClickable}`} onClick={() => onTabChange('users')}>
+          </div>
+          <div className={styles.statBlock}>
+            <span className={styles.statNum}>{units}</span>
+            <span className={styles.statName}>Units</span>
+          </div>
+          <div className={styles.statBlock}>
             <span className={styles.statNum}>{users}</span>
             <span className={styles.statName}>Users</span>
-          </button>
-          <div className={styles.statDividerV} />
+          </div>
           <div className={styles.statBlock}>
             <span className={styles.statNum}>{profs}</span>
             <span className={styles.statName}>Professionals</span>
@@ -538,7 +598,7 @@ function DetailsTab({ center, org, onTabChange }) {
             <div className={styles.peopleList}>
 
               {hasCenterInfo && (
-                <div className={`${styles.personEntry} ${styles.personEntryFirst}`}>
+                <div className={`${styles.personEntry} ${people.length === 0 ? styles.personEntryLast : ''}`}>
                   <span className={styles.contactEntryTitle}>Center info</span>
                   <div className={styles.infoList}>
                     {center.email && <div className={styles.infoRow}><IconMailFilled size={14} /><span>{center.email}</span></div>}
@@ -549,7 +609,7 @@ function DetailsTab({ center, org, onTabChange }) {
               )}
 
               {people.map((p, i) => (
-                <div key={i} className={`${styles.personEntry} ${!hasCenterInfo && i === 0 ? styles.personEntryFirst : ''}`}>
+                <div key={i} className={`${styles.personEntry} ${i === people.length - 1 ? styles.personEntryLast : ''}`}>
                   <span className={styles.contactEntryTitle}>{p.role}</span>
                   <div className={styles.infoList}>
                     <div className={styles.infoRow}><IconUserFilled size={14} /><span>{p.name}</span></div>
@@ -632,13 +692,9 @@ function UnitsTab({ center, onSelectUnit }) {
                 onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') onSelectUnit(unit); }}
               >
                 <div className={`${styles.teamCol} ${styles.teamColName}`}>
-                  <div className={styles.memberAvatar}>{unit.id}</div>
                   <div className={styles.memberMeta}>
-                    <span className={styles.memberName}>{unit.description}</span>
-                    <span className={styles.memberSub}>
-                      <div className={`${styles.statusDot} ${styles[unit.status]}`} style={{ display: 'inline-block', marginRight: 4 }} />
-                      {unit.status === 'active' ? 'Active' : 'Inactive'}
-                    </span>
+                    <span className={styles.memberName}>{unit.id}</span>
+                    <span className={styles.memberSub}>{unit.description}</span>
                   </div>
                 </div>
                 <div className={`${styles.teamCol} ${styles.teamColStatus}`}>
@@ -693,13 +749,14 @@ function UnitsTab({ center, onSelectUnit }) {
 // ─── Unit card ─────────────────────────────────────────────
 
 const UNIT_TABS = [
-  { id: 'info',    label: 'Unit Info' },
-  { id: 'display', label: 'Display'   },
-  { id: 'kpod',    label: 'K-POD'     },
+  { id: 'detail',     label: 'Detail'     },
+  { id: 'devices',    label: 'Devices'    },
+  { id: 'appearance', label: 'Appearance' },
+  { id: 'parameters', label: 'Parameters' },
 ];
 
 function UnitCard({ unit, center, onBack, isMobile = false }) {
-  const [activeTab, setActiveTab] = useState('info');
+  const [activeTab, setActiveTab] = useState('detail');
 
   return (
     <div className={styles.centerCard}>
@@ -740,7 +797,9 @@ function UnitCard({ unit, center, onBack, isMobile = false }) {
         </div>
 
         <div className={styles.innerTabBarWrap}>
-          <TabBar tabs={UNIT_TABS} activeTab={activeTab} onChange={setActiveTab} size="s" />
+          <div className={`${styles.innerTabBarInner} ${styles.innerTabBarInnerWide}`}>
+            <TabBar tabs={UNIT_TABS} activeTab={activeTab} onChange={setActiveTab} size="s" />
+          </div>
         </div>
 
       </div>
@@ -748,7 +807,7 @@ function UnitCard({ unit, center, onBack, isMobile = false }) {
       {/* ── Tab content ── */}
       <div className={styles.innerTabContent}>
 
-        {activeTab === 'info' && (
+        {activeTab === 'detail' && (
           <div className={styles.drawerFields}>
             <Input label="ID" value={String(unit.id)} disabled />
             <Input label="Description" value={unit.description} disabled />
@@ -760,18 +819,15 @@ function UnitCard({ unit, center, onBack, isMobile = false }) {
           </div>
         )}
 
-        {activeTab === 'display' && (
+        {activeTab === 'devices' && (
           <div className={styles.drawerFields}>
+            <p className={styles.drawerSectionLabel}>Display</p>
             <Input label="Display ID" value={String(unit.display.id)} disabled />
             <div className={styles.drawerFieldStatus}>
               <span className={styles.drawerFieldStatusLabel}>Status</span>
               <Tag status={unit.display.status} />
             </div>
-          </div>
-        )}
-
-        {activeTab === 'kpod' && (
-          <div className={styles.drawerFields}>
+            <p className={styles.drawerSectionLabel}>K-POD</p>
             <Input label="K-POD ID" value={String(unit.kpod.id)} disabled />
             <div className={styles.drawerFieldStatus}>
               <span className={styles.drawerFieldStatusLabel}>Status</span>
@@ -784,6 +840,14 @@ function UnitCard({ unit, center, onBack, isMobile = false }) {
               </div>
             )}
           </div>
+        )}
+
+        {activeTab === 'appearance' && (
+          <InnerEmptyState title="Appearance" subtitle="Appearance settings will appear here" />
+        )}
+
+        {activeTab === 'parameters' && (
+          <InnerEmptyState title="Parameters" subtitle="Unit parameters will appear here" />
         )}
 
       </div>
@@ -803,9 +867,11 @@ function getScrollParent(el) {
   return null;
 }
 
-function CenterCard({ center, org, onEdit, onNewTeam, onNewUser, onEditTeam, onNewUserForTeam, onSelectTeam, onSelectUser, onSelectUnit, initialTab = 'details' }) {
+function CenterCard({ center, org, onEdit, onDelete, onNewTeam, onNewUser, onEditTeam, onNewUserForTeam, onSelectTeam, onSelectUser, onSelectUnit, initialTab = 'details' }) {
   const [innerTab, setInnerTab]         = useState(initialTab);
   const [createMenuOpen, setCreateMenuOpen] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showToast, setShowToast] = useState(false);
   const createMenuRef  = useRef(null);
   const tabBarRef      = useRef(null);
   const tabContentRef  = useRef(null);
@@ -876,10 +942,10 @@ function CenterCard({ center, org, onEdit, onNewTeam, onNewUser, onEditTeam, onN
                 </div>
               )}
             </div>
-            <IconButton aria-label="Edit center" tooltip="Edit" onClick={onEdit}>
-              <IconEdit size={16} />
+            <IconButton aria-label="Center settings" tooltip="Edit / Settings" onClick={onEdit}>
+              <IconSettings size={16} />
             </IconButton>
-            <IconButton aria-label="Delete center" tooltip="Delete" variant="danger">
+            <IconButton aria-label="Delete center" tooltip="Delete" variant="danger" onClick={() => setShowDeleteModal(true)}>
               <IconTrash size={16} />
             </IconButton>
           </div>
@@ -888,7 +954,9 @@ function CenterCard({ center, org, onEdit, onNewTeam, onNewUser, onEditTeam, onN
 
       {/* ── Inner TabBar ── */}
       <div ref={tabBarRef} className={styles.innerTabBarWrap}>
-        <TabBar tabs={CENTER_TABS} activeTab={innerTab} onChange={handleTabChange} size="s" />
+        <div className={styles.innerTabBarInner}>
+          <TabBar tabs={CENTER_TABS} activeTab={innerTab} onChange={handleTabChange} size="s" />
+        </div>
       </div>
 
       {/* ── Scrollable tab content ── */}
@@ -912,6 +980,23 @@ function CenterCard({ center, org, onEdit, onNewTeam, onNewUser, onEditTeam, onN
         )}
       </div>
 
+      {showDeleteModal && (
+        <DeleteOrgModal
+          org={center}
+          label="center"
+          onClose={() => setShowDeleteModal(false)}
+          onConfirm={() => { setShowDeleteModal(false); setShowToast(true); }}
+        />
+      )}
+
+      {showToast && (
+        <Toast
+          message={`${center.name} deleted`}
+          mode="success"
+          onUndo={() => setShowToast(false)}
+          onClose={() => setShowToast(false)}
+        />
+      )}
     </div>
   );
 }
@@ -921,18 +1006,30 @@ function CenterCard({ center, org, onEdit, onNewTeam, onNewUser, onEditTeam, onN
 const CENTER_USERS_PAGE_SIZE = 10;
 
 function UsersTab({ center, onSelectUser }) {
-  const [search, setSearch]         = useState('');
-  const [teamFilter, setTeamFilter] = useState('all');
-  const [page, setPage]             = useState(1);
+  const [search, setSearch]       = useState('');
+  const [filters, setFilters]     = useState({ role: new Set(), status: new Set() });
+  const [filterOpen, setFilterOpen] = useState(false);
+  const [page, setPage]           = useState(1);
+  const filterRef = useRef(null);
 
   const teams = center.teams ?? [];
+
+  useEffect(() => {
+    if (!filterOpen) return;
+    function handleClick(e) {
+      if (filterRef.current && !filterRef.current.contains(e.target)) setFilterOpen(false);
+    }
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [filterOpen]);
 
   const allUsers = useMemo(() => {
     const result = [];
     teams.forEach(team => {
       const userIds = new Set(team.users ?? []);
+      const profIds = new Set(team.professionalIds ?? []);
       USERS_POOL.forEach(u => {
-        if (userIds.has(u.id)) result.push({ user: u, team });
+        if (userIds.has(u.id)) result.push({ user: u, team, role: profIds.has(u.id) ? 'Professional' : 'User' });
       });
     });
     return result;
@@ -940,19 +1037,34 @@ function UsersTab({ center, onSelectUser }) {
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    return allUsers.filter(({ user, team: t }) => {
-      if (teamFilter !== 'all' && t.id !== teamFilter) return false;
+    return allUsers.filter(({ user, role }) => {
+      if (filters.role.size > 0 && !filters.role.has(role)) return false;
+      if (filters.status.size > 0 && !filters.status.has(user.status)) return false;
       if (q && !user.name.toLowerCase().includes(q) && !user.email.toLowerCase().includes(q)) return false;
       return true;
     });
-  }, [allUsers, search, teamFilter]);
+  }, [allUsers, search, filters]);
 
+  const activeFilterCount = filters.role.size + filters.status.size;
   const totalPages = Math.max(1, Math.ceil(filtered.length / CENTER_USERS_PAGE_SIZE));
   const safePage   = Math.min(page, totalPages);
   const pageUsers  = filtered.slice((safePage - 1) * CENTER_USERS_PAGE_SIZE, safePage * CENTER_USERS_PAGE_SIZE);
 
   function handleSearch(val) { setSearch(val); setPage(1); }
-  function handleTeamFilter(id) { setTeamFilter(id); setPage(1); }
+
+  function toggleFilter(group, value) {
+    setFilters(prev => {
+      const next = new Set(prev[group]);
+      next.has(value) ? next.delete(value) : next.add(value);
+      return { ...prev, [group]: next };
+    });
+    setPage(1);
+  }
+
+  function clearFilters() {
+    setFilters({ role: new Set(), status: new Set() });
+    setPage(1);
+  }
 
   if (allUsers.length === 0) {
     return (
@@ -968,45 +1080,68 @@ function UsersTab({ center, onSelectUser }) {
 
       <div className={styles.teamToolbar}>
         <SearchBar
-          placeholder="Search users..."
+          placeholder="Search by name..."
           value={search}
           onChange={e => handleSearch(e.target.value)}
           onClear={() => handleSearch('')}
         />
-        <span className={styles.teamCount}>
-          {filtered.length} {filtered.length === 1 ? 'user' : 'users'}
-        </span>
-      </div>
-
-      {teams.length > 1 && (
-        <div className={styles.teamFilterPills}>
-          <button
-            className={`${styles.filterPill} ${teamFilter === 'all' ? styles.filterPillActive : ''}`}
-            onClick={() => handleTeamFilter('all')}
+        <div className={styles.filterWrap} ref={filterRef}>
+          <ToolbarButton
+            icon={<IconFilter size={16} />}
+            selected={activeFilterCount > 0}
+            onClick={() => setFilterOpen(v => !v)}
           >
-            All teams
-          </button>
-          {teams.map(team => (
-            <button
-              key={team.id}
-              className={`${styles.filterPill} ${teamFilter === team.id ? styles.filterPillActive : ''}`}
-              onClick={() => handleTeamFilter(team.id)}
-            >
-              {team.name}
-            </button>
-          ))}
+            Filters
+            {activeFilterCount > 0 && <span className={styles.filterBadge}>{activeFilterCount}</span>}
+          </ToolbarButton>
+          {filterOpen && (
+            <div className={styles.filterDropdown}>
+              <div className={styles.filterSection}>
+                <p className={styles.filterSectionLabel}>Role</p>
+                {[{ v: 'Professional', label: 'Professional' }, { v: 'User', label: 'User' }].map(({ v, label }) => (
+                  <label key={v} className={`${styles.filterOption} ${filters.role.has(v) ? styles.filterOptionChecked : ''}`}>
+                    <input type="checkbox" className={styles.nativeCheck} checked={filters.role.has(v)} onChange={() => toggleFilter('role', v)} />
+                    <span className={styles.checkBox}>
+                      <svg width="10" height="8" viewBox="0 0 10 8" fill="none" className={styles.checkMark} aria-hidden="true">
+                        <path d="M1 3.5L3.5 6.5L9 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </span>
+                    <span className={styles.optionLabel}>{label}</span>
+                  </label>
+                ))}
+              </div>
+              <div className={styles.filterSection}>
+                <p className={styles.filterSectionLabel}>Status</p>
+                {[{ v: 'active', label: 'Active' }, { v: 'inactive', label: 'Inactive' }].map(({ v, label }) => (
+                  <label key={v} className={`${styles.filterOption} ${filters.status.has(v) ? styles.filterOptionChecked : ''}`}>
+                    <input type="checkbox" className={styles.nativeCheck} checked={filters.status.has(v)} onChange={() => toggleFilter('status', v)} />
+                    <span className={styles.checkBox}>
+                      <svg width="10" height="8" viewBox="0 0 10 8" fill="none" className={styles.checkMark} aria-hidden="true">
+                        <path d="M1 3.5L3.5 6.5L9 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </span>
+                    <span className={styles.optionLabel}>{label}</span>
+                  </label>
+                ))}
+              </div>
+              {activeFilterCount > 0 && (
+                <button className={styles.clearFilters} onClick={clearFilters}>Clear filters</button>
+              )}
+            </div>
+          )}
         </div>
-      )}
+      </div>
 
       {pageUsers.length > 0 ? (
         <div className={styles.teamTable}>
           <div className={styles.teamTableHead}>
             <span className={`${styles.teamCol} ${styles.teamColName}`}>Name</span>
-            <span className={`${styles.teamCol} ${styles.teamColTeam}`}>Team</span>
             <span className={`${styles.teamCol} ${styles.teamColStatus}`}>Status</span>
+            <span className={`${styles.teamCol} ${styles.teamColDate}`}>Date Added</span>
+            <span className={`${styles.teamCol} ${styles.teamColSpacer}`} />
             <span className={`${styles.teamCol} ${styles.teamColActions}`} />
           </div>
-          {pageUsers.map(({ user, team }) => (
+          {pageUsers.map(({ user, team, role }) => (
             <button
               key={user.id}
               className={styles.teamTableRow}
@@ -1016,17 +1151,23 @@ function UsersTab({ center, onSelectUser }) {
                 <div className={styles.memberAvatar}>{user.name.charAt(0)}</div>
                 <div className={styles.memberMeta}>
                   <span className={styles.memberName}>{user.name}</span>
-                  <span className={styles.memberSub}>{user.email}</span>
+                  <span className={styles.memberSub}>{role}</span>
                 </div>
-              </div>
-              <div className={`${styles.teamCol} ${styles.teamColTeam}`}>
-                <span className={styles.teamNamePill}>{team.name}</span>
               </div>
               <div className={`${styles.teamCol} ${styles.teamColStatus}`}>
                 <Tag status={user.status} />
               </div>
-              <div className={`${styles.teamCol} ${styles.teamColActions}`}>
-                <span className={styles.moreBtn} aria-hidden="true">···</span>
+              <div className={`${styles.teamCol} ${styles.teamColDate}`}>
+                <span className={styles.dateText}>{user.dateAdded ?? '—'}</span>
+              </div>
+              <div className={`${styles.teamCol} ${styles.teamColSpacer}`} />
+              <div
+                className={`${styles.teamCol} ${styles.teamColActions}`}
+                onClick={e => e.stopPropagation()}
+              >
+                <IconButton aria-label="More options" tooltip="More">
+                  <IconMore />
+                </IconButton>
               </div>
             </button>
           ))}

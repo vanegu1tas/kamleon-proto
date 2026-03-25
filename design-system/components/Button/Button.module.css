@@ -55,8 +55,7 @@
 }
 
 .secondary:hover:not(:disabled) {
-  background-color: var(--color-grey-91);
-  color: var(--color-text-disabled);
+  background-color: var(--color-bg-surface-subtle);
 }
 
 .secondary:disabled {

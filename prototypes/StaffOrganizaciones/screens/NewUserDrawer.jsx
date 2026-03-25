@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import Button from '../../../design-system/components/Button/Button';
-import { IconClose, IconAddImage } from '../../../design-system/icons/outline';
+import { IconClose, IconAddImage, IconPlus, IconChevronMiniDown } from '../../../design-system/icons/outline';
 import IconButton from '../../../design-system/components/IconButton/IconButton';
 import Toggle from '../../../design-system/components/Toggle/Toggle';
 import SegmentedControl from '../../../design-system/components/SegmentedControl/SegmentedControl';
@@ -8,18 +8,15 @@ import Input from '../../../design-system/components/Input/Input';
 import Dropdown from '../../../design-system/components/Dropdown/Dropdown';
 import styles from './NewUserDrawer.module.css';
 
-function SettingRow({ label, description, checked, onChange }) {
+function QuestionIcon() {
   return (
-    <div className={styles.settingRow}>
-      <div className={styles.settingInfo}>
-        <span className={styles.settingLabel}>{label}</span>
-        <span className={styles.settingDesc}>{description}</span>
-      </div>
-      <Toggle checked={checked} onChange={onChange} />
-    </div>
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <circle cx="8" cy="8" r="6.5" stroke="currentColor" strokeWidth="1.2" />
+      <path d="M6.5 6.25C6.5 5.42 7.17 4.75 8 4.75s1.5.67 1.5 1.5c0 .7-.48 1.28-1.13 1.44C7.94 7.84 7.75 8.17 7.75 8.5v.75" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+      <circle cx="7.75" cy="10.75" r="0.6" fill="currentColor" />
+    </svg>
   );
 }
-
 
 // ─── Email parsing helpers ────────────────────────────────
 
@@ -45,6 +42,18 @@ function isValidEmail(email) {
  *   teams            — list of all teams in the center (used when team is not pre-selected)
  *   onClose          — called when the drawer should be dismissed
  */
+function defaultManualUser(preselectedTeamId) {
+  return {
+    id: Math.random(),
+    name: '', role: '', email: '', phone: '',
+    birthDay: '', birthMonth: '', birthYear: '',
+    gender: '', height: '', weight: '',
+    displayedOnScreen: false, rfid: false, pin: false,
+    selectedTeamId: preselectedTeamId ? String(preselectedTeamId) : '',
+    moreInfoOpen: false,
+  };
+}
+
 export default function NewUserDrawer({ center, team: preselectedTeam, teams = [], onClose }) {
   const [mode, setMode] = useState('invite'); // 'invite' | 'manual'
 
@@ -57,26 +66,24 @@ export default function NewUserDrawer({ center, team: preselectedTeam, teams = [
   const fileInputRef = useRef(null);
 
   // ── Manual state ──
-  const [name,       setName]       = useState('');
-  const [email,      setEmail]      = useState('');
-  const [phone,      setPhone]      = useState('');
-  const [birthDay,   setBirthDay]   = useState('');
-  const [birthMonth, setBirthMonth] = useState('');
-  const [birthYear,  setBirthYear]  = useState('');
-  const [gender,     setGender]     = useState('');
-  const [height,     setHeight]     = useState('');
-  const [weight,     setWeight]     = useState('');
-  const [role,       setRole]       = useState('');
-  const [rfid,       setRfid]       = useState(false);
-  const [pin,        setPin]        = useState(false);
-  const [selectedTeamId, setSelectedTeamId] = useState(preselectedTeam?.id ?? '');
+  const [manualUsers, setManualUsers] = useState([defaultManualUser(preselectedTeam?.id)]);
+  const [privacyAccepted, setPrivacyAccepted] = useState(false);
+  const [inviteSelectedTeamId, setInviteSelectedTeamId] = useState(preselectedTeam?.id ?? '');
+
+  function addManualUser() {
+    setManualUsers(prev => [...prev, defaultManualUser(preselectedTeam?.id)]);
+  }
+  function removeManualUser(id) {
+    setManualUsers(prev => prev.filter(u => u.id !== id));
+  }
+  function updateManualUser(id, field, value) {
+    setManualUsers(prev => prev.map(u => u.id === id ? { ...u, [field]: value } : u));
+  }
 
   // ── Derived ──
   const bulkEmails        = parseEmails(bulkText);
   const validBulkEmails   = bulkEmails.filter(isValidEmail);
   const invalidBulkEmails = bulkEmails.filter(e => !isValidEmail(e));
-
-  const contextTeam = preselectedTeam ?? teams.find(t => t.id === Number(selectedTeamId));
 
   // ── Footer button ──
   let primaryLabel    = 'Create';
@@ -85,15 +92,15 @@ export default function NewUserDrawer({ center, team: preselectedTeam, teams = [
   if (mode === 'invite') {
     if (inviteMode === 'single') {
       primaryLabel    = 'Send';
-      primaryDisabled = !inviteEmail.trim() || !inviteRole || (!preselectedTeam && !selectedTeamId);
+      primaryDisabled = !inviteEmail.trim() || !inviteRole || (!preselectedTeam && !inviteSelectedTeamId);
     } else {
       const n = validBulkEmails.length;
       primaryLabel    = n > 0 ? `Send ${n}` : 'Send';
-      primaryDisabled = n === 0 || !bulkRole || (!preselectedTeam && !selectedTeamId);
+      primaryDisabled = n === 0 || !bulkRole || (!preselectedTeam && !inviteSelectedTeamId);
     }
   } else {
-    primaryLabel    = 'Create user';
-    primaryDisabled = !name.trim() || !role || (!preselectedTeam && !selectedTeamId);
+    primaryLabel    = 'Create';
+    primaryDisabled = !privacyAccepted || manualUsers.some(u => !u.name.trim() || !u.role || (!preselectedTeam && !u.selectedTeamId));
   }
 
   return (
@@ -159,8 +166,8 @@ export default function NewUserDrawer({ center, team: preselectedTeam, teams = [
                     description="Select the team this user will join."
                     placeholder="Select a team…"
                     options={teams.map(t => ({ label: t.name, value: String(t.id) }))}
-                    value={String(selectedTeamId)}
-                    onChange={setSelectedTeamId}
+                    value={String(inviteSelectedTeamId)}
+                    onChange={setInviteSelectedTeamId}
                   />
                 )}
 
@@ -229,8 +236,8 @@ export default function NewUserDrawer({ center, team: preselectedTeam, teams = [
                     description="Select the team these users will join."
                     placeholder="Select a team…"
                     options={teams.map(t => ({ label: t.name, value: String(t.id) }))}
-                    value={String(selectedTeamId)}
-                    onChange={setSelectedTeamId}
+                    value={String(inviteSelectedTeamId)}
+                    onChange={setInviteSelectedTeamId}
                   />
                 )}
 
@@ -266,119 +273,178 @@ export default function NewUserDrawer({ center, team: preselectedTeam, teams = [
           {/* ══ MANUAL MODE ══════════════════════════════════ */}
           {mode === 'manual' && (<>
 
-            {/* Description */}
             <p className={styles.manualDesc}>
-              These users will be added for{' '}
-              <strong>{contextTeam?.name ?? center?.name ?? 'this team'}</strong>{' '}
-              immediately, without sending an invitation email or waiting for them to accept it.
+              These users will be added immediately, without sending an invitation email or waiting for them to accept it.
             </p>
 
-            {/* Avatar row */}
-            <div className={styles.avatarRow}>
-              <div className={styles.avatar}>
-                {name.trim()
-                  ? <span className={styles.avatarInitial}>{name.trim().charAt(0).toUpperCase()}</span>
-                  : <IconAddImage size={24} />
-                }
-              </div>
-              <div className={styles.avatarText}>
-                <button className={styles.addPictureBtn} type="button">Add picture</button>
-                <span className={styles.avatarSep}>-</span>
-                <span className={styles.avatarOptional}>Optional</span>
-              </div>
-            </div>
+            <div className={styles.cardsSection}>
+            {/* User cards */}
+            <div className={styles.userCardsList}>
+              {manualUsers.map((user, index) => (
+                <div key={user.id} className={styles.userCard}>
 
-            {/* Fields */}
-            <div className={styles.section}>
-
-              <Input
-                label="Name"
-                required
-                placeholder="Full name"
-                value={name}
-                onChange={setName}
-                autoFocus
-              />
-
-              <Dropdown
-                label="User role"
-                required
-                placeholder="Select role"
-                options={[
-                  { label: 'User', value: 'user' },
-                  { label: 'Professional', value: 'professional' },
-                ]}
-                value={role}
-                onChange={setRole}
-              />
-
-              <div className={styles.fieldRow}>
-                <Input label="Email" placeholder="email@example.com" value={email} onChange={setEmail} />
-                <Input label="Phone" placeholder="+1 000 000 0000" value={phone} onChange={setPhone} />
-              </div>
-
-              <div className={styles.fieldRow}>
-                <div className={styles.field}>
-                  <label className={styles.fieldLabel}>Date of birth</label>
-                  <div className={styles.dateInputs}>
-                    <input className={styles.input} placeholder="Day"   value={birthDay}   onChange={e => setBirthDay(e.target.value)}   style={{ textAlign: 'center' }} />
-                    <input className={styles.input} placeholder="Month" value={birthMonth} onChange={e => setBirthMonth(e.target.value)} style={{ textAlign: 'center' }} />
-                    <input className={styles.input} placeholder="Year"  value={birthYear}  onChange={e => setBirthYear(e.target.value)}  style={{ textAlign: 'center' }} />
+                  {/* Card header */}
+                  <div className={styles.userCardHeader}>
+                    <span className={styles.userCardLabel}>New User {index + 1}</span>
+                    {manualUsers.length > 1 && (
+                      <button
+                        type="button"
+                        className={styles.userCardRemove}
+                        onClick={() => removeManualUser(user.id)}
+                        aria-label="Remove user"
+                      >
+                        <IconClose size={16} />
+                      </button>
+                    )}
                   </div>
+
+                  {/* Avatar row */}
+                  <div className={styles.avatarRow}>
+                    <div className={styles.avatar}>
+                      {user.name.trim()
+                        ? <span className={styles.avatarInitial}>{user.name.trim().charAt(0).toUpperCase()}</span>
+                        : <IconAddImage size={24} />
+                      }
+                    </div>
+                    <div className={styles.avatarText}>
+                      <button className={styles.addPictureBtn} type="button">Add picture</button>
+                      <span className={styles.avatarSep}>-</span>
+                      <span className={styles.avatarOptional}>Optional</span>
+                    </div>
+                  </div>
+
+                  {/* Team — only when not pre-selected */}
+                  {!preselectedTeam && (
+                    <Dropdown
+                      label="Team"
+                      required
+                      description="Select the team for your new user"
+                      placeholder="Select team"
+                      options={teams.map(t => ({ label: t.name, value: String(t.id) }))}
+                      value={user.selectedTeamId}
+                      onChange={v => updateManualUser(user.id, 'selectedTeamId', v)}
+                      onSubtle
+                    />
+                  )}
+
+                  {/* Name + Role */}
+                  <div className={styles.fieldRow}>
+                    <Input
+                      label="Name"
+                      required
+                      placeholder="Full name"
+                      value={user.name}
+                      onChange={v => updateManualUser(user.id, 'name', v)}
+                      autoFocus={index === 0}
+                      onSubtle
+                    />
+                    <Dropdown
+                      label="Role"
+                      required
+                      placeholder="Select role"
+                      options={[
+                        { label: 'User', value: 'user' },
+                        { label: 'Professional', value: 'professional' },
+                      ]}
+                      value={user.role}
+                      onChange={v => updateManualUser(user.id, 'role', v)}
+                      onSubtle
+                    />
+                  </div>
+
+                  {/* Toggles */}
+                  <div className={styles.togglesList}>
+                    {[
+                      { field: 'displayedOnScreen', label: 'Displayed on Screen', tooltip: "The player accepts that their image will appear on the unit's display" },
+                      { field: 'rfid',              label: 'Enable RFID',          tooltip: 'Enable proximity device access for this user.'                       },
+                      { field: 'pin',               label: 'Set PIN',              tooltip: 'Enabling this requires the user to enter a personal PIN to log in.'  },
+                    ].map(({ field, label, tooltip }) => (
+                      <div key={field} className={styles.toggleRow}>
+                        <div className={styles.toggleRowLabel}>
+                          <span className={styles.toggleLabelText}>{label}</span>
+                          <span className={styles.questionIcon} data-tooltip={tooltip}>
+                            <QuestionIcon />
+                          </span>
+                        </div>
+                        <Toggle
+                          checked={user[field]}
+                          onChange={v => updateManualUser(user.id, field, v)}
+                          size="s"
+                        />
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Divider */}
+                  <div className={styles.cardDivider} />
+
+                  {/* Add more info toggle */}
+                  <button
+                    type="button"
+                    className={styles.moreInfoToggle}
+                    onClick={() => updateManualUser(user.id, 'moreInfoOpen', !user.moreInfoOpen)}
+                  >
+                    <span>Add More Info</span>
+                    <span style={{ display: 'flex', transform: user.moreInfoOpen ? 'rotate(0deg)' : 'rotate(-90deg)', transition: 'transform 0.2s' }}>
+                      <IconChevronMiniDown size={16} />
+                    </span>
+                  </button>
+
+                  {/* More info fields */}
+                  {user.moreInfoOpen && (
+                    <div className={styles.moreInfoSection}>
+                      <div className={styles.fieldRow}>
+                        <div className={styles.field}>
+                          <label className={styles.fieldLabel}>Date of birth</label>
+                          <div className={styles.dateInputs}>
+                            <input className={`${styles.input} ${styles.inputOnSubtle}`} placeholder="Day"   value={user.birthDay}   onChange={e => updateManualUser(user.id, 'birthDay', e.target.value)}   style={{ textAlign: 'center' }} />
+                            <input className={`${styles.input} ${styles.inputOnSubtle}`} placeholder="Month" value={user.birthMonth} onChange={e => updateManualUser(user.id, 'birthMonth', e.target.value)} style={{ textAlign: 'center' }} />
+                            <input className={`${styles.input} ${styles.inputOnSubtle}`} placeholder="Year"  value={user.birthYear}  onChange={e => updateManualUser(user.id, 'birthYear', e.target.value)}  style={{ textAlign: 'center' }} />
+                          </div>
+                        </div>
+                        <Dropdown
+                          label="Gender"
+                          placeholder="Select gender"
+                          options={[
+                            { label: 'Male', value: 'male' },
+                            { label: 'Female', value: 'female' },
+                            { label: 'Other', value: 'other' },
+                          ]}
+                          value={user.gender}
+                          onChange={v => updateManualUser(user.id, 'gender', v)}
+                          onSubtle
+                        />
+                      </div>
+                      <div className={styles.fieldRow}>
+                        <Input label="Height" placeholder="e.g. 178 cm" value={user.height} onChange={v => updateManualUser(user.id, 'height', v)} onSubtle />
+                        <Input label="Weight" placeholder="e.g. 75 kg" value={user.weight} onChange={v => updateManualUser(user.id, 'weight', v)} onSubtle />
+                      </div>
+                    </div>
+                  )}
+
                 </div>
-                <Dropdown
-                  label="Gender"
-                  placeholder="Select gender"
-                  options={[
-                    { label: 'Male', value: 'male' },
-                    { label: 'Female', value: 'female' },
-                    { label: 'Other', value: 'other' },
-                  ]}
-                  value={gender}
-                  onChange={setGender}
-                />
-              </div>
-
-              <div className={styles.fieldRow}>
-                <Input label="Height" placeholder="e.g. 178 cm" value={height} onChange={setHeight} />
-                <Input label="Weight" placeholder="e.g. 75 kg" value={weight} onChange={setWeight} />
-              </div>
-
+              ))}
             </div>
 
-            {/* Team assignment — only when not pre-selected */}
-            {!preselectedTeam && (
-              <div className={styles.section}>
-                <h3 className={styles.sectionTitle}>Assignment</h3>
-                <Dropdown
-                  label="Team"
-                  required
-                  placeholder="Select a team…"
-                  options={teams.map(t => ({ label: t.name, value: String(t.id) }))}
-                  value={String(selectedTeamId)}
-                  onChange={setSelectedTeamId}
-                />
-              </div>
-            )}
-
-            {/* Settings */}
-            <div className={styles.section}>
-              <h3 className={styles.sectionTitle}>Settings</h3>
-              <div className={styles.settingsList}>
-                <SettingRow
-                  label="RFID"
-                  description="Allow this user to log in via proximity card."
-                  checked={rfid}
-                  onChange={setRfid}
-                />
-                <SettingRow
-                  label="Set PIN"
-                  description="Require this user to enter a personal PIN to log in."
-                  checked={pin}
-                  onChange={setPin}
-                />
-              </div>
-            </div>
+            {/* Add new user */}
+            <button type="button" className={styles.addUserBtn} onClick={addManualUser}>
+              <IconPlus size={16} />
+              Add new user
+            </button>
+            {/* Privacy policy */}
+            <label className={styles.privacyRow}>
+              <input
+                type="checkbox"
+                className={styles.privacyCheckbox}
+                checked={privacyAccepted}
+                onChange={e => setPrivacyAccepted(e.target.checked)}
+              />
+              <span className={styles.privacyText}>
+                The user accepts Kamleon's{' '}
+                <button type="button" className={styles.privacyLink} onClick={e => e.preventDefault()}>privacy policy</button>.
+              </span>
+            </label>
+            </div>{/* end cardsSection */}
 
           </>)}
 

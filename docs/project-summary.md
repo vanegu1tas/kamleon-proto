@@ -1,6 +1,6 @@
 # Project Summary — Kamleon Design System
 
-Estado del proyecto al 2026-03-18. Referencia rápida para retomar el trabajo.
+Estado del proyecto al 2026-03-23. Referencia rápida para retomar el trabajo.
 
 ---
 
@@ -173,6 +173,7 @@ kamleon/
 │       │   ├── IconBell.jsx            ✅ campana (notificaciones)
 │       │   ├── IconMenu.jsx            ✅ hamburger (menú móvil)
 │       │   ├── IconWarning2.jsx        ✅ círculo con signo de exclamación (alerta)
+│       │   ├── IconCheckCircle.jsx     ✅ círculo con check (success Toast)
 │       │   └── index.js               ✅
 │       ├── filled/
 │       │   ├── IconUserFilled.jsx    ✅ persona (filled)
@@ -413,11 +414,11 @@ Nodos relevantes:
 - [x] Dropdown — select nativo estilizado · label/description/error/disabled · IconChevronDown
 - [x] Textarea — campo multilínea · label/description/error/disabled · min-height 120px · radius-s
 - [x] Toast — success/critic · prop onUndo · auto-dismiss · posición top 52px · animación desde arriba
-- [ ] Configurar Figma Code Connect
+- [ ] Configurar Figma Code Connect *(bloqueado: pendiente de Personal Access Token con permisos de edición en DS `ozgwasF3ziQyznQS0z0dM1`)*
 
 ### Design System — Iconos
 - [x] Duotono (`IconSb*`) — 5 iconos para sidebar
-- [x] Outline (`Icon*`) — 22 iconos · todos 24×24 · stroke + currentColor · ChevronMiniRight/Down renombrados · ChevronDown (Dropdown) · Bell · Menu · Warning2
+- [x] Outline (`Icon*`) — 23 iconos · todos 24×24 · stroke + currentColor · ChevronMiniRight/Down renombrados · ChevronDown (Dropdown) · Bell · Menu · Warning2 · CheckCircle
 - [x] Filled (`Icon*Filled`) — 4 iconos · fill + currentColor
 
 ### Storybook
@@ -559,10 +560,10 @@ Duración: ~25 min + preguntas. **19 diapositivas principales.**
 3. `npm run storybook` → http://localhost:6006 para inspeccionar componentes en aislamiento
 4. V2 en producción: https://vanegu1tas.github.io/kamleon-proto/prototype-v2/
 
-## Estado al 2026-03-18
+## Estado al 2026-03-23
 
 ### Design System — completo
-Todos los componentes de formulario implementados. Drawers del prototipo migrados a DS Input/Dropdown. Toast actualizado a spec Figma (success/critic, undo).
+Todos los componentes de formulario implementados. Drawers del prototipo migrados a DS Input/Dropdown. Toast actualizado a spec Figma (success/critic, undo). IconCheckCircle añadido a outline icons.
 
 ### Responsive V2 — estado actual
 - **768px**: implementado y funcionando. Pendiente: drawers (NewCenterDrawer, NewOrgDrawer, EditOrgDrawer, etc.)

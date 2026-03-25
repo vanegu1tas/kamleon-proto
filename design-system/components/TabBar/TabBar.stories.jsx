@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import TabBar from './TabBar';
+import styles from './TabBar.module.css';
 
 const TABS_2 = [
   { id: 'users',          label: 'Users' },
@@ -76,6 +77,67 @@ export const SizeS_3tabs = {
 export const SizeS_4tabs = {
   name: 'S — 4 tabs',
   render: () => <Controlled tabs={TABS_4} size="s" />,
+};
+
+// ─── Estados del tab ──────────────────────────────────────────────────────────
+
+const STATE_LABEL = { fontFamily: 'var(--font-family-primary)', fontSize: '11px', fontWeight: 500, color: 'var(--color-text-subtle)', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '8px' };
+const STATE_WRAP  = { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' };
+
+function TabStateDemo({ size }) {
+  const s = size === 's';
+  const tabStyle = {
+    display: 'flex', flexDirection: 'column', alignItems: 'center',
+    justifyContent: 'center', position: 'relative',
+    height: s ? 'auto' : '56px', minWidth: '122px',
+    background: 'var(--color-bg-surface)',
+    border: '1px solid var(--color-border-default)',
+    borderRadius: 'var(--radius-s)',
+    overflow: 'hidden',
+  };
+  const fontSize = s ? 'var(--font-size-14)' : 'var(--font-size-16)';
+  const idlePill   = { padding: s ? '4px 0'    : '4px 8px',   borderRadius: '24px', fontFamily: 'var(--font-family-primary)', fontSize, fontWeight: 400, color: 'var(--color-text-subtle)' };
+  const hoverPill  = { padding: s ? '4px 12px' : '8px 12px',  borderRadius: '24px', fontFamily: 'var(--font-family-primary)', fontSize, fontWeight: 400, color: 'var(--color-text-strong)', background: 'var(--color-bg-surface-raised)' };
+  const activePill = { padding: s ? '4px 0'    : '4px 8px',   borderRadius: '24px', fontFamily: 'var(--font-family-primary)', fontSize, fontWeight: 500, color: 'var(--color-text-strong)' };
+  const selectorH  = s ? '2px' : '4px';
+  const selectorW  = s ? '48px' : '56px';
+  const selector   = { height: selectorH, width: selectorW, background: 'var(--color-status-active)', borderRadius: '12px 12px 0 0', flexShrink: 0 };
+
+  return (
+    <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
+      <div style={STATE_WRAP}>
+        <span style={STATE_LABEL}>Idle</span>
+        <div style={{ ...tabStyle, padding: s ? '9px 4px' : '8px 4px 4px' }}>
+          <span style={idlePill}>Label</span>
+          <div style={{ ...selector, background: 'transparent' }} />
+        </div>
+      </div>
+      <div style={STATE_WRAP}>
+        <span style={STATE_LABEL}>Hover</span>
+        <div style={{ ...tabStyle, padding: s ? '9px 4px' : '8px 4px 4px' }}>
+          <span style={hoverPill}>Label</span>
+          <div style={{ ...selector, background: 'transparent' }} />
+        </div>
+      </div>
+      <div style={STATE_WRAP}>
+        <span style={STATE_LABEL}>Selected</span>
+        <div style={{ ...tabStyle, padding: s ? '9px 4px' : '8px 4px 4px' }}>
+          <span style={activePill}>Label</span>
+          <div style={selector} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export const TabStatesM = {
+  name: 'States — Size M',
+  render: () => <TabStateDemo size="m" />,
+};
+
+export const TabStatesS = {
+  name: 'States — Size S',
+  render: () => <TabStateDemo size="s" />,
 };
 
 // ─── Comparativa ──────────────────────────────────────────────────────────────

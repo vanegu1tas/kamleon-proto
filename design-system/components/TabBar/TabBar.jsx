@@ -56,7 +56,7 @@ export default function TabBar({ tabs = [], activeTab, onChange, size = 'm' }) {
           className={`${styles.tab} ${size === 's' ? styles.tabS : ''} ${activeTab === tab.id ? styles.tabActive : ''}`}
           onClick={() => onChange?.(tab.id)}
         >
-          {tab.label}
+          <span className={styles.tabLabel}>{tab.label}</span>
         </button>
       ))}
     </div>

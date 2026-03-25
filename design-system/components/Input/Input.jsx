@@ -25,6 +25,7 @@ export default function Input({
   error,
   disabled = false,
   type = 'text',
+  onSubtle = false,
   ...props
 }) {
   const mouseDown = useRef(false);
@@ -45,7 +46,7 @@ export default function Input({
 
       <input
         type={type}
-        className={`${styles.input} ${error ? styles.inputError : ''} ${disabled ? styles.inputDisabled : ''}`}
+        className={`${styles.input} ${onSubtle ? styles.inputOnSubtle : ''} ${error ? styles.inputError : ''} ${disabled ? styles.inputDisabled : ''}`}
         placeholder={placeholder}
         value={value}
         onChange={e => {

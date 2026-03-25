@@ -26,6 +26,7 @@ export default function Dropdown({
   onChange,
   error,
   disabled = false,
+  onSubtle = false,
   ...props
 }) {
   const normalized = options.map(opt =>
@@ -48,7 +49,7 @@ export default function Dropdown({
 
       <div className={styles.selectWrap}>
         <select
-          className={`${styles.select} ${error ? styles.selectError : ''} ${disabled ? styles.selectDisabled : ''}`}
+          className={`${styles.select} ${onSubtle ? styles.selectOnSubtle : ''} ${error ? styles.selectError : ''} ${disabled ? styles.selectDisabled : ''}`}
           value={value}
           onChange={e => onChange?.(e.target.value)}
           disabled={disabled}

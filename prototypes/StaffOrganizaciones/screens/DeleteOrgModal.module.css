@@ -75,7 +75,7 @@
 }
 
 .cancelBtn {
-  background: var(--color-bg-surface-disabled);
+  background: transparent;
   border: none;
   border-radius: var(--radius-l);
   padding: 12px 24px;
@@ -84,11 +84,10 @@
   font-weight: var(--font-weight-book);
   color: var(--color-text-strong);
   cursor: pointer;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  transition: opacity 0.15s ease;
+  transition: background-color 0.15s ease;
 }
 
-.cancelBtn:hover { opacity: 0.8; }
+.cancelBtn:hover { background-color: var(--color-bg-surface-subtle); }
 
 .deleteBtn {
   background: var(--color-red-48);

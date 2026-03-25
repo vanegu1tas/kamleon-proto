@@ -24,7 +24,7 @@
   border: none;
   padding: 0;
   cursor: pointer;
-  background: var(--color-bg-surface-subtle);
+  background: var(--color-bg-surface-disabled);
   transition: background 0.2s ease;
   flex-shrink: 0;
 }
