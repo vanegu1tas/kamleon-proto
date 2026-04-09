@@ -145,6 +145,9 @@ export const USERS_POOL = [
   { id: 16, name: 'Coach James Briggs', email: 'j.briggs@kamleon.com',    phone: '+44 780 200 002', birthday: '09/05/1977', gender: 'Male',   height: '183 cm', weight: '85 kg', rfid: false, pin: true,  dateAdded: '01 Jan 2024', status: 'active' },
   { id: 17, name: 'Dr. Jordi Mas',      email: 'j.mas@kamleon.com',       phone: '+34 610 100 003', birthday: '30/09/1980', gender: 'Male',   height: '175 cm', weight: '73 kg', rfid: true,  pin: false, dateAdded: '01 Jan 2024', status: 'active' },
   { id: 18, name: 'Dra. Aina Puig',     email: 'a.puig@kamleon.com',      phone: '+34 610 100 004', birthday: '14/06/1988', gender: 'Female', height: '161 cm', weight: '59 kg', rfid: false, pin: true,  dateAdded: '01 Jan 2024', status: 'active' },
+
+  // ── Test case: usuario en dos equipos ─────────────────────────────────────
+  { id: 95, name: 'Xavi Olmo', email: 'x.olmo@astoniafc.com', phone: '+34 600 950 095', birthday: '03/07/1998', gender: 'Male', height: '179 cm', weight: '74 kg', rfid: true, pin: true, dateAdded: '10 Jan 2024', status: 'active' },
 ];
 
 // ─── Organisations ────────────────────────────────────────────────────────────
@@ -206,8 +209,8 @@ export const ORGS = [
         contact: 'Robert Keane',
         email: 'training@astoniafc.com', phone: '+44 121 554 1235', address: '100 Trinity Rd, Birmingham',
         teams: [
-          { id: 3011, name: 'First Team', status: 'active', professionalIds: [13, 15], email: 'firstteam@astoniafc.com', phone: '+44 121 554 1236', address: '100 Trinity Rd, Birmingham', users: [1, 2, 3, 4, 5] },
-          { id: 3012, name: 'Academy',    status: 'active', professionalIds: [17],     email: 'academy@astoniafc.com',   phone: '+44 121 554 1237', address: '100 Trinity Rd, Birmingham', users: [6, 7, 8] },
+          { id: 3011, name: 'First Team', status: 'active', pin: true, professionalIds: [13, 15], email: 'firstteam@astoniafc.com', phone: '+44 121 554 1236', address: '100 Trinity Rd, Birmingham', users: [1, 2, 3, 4, 5, 95] },
+          { id: 3012, name: 'Academy',    status: 'active', professionalIds: [17],     email: 'academy@astoniafc.com',   phone: '+44 121 554 1237', address: '100 Trinity Rd, Birmingham', users: [6, 7, 8, 95] },
         ],
         units: [
           { id: 3001, description: 'Urinal 1 — Main Entrance',  status: 'active',   display: { id: 767401, status: 'active' },   kpod: { id: 2941, status: 'active' } },
@@ -430,3 +433,16 @@ export function getUserCountForOrg(org) {
 export function getActiveTeamCount(center) {
   return center.teams.filter(t => t.status === 'active').length;
 }
+
+// ─── Centro Admin mock user ───────────────────────────────────────────────────
+// Laia Puig — Center Admin de Astonia FC, asignada a Training Ground y City Campus
+export const CENTER_ADMIN_USER = {
+  initials: 'LP',
+  name:     'Laia',
+  surname:  'Puig',
+  email:    'laia.puig@astoniafc.com',
+  phone:    '+34 600 111 222',
+  role:     'Center Admin',
+  orgId:    3,       // Astonia FC
+  centerIds: [301, 302], // Training Ground + City Campus
+};

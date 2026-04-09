@@ -1,0 +1,129 @@
+/* ─── Page ────────────────────────────────────────────── */
+
+.page {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+/* ─── Logo ────────────────────────────────────────────── */
+
+.logo {
+  position: absolute;
+  top: 56px;
+  left: 40px;
+}
+
+/* ─── Form animation (inner — imageBox stays static) ─── */
+
+.exitForward,
+.enterForward,
+.exitBack,
+.enterBack {
+  width: 323px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.exitForward  { animation: slideOutLeft  200ms ease-in  forwards; }
+.enterForward { animation: slideInRight  250ms ease-out forwards; }
+.exitBack     { animation: slideOutRight 200ms ease-in  forwards; }
+.enterBack    { animation: slideInLeft   250ms ease-out forwards; }
+
+@keyframes slideOutLeft  { from { transform: translateX(0)     scale(1);    opacity: 1; } to { transform: translateX(-48px) scale(0.96); opacity: 0; } }
+@keyframes slideInRight  { from { transform: translateX(48px)  scale(0.96); opacity: 0; } to { transform: translateX(0)     scale(1);    opacity: 1; } }
+@keyframes slideOutRight { from { transform: translateX(0)    scale(1);    opacity: 1; } to { transform: translateX(48px) scale(0.96); opacity: 0; } }
+@keyframes slideInLeft   { from { transform: translateX(-48px) scale(0.96); opacity: 0; } to { transform: translateX(0)     scale(1);    opacity: 1; } }
+
+/* ─── Form area (left ~60%) ───────────────────────────── */
+
+.formArea {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 60%;
+  height: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.form {
+  width: 323px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ─── Title ───────────────────────────────────────────── */
+
+.title {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-24);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-strong);
+  margin: 0;
+  line-height: 30px;
+}
+
+/* ─── Forgot password link ────────────────────────────── */
+
+.forgotLink {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+  background: none;
+  border: none;
+  padding: 0 0 0 12px;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-align: left;
+  margin-top: -8px;
+}
+
+.forgotLink:hover {
+  color: var(--color-text-subtle);
+}
+
+/* ─── Sign up row ─────────────────────────────────────── */
+
+.signupRow {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+  margin: 0;
+}
+
+.signupLink {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.signupLink:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ─── Image placeholder (right side) ─────────────────── */
+
+.imageBox {
+  position: absolute;
+  top: 40px;
+  left: calc(60% + 4px);
+  right: 40px;
+  bottom: 40px;
+  background: #d9d9d9;
+  border-radius: var(--radius-s);
+}

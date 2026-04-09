@@ -22,3 +22,7 @@ export { default as IconBell } from './IconBell';
 export { default as IconMenu } from './IconMenu';
 export { default as IconWarning2 } from './IconWarning2';
 export { default as IconCheckCircle } from './IconCheckCircle';
+export { default as IconPower } from './IconPower';
+export { default as IconFile } from './IconFile';
+export { default as IconResend } from './IconResend';
+export { default as IconRecover } from './IconRecover';

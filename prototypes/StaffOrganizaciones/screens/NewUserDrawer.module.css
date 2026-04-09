@@ -806,8 +806,24 @@
   align-items: center;
   justify-content: flex-end;
   gap: 12px;
-  padding: 16px 24px 24px;
+  padding: 16px 24px;
   border-top: 1px solid var(--color-border-default);
   flex-shrink: 0;
   margin-top: auto;
+}
+
+@media (max-width: 480px) {
+  .drawer {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    max-width: 100%;
+    border-radius: 0;
+  }
+
+  .fieldRow {
+    grid-template-columns: 1fr;
+  }
 }

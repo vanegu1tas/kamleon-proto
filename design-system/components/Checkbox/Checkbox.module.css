@@ -1,0 +1,95 @@
+/* ─── Wrapper ─────────────────────────────────────────── */
+
+.wrap {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.wrap.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ─── Native input (visually hidden) ─────────────────── */
+
+.input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+/* ─── Box wrapper ─────────────────────────────────────── */
+
+.boxWrap {
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+
+/* ─── Visual box ──────────────────────────────────────── */
+
+.box {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 1px solid var(--color-border-default);
+  background: var(--color-bg-surface-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.wrap:not(.disabled):hover .box {
+  border-color: var(--color-border-strong);
+}
+
+/* ─── Checked state ───────────────────────────────────── */
+
+.checked {
+  background: var(--color-action-primary-bg);
+  border-color: var(--color-action-primary-bg);
+}
+
+.wrap:not(.disabled):hover .checked {
+  border-color: var(--color-action-primary-bg);
+}
+
+/* ─── Checkmark draw animation ───────────────────────── */
+
+.checkPath {
+  stroke-dasharray: 12;
+  stroke-dashoffset: 12;
+  animation: drawCheck 0.2s ease-out forwards;
+}
+
+@keyframes drawCheck {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* ─── Focus ring (teclado) ────────────────────────────── */
+
+.input:focus-visible + .box {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+/* ─── Label ───────────────────────────────────────────── */
+
+.label {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-strong);
+  line-height: 20px;
+}

@@ -12,8 +12,9 @@ import {
   IconSbChart,
   IconSbUnit,
 } from '../../design-system/icons';
-// V2-specific screen — master-detail
-import OrgDetailV2 from './screens/OrgDetailV2';
+// V2-specific screens
+import OrgDetailV2      from './screens/OrgDetailV2';
+import AccountDetails   from './screens/AccountDetails';
 // Shared screens from V1 (unchanged)
 import CenterDetail from '../StaffOrganizaciones/screens/CenterDetail';
 import TeamDetail   from '../StaffOrganizaciones/screens/TeamDetail';
@@ -26,7 +27,7 @@ import NewOrgDrawer   from '../StaffOrganizaciones/screens/NewOrgDrawer';
 import EditOrgDrawer  from '../StaffOrganizaciones/screens/EditOrgDrawer';
 // Shared mock data and helpers from V1
 import { ORGS, getUserCountForOrg, getUserCountForCenter, getProfessionalCountForCenter, getActiveTeamCount } from '../StaffOrganizaciones/mockData';
-import { IconFilter, IconEdit, IconPlus, IconTrash, IconSearch, IconBell, IconMenu } from '../../design-system/icons/outline';
+import { IconFilter, IconEdit, IconPlus, IconTrash, IconSearch, IconBell, IconMenu, IconCheckCircle } from '../../design-system/icons/outline';
 import SearchPalette from './components/SearchPalette';
 import ToolbarButton from '../../design-system/components/ToolbarButton/ToolbarButton';
 import ContextMenu from '../../design-system/components/ContextMenu/ContextMenu';
@@ -49,6 +50,16 @@ const NAV_SECTIONS = [
     items: [
       { id: 'hydration', label: 'Hydration',    icon: <IconSbDrop />,  active: false },
       { id: 'uro',       label: 'Uroflowmetry', icon: <IconSbChart />, active: false },
+    ],
+  },
+];
+
+const NAV_SECTIONS_PERSONAL = [
+  {
+    id: 'personal',
+    label: '',
+    items: [
+      { id: 'mydata', label: 'My data', icon: <IconSbDrop />, active: true },
     ],
   },
 ];
@@ -92,8 +103,19 @@ function SortIcon({ col, activeCol, dir }) {
   );
 }
 
-export default function StaffOrganizacionesV2({ initialOrgId, initialCenterId } = {}) {
+const STAFF_USER = {
+  initials: 'DV', name: 'Daniel', surname: 'Vanegas',
+  email: 'daniel.vanegas@dna.inc', role: 'Admin',
+};
+
+export default function StaffOrganizacionesV2({ initialOrgId, initialCenterId, role, currentUser, assignedCenters } = {}) {
+  const isCenterAdmin = role === 'center-admin';
+  const user = currentUser ?? STAFF_USER;
+
   const [navStack, setNavStack] = useState(() => {
+    if (isCenterAdmin) {
+      return [{ screen: 'center-admin-detail', key: 'ca', params: {} }];
+    }
     if (initialOrgId) {
       const org = ORGS.find(o => o.id === initialOrgId);
       if (org) return [{ screen: 'org-detail', key: org.id, params: { org, initialCenter: initialCenterId ?? null } }];
@@ -125,6 +147,10 @@ export default function StaffOrganizacionesV2({ initialOrgId, initialCenterId } 
   const [showPalette, setShowPalette] = useState(false);
   const [tableSearch, setTableSearch] = useState('');
   const [toast, setToast] = useState(null);
+  const [showAccount, setShowAccount] = useState(false);
+  const [showPersonal, setShowPersonal] = useState(false);
+  const [showAvatarMenu, setShowAvatarMenu] = useState(false);
+  const avatarMenuRef = useRef(null);
 
   const currentScreen = navStack[navStack.length - 1];
   const [slideDirection, setSlideDirection] = useState('forward');
@@ -208,6 +234,15 @@ export default function StaffOrganizacionesV2({ initialOrgId, initialCenterId } 
     return () => document.removeEventListener('keydown', handleKey);
   }, []);
 
+  useEffect(() => {
+    if (!showAvatarMenu) return;
+    function handleClick(e) {
+      if (avatarMenuRef.current && !avatarMenuRef.current.contains(e.target)) setShowAvatarMenu(false);
+    }
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [showAvatarMenu]);
+
   function handleSidebarToggle() {
     if (isTablet) {
       setDrawerOpen(false);
@@ -272,15 +307,25 @@ export default function StaffOrganizacionesV2({ initialOrgId, initialCenterId } 
           collapsed={sidebarCollapsed}
           onToggle={handleSidebarToggle}
           drawerOpen={isTablet ? drawerOpen : undefined}
-          sections={NAV_SECTIONS.map(section => ({
-            ...section,
-            items: section.items.map(item => ({
-              ...item,
-              onClick: item.id === 'center'
-                ? () => setNavStack([{ screen: 'orgs' }])
-                : item.onClick,
-            })),
-          }))}
+          sections={showPersonal
+            ? NAV_SECTIONS_PERSONAL
+            : NAV_SECTIONS.map(section => ({
+                ...section,
+                items: section.items
+                  .filter(item => !(isCenterAdmin && item.id === 'units'))
+                  .map(item => ({
+                    ...item,
+                    onClick: () => {
+                      setShowAccount(false);
+                      if (item.id === 'center') {
+                        setNavStack([{ screen: isCenterAdmin ? 'center-admin-detail' : 'orgs', key: isCenterAdmin ? 'ca' : undefined, params: {} }]);
+                      } else {
+                        item.onClick?.();
+                      }
+                    },
+                  })),
+              }))
+          }
         />
       </div>
 
@@ -337,15 +382,107 @@ export default function StaffOrganizacionesV2({ initialOrgId, initialCenterId } 
               <IconBell size={20} />
               <span className={styles.notifDot} />
             </button>
-            <div className={styles.avatar}>D</div>
+            <div ref={avatarMenuRef} className={styles.avatarWrap}>
+              <button
+                className={`${styles.avatar} ${(showAvatarMenu || showAccount) ? styles.avatarActive : ''}`}
+                onClick={() => setShowAvatarMenu(v => !v)}
+                aria-label="Account"
+              >{user.initials}</button>
+              {showAvatarMenu && (
+                <div className={styles.avatarMenu}>
+
+                  {/* Header */}
+                  <div className={styles.avatarMenuHeader}>
+                    <div className={styles.avatarMenuAvatar}>{user.initials}</div>
+                    <div className={styles.avatarMenuInfo}>
+                      <span className={styles.avatarMenuName}>{user.name} {user.surname}</span>
+                      <span className={styles.avatarMenuEmail}>{user.role}</span>
+                    </div>
+                  </div>
+
+                  {/* Account switcher — solo Centro Admin */}
+                  {isCenterAdmin && (
+                    <div className={styles.avatarMenuAccounts}>
+                      <button
+                        className={styles.avatarMenuAccountItem}
+                        onClick={() => { if (showPersonal) { setShowAvatarMenu(false); setShowPersonal(false); setShowAccount(false); } }}
+                      >
+                        <div className={styles.avatarMenuAccountLeft}>
+                          <div className={styles.avatarMenuAccountAvatar}>{user.initials}</div>
+                          <span className={styles.avatarMenuAccountLabel}>{user.role}</span>
+                        </div>
+                        {!showPersonal && (
+                          <span className={styles.avatarMenuAccountCheck}>
+                            <IconCheckCircle size={16} />
+                          </span>
+                        )}
+                      </button>
+                      <button
+                        className={styles.avatarMenuAccountItem}
+                        onClick={() => { if (!showPersonal) { setShowAvatarMenu(false); setShowPersonal(true); setShowAccount(false); } }}
+                      >
+                        <div className={styles.avatarMenuAccountLeft}>
+                          <div className={`${styles.avatarMenuAccountAvatar} ${styles.avatarMenuAccountAvatarPersonal}`}>{user.initials}</div>
+                          <span className={styles.avatarMenuAccountLabel}>Personal Account</span>
+                        </div>
+                        {showPersonal && (
+                          <span className={styles.avatarMenuAccountCheck}>
+                            <IconCheckCircle size={16} />
+                          </span>
+                        )}
+                      </button>
+                    </div>
+                  )}
+
+                  <div className={styles.avatarMenuDivider} />
+
+                  <div className={styles.avatarMenuSection}>
+                    <button className={styles.avatarMenuItem} onClick={() => { setShowAvatarMenu(false); setShowAccount(true); }}>
+                      Account details
+                    </button>
+                    <button className={styles.avatarMenuItem}>
+                      Privacy &amp; terms
+                    </button>
+                  </div>
+
+                  <div className={styles.avatarMenuDivider} />
+
+                  <button className={`${styles.avatarMenuItem} ${styles.avatarMenuItemLogout}`}>
+                    Log out
+                  </button>
+
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
         {/* ── Screens ── */}
 
+        {showAccount && (
+          <AccountDetails onClose={() => setShowAccount(false)} />
+        )}
+
+        {showPersonal && (
+          <div className={styles.page} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '16px' }}>
+            <div style={{ textAlign: 'center', maxWidth: '320px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <span style={{ fontFamily: 'var(--font-family-primary)', fontSize: 'var(--font-size-12)', fontWeight: 'var(--font-weight-medium)', letterSpacing: '0.6px', textTransform: 'uppercase', color: 'var(--color-text-subtle)' }}>Personal account</span>
+              <span style={{ fontFamily: 'var(--font-family-primary)', fontSize: 'var(--font-size-24)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-strong)' }}>My Data</span>
+              <span style={{ fontFamily: 'var(--font-family-primary)', fontSize: 'var(--font-size-14)', color: 'var(--color-text-subtle)', lineHeight: '1.5' }}>Esta sección mostrará tus datos de hidratación personales. Diseño pendiente.</span>
+              <button
+                onClick={() => setShowPersonal(false)}
+                style={{ all: 'unset', cursor: 'pointer', marginTop: '8px', fontFamily: 'var(--font-family-primary)', fontSize: 'var(--font-size-13)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-strong)', textDecoration: 'underline', textUnderlineOffset: '2px' }}
+              >
+                ← Back to {user.role}
+              </button>
+            </div>
+          </div>
+        )}
+
         <div
           key={currentScreen.key ?? currentScreen.screen}
           className={`${styles.screenWrapper} ${isTablet ? styles[`screenSlide_${slideDirection}`] : ''}`}
+          style={(showAccount || showPersonal) ? { display: 'none' } : undefined}
         >
 
         {currentScreen.screen === 'org-detail' && (
@@ -387,11 +524,20 @@ export default function StaffOrganizacionesV2({ initialOrgId, initialCenterId } 
           />
         )}
 
+        {currentScreen.screen === 'center-admin-detail' && (
+          <OrgDetailV2
+            key="center-admin"
+            org={{ id: user.orgId, name: ORGS.find(o => o.id === user.orgId)?.name ?? '', centers: assignedCenters }}
+            isMobile={isTablet}
+            isCenterAdmin={true}
+          />
+        )}
+
         {currentScreen.screen === 'orgs' && (
           <div className={styles.content}>
 
             <div className={styles.heading}>
-              <h1 className={styles.pageTitle}>Welcome, Daniel</h1>
+              <h1 className={styles.pageTitle}>Welcome, {user.name}</h1>
               <div className={styles.createWrap} ref={createMenuRef}>
                 <Button
                   variant="primary"

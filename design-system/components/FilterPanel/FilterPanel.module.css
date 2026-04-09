@@ -1,0 +1,166 @@
+/* ─── Wrapper ─────────────────────────────────────────── */
+
+.wrap {
+  position: relative;
+}
+
+/* ─── Badge ───────────────────────────────────────────── */
+
+.badge {
+  position: absolute;
+  top: -9px;
+  right: -9px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 4px 1px;
+  background: var(--color-text-strong);
+  color: var(--color-text-inverse);
+  border-radius: 40px;
+  font-family: var(--font-family-primary);
+  font-size: 12px;
+  font-weight: var(--font-weight-medium);
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+/* ─── Dropdown ────────────────────────────────────────── */
+
+@keyframes dropdownIn {
+  from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);    }
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 200;
+  min-width: 220px;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-m);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.10), 0 2px 6px rgba(0, 0, 0, 0.06);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transform-origin: top right;
+  animation: dropdownIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ─── Section ─────────────────────────────────────────── */
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sectionLabel {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-subtle);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin: 0;
+}
+
+/* ─── Option row ──────────────────────────────────────── */
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  padding: 4px 6px;
+  margin: 0 -6px;
+  border-radius: var(--radius-s);
+  transition: background 0.12s ease;
+}
+
+.option:hover {
+  background: var(--color-bg-surface-subtle);
+}
+
+.nativeCheck {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.checkBox {
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid var(--color-border-default);
+  border-radius: 4px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.nativeCheck:checked + .checkBox {
+  background: var(--color-text-strong);
+  border-color: var(--color-text-strong);
+}
+
+.checkMark {
+  stroke-dasharray: 14;
+  stroke-dashoffset: 14;
+  opacity: 0;
+  transition: stroke-dashoffset 0.2s cubic-bezier(0.16, 1, 0.3, 1) 0.04s,
+              opacity 0.12s ease 0.04s;
+}
+
+.nativeCheck:checked + .checkBox .checkMark {
+  stroke-dashoffset: 0;
+  opacity: 1;
+}
+
+.optionLabel {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  color: var(--color-text-subtle);
+  transition: color 0.15s ease;
+}
+
+.optionChecked .optionLabel {
+  color: var(--color-text-strong);
+}
+
+/* ─── Clear button ────────────────────────────────────── */
+
+@keyframes clearSlideIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+
+.clearBtn {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  color: var(--color-status-error);
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+  animation: clearSlideIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  align-self: flex-start;
+}
+
+.clearBtn:hover { opacity: 0.7; }
+
+/* ─── Reduced motion ──────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .dropdown  { animation: none; }
+  .clearBtn  { animation: none; }
+  .checkMark { transition: none; }
+}

@@ -1,6 +1,6 @@
 # Project Summary — Kamleon Design System
 
-Estado del proyecto al 2026-03-23. Referencia rápida para retomar el trabajo.
+Estado del proyecto al 2026-04-02. Referencia rápida para retomar el trabajo.
 
 ---
 
@@ -123,7 +123,8 @@ kamleon/
 │   │   │   └── ContextMenu.stories.jsx ✅
 │   │   ├── ToolbarButton/
 │   │   │   ├── ToolbarButton.jsx       ✅ botón de toolbar · selected state · badge de filtros
-│   │   │   └── ToolbarButton.module.css
+│   │   │   ├── ToolbarButton.module.css
+│   │   │   └── ToolbarButton.stories.jsx ✅
 │   │   ├── Toggle/
 │   │   │   ├── Toggle.jsx              ✅ switch ON/OFF · tamaños S (40×24) y M (56×32) · label opcional
 │   │   │   ├── Toggle.module.css
@@ -133,7 +134,7 @@ kamleon/
 │   │   │   ├── SegmentedControl.module.css
 │   │   │   └── SegmentedControl.stories.jsx ✅
 │   │   ├── Input/
-│   │   │   ├── Input.jsx               ✅ campo de texto · label/description/error/disabled · focus ring solo teclado · type="tel" filtra no numéricos
+│   │   │   ├── Input.jsx               ✅ campo de texto · label/description/error/disabled · focus ring solo teclado · type="tel" filtra no numéricos · prop suffix (hug content, gap 0) · toggle password (IconEyeClosed por defecto)
 │   │   │   ├── Input.module.css
 │   │   │   └── Input.stories.jsx       ✅
 │   │   ├── Dropdown/
@@ -144,10 +145,18 @@ kamleon/
 │   │   │   ├── Textarea.jsx            ✅ textarea · label/description/error/disabled · focus ring solo teclado · min-height 120px · radius-s
 │   │   │   ├── Textarea.module.css
 │   │   │   └── Textarea.stories.jsx    ✅
-│   │   └── Toast/
-│   │       ├── Toast.jsx               ✅ notificación pill · modo success/critic · prop onUndo · auto-dismiss
-│   │       ├── Toast.module.css
-│   │       └── Toast.stories.jsx       ✅
+│   │   ├── Toast/
+│   │   │   ├── Toast.jsx               ✅ notificación pill · modo success/critic · prop onUndo · auto-dismiss · top:52px · animación desde arriba
+│   │   │   ├── Toast.module.css
+│   │   │   └── Toast.stories.jsx       ✅
+│   │   ├── Checkbox/
+│   │   │   ├── Checkbox.jsx            ✅ checkbox custom · label flexible · animación draw checkmark · align-items flex-start
+│   │   │   ├── Checkbox.module.css
+│   │   │   └── Checkbox.stories.jsx    ✅
+│   │   └── FilterPanel/
+│   │       ├── FilterPanel.jsx         ✅ ToolbarButton trigger + badge + dropdown + checkboxes + Clear filters · gestiona open/close + outside-click
+│   │       ├── FilterPanel.module.css
+│   │       └── FilterPanel.stories.jsx ✅
 │   └── icons/
 │       ├── outline/
 │       │   ├── IconCollapse.jsx        ✅ doble chevron izquierda (colapsar sidebar)
@@ -174,6 +183,10 @@ kamleon/
 │       │   ├── IconMenu.jsx            ✅ hamburger (menú móvil)
 │       │   ├── IconWarning2.jsx        ✅ círculo con signo de exclamación (alerta)
 │       │   ├── IconCheckCircle.jsx     ✅ círculo con check (success Toast)
+│       │   ├── IconPower.jsx           ✅ encendido (22×22 en 24×24)
+│       │   ├── IconFile.jsx            ✅ documento (18×22 en 24×24)
+│       │   ├── IconResend.jsx          ✅ reenviar (23×21 en 24×24)
+│       │   ├── IconRecover.jsx         ✅ recuperar (20×20 en 24×24)
 │       │   └── index.js               ✅
 │       ├── filled/
 │       │   ├── IconUserFilled.jsx    ✅ persona (filled)
@@ -181,7 +194,7 @@ kamleon/
 │       │   ├── IconPhoneFilled.jsx   ✅ teléfono (filled)
 │       │   ├── IconLocationFilled.jsx ✅ ubicación (filled)
 │       │   └── index.js              ✅
-│       ├── LogoKamleon.jsx     ✅ logotipo SVG (usado en header del Sidebar)
+│       ├── LogoKamleon.jsx     ✅ logotipo SVG · prop color (default 'white') · fill="currentColor"
 │       ├── IconSbCenter.jsx    ✅
 │       ├── IconSbTeams.jsx     ✅
 │       ├── IconSbDrop.jsx      ✅
@@ -213,24 +226,40 @@ kamleon/
 │   │       ├── NewOrgDrawer.jsx            ✅ drawer crear org
 │   │       ├── NewTeamDrawer.jsx           ✅ drawer crear equipo
 │   │       ├── EditCenterDrawer.jsx        ✅ drawer edición centro
-│   │       ├── EditTeamDrawer.jsx          ✅ drawer edición equipo · Reset PIN condicional
+│   │       ├── EditTeamDrawer.jsx          ✅ drawer edición equipo · estructura corregida vs Figma · Save con Toast "Changes saved" · onSave(patch) actualiza selectedTeam
+│       └── EditAccountDrawer.jsx       ✅ drawer edición perfil · Email disabled · Date of birth DD/MM/YYYY (3 inputs) · Gender en sección Account · Height+Weight en sección Measurements · onChange con DS Input pasa string directo (no evento)
 │   │       ├── EditOrgDrawer.jsx           ✅ drawer edición org · Status + Integrations
 │   │       └── EditUserDrawer.jsx          ✅ drawer edición usuario · Name/Email/Phone/Birthday/Gender/Height/Weight · Status/RFID/PIN toggles
+│   ├── Login/                  ✅ prototipo flujo de registro (URL: ?proto=login)
+│   │   ├── Login.jsx           ✅ router interno · lifted state SignUp · animaciones slide+scale · logo fijo
+│   │   ├── Login.module.css    ✅ background fijo · keyframes slideOut/slideIn (200/250ms)
+│   │   └── screens/
+│   │       ├── SignIn.jsx      ✅ layout 2 columnas (form 60% + imagen placeholder) · email + password + forgot + signup link
+│   │       ├── SignIn.module.css
+│   │       ├── SignUp.jsx      ✅ paso 1 · stepper fijo · campos animan · Name+Surname+Email+Password+Confirm · 2 checkboxes GDPR
+│   │       ├── SignUp.module.css
+│   │       ├── Profile.jsx     ✅ paso 2 · stepper fijo · campos animan · Gender+Height(cm)+Weight(kg)+consent
+│   │       └── Profile.module.css
 │   └── StaffOrganizacionesV2/  (V2 — master-detail)
 │       ├── StaffOrganizacionesV2.jsx       ✅ shell V2 · SearchPalette (⌘K) · topbar con search pill (fondo blanco, sombra)
 │       ├── components/
 │       │   └── SearchPalette.jsx           ✅ paleta de búsqueda global · búsqueda por org/centro/equipo/usuario
 │       └── screens/
-│           └── OrgDetailV2.jsx             ✅ layout master-detail en dos paneles
-│               ├── Panel izquierdo: lista de centros + botón "+" (New Center) con tooltip izquierda
-│               └── Panel derecho (según selección):
-│                   ├── CenterCard — tabs: Detail · Teams · Users · Units
-│                   │   ├── Tab Teams: lista de equipos · click → TeamCard
-│                   │   ├── Tab Users: todos los usuarios del centro · búsqueda + filter pills por equipo · click → UserCard
-│                   │   ├── Tab Units: lista de units del centro · click → UnitCard (pendiente)
-│                   │   └── Botón "Create" dropdown: New Team / New User / New Unit
-│                   ├── TeamCard — tabs: Users · Administrators
-│                   └── UserCard — vista de usuario · botón Settings → EditUserDrawer
+│           ├── OrgDetailV2.jsx             ✅ layout master-detail en dos paneles · responsive 768px (slide lateral)
+│           │   ├── Panel izquierdo: lista de centros + botón "+" con tooltip izquierda
+│           │   └── Panel derecho (según selección):
+│           │       ├── CenterCard — tabs: Detail · Teams · Users · Units
+│           │       │   ├── Tab Detail: stats grid + sección Contact (admins/contacts con dividers)
+│           │       │   ├── Tab Teams: tabla · SearchBar + FilterPanel(Status) · ContextMenu → EditTeamDrawer/DeleteTeam
+│           │       │   ├── Tab Users: NAME|STATUS|DATE ADDED|ACTIONS · SearchBar + FilterPanel(Role+Status) · click → UserCard
+│           │       │   ├── Tab Units: tabla de units · Tag status · FilterPanel(Status+K-POD) · click → UnitCard
+│           │       │   └── Botón "Create" dropdown: New Team / New User / New Unit
+│           │       ├── TeamCard — tabla miembros · SearchBar + FilterPanel(Role+Status) · ContextMenu · back "Back to Teams"
+│           │       ├── UserCard — vista usuario · Settings → EditUserDrawer
+│           │       └── UnitCard — tabs: Detail · Devices · Appearance · Parameters
+│           ├── OrgDetailV2.jsx             ✅ layout master-detail en dos paneles · responsive 768px (slide lateral)
+│           ├── UnitsGlobalView.jsx         ✅ vista global de todas las units · KPI cards · tabla expandible (Display+K-POD) · OrgPillSelect + CenterPillSelect + FilterPanel(Status+K-POD) · cascade org/center
+│           └── AccountDetails.jsx          ✅ perfil del usuario logueado · view mode (Account/Measurements/Security) · surface centrada · close [×] + edit [⚙] en header · abre EditAccountDrawer
 ├── docs/
 │   ├── data-model.md           ✅
 │   ├── navigation.md           ✅
@@ -414,11 +443,12 @@ Nodos relevantes:
 - [x] Dropdown — select nativo estilizado · label/description/error/disabled · IconChevronDown
 - [x] Textarea — campo multilínea · label/description/error/disabled · min-height 120px · radius-s
 - [x] Toast — success/critic · prop onUndo · auto-dismiss · posición top 52px · animación desde arriba
-- [ ] Configurar Figma Code Connect *(bloqueado: pendiente de Personal Access Token con permisos de edición en DS `ozgwasF3ziQyznQS0z0dM1`)*
+- [x] FilterPanel — ToolbarButton + badge + dropdown + checkboxes + Clear · gestiona open/close · sin story
+- [ ] Configurar Figma Code Connect *(bloqueado: pendiente de Personal Access Token con permisos de edición en DS `ozgwasF3ziQyznQS0z0dM1`)* · archivos .figma.jsx y figma.config.json listos
 
 ### Design System — Iconos
 - [x] Duotono (`IconSb*`) — 5 iconos para sidebar
-- [x] Outline (`Icon*`) — 23 iconos · todos 24×24 · stroke + currentColor · ChevronMiniRight/Down renombrados · ChevronDown (Dropdown) · Bell · Menu · Warning2 · CheckCircle
+- [x] Outline (`Icon*`) — 28 iconos · todos 24×24 · stroke + currentColor · ChevronMiniRight/Down · ChevronDown (Dropdown) · Bell · Menu · Warning2 · CheckCircle · Power · File · Resend · Recover
 - [x] Filled (`Icon*Filled`) — 4 iconos · fill + currentColor
 
 ### Storybook
@@ -430,8 +460,9 @@ Nodos relevantes:
 - [x] Input — stories añadidas
 - [x] Dropdown — stories añadidas
 - [x] Textarea — stories añadidas
-- [ ] **IconButton** — falta story
-- [ ] **ToolbarButton** — falta story
+- [x] IconButton — story añadida
+- [x] ToolbarButton — story añadida
+- [ ] **FilterPanel** — falta story
 
 ### Prototipos
 - [x] StaffOrganizaciones (V1) — sidebar + KPI cards + tabla expandible + filtros + ContextMenu · todos los drawers CRUD
@@ -460,6 +491,15 @@ Nodos relevantes:
 - [x] mockData.js — IDs únicos y no solapantes por organización (1-12 Astonia, 19-31 Arsenal, 32-52 Baskonia, 53-63 CAR Sant Cugat, 64-70 Sierra Nevada, 71-74 CEAR, 75-87 CEM Joan Miró, 88-90 CNEA, 91-94 Dynatech)
 - [x] Desplegado V2 en GitHub Pages (/prototype-v2/) · builds separados con vite.config.v1/v2.js · mv para renombrar index.html
 - [x] Fix 404 en V2: mv del HTML de salida para que GitHub Pages sirva index.html correctamente
+- [x] FilterPanel DS — usado en: StaffOrganizacionesV2 (Segment+Status), OrgDetailV2 TeamsTab (Status), UsersTab (Role+Status), UnitsGlobalView (Status+K-POD)
+- [x] EditTeamDrawer (V1) — estructura corregida vs Figma · subtítulo fuera del header · avatar IconAddImage · footer padding 24px · Save refleja cambios en UI + Toast · onSave(patch) actualiza selectedTeam en CentersContent
+- [x] UnitsGlobalView (V2) — tabla 15 units en 6 centros/4 orgs · filas expandibles (Display+K-POD) · OrgPillSelect + CenterPillSelect + FilterPanel · cascade center→org
+- [x] Units tab en CenterCard (V2) — tabla por centro · Tag status · K-POD warning · click → UnitCard
+- [x] UnitCard (V2) — tabs: Detail · Devices · Appearance · Parameters · innerTabBarInnerWide (max-width 420px)
+- [x] Delete center modal — DeleteOrgModal con prop label="center" · Toast success + Undo al confirmar
+- [x] TeamCard (V2) — scroll corregido · ContextMenu z-index con :hover y .menuOpen · FilterPanel Role+Status
+- [x] SidebarItem — line-height: 24px unificado (fix salto de altura al cambiar pantalla)
+- [x] NewUserDrawer (V2) — tooltips en toggles con data-tooltip (imagen en pantalla, RFID, PIN login)
 
 ### Design System — Tokens
 - [x] Tipografía, border radius, colores globales, colores semánticos, fuentes
@@ -560,26 +600,29 @@ Duración: ~25 min + preguntas. **19 diapositivas principales.**
 3. `npm run storybook` → http://localhost:6006 para inspeccionar componentes en aislamiento
 4. V2 en producción: https://vanegu1tas.github.io/kamleon-proto/prototype-v2/
 
-## Estado al 2026-03-23
+## Estado al 2026-04-01
 
 ### Design System — completo
-Todos los componentes de formulario implementados. Drawers del prototipo migrados a DS Input/Dropdown. Toast actualizado a spec Figma (success/critic, undo). IconCheckCircle añadido a outline icons.
+Todos los componentes implementados incluyendo FilterPanel. Storybook con stories para todos los componentes (incluidos IconButton y ToolbarButton). 4 iconos outline nuevos (Power/File/Resend/Recover). Archivos Code Connect (.figma.jsx + figma.config.json) listos pero bloqueados por permisos en el workspace del cliente.
 
 ### Responsive V2 — estado actual
-- **768px**: implementado y funcionando. Pendiente: drawers (NewCenterDrawer, NewOrgDrawer, EditOrgDrawer, etc.)
+- **768px**: shell + OrgDetailV2 implementados. Pendiente: drawers (NewCenterDrawer, NewOrgDrawer, EditOrgDrawer, etc.)
 - **390px**: implementado en CSS. Pendiente verificación visual en browser.
 
 ### Figma — capturas en Web App (`sklnDzfw72Z1tDM46vkTGl`)
 - Nodo `3268:2` — Org list desktop (2026-03-18)
 - Nodo `3271:2` — Org list 390px (2026-03-18)
 - Nodo `3274:2` — Center Detail 390px / Training Ground · Astonia FC (2026-03-18)
+- Nodo `3471:43434` — Units global view
 
 ## Próximos pasos sugeridos
 
 ### Design System
-- [ ] **IconButton** — story pendiente
-- [ ] **ToolbarButton** — story pendiente
-- [ ] Code Connect mappings completos
+- [x] IconButton — story añadida
+- [x] ToolbarButton — story añadida
+- [ ] **FilterPanel** — story pendiente
+- [ ] Code Connect mappings completos *(bloqueado: Daniel necesita rol Admin en team del cliente para publicar)*
+- [ ] Storybook Foundations: páginas MDX para tokens (Colors, Typography, Radius)
 
 ### Pruebas de usuario
 - [x] Guión V1 — 8 tareas (navegación, filtros, creación)
@@ -587,9 +630,9 @@ Todos los componentes de formulario implementados. Drawers del prototipo migrado
 - [ ] Ejecutar pruebas con participantes reales
 
 ### V2 — pendientes
-- [x] **Units tab en CenterCard** — UnitsTab (tabla con Tag DS) + UnitCard (tabs: Unit Info · Display · K-POD con Input disabled + Tag) · mock data en Training Ground, City Campus, Arsenal
-- [ ] **Units global** — vista en sidebar con tabla filtrable por org/centro · drill-down a UnitCard
-- [ ] **Empty states** — CenterCard sin equipos · TeamCard sin usuarios
+- [x] Units tab en CenterCard — implementado con Tag DS + FilterPanel
+- [x] UnitsGlobalView — tabla 15 units, OrgPillSelect+CenterPillSelect, expandible
+- [x] Empty states — CenterCard sin teams, TeamCard sin users
 - [ ] **Drawers responsive 768px** — NewCenterDrawer, NewOrgDrawer, EditOrgDrawer, etc.
 - [ ] **Panel Admin de Centro** — prototipo separado (no existe aún)
 

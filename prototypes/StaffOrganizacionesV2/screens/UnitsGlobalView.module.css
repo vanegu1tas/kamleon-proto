@@ -1,0 +1,572 @@
+/* ─── Content ─────────────────────────────────────────── */
+
+.content {
+  padding: 32px 64px 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ─── Heading ─────────────────────────────────────────── */
+
+.heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pageTitle {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-32);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-strong);
+  line-height: 1.25;
+  margin: 0;
+}
+
+/* ─── KPI Cards ───────────────────────────────────────── */
+
+.kpiRow {
+  display: flex;
+  gap: 12px;
+}
+
+.kpiCard {
+  flex: 1;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-m);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  padding: 17px 25px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 4px;
+  min-height: 120px;
+}
+
+.kpiValue {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-24);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-strong);
+  line-height: 1.25;
+}
+
+.kpiLabel {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+  line-height: 1.25;
+}
+
+/* ─── Table card ──────────────────────────────────────── */
+
+.tableCard {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-m);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── Toolbar ─────────────────────────────────────────── */
+
+.tableTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 24px 24px 16px;
+}
+
+.searchBar {
+  width: 223px;
+}
+
+.tableTopRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ─── Pill Select ─────────────────────────────────────── */
+
+.pillSelect {
+  position: relative;
+}
+
+.pillTrigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  height: 36px;
+  min-width: 160px;
+  padding: 0 12px;
+  background: var(--color-bg-surface-subtle);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-l);
+  cursor: pointer;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  transition: border-color 0.15s;
+}
+
+.pillTrigger:hover {
+  border-color: var(--color-border-strong);
+}
+
+.pillOpen .pillTrigger {
+  border-color: var(--color-border-strong);
+}
+
+.pillPlaceholder {
+  color: var(--color-text-subtle);
+}
+
+.pillValue {
+  color: var(--color-text-strong);
+  font-weight: var(--font-weight-medium);
+}
+
+.pillIcons {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--color-text-subtle);
+  flex-shrink: 0;
+}
+
+.pillClear {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  cursor: pointer;
+  color: var(--color-text-subtle);
+  transition: color 0.1s;
+}
+
+.pillClear:hover {
+  color: var(--color-text-strong);
+}
+
+.pillChevron {
+  transition: transform 0.15s;
+  display: flex;
+  align-items: center;
+}
+
+.pillChevronOpen {
+  transform: rotate(180deg);
+}
+
+.pillMenu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  min-width: 220px;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-s);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  z-index: 200;
+  overflow: hidden;
+  animation: pillMenuIn 0.1s ease;
+}
+
+@keyframes pillMenuIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Search inside menu */
+
+.pillMenuSearch {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--color-border-default);
+}
+
+.pillMenuSearchIcon {
+  color: var(--color-text-subtle);
+  flex-shrink: 0;
+}
+
+.pillMenuSearchInput {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-strong);
+}
+
+.pillMenuSearchInput::placeholder {
+  color: var(--color-text-placeholder, #9ca3af);
+}
+
+.pillMenuSearchClear {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text-subtle);
+  padding: 2px;
+  border-radius: 4px;
+}
+
+.pillMenuSearchClear:hover {
+  color: var(--color-text-strong);
+}
+
+/* Options list */
+
+.pillMenuList {
+  max-height: 240px;
+  overflow-y: auto;
+  padding: 4px;
+}
+
+.pillMenuEmpty {
+  padding: 12px;
+  text-align: center;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+  margin: 0;
+}
+
+.pillOption {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  padding: 7px 12px;
+  background: none;
+  border: none;
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  text-align: left;
+  gap: 1px;
+}
+
+.pillOption:hover {
+  background: var(--color-bg-surface-subtle);
+}
+
+.pillOptionActive {
+  background: var(--color-bg-surface-subtle);
+}
+
+.pillOptionLabel {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-strong);
+  white-space: nowrap;
+}
+
+.pillOptionActive .pillOptionLabel {
+  font-weight: var(--font-weight-medium);
+}
+
+.pillOptionSublabel {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+  white-space: nowrap;
+}
+
+
+/* ─── Table body ──────────────────────────────────────── */
+
+.tableBody {
+  padding: 0 24px;
+}
+
+.colHeaders {
+  display: flex;
+  align-items: center;
+  border-radius: var(--radius-xs);
+  overflow: hidden;
+  background: var(--color-bg-page);
+  margin-bottom: 2px;
+}
+
+.colHead {
+  padding: 12px;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-subtle);
+  text-transform: uppercase;
+  letter-spacing: 0.24px;
+}
+
+/* Column widths */
+
+.colUnitId  { width: 240px; flex-shrink: 0; }
+.colOrg     { flex: 1; }
+.colCenter  { flex: 1; }
+.colNum     { width: 110px; flex-shrink: 0; }
+.colStatus  { width: 120px; flex-shrink: 0; }
+.colActions { width: 80px; flex-shrink: 0; }
+
+.cellCenter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+/* ─── Unit Row ────────────────────────────────────────── */
+
+.unitRow {
+  display: flex;
+  align-items: center;
+  min-height: 64px;
+  border-bottom: 1px solid var(--color-border-subtle, #f3f4f6);
+  transition: background 0.1s;
+}
+
+.unitRow:last-child {
+  border-bottom: none;
+}
+
+.unitRow:hover {
+  background: var(--color-bg-surface-subtle);
+  border-radius: var(--radius-xs);
+}
+
+.cell {
+  padding: 12px;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-strong);
+}
+
+/* Unit ID cell: expand button + stack */
+
+.cellUnitId {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.expandBtn {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text-subtle);
+  flex-shrink: 0;
+  border-radius: 4px;
+  transition: color 0.1s, transform 0.18s;
+}
+
+.expandBtn:hover {
+  color: var(--color-text-strong);
+}
+
+.expandBtnOpen {
+  transform: rotate(90deg);
+}
+
+.unitRowExpanded {
+  background: var(--color-bg-surface-subtle);
+}
+
+.unitIdStack {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.unitId {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+  line-height: 16px;
+}
+
+.unitDesc {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+  line-height: 15px;
+}
+
+/* Actions */
+
+.moreMenuAnchor {
+  position: relative;
+}
+
+.actionBtn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  color: var(--color-text-subtle);
+  transition: background 0.1s, color 0.1s;
+}
+
+.actionBtn:hover {
+  background: var(--color-bg-surface-subtle);
+  color: var(--color-text-strong);
+}
+
+/* ─── Device sub-rows ────────────────────────────────── */
+
+.deviceRows {
+  background: var(--color-bg-page);
+  border-bottom: 1px solid var(--color-border-subtle, #f3f4f6);
+}
+
+.deviceRow {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  border-bottom: 1px solid var(--color-border-subtle, #f3f4f6);
+}
+
+.deviceRow:last-child {
+  border-bottom: none;
+}
+
+.deviceCell {
+  padding: 8px 12px;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+  display: flex;
+  align-items: center;
+}
+
+.deviceIndent {
+  width: 32px; /* matches expandBtn (24px) + gap (8px) */
+  flex-shrink: 0;
+}
+
+.deviceTypeBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-family: var(--font-family-primary);
+  font-size: 11px;
+  font-weight: var(--font-weight-medium);
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.deviceTypeBadgeDisplay {
+  background: #e8f0fe;
+  color: #1a56db;
+}
+
+.deviceTypeBadgeKpod {
+  background: #f3f4f6;
+  color: var(--color-text-subtle);
+}
+
+.deviceId {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+}
+
+/* ─── Empty state ─────────────────────────────────────── */
+
+.emptyState {
+  padding: 48px 24px;
+  text-align: center;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+}
+
+/* ─── Pagination ──────────────────────────────────────── */
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  border-top: 1px solid var(--color-border-default);
+}
+
+.pageInfo {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+}
+
+.pageInfo strong {
+  color: var(--color-text-strong);
+}
+
+.pageButtons {
+  display: flex;
+  gap: 8px;
+}
+
+.pageBtn {
+  padding: 5px 13px;
+  background: none;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-l);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-strong);
+  cursor: pointer;
+  transition: background 0.1s, border-color 0.1s;
+}
+
+.pageBtn:hover:not(:disabled) {
+  background: var(--color-bg-surface-subtle);
+  border-color: var(--color-border-strong);
+}
+
+.pageBtn:disabled {
+  color: var(--color-text-subtle);
+  cursor: not-allowed;
+}
+
+/* ─── Context menu portal ─────────────────────────────── */
+
+.contextMenuWrap {
+  position: fixed;
+  z-index: 500;
+}

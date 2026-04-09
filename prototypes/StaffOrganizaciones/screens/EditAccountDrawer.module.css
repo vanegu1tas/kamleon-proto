@@ -1,0 +1,262 @@
+/* ─── Overlay ─────────────────────────────────────────── */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.25);
+  z-index: 300;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ─── Drawer ──────────────────────────────────────────── */
+
+.drawer {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  bottom: 12px;
+  width: 520px;
+  max-width: calc(100% - 24px);
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-m);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), -8px 0 32px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  animation: slideIn 0.28s ease-out;
+  will-change: transform;
+}
+
+@keyframes slideIn {
+  0%   { transform: translateX(100%); }
+  70%  { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
+}
+
+/* ─── Header ──────────────────────────────────────────── */
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 16px 16px 24px;
+  border-bottom: 1px solid var(--color-border-default);
+  flex-shrink: 0;
+}
+
+.title {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-24);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+  margin: 0;
+}
+
+/* ─── Body ────────────────────────────────────────────── */
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding: 24px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* ─── Avatar ──────────────────────────────────────────── */
+
+.avatarRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.avatarBtn {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #00c9a7, #60a5fa);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-24);
+  font-weight: var(--font-weight-medium);
+  color: #fff;
+}
+
+.avatarOverlay {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.avatarBtn:hover .avatarOverlay { opacity: 1; }
+
+.avatarHintAction {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-medium);
+  line-height: 20px;
+  color: var(--color-turquoise-30);
+}
+
+/* ─── Section ─────────────────────────────────────────── */
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sectionTitle {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+  margin: 0;
+}
+
+/* ─── Field row ───────────────────────────────────────── */
+
+.fieldRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* ─── Date of birth ───────────────────────────────────── */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dateLabel {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+  padding-left: 12px;
+}
+
+.dateInputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.6fr;
+  gap: 16px;
+}
+
+.dateInput {
+  height: 36px;
+  background: var(--color-bg-surface-subtle);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-l);
+  padding: 0 10px;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  color: var(--color-text-strong);
+  outline: none;
+  text-align: center;
+  transition: border-color 0.15s ease;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.dateInput::placeholder { color: var(--color-text-placeholder); }
+.dateInput:focus { border-color: var(--color-border-focus); }
+
+/* ─── Delete link ─────────────────────────────────────── */
+
+.deleteLink {
+  background: none;
+  border: none;
+  padding: 0;
+  padding-left: 12px;
+  cursor: pointer;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-status-error);
+  line-height: 17.5px;
+  text-align: left;
+}
+
+.deleteLink:hover {
+  text-decoration: underline;
+}
+
+/* ─── Footer ──────────────────────────────────────────── */
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 24px;
+  border-top: 1px solid var(--color-border-default);
+  flex-shrink: 0;
+  margin-top: auto;
+}
+
+@media (max-width: 480px) {
+  .drawer {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    max-width: 100%;
+    border-radius: 0;
+    /* El drawer entero scrollea — header sticky arriba, footer al final del contenido */
+    overflow-y: auto;
+  }
+
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: var(--color-bg-surface);
+  }
+
+  /* Body no scrollea por su cuenta — crece con su contenido */
+  .body {
+    overflow-y: visible;
+    flex: none;
+  }
+
+  /* Footer al final del contenido, sin border-top (el scroll lo separa visualmente) */
+  .footer {
+    border-top: none;
+    padding-top: 8px;
+    margin-top: 0;
+  }
+
+  .fieldRow {
+    grid-template-columns: 1fr;
+  }
+}

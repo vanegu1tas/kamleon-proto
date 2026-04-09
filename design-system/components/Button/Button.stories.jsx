@@ -45,6 +45,16 @@ export const SecondaryHover = {
   ),
 };
 
+export const FullWidth = {
+  name: 'Full width',
+  render: () => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '320px' }}>
+      <Button variant="primary"   size="m" style={{ width: '100%' }}>Primary full width</Button>
+      <Button variant="secondary" size="m" style={{ width: '100%' }}>Secondary full width</Button>
+    </div>
+  ),
+};
+
 export const AllVariants = {
   render: () => (
     <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>

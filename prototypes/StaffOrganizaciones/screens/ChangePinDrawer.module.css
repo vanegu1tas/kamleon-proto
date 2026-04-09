@@ -1,0 +1,102 @@
+/* ─── Drawer width override ───────────────────────────── */
+
+.drawerNarrow {
+  width: 350px;
+}
+
+/* ─── PIN field ───────────────────────────────────────── */
+
+.pinGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pinField {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pinLabel {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+  padding-left: 12px;
+}
+
+.pinRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.pinBoxes {
+  display: flex;
+  gap: 8px;
+}
+
+.pinBox {
+  width: 47px;
+  height: 36px;
+  border-radius: var(--radius-s);
+  border: 1px solid var(--color-border-default);
+  background: var(--color-bg-surface-subtle);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+  text-align: center;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  caret-color: transparent;
+  box-sizing: border-box;
+}
+
+.pinBox:focus {
+  border-color: var(--color-border-focus);
+  box-shadow: 0 0 0 3px var(--color-action-focus-ring, rgba(0, 0, 0, 0.12));
+}
+
+.pinBoxError {
+  border-color: var(--color-red-65);
+}
+
+.pinBoxError:focus {
+  border-color: var(--color-red-65);
+  box-shadow: 0 0 0 3px rgba(252, 102, 78, 0.2);
+}
+
+/* ─── Eye toggle ──────────────────────────────────────── */
+
+.eyeBtn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--color-text-subtle);
+  display: flex;
+  align-items: center;
+  line-height: 0;
+}
+
+.eyeBtn:hover {
+  color: var(--color-text-strong);
+}
+
+/* ─── Error text ──────────────────────────────────────── */
+
+.error {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-book);
+  color: var(--color-red-65);
+  padding-left: 12px;
+}
+
+@media (max-width: 480px) {
+  .drawerNarrow {
+    width: 100%;
+  }
+}

@@ -1,0 +1,55 @@
+.page {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  background: var(--color-bg-page);
+}
+
+.logo {
+  position: absolute;
+  top: 56px;
+  left: 40px;
+  z-index: 10;
+}
+
+/* ─── Slide out ───────────────────────────────────────── */
+
+.slideOutLeft {
+  animation: slideOutLeft 200ms ease-in forwards;
+}
+
+.slideOutRight {
+  animation: slideOutRight 200ms ease-in forwards;
+}
+
+/* ─── Slide in ────────────────────────────────────────── */
+
+.slideInRight {
+  animation: slideInRight 250ms ease-out forwards;
+}
+
+.slideInLeft {
+  animation: slideInLeft 250ms ease-out forwards;
+}
+
+/* ─── Keyframes ───────────────────────────────────────── */
+
+@keyframes slideOutLeft {
+  from { transform: translateX(0)     scale(1);    opacity: 1; }
+  to   { transform: translateX(-48px) scale(0.96); opacity: 0; }
+}
+
+@keyframes slideOutRight {
+  from { transform: translateX(0)    scale(1);    opacity: 1; }
+  to   { transform: translateX(48px) scale(0.96); opacity: 0; }
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(48px) scale(0.96); opacity: 0; }
+  to   { transform: translateX(0)    scale(1);    opacity: 1; }
+}
+
+@keyframes slideInLeft {
+  from { transform: translateX(-48px) scale(0.96); opacity: 0; }
+  to   { transform: translateX(0)     scale(1);    opacity: 1; }
+}

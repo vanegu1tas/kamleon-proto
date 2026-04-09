@@ -1,0 +1,225 @@
+/* ─── Page ────────────────────────────────────────────── */
+
+.page {
+  min-height: 100vh;
+  background: var(--color-bg-page);
+  display: flex;
+  justify-content: center;
+  overflow-y: auto;
+}
+
+/* ─── Content (centrado, ancho fijo) ──────────────────── */
+
+.content {
+  width: 509px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  padding: 120px 0 80px;
+}
+
+/* ─── User info ───────────────────────────────────────── */
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.userAvatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--color-grey-70);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-medium);
+  color: #fff;
+  flex-shrink: 0;
+  text-transform: uppercase;
+}
+
+.userText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.userName {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-20);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+  line-height: 25px;
+}
+
+.userEmail {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+  line-height: 20px;
+}
+
+/* ─── Subtitle ────────────────────────────────────────── */
+
+.subtitle {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+  margin: 0;
+  line-height: 20px;
+}
+
+/* ─── Org list ────────────────────────────────────────── */
+
+.orgList {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.orgGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.orgName {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+  margin: 0;
+  line-height: 20px;
+}
+
+/* ─── Roles card ──────────────────────────────────────── */
+
+.rolesCard {
+  width: 100%;
+  background: var(--color-bg-surface-subtle);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-s);
+  overflow: hidden;
+}
+
+.roleRow {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  box-sizing: border-box;
+  position: relative;
+  isolation: isolate;
+}
+
+.roleRow::before {
+  content: '';
+  position: absolute;
+  inset: 4px 4px 4px 4px;
+  background: var(--color-bg-surface);
+  border-radius: var(--radius-xs);
+  opacity: 0;
+  transition: opacity 0.1s ease;
+  z-index: -1;
+}
+
+.roleRow:hover::before {
+  opacity: 1;
+}
+
+.roleRowBorder {
+  border-bottom: 1px solid var(--color-border-default);
+}
+
+.roleLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* ─── Org avatar ──────────────────────────────────────── */
+
+.orgAvatar {
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  color: #fff;
+  flex-shrink: 0;
+  text-transform: uppercase;
+}
+
+/* ─── Role text ───────────────────────────────────────── */
+
+.roleText {
+  display: flex;
+  flex-direction: column;
+}
+
+.roleName {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+  line-height: 17.5px;
+}
+
+.roleScope {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+  line-height: 15px;
+}
+
+/* ─── Chevron ─────────────────────────────────────────── */
+
+.chevron {
+  color: var(--color-text-subtle);
+  flex-shrink: 0;
+}
+
+/* ─── Empty state ─────────────────────────────────────── */
+
+.empty {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+  margin: 0;
+  text-align: center;
+  padding: 24px 0;
+}
+
+/* ─── Log out ─────────────────────────────────────────── */
+
+.logoutLink {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.logoutLink:hover {
+  color: var(--color-text-strong);
+}

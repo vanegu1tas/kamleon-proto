@@ -1,0 +1,171 @@
+/* ─── Page ────────────────────────────────────────────── */
+
+.page {
+  position: relative;
+  min-height: 100vh;
+}
+
+/* ─── Fields wrapper (animated on step transition) ───── */
+
+.fields,
+.exitForward,
+.enterForward,
+.exitBack,
+.enterBack {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.exitForward  { animation: slideOutLeft  200ms ease-in  forwards; }
+.enterForward { animation: slideInRight  250ms ease-out forwards; }
+.exitBack     { animation: slideOutRight 200ms ease-in  forwards; }
+.enterBack    { animation: slideInLeft   250ms ease-out forwards; }
+
+@keyframes slideOutLeft {
+  from { transform: translateX(0)     scale(1);    opacity: 1; }
+  to   { transform: translateX(-48px) scale(0.96); opacity: 0; }
+}
+@keyframes slideInRight {
+  from { transform: translateX(48px)  scale(0.96); opacity: 0; }
+  to   { transform: translateX(0)     scale(1);    opacity: 1; }
+}
+@keyframes slideOutRight {
+  from { transform: translateX(0)    scale(1);    opacity: 1; }
+  to   { transform: translateX(48px) scale(0.96); opacity: 0; }
+}
+@keyframes slideInLeft {
+  from { transform: translateX(-48px) scale(0.96); opacity: 0; }
+  to   { transform: translateX(0)     scale(1);    opacity: 1; }
+}
+
+/* ─── Logo ────────────────────────────────────────────── */
+
+.logo {
+  position: absolute;
+  top: 56px;
+  left: 40px;
+}
+
+/* ─── Form area (centered) ────────────────────────────── */
+
+.formArea {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: column;
+  padding: 160px 24px 48px;
+  box-sizing: border-box;
+}
+
+.form {
+  width: 390px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ─── Step indicator ──────────────────────────────────── */
+
+.steps {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.step {
+  flex: 1;
+  max-width: 60px;
+  height: 4px;
+  border-radius: var(--radius-xs);
+  background: var(--color-border-default);
+}
+
+.stepActive {
+  background: var(--color-status-active);
+}
+
+.stepDone {
+  background: var(--color-status-active);
+  opacity: 0.4;
+}
+
+/* ─── Header ──────────────────────────────────────────── */
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.title {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-24);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-strong);
+  margin: 0;
+  line-height: 30px;
+}
+
+.subtitle {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+  margin: 0;
+}
+
+/* ─── Height + Weight row ─────────────────────────────── */
+
+.row {
+  display: flex;
+  gap: 12px;
+}
+
+/* ─── Divider ─────────────────────────────────────────── */
+
+.divider {
+  height: 1px;
+  background: var(--color-border-default);
+}
+
+/* ─── Consent label ───────────────────────────────────── */
+
+.consentLabel {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+  line-height: 1.5;
+}
+
+.link {
+  color: var(--color-text-strong);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.link:hover {
+  color: var(--color-text-subtle);
+}
+
+
+/* ─── Back link ───────────────────────────────────────── */
+
+.backLink {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: center;
+  width: 100%;
+}
+
+.backLink:hover {
+  color: var(--color-text-strong);
+}

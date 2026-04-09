@@ -1,0 +1,6 @@
+{
+  "codeConnect": {
+    "include": ["design-system/components/**/*.jsx"],
+    "exclude": ["node_modules/**"]
+  }
+}

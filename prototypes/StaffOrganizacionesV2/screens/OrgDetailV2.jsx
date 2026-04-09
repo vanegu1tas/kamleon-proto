@@ -141,6 +141,8 @@ function CentersContent({ org, initialCenter, initialTeam, initialUser, isMobile
   const [selectedUserTeam, setSelectedUserTeam]     = useState(null); // set when navigating from Users tab
   const [editCenterTarget, setEditCenterTarget]     = useState(null);
   const [editTeamTarget, setEditTeamTarget]         = useState(null);
+  const [teamPatches, setTeamPatches]               = useState({});  // { [teamId]: patch }
+  const [teamSaveToast, setTeamSaveToast]           = useState(false);
   const [newTeamCenter, setNewTeamCenter]           = useState(null);
   const [newUserContext, setNewUserContext]          = useState(null); // { center, team? }
   const [returnTab, setReturnTab]                   = useState('details');
@@ -175,6 +177,14 @@ function CentersContent({ org, initialCenter, initialTeam, initialUser, isMobile
     setSelectedUserTeam(null);
     setSelectedUnit(null);
     setSelectedUnitCenter(null);
+  }
+
+  function handleSaveTeam(teamId, patch) {
+    setTeamPatches(prev => ({ ...prev, [teamId]: { ...(prev[teamId] ?? {}), ...patch } }));
+    if (selectedTeam?.id === teamId) {
+      setSelectedTeam(prev => ({ ...prev, ...patch }));
+    }
+    setTeamSaveToast(true);
   }
 
   // Clave para animar sub-niveles al cambiar de vista dentro del detailPanel
@@ -275,7 +285,7 @@ function CentersContent({ org, initialCenter, initialTeam, initialUser, isMobile
             </button>
           )}
 
-          <div key={subKey} className={subSlideClass} style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+          <div key={subKey} className={subSlideClass} style={{ flex: 1, overflow: 'hidden', overflowY: (selectedTeam && !selectedUser) ? 'auto' : 'hidden', display: 'flex', flexDirection: 'column' }}>
           {selectedUser ? (
             <UserCard
               user={selectedUser}
@@ -299,6 +309,7 @@ function CentersContent({ org, initialCenter, initialTeam, initialUser, isMobile
               onBack={() => { setSubSlideDir('back'); setSelectedTeam(null); setSelectedUser(null); setSelectedUserTeam(null); }}
               onSelectUser={(user) => { setSubSlideDir('forward'); setSelectedUser(user); }}
               onNewUser={() => setNewUserContext({ center: selectedTeamCenter, team: selectedTeam })}
+              onEdit={() => setEditTeamTarget({ team: selectedTeam, center: selectedTeamCenter })}
               isMobile={isMobile}
             />
           ) : selected ? (
@@ -309,7 +320,7 @@ function CentersContent({ org, initialCenter, initialTeam, initialUser, isMobile
               onDelete={() => setSelected(null)}
               onNewTeam={() => setNewTeamCenter(selected)}
               onNewUser={() => setNewUserContext({ center: selected })}
-              onEditTeam={(team) => setEditTeamTarget(team)}
+              onEditTeam={(team) => setEditTeamTarget({ team, center: selected })}
               onNewUserForTeam={(team) => setNewUserContext({ center: selected, team })}
               initialTab={returnTab}
               onSelectTeam={(team) => {
@@ -357,7 +368,14 @@ function CentersContent({ org, initialCenter, initialTeam, initialUser, isMobile
 
       {showNewCenter    && <NewCenterDrawer org={org} onClose={() => setShowNewCenter(false)} />}
       {editCenterTarget && <EditCenterDrawer center={editCenterTarget} org={org} onClose={() => setEditCenterTarget(null)} />}
-      {editTeamTarget   && <EditTeamDrawer team={editTeamTarget} onClose={() => setEditTeamTarget(null)} />}
+      {editTeamTarget   && <EditTeamDrawer team={editTeamTarget.team} center={editTeamTarget.center} onClose={() => setEditTeamTarget(null)} onSave={(patch) => handleSaveTeam(editTeamTarget.team.id, patch)} />}
+      {teamSaveToast && (
+        <Toast
+          mode="success"
+          message="Changes saved"
+          onClose={() => setTeamSaveToast(false)}
+        />
+      )}
       {newTeamCenter    && <NewTeamDrawer center={newTeamCenter} onClose={() => setNewTeamCenter(null)} />}
       {newUserContext   && (
         <NewUserDrawer
@@ -1024,21 +1042,27 @@ function UsersTab({ center, onSelectUser }) {
   }, [filterOpen]);
 
   const allUsers = useMemo(() => {
-    const result = [];
+    const map = new Map();
     teams.forEach(team => {
       const userIds = new Set(team.users ?? []);
       const profIds = new Set(team.professionalIds ?? []);
       USERS_POOL.forEach(u => {
-        if (userIds.has(u.id)) result.push({ user: u, team, role: profIds.has(u.id) ? 'Professional' : 'User' });
+        if (!userIds.has(u.id)) return;
+        const role = profIds.has(u.id) ? 'Professional' : 'User';
+        if (!map.has(u.id)) {
+          map.set(u.id, { user: u, teams: [team], role });
+        } else {
+          map.get(u.id).teams.push(team);
+        }
       });
     });
-    return result;
+    return Array.from(map.values());
   }, [teams]);
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     return allUsers.filter(({ user, role }) => {
-      if (filters.role.size > 0 && !filters.role.has(role)) return false;
+      if (filters.role.size   > 0 && !filters.role.has(role))       return false;
       if (filters.status.size > 0 && !filters.status.has(user.status)) return false;
       if (q && !user.name.toLowerCase().includes(q) && !user.email.toLowerCase().includes(q)) return false;
       return true;
@@ -1138,14 +1162,15 @@ function UsersTab({ center, onSelectUser }) {
             <span className={`${styles.teamCol} ${styles.teamColName}`}>Name</span>
             <span className={`${styles.teamCol} ${styles.teamColStatus}`}>Status</span>
             <span className={`${styles.teamCol} ${styles.teamColDate}`}>Date Added</span>
+            <span className={`${styles.teamCol} ${styles.teamColTeam}`}>Team</span>
             <span className={`${styles.teamCol} ${styles.teamColSpacer}`} />
             <span className={`${styles.teamCol} ${styles.teamColActions}`} />
           </div>
-          {pageUsers.map(({ user, team, role }) => (
+          {pageUsers.map(({ user, teams, role }) => (
             <button
               key={user.id}
               className={styles.teamTableRow}
-              onClick={() => onSelectUser(user, team)}
+              onClick={() => onSelectUser(user, teams[0])}
             >
               <div className={`${styles.teamCol} ${styles.teamColName}`}>
                 <div className={styles.memberAvatar}>{user.name.charAt(0)}</div>
@@ -1159,6 +1184,11 @@ function UsersTab({ center, onSelectUser }) {
               </div>
               <div className={`${styles.teamCol} ${styles.teamColDate}`}>
                 <span className={styles.dateText}>{user.dateAdded ?? '—'}</span>
+              </div>
+              <div className={`${styles.teamCol} ${styles.teamColTeam}`}>
+                {teams.length > 1
+                  ? <span className={styles.teamNamePill}>{teams.length} teams</span>
+                  : <span className={styles.teamNamePill}>{teams[0]?.name ?? '—'}</span>}
               </div>
               <div className={`${styles.teamCol} ${styles.teamColSpacer}`} />
               <div
@@ -1199,12 +1229,15 @@ function UsersTab({ center, onSelectUser }) {
 
 const TEAM_PAGE_SIZE = 10;
 
-function TeamCard({ team, center, org, onBack, onSelectUser, onNewUser, isMobile = false }) {
+function TeamCard({ team, center, org, onBack, onSelectUser, onNewUser, onEdit, isMobile = false }) {
   const [search, setSearch]         = useState('');
+  const [filters, setFilters]       = useState({ role: new Set(), status: new Set() });
+  const [filterOpen, setFilterOpen] = useState(false);
   const [page, setPage]             = useState(1);
   const [openMenuId, setOpenMenuId] = useState(null);
   const [editUserTarget, setEditUserTarget] = useState(null);
-  const menuRefs = useRef({});
+  const menuRefs   = useRef({});
+  const filterRef  = useRef(null);
 
   useEffect(() => {
     if (!openMenuId) return;
@@ -1216,6 +1249,15 @@ function TeamCard({ team, center, org, onBack, onSelectUser, onNewUser, isMobile
     return () => document.removeEventListener('mousedown', handleClick);
   }, [openMenuId]);
 
+  useEffect(() => {
+    if (!filterOpen) return;
+    function handleClick(e) {
+      if (filterRef.current && !filterRef.current.contains(e.target)) setFilterOpen(false);
+    }
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [filterOpen]);
+
   const allMembers = useMemo(() => {
     const userIds = new Set(team.users ?? []);
     const profIds = new Set(team.professionalIds ?? []);
@@ -1224,13 +1266,28 @@ function TeamCard({ team, center, org, onBack, onSelectUser, onNewUser, isMobile
       .map(u => ({ ...u, role: profIds.has(u.id) ? 'Professional' : 'User' }));
   }, [team]);
 
+  function toggleFilter(group, value) {
+    setFilters(prev => {
+      const next = new Set(prev[group]);
+      next.has(value) ? next.delete(value) : next.add(value);
+      return { ...prev, [group]: next };
+    });
+    setPage(1);
+  }
+
+  function clearFilters() { setFilters({ role: new Set(), status: new Set() }); setPage(1); }
+
+  const activeFilterCount = filters.role.size + filters.status.size;
+
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    if (!q) return allMembers;
-    return allMembers.filter(m =>
-      m.name.toLowerCase().includes(q) || m.email.toLowerCase().includes(q)
-    );
-  }, [allMembers, search]);
+    return allMembers.filter(m => {
+      if (q && !m.name.toLowerCase().includes(q) && !m.email.toLowerCase().includes(q)) return false;
+      if (filters.role.size   > 0 && !filters.role.has(m.role))     return false;
+      if (filters.status.size > 0 && !filters.status.has(m.status)) return false;
+      return true;
+    });
+  }, [allMembers, search, filters]);
 
   const totalPages  = Math.max(1, Math.ceil(filtered.length / TEAM_PAGE_SIZE));
   const safePage    = Math.min(page, totalPages);
@@ -1239,7 +1296,7 @@ function TeamCard({ team, center, org, onBack, onSelectUser, onNewUser, isMobile
   function handleSearch(val) { setSearch(val); setPage(1); }
 
   return (
-    <div className={styles.centerCard}>
+    <div className={`${styles.centerCard} ${styles.teamCard}`}>
 
       {/* ── Fixed header ── */}
       <div className={styles.innerHeader}>
@@ -1270,7 +1327,7 @@ function TeamCard({ team, center, org, onBack, onSelectUser, onNewUser, isMobile
             <IconButton aria-label="New User" tooltip="New User" onClick={onNewUser}>
               <IconPlus size={16} />
             </IconButton>
-            <IconButton aria-label="Team settings" tooltip="Settings">
+            <IconButton aria-label="Team settings" tooltip="Settings" onClick={onEdit}>
               <IconSettings size={16} />
             </IconButton>
             <IconButton aria-label="Delete team" tooltip="Delete" variant="danger">
@@ -1291,7 +1348,51 @@ function TeamCard({ team, center, org, onBack, onSelectUser, onNewUser, isMobile
             onChange={e => handleSearch(e.target.value)}
             onClear={() => handleSearch('')}
           />
-          <ToolbarButton icon={<IconFilter size={16} />}>Filters</ToolbarButton>
+          <div className={styles.filterWrap} ref={filterRef}>
+            <ToolbarButton
+              icon={<IconFilter size={16} />}
+              selected={activeFilterCount > 0}
+              onClick={() => setFilterOpen(v => !v)}
+            >
+              Filters
+              {activeFilterCount > 0 && <span className={styles.filterBadge}>{activeFilterCount}</span>}
+            </ToolbarButton>
+            {filterOpen && (
+              <div className={styles.filterDropdown}>
+                <div className={styles.filterSection}>
+                  <p className={styles.filterSectionLabel}>Role</p>
+                  {[{ v: 'Professional', label: 'Professional' }, { v: 'User', label: 'User' }].map(({ v, label }) => (
+                    <label key={v} className={`${styles.filterOption} ${filters.role.has(v) ? styles.filterOptionChecked : ''}`}>
+                      <input type="checkbox" className={styles.nativeCheck} checked={filters.role.has(v)} onChange={() => toggleFilter('role', v)} />
+                      <span className={styles.checkBox}>
+                        <svg width="10" height="8" viewBox="0 0 10 8" fill="none" className={styles.checkMark} aria-hidden="true">
+                          <path d="M1 3.5L3.5 6.5L9 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </span>
+                      <span className={styles.optionLabel}>{label}</span>
+                    </label>
+                  ))}
+                </div>
+                <div className={styles.filterSection}>
+                  <p className={styles.filterSectionLabel}>Status</p>
+                  {[{ v: 'active', label: 'Active' }, { v: 'inactive', label: 'Inactive' }].map(({ v, label }) => (
+                    <label key={v} className={`${styles.filterOption} ${filters.status.has(v) ? styles.filterOptionChecked : ''}`}>
+                      <input type="checkbox" className={styles.nativeCheck} checked={filters.status.has(v)} onChange={() => toggleFilter('status', v)} />
+                      <span className={styles.checkBox}>
+                        <svg width="10" height="8" viewBox="0 0 10 8" fill="none" className={styles.checkMark} aria-hidden="true">
+                          <path d="M1 3.5L3.5 6.5L9 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </span>
+                      <span className={styles.optionLabel}>{label}</span>
+                    </label>
+                  ))}
+                </div>
+                {activeFilterCount > 0 && (
+                  <button className={styles.clearFilters} onClick={clearFilters}>Clear filters</button>
+                )}
+              </div>
+            )}
+          </div>
         </div>
 
         {allMembers.length === 0 ? (
@@ -1304,6 +1405,7 @@ function TeamCard({ team, center, org, onBack, onSelectUser, onNewUser, isMobile
             <div className={styles.teamTableHead}>
               <span className={`${styles.teamCol} ${styles.teamColName}`}>Member</span>
               <span className={`${styles.teamCol} ${styles.teamColStatus}`}>Status</span>
+              {team.pin && <span className={`${styles.teamCol} ${styles.teamColPin}`}>PIN</span>}
               <span className={`${styles.teamCol} ${styles.teamColActions}`} />
             </div>
             {pageMembers.map(member => {
@@ -1311,7 +1413,7 @@ function TeamCard({ team, center, org, onBack, onSelectUser, onNewUser, isMobile
               return (
                 <div
                   key={member.id}
-                  className={styles.teamTableRow}
+                  className={`${styles.teamTableRow}${isOpen ? ` ${styles.menuOpen}` : ''}`}
                   role="button"
                   tabIndex={0}
                   onClick={() => onSelectUser(member)}
@@ -1327,6 +1429,11 @@ function TeamCard({ team, center, org, onBack, onSelectUser, onNewUser, isMobile
                   <div className={`${styles.teamCol} ${styles.teamColStatus}`}>
                     <Tag status={member.status} />
                   </div>
+                  {team.pin && (
+                    <div className={`${styles.teamCol} ${styles.teamColPin}`}>
+                      <span className={styles.pinBadge}>ON</span>
+                    </div>
+                  )}
                   <div
                     className={`${styles.teamCol} ${styles.teamColActions}`}
                     ref={el => { menuRefs.current[member.id] = el; }}
@@ -1499,7 +1606,7 @@ function UserCard({ user, team, backLabel, onBack, isMobile = false }) {
 
 // ─── Main component ───────────────────────────────────────
 
-export default function OrgDetailV2({ org, onBack, initialCenter, initialTeam, initialUser, isMobile = false }) {
+export default function OrgDetailV2({ org, onBack, initialCenter, initialTeam, initialUser, isMobile = false, isCenterAdmin = false }) {
   const [showEditDrawer, setShowEditDrawer]   = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -1507,52 +1614,63 @@ export default function OrgDetailV2({ org, onBack, initialCenter, initialTeam, i
     <div className={styles.container}>
 
       {/* ── Header card ── */}
-      <div className={styles.headerCard}>
-
-        <div className={styles.headerInner}>
-
-          <button className={styles.backBtn} onClick={onBack}>
-            <span className={styles.backIcon}><ArrowLeftIcon /></span>
-            <span className={styles.backLabel}>Back</span>
-          </button>
-
-          <div className={styles.orgRow}>
+      {isCenterAdmin ? (
+        <div className={styles.headerCard}>
+          <div className={styles.headerInner}>
             <div className={styles.orgLeft}>
               <div className={styles.orgAvatar}>{org.name.charAt(0)}</div>
               <div className={styles.orgMeta}>
                 <h1 className={styles.orgName}>{org.name}</h1>
-                <div className={styles.orgSubtitle}>
-                  <span>{org.segments}</span>
-                  <span className={styles.separator}>|</span>
-                  <div className={styles.statusBadge}>
-                    <div className={`${styles.statusDot} ${styles[org.status]}`} />
-                    <span>{org.status === 'active' ? 'Active' : 'Inactive'}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className={styles.headerCard}>
+          <div className={styles.headerInner}>
+
+            <button className={styles.backBtn} onClick={onBack}>
+              <span className={styles.backIcon}><ArrowLeftIcon /></span>
+              <span className={styles.backLabel}>Back</span>
+            </button>
+
+            <div className={styles.orgRow}>
+              <div className={styles.orgLeft}>
+                <div className={styles.orgAvatar}>{org.name.charAt(0)}</div>
+                <div className={styles.orgMeta}>
+                  <h1 className={styles.orgName}>{org.name}</h1>
+                  <div className={styles.orgSubtitle}>
+                    <span>{org.segments}</span>
+                    <span className={styles.separator}>|</span>
+                    <div className={styles.statusBadge}>
+                      <div className={`${styles.statusDot} ${styles[org.status]}`} />
+                      <span>{org.status === 'active' ? 'Active' : 'Inactive'}</span>
+                    </div>
                   </div>
                 </div>
               </div>
+              <div className={styles.orgActions}>
+                <IconButton aria-label="Configuración" tooltip="Settings" onClick={() => setShowEditDrawer(true)}>
+                  <IconSettings size={16} />
+                </IconButton>
+                <IconButton aria-label="Eliminar organización" tooltip="Delete" variant="danger" onClick={() => setShowDeleteModal(true)}>
+                  <IconTrash size={16} />
+                </IconButton>
+              </div>
             </div>
-            <div className={styles.orgActions}>
-              <IconButton aria-label="Configuración" tooltip="Settings" onClick={() => setShowEditDrawer(true)}>
-                <IconSettings size={16} />
-              </IconButton>
-              <IconButton aria-label="Eliminar organización" tooltip="Delete" variant="danger" onClick={() => setShowDeleteModal(true)}>
-                <IconTrash size={16} />
-              </IconButton>
-            </div>
-          </div>
 
-          <div className={styles.metadata}>
-            <div className={`${styles.metaItem} ${styles.metaItemTooltip}`} data-tooltip="Primary contact">
-              <IconUserFilled size={14} /><span>{org.contact}</span>
+            <div className={styles.metadata}>
+              <div className={`${styles.metaItem} ${styles.metaItemTooltip}`} data-tooltip="Primary contact">
+                <IconUserFilled size={14} /><span>{org.contact}</span>
+              </div>
+              <div className={styles.metaItem}><IconMailFilled size={14} /><span>{org.email}</span></div>
+              <div className={styles.metaItem}><IconPhoneFilled size={14} /><span>{org.phone}</span></div>
+              <div className={styles.metaItem}><IconLocationFilled size={14} /><span>{org.fiscal}</span></div>
             </div>
-            <div className={styles.metaItem}><IconMailFilled size={14} /><span>{org.email}</span></div>
-            <div className={styles.metaItem}><IconPhoneFilled size={14} /><span>{org.phone}</span></div>
-            <div className={styles.metaItem}><IconLocationFilled size={14} /><span>{org.fiscal}</span></div>
-          </div>
 
+          </div>
         </div>
-
-      </div>
+      )}
 
       {/* ── Content card ── */}
       <div className={styles.contentCard}>

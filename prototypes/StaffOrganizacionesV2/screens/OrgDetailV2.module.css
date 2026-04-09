@@ -1151,6 +1151,16 @@
   flex-direction: column;
 }
 
+/* En TeamCard el scroll lo maneja el panel padre, no teamContent */
+.teamCard {
+  overflow: visible;
+}
+
+.teamCard .teamContent {
+  overflow: visible;
+  flex: none;
+}
+
 /* ── Toolbar: search + count ── */
 
 .teamToolbar {
@@ -1215,7 +1225,9 @@
 }
 
 .teamTableRow:hover::before { opacity: 1; }
+.teamTableRow:hover { z-index: 1; }
 .teamTableRow:last-child { border-bottom: none; }
+.teamTableRow.menuOpen { z-index: 1; }
 
 .teamTableRow:focus-visible {
   outline: 2px solid var(--color-action-primary-bg);
@@ -1724,6 +1736,12 @@
   justify-content: center;
 }
 
+.membersTab .teamColPin {
+  width: 72px;
+  flex: 0 0 72px;
+  justify-content: center;
+}
+
 .membersTab .teamColActions {
   flex: 1;
   width: auto;
@@ -2219,4 +2237,13 @@
 
 .unitReplaceBtn:hover {
   opacity: 0.9;
+}
+
+/* ── PIN badge in members table ── */
+
+.pinBadge {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-subtle);
 }

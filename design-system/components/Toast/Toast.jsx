@@ -11,15 +11,20 @@ import styles from './Toast.module.css';
  * @param {number}   duration  - Ms antes de auto-cerrar. 0 = sin auto-cierre. Default: 4000
  * @param {'success'|'critic'} mode - Variante visual. Default: 'success'
  */
-export default function Toast({ message, onClose, onUndo, duration = 4000, mode = 'success' }) {
+export default function Toast({ message, onClose, onUndo, duration = 4000, delay = 0, mode = 'success' }) {
   useEffect(() => {
     if (!duration) return;
-    const timer = setTimeout(onClose, duration);
+    const timer = setTimeout(onClose, duration + delay);
     return () => clearTimeout(timer);
-  }, [duration, onClose]);
+  }, [duration, delay, onClose]);
 
   return (
-    <div className={styles.toast} role="status" aria-live="polite">
+    <div
+      className={styles.toast}
+      role="status"
+      aria-live="polite"
+      style={delay ? { animationDelay: `${delay}ms`, animationFillMode: 'both' } : undefined}
+    >
 
       <div className={`${styles.iconWrap} ${mode === 'success' ? styles.iconWrapSuccess : styles.iconWrapCritic}`}>
         {mode === 'critic'
