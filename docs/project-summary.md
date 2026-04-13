@@ -600,45 +600,61 @@ Duración: ~25 min + preguntas. **19 diapositivas principales.**
 3. `npm run storybook` → http://localhost:6006 para inspeccionar componentes en aislamiento
 4. V2 en producción: https://vanegu1tas.github.io/kamleon-proto/prototype-v2/
 
-## Estado al 2026-04-01
+## Estado al 2026-04-13
 
-### Design System — completo
-Todos los componentes implementados incluyendo FilterPanel. Storybook con stories para todos los componentes (incluidos IconButton y ToolbarButton). 4 iconos outline nuevos (Power/File/Resend/Recover). Archivos Code Connect (.figma.jsx + figma.config.json) listos pero bloqueados por permisos en el workspace del cliente.
+### Account details — completo ✅
+- `AccountDetails.jsx` — view mode con secciones Account / Security
+- `EditAccountDrawer` — "Add picture" turquoise-30 · Delete account (rojo, 14px, alineado) · campos alineados con padding-left 12px
+- `ChangePasswordDrawer` — 3 campos Current/New/Confirm · DS Input
+- `ChangePinDrawer` — 4 dígitos · boxes 47×36px radius-s · Current PIN siempre visible · ojo sin borde · ancho 350px
+- `DeleteOrgModal` reutilizado con `label="account"` para confirmar borrado
+- Avatar menu en topbar V2 implementado (Staff vs Centro Admin)
 
-### Responsive V2 — estado actual
-- **768px**: shell + OrgDetailV2 implementados. Pendiente: drawers (NewCenterDrawer, NewOrgDrawer, EditOrgDrawer, etc.)
-- **390px**: implementado en CSS. Pendiente verificación visual en browser.
+### Responsive — estado actual ✅
+- **≤768px**: todos los drawers full-screen (inset 0, sin border-radius) · body scrollable con header sticky · footer en flujo (no se tapa con teclado) · fieldRow apilado a 1 columna
+- **≤390px**: topbar — logo pasa a la izquierda junto al hamburger (89px) · columnas de stats ocultas en tabla
+- Footer de todos los drawers: `padding: 16px 24px` (simétrico)
+
+### Login — build independiente ✅
+- `prototypes/Login/` — flujo completo (SignIn → WorkspaceSelector, Forgot → CheckInbox → ResetPassword, SignUp paso 1+2)
+- Build separado: `vite.config.login.js` + `index-login.html` + `main-login.jsx`
+- Deploy: `gh-pages/prototype-login/` — entrada 03 en landing
+- Landing reordenada: V1 · V2 · Login · Storybook · Docs
+
+### Modelo de datos — nuevo concepto ⚠️
+- **Free users**: usuarios sin org que usan Kamleon en instalaciones públicas. No estaban contemplados en el modelo.
+- **Solución acordada**: perfil agnostico por usuario (identity-first). La persona existe independientemente de sus membresías (0..N).
+- `SearchPalette` actual tiene 3 bugs pendientes: free users no aparecen, subtítulo muestra ruta al equipo, navegación apunta a org-detail en vez de perfil agnostico.
+- **Pendiente**: wireframe Figma del perfil agnostico (Daniel lo pasa el 2026-04-14) → implementar pantalla + corregir búsqueda.
 
 ### Figma — capturas en Web App (`sklnDzfw72Z1tDM46vkTGl`)
-- Nodo `3268:2` — Org list desktop (2026-03-18)
-- Nodo `3271:2` — Org list 390px (2026-03-18)
-- Nodo `3274:2` — Center Detail 390px / Training Ground · Astonia FC (2026-03-18)
+- Nodo `3268:2` — Org list desktop
+- Nodo `3271:2` — Org list 390px
+- Nodo `3274:2` — Center Detail 390px / Training Ground · Astonia FC
 - Nodo `3471:43434` — Units global view
+- Nodo `3887:40882` — Edit account drawer
+- Nodo `3887:41103` — Set new PIN drawer
+- Nodo `3937:48981` — Topbar 390px (hamburger + logo izquierda)
 
-## Próximos pasos sugeridos
+## Próximos pasos
+
+### Inmediatos
+- [ ] **Perfil agnostico de usuario** — wireframe Figma pendiente · incluye: datos personales + membresías (0..N) + terms consent + status · free users sin membresías
+- [ ] **SearchPalette** — corregir tras implementar perfil agnostico: incluir free users, subtítulo → email, navegación → `user-profile`
 
 ### Design System
-- [x] IconButton — story añadida
-- [x] ToolbarButton — story añadida
 - [ ] **FilterPanel** — story pendiente
-- [ ] Code Connect mappings completos *(bloqueado: Daniel necesita rol Admin en team del cliente para publicar)*
+- [ ] Code Connect mappings *(bloqueado: permisos en workspace del cliente)*
 - [ ] Storybook Foundations: páginas MDX para tokens (Colors, Typography, Radius)
 
-### Pruebas de usuario
-- [x] Guión V1 — 8 tareas (navegación, filtros, creación)
-- [x] Guión V2 — 3 tareas (master-detail, add user manually, ⌘K)
-- [ ] Ejecutar pruebas con participantes reales
-
 ### V2 — pendientes
-- [x] Units tab en CenterCard — implementado con Tag DS + FilterPanel
-- [x] UnitsGlobalView — tabla 15 units, OrgPillSelect+CenterPillSelect, expandible
-- [x] Empty states — CenterCard sin teams, TeamCard sin users
-- [ ] **Drawers responsive 768px** — NewCenterDrawer, NewOrgDrawer, EditOrgDrawer, etc.
 - [ ] **Panel Admin de Centro** — prototipo separado (no existe aún)
+- [ ] Drawers responsive 390px — verificación visual en browser
+- [ ] Responsive drawers con contenido largo (NewCenterDrawer, EditCenterDrawer) — revisar scroll en mobile
 
 ### Docs / definición
 - [ ] Lista de permisos del Admin de Centro restringido
 - [ ] Qué campos puede editar el Admin CTR sobre su propio centro
 - [ ] Dashboard/home o entrada directa a lista
 - [ ] Flujo de onboarding de nueva organización
-- [ ] Flujo de activación de cuenta de admin de centro
+- [ ] Flujo de activación de cuenta de admin de centro recién creado
