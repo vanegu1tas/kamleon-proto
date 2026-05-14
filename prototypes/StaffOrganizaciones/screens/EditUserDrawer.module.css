@@ -346,7 +346,7 @@
   margin-top: auto;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 768px) {
   .drawer {
     top: 0;
     right: 0;

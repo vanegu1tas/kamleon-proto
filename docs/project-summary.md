@@ -523,6 +523,11 @@ Nodos relevantes:
 - [ ] Flujo de onboarding de nueva organización
 - [ ] Flujo de activación de cuenta de admin de centro recién creado
 
+### Pendientes de diseño / prototipo (2026-04-22)
+- [ ] **Perfil agnóstico de usuario** — wireframes Figma listos (explorations en nodos 4369:4970 y 4369:4973 · Web App). Implementar prototipo cuando Daniel confirme layout final. Jerarquía membership card: org(12px M subtle) → rol(14px M strong) → centro(12px M subtle) → equipo(12px Book subtle). Opciones D/E/F de layout pendientes de decidir en Figma.
+- [ ] **Units — crear unit** — botón "+ Assign to organization" en formulario · expandible con × · campos mínimos pendientes de confirmar · tab historial: "Sensor history"
+- [ ] **SearchPalette** — corregir tras perfil agnóstico: free users visibles, subtítulo → email, nav → user-profile
+
 ---
 
 ---

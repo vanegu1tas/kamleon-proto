@@ -3,6 +3,8 @@ import styles from './SignIn.module.css';
 import Input from '../../../design-system/components/Input/Input';
 import Button from '../../../design-system/components/Button/Button';
 import Toast from '../../../design-system/components/Toast/Toast';
+import loginImage from '../assets/Login_1.png';
+import LogoKamleon from '../../../design-system/icons/LogoKamleon';
 
 export default function SignIn({ onNavigate, animPhase = '', toast = '', onDismissToast }) {
   const [email, setEmail] = useState('');
@@ -59,8 +61,15 @@ export default function SignIn({ onNavigate, animPhase = '', toast = '', onDismi
         </div>
       </div>
 
-      {/* Image placeholder — right side */}
-      <div className={styles.imageBox} />
+      {/* Image panel — right side */}
+      <div className={styles.imageBox}>
+        <img src={loginImage} className={styles.bgImage} alt="" />
+        <div className={styles.overlay} />
+        <div className={styles.overlayLogo}>
+          <LogoKamleon color="white" width={117} height={16} />
+        </div>
+        <p className={styles.overlayTitle}>Accelerate the recovery process</p>
+      </div>
 
     </div>
   );

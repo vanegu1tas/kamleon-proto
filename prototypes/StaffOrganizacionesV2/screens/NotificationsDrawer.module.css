@@ -1,0 +1,284 @@
+/* ─── Overlay ─────────────────────────────────────────── */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.25);
+  z-index: 300;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ─── Panel ───────────────────────────────────────────── */
+
+.drawer {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  bottom: 12px;
+  width: 420px;
+  max-width: calc(100% - 24px);
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-m);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), -8px 0 32px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: slideIn 0.28s ease-out;
+  will-change: transform;
+}
+
+@keyframes slideIn {
+  0%   { transform: translateX(100%); }
+  70%  { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
+}
+
+/* ─── Header ──────────────────────────────────────────── */
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 16px 17px 24px;
+  border-bottom: 1px solid var(--color-border-default);
+  flex-shrink: 0;
+}
+
+.title {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-24);
+  font-weight: var(--font-weight-medium);
+  line-height: normal;
+  color: var(--color-text-strong);
+  margin: 0;
+}
+
+/* ─── Body ────────────────────────────────────────────── */
+
+.body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* ─── Group ───────────────────────────────────────────── */
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.groupLabel {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+  line-height: 15px;
+}
+
+.groupNotifications {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ─── Notification item ───────────────────────────────── */
+
+.notif {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ─── Notification row (avatar + dot + content) ───────── */
+
+.notifRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+/* ─── Avatar ──────────────────────────────────────────── */
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+}
+
+/* ─── Unread dot ──────────────────────────────────────── */
+
+.dotWrap {
+  display: flex;
+  align-items: flex-start;
+  padding-top: 5px;
+  flex-shrink: 0;
+}
+
+.dot {
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.dotUnread { background: var(--color-red-65); }
+.dotRead   { background: transparent; }
+
+/* ─── Content ─────────────────────────────────────────── */
+
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+/* ─── Message text ────────────────────────────────────── */
+
+.message {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  line-height: 17.5px;
+  margin: 0;
+}
+
+.msgName   { font-weight: var(--font-weight-medium); color: var(--color-text-strong); }
+.msgAction { font-weight: var(--font-weight-book);   color: var(--color-text-subtle); }
+.msgTarget { font-weight: var(--font-weight-medium); color: var(--color-text-strong); }
+
+/* ─── Checkbox row ────────────────────────────────────── */
+
+.checkRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.nativeCheck {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.checkBox {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  border: 1.5px solid var(--color-border-default);
+  border-radius: 4px;
+  background: var(--color-bg-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.nativeCheck:checked + .checkBox {
+  background: var(--color-text-strong);
+  border-color: var(--color-text-strong);
+}
+
+.checkBoxError {
+  border-color: var(--color-red-65);
+}
+
+.checkLabel {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-strong);
+  line-height: 17.5px;
+  transition: color 0.15s ease;
+}
+
+.checkLabelError {
+  color: var(--color-red-65);
+}
+
+.checkLink {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-turquoise-30);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ─── Empty state ─────────────────────────────────────── */
+
+.empty {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.emptyText {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+  margin: 0;
+}
+
+/* ─── Shake animation ─────────────────────────────────── */
+
+@keyframes shake {
+  0%   { transform: translateX(0); }
+  20%  { transform: translateX(-5px); }
+  40%  { transform: translateX(5px); }
+  60%  { transform: translateX(-3px); }
+  80%  { transform: translateX(3px); }
+  100% { transform: translateX(0); }
+}
+
+.shake {
+  animation: shake 0.35s ease-out;
+}
+
+/* ─── Action buttons ──────────────────────────────────── */
+
+.actions {
+  display: flex;
+  gap: 12px;
+  padding-left: 44px;
+}
+
+.declineBtn {
+  flex: 1;
+  background: var(--color-bg-surface-raised);
+  border: none;
+  border-radius: var(--radius-l);
+  padding: 8px 16px;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-strong);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.declineBtn:hover {
+  background: var(--color-bg-surface-subtle);
+}

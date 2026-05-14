@@ -29,6 +29,7 @@ import EditOrgDrawer  from '../StaffOrganizaciones/screens/EditOrgDrawer';
 import { ORGS, getUserCountForOrg, getUserCountForCenter, getProfessionalCountForCenter, getActiveTeamCount } from '../StaffOrganizaciones/mockData';
 import { IconFilter, IconEdit, IconPlus, IconTrash, IconSearch, IconBell, IconMenu, IconCheckCircle } from '../../design-system/icons/outline';
 import SearchPalette from './components/SearchPalette';
+import NotificationsDrawer from './screens/NotificationsDrawer';
 import ToolbarButton from '../../design-system/components/ToolbarButton/ToolbarButton';
 import ContextMenu from '../../design-system/components/ContextMenu/ContextMenu';
 import Toast from '../../design-system/components/Toast/Toast';
@@ -151,6 +152,7 @@ export default function StaffOrganizacionesV2({ initialOrgId, initialCenterId, r
   const [showPersonal, setShowPersonal] = useState(false);
   const [showAvatarMenu, setShowAvatarMenu] = useState(false);
   const avatarMenuRef = useRef(null);
+  const [showNotifications, setShowNotifications] = useState(false);
 
   const currentScreen = navStack[navStack.length - 1];
   const [slideDirection, setSlideDirection] = useState('forward');
@@ -378,7 +380,7 @@ export default function StaffOrganizacionesV2({ initialOrgId, initialCenterId, r
               <span className={styles.searchTriggerText}>Search</span>
               <span className={styles.searchTriggerKbd}>⌘K</span>
             </button>
-            <button className={styles.notifBtn}>
+            <button className={styles.notifBtn} onClick={() => setShowNotifications(true)}>
               <IconBell size={20} />
               <span className={styles.notifDot} />
             </button>
@@ -812,6 +814,7 @@ export default function StaffOrganizacionesV2({ initialOrgId, initialCenterId, r
       {deleteOrgTarget    && <DeleteOrgModal  org={deleteOrgTarget} onClose={() => setDeleteOrgTarget(null)} />}
       {newCenterOrg2      && <NewCenterDrawer org={newCenterOrg2}  onClose={() => setNewCenterOrg2(null)} />}
       {showPalette && <SearchPalette onClose={() => setShowPalette(false)} onNavigate={navigate} />}
+      {showNotifications && <NotificationsDrawer onClose={() => setShowNotifications(false)} />}
 
       {toast && (
         <div className={styles.toastWrap}>

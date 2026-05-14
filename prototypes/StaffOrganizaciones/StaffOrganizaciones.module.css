@@ -1422,6 +1422,26 @@
 
 @media (max-width: 390px) {
 
+  /* Logo sale del flujo absoluto y se coloca junto al hamburger */
+  .topbar {
+    justify-content: flex-start;
+    gap: 16px;
+  }
+
+  .topbarLogo {
+    position: static;
+    transform: none;
+  }
+
+  .topbarLogo svg {
+    width: 89px;
+    height: auto;
+  }
+
+  .topbarRight {
+    margin-left: auto;
+  }
+
   .content {
     padding: 16px 16px 48px;
   }
