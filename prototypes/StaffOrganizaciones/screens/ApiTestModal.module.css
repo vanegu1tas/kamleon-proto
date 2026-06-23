@@ -1,0 +1,249 @@
+/* ─── Overlay ─────────────────────────────────────────── */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.15s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ─── Modal ───────────────────────────────────────────── */
+
+.modal {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-m);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), 0 8px 32px rgba(0, 0, 0, 0.1);
+  width: 860px;
+  max-width: calc(100% - 32px);
+  max-height: calc(100vh - 48px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: scaleIn 0.30s ease-out;
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Header ──────────────────────────────────────────── */
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 16px 17px 24px;
+  border-bottom: 1px solid var(--color-border-default);
+  flex-shrink: 0;
+}
+
+.title {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-24);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+  margin: 0;
+}
+
+/* ─── Body ────────────────────────────────────────────── */
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px 24px 32px;
+  overflow-y: auto;
+}
+
+/* ─── Overline section label ──────────────────────────── */
+
+.overline {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  line-height: normal;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--color-text-subtle);
+  padding-left: 12px;
+}
+
+/* ─── Setting row ─────────────────────────────────────── */
+
+.settingRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-xs);
+  padding: 12px 16px 12px 12px;
+}
+
+.settingInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.settingLabel {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-strong);
+}
+
+.settingDesc {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  color: var(--color-text-subtle);
+}
+
+/* ─── Field ───────────────────────────────────────────── */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.fieldLabel {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-strong);
+  padding-left: 12px;
+}
+
+.input {
+  width: 100%;
+  height: 36px;
+  background: var(--color-bg-surface-subtle);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-l);
+  padding: 0 13px;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  color: var(--color-text-strong);
+  outline: none;
+  transition: border-color 0.15s ease;
+  box-sizing: border-box;
+}
+
+.input::placeholder { color: var(--color-text-placeholder); }
+.input:focus        { border-color: var(--color-border-focus); }
+
+/* ─── Input with icon button ──────────────────────────── */
+
+.inputWithBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.inputWithBtn .input {
+  flex: 1;
+}
+
+.iconBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  color: var(--color-text-subtle);
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.iconBtn:hover {
+  border-color: var(--color-border-strong);
+  color: var(--color-text-strong);
+}
+
+/* ─── Two-column form row ─────────────────────────────── */
+
+.formRow {
+  display: flex;
+  gap: 24px;
+}
+
+.formRow > * {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ─── Date row ────────────────────────────────────────── */
+
+.dateRow {
+  display: flex;
+  align-items: flex-end;
+  gap: 24px;
+}
+
+.dateFields {
+  display: flex;
+  gap: 24px;
+  flex: 1;
+  min-width: 0;
+}
+
+.dateInputWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.dateInputWrap .input {
+  padding-right: 36px;
+}
+
+.calendarIcon {
+  position: absolute;
+  right: 10px;
+  pointer-events: none;
+  color: var(--color-text-subtle);
+  display: flex;
+  align-items: center;
+}
+
+/* ─── Responsive ──────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .modal {
+    width: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 0;
+    margin: 0;
+    align-self: flex-end;
+  }
+
+  .formRow,
+  .dateFields {
+    flex-direction: column;
+  }
+
+  .dateRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

@@ -228,7 +228,8 @@ kamleon/
 │   │       ├── EditCenterDrawer.jsx        ✅ drawer edición centro
 │   │       ├── EditTeamDrawer.jsx          ✅ drawer edición equipo · estructura corregida vs Figma · Save con Toast "Changes saved" · onSave(patch) actualiza selectedTeam
 │       └── EditAccountDrawer.jsx       ✅ drawer edición perfil · Email disabled · Date of birth DD/MM/YYYY (3 inputs) · Gender en sección Account · Height+Weight en sección Measurements · onChange con DS Input pasa string directo (no evento)
-│   │       ├── EditOrgDrawer.jsx           ✅ drawer edición org · Status + Integrations
+│   │       ├── EditOrgDrawer.jsx           ✅ drawer edición org · Status + Integrations · "Run Test" → ApiTestModal (drawer exit + modal enter + return)
+│   │       ├── ApiTestModal.jsx            ✅ modal API Test · Select org/team/user · Enable API toggle · API Token + copy · Average toggle · Start/End date · Get measures
 │   │       └── EditUserDrawer.jsx          ✅ drawer edición usuario · Name/Email/Phone/Birthday/Gender/Height/Weight · Status/RFID/PIN toggles
 │   ├── Login/                  ✅ prototipo flujo de registro (URL: ?proto=login)
 │   │   ├── Login.jsx           ✅ router interno · lifted state SignUp · animaciones slide+scale · logo fijo
@@ -604,6 +605,77 @@ Duración: ~25 min + preguntas. **19 diapositivas principales.**
 2. `npm run prototype` → http://localhost:5173 (V1 por defecto; editar `index.html` para V2)
 3. `npm run storybook` → http://localhost:6006 para inspeccionar componentes en aislamiento
 4. V2 en producción: https://vanegu1tas.github.io/kamleon-proto/prototype-v2/
+
+## Estado al 2026-06-15
+
+### Scrapp — Explorations 1, 2 y 3 completas ✅
+Tres variantes de visualización del score de hidratación para la pantalla física 1280×800px.
+
+**Arquitectura compartida (`scrapp/main.jsx`)**
+- Selector de exploración (menú hamburger top-left) + panel de control (score slider + Play)
+- RAF con `ease = Math.sin(p * Math.PI / 2)` para todas las exploraciones
+- Estados: `animAngle` (E1), `animX` (E2), `animRot` (E3), `glowZoneIdx`, `textStage`
+- textStage: `null` → `'you-are'` (solo E1) → `'full'`. En E2/E3 salta directo a `'full'` 400ms tras fin de animación
+- A p=0.85 se dispara `glowZoneIdx` → resalta zona activa + glow de fondo crece y cambia de color
+
+**Exploration 1** — Gauge semicircular SVG puro (`Exploration1.jsx`)
+- Aguja animada con `scoreToAngle()` · 4 zonas de color · glow radial
+
+**Exploration 2** — Barra horizontal de polígonos skewed (`Exploration2.jsx`)
+- Barra con 4 segmentos trapezioidales + indicador triangular animado con `scoreToX()`
+- `feGaussianBlur stdDeviation=16` para glow de zona activa (expandido: y="-500%" h="1100%")
+- Fondo: radialGradient r=300 (más pequeño que el círculo r=487), cy=285 (subido), escala 1.35× al seleccionar zona
+- Score grande sale hacia arriba con fade+scale(0.85) en 350ms/400ms · textos entran desde abajo con spring `cubic-bezier(0.34, 1.56, 0.64, 1)` · stagger YOU ARE (100ms) → zona (150ms)
+- Gaps entre segmentos transparentes (sin fondo oscuro)
+- "SEVERELY DEHYDRATED" → fontSize 88px (resto 111px)
+
+**Exploration 3** — Semicírculo 180° con assets Figma (`Exploration3.jsx`)
+- Assets: track housing, 4 zonas de rango, luces zona healthy, sombras, puntero
+- Puntero: pivota desde centro `(CX=643, CY=629)` a radio R_PTR=490 · posición `(CX+R·sin θ, CY-R·cos θ)` · rota `θ` grados
+- `scoreToRotation()`: mapea score a -90°..+90° proporcional a cada zona
+- HEALTHY ZONE text: SVG `<textPath>` sobre arco a R_TXT=554
+- Zona 3 (over-hydrated) = imagen de zona 0 con `scaleX(-1)`
+- Glow de fondo: mismo patrón que E2 (radialGradient + scale 1.35×)
+- Texto: mismas animaciones que E2
+- **Pendiente**: ajustes de posición/tamaño del puntero y textos tras revisión visual
+
+**Estructura de archivos scrapp**
+```
+scrapp/
+  main.jsx                    ← controlador principal (RAF, estados, menú)
+  tokens/typography.css       ← escala tipográfica para pantalla física
+  components/DeviceFrame.jsx
+  screens/
+    Exploration1.jsx + .module.css
+    Exploration2.jsx + .module.css
+    Exploration3.jsx + .module.css   ← nuevo
+```
+
+## Estado al 2026-06-11
+
+### Scrapp — estructura base ✅
+Proyecto separado dentro del mismo repo para la pantalla física sobre el urinal.
+- **Hardware**: 1280×800px · landscape · touch
+- `scrapp/` en raíz del repo con su propio entry point Vite
+- Comparte foundations con web: colors, semantic-colors, tokens (radius), fonts
+- Tipografía propia: `scrapp/tokens/typography.css` (escala 16→120px para pantalla física)
+- Comando: `npm run scrapp` → http://localhost:5174
+- Pantalla inicial: `scrapp/screens/ScoreScreen.jsx` (placeholder)
+- Config: `vite.config.scrapp.js` en raíz (root: scrapp, port: 5174)
+
+---
+
+## Estado al 2026-05-29
+
+### ApiTestModal — completo ✅
+- `ApiTestModal.jsx` — modal centrado (860px) lanzado desde el botón "Run Test" en EditOrgDrawer
+- Campos: Select organization (pre-seleccionada) · Enable API toggle · API Token + copy · Select team + Select user (cascada) · Average toggle · Start/End date · Get measures
+- Diseño desde Figma nodo `7008:41756` (Web App)
+- Patrón de transición drawer→modal→drawer sin blink: overlay del drawer permanece montado, solo cambia el contenido
+- Al volver: drawer reaparece con slideIn, acordeón Kamleon API abierto (`defaultOpen`), scroll instantáneo con `useLayoutEffect`
+- `noOverlay` prop en ApiTestModal para usarlo dentro de un overlay existente
+
+---
 
 ## Estado al 2026-04-13
 

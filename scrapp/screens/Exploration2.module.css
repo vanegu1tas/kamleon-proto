@@ -1,0 +1,17 @@
+.screen {
+  width: 1280px;
+  height: 800px;
+  background: #0b0f12;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo {
+  position: absolute;
+  bottom: 28px;
+  right: 40px;
+  opacity: 0.85;
+}

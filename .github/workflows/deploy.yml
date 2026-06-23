@@ -48,6 +48,9 @@ jobs:
           npx vite build --config vite.config.login.js --base=/kamleon-proto/prototype-login/ --outDir=gh-pages/prototype-login
           mv gh-pages/prototype-login/index-login.html gh-pages/prototype-login/index.html
 
+      - name: Build scrapp
+        run: npx vite build --config vite.config.scrapp.js --base=/kamleon-proto/scrapp/
+
       - name: Build Storybook
         run: npx storybook build --output-dir gh-pages/storybook
 

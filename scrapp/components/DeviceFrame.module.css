@@ -1,0 +1,52 @@
+.viewport {
+  width: 100vw;
+  height: 100vh;
+  background: #111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.device {
+  position: relative;
+  aspect-ratio: 1920 / 1391;
+  /* Explicit width so the div has intrinsic size; height follows from aspect-ratio */
+  width: min(92vw, 92vh * (1920 / 1391));
+}
+
+/* Screen hole: measured from the PNG (scanning from center outward)
+   hole: x=99..1823, y=77..1199 in 1920×1391 image
+   left:  99/1920  = 5.16%
+   top:   77/1391  = 5.54%
+   width: 1724/1920 = 89.79%
+   height:1122/1391 = 80.66% */
+.screen {
+  position: absolute;
+  left:   5.16%;
+  top:    5.54%;
+  width:  89.79%;
+  height: 80.66%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 0;
+}
+
+.canvas {
+  width: 1280px;
+  height: 800px;
+  flex-shrink: 0;
+  transform-origin: center center;
+}
+
+/* Frame sits on top, transparent hole lets canvas show through */
+.frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+  z-index: 1;
+}

@@ -1,0 +1,28 @@
+/**
+ * Typography Tokens — Scrapp
+ * Escala diseñada para pantalla física 1280×800, visualización a corta distancia.
+ */
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+:root {
+  --font-family-primary: 'Circular Pro', Inter, sans-serif;
+
+  /* ─── Font Size ─────────────────────────────── */
+  --font-size-16:  16px;   /* labels pequeños      */
+  --font-size-20:  20px;   /* labels               */
+  --font-size-24:  24px;   /* body                 */
+  --font-size-32:  32px;   /* subheadings          */
+  --font-size-48:  48px;   /* headings             */
+  --font-size-64:  64px;   /* valores destacados   */
+  --font-size-80:  80px;   /* score principal      */
+  --font-size-120: 120px;  /* número hero          */
+
+  /* ─── Font Weight ───────────────────────────── */
+  --font-weight-book:   400;
+  --font-weight-medium: 500;
+  --font-weight-bold:   700;
+}

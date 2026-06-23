@@ -9,6 +9,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prototype": "vite",
+    "scrapp": "vite --config vite.config.scrapp.js",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },

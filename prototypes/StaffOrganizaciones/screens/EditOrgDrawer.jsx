@@ -1,17 +1,18 @@
-import { useState } from 'react';
+import { useState, useLayoutEffect, useRef } from 'react';
 import Button from '../../../design-system/components/Button/Button';
 import { IconClose, IconChevronMiniDown, IconPlus } from '../../../design-system/icons/outline';
 import IconButton from '../../../design-system/components/IconButton/IconButton';
 import Toggle from '../../../design-system/components/Toggle/Toggle';
 import Input from '../../../design-system/components/Input/Input';
 import Dropdown from '../../../design-system/components/Dropdown/Dropdown';
+import ApiTestModal from './ApiTestModal';
 import styles from './EditOrgDrawer.module.css';
 
 const SEGMENTS = ['Sport', 'Fitness'];
 
 // ─── Kamleon API expanded content ────────────────────────
 
-function KamleonContent() {
+function KamleonContent({ onRunTest }) {
   const [enabled,   setEnabled]   = useState(true);
   const [maxTokens, setMaxTokens] = useState('0');
   const [apiToken,  setApiToken]  = useState('••••••••••••••••••••••••••••••••');
@@ -72,7 +73,7 @@ function KamleonContent() {
           <span className={styles.integrationSettingLabel}>Test API</span>
           <span className={styles.integrationSettingDesc}>Short Description</span>
         </div>
-        <button className={styles.runTestBtn} type="button">Run Test</button>
+        <button className={styles.runTestBtn} type="button" onClick={onRunTest}>Run Test</button>
       </div>
 
       {/* Tokens Consume */}
@@ -98,10 +99,10 @@ function KamleonContent() {
 
 // ─── Integration row ─────────────────────────────────────
 
-function IntegrationRow({ logo, name, children }) {
-  const [open, setOpen] = useState(false);
+function IntegrationRow({ logo, name, children, defaultOpen = false, rowRef }) {
+  const [open, setOpen] = useState(defaultOpen);
   return (
-    <div className={styles.integrationRow}>
+    <div className={styles.integrationRow} ref={rowRef}>
       <button className={styles.integrationBtn} type="button" onClick={() => setOpen(v => !v)}>
         <div className={styles.integrationLeft}>
           <div className={styles.integrationLogo}>{logo}</div>
@@ -128,6 +129,16 @@ export default function EditOrgDrawer({ org, onClose }) {
   const [phone,     setPhone]     = useState(org.phone    ?? '');
   const [addresses, setAddresses] = useState([org.fiscal  ?? org.address ?? '']);
   const [status,    setStatus]    = useState(org.status   ?? 'active');
+  const [apiTestMode,     setApiTestMode]     = useState(false);
+  const [exiting,         setExiting]         = useState(false);
+  const [returnedFromApi, setReturnedFromApi] = useState(false);
+  const kamleonRowRef = useRef(null);
+
+  useLayoutEffect(() => {
+    if (returnedFromApi && kamleonRowRef.current) {
+      kamleonRowRef.current.scrollIntoView({ block: 'start' });
+    }
+  }, [returnedFromApi]);
 
   const initial = name.trim().charAt(0).toUpperCase();
 
@@ -143,9 +154,26 @@ export default function EditOrgDrawer({ org, onClose }) {
     status  !== (org.status   ?? 'active')   ||
     addresses[0] !== (org.fiscal ?? org.address ?? '');
 
+  function handleRunTest() {
+    setExiting(true);
+    setTimeout(() => setApiTestMode(true), 240);
+  }
+
+  function handleCloseModal() {
+    setApiTestMode(false);
+    setExiting(false);
+    setReturnedFromApi(true);
+  }
+
   return (
-    <div className={styles.overlay} onMouseDown={onClose}>
-      <div className={styles.drawer} onMouseDown={e => e.stopPropagation()}>
+    <div
+      className={`${styles.overlay} ${apiTestMode ? styles.overlayCenter : ''}`}
+      onMouseDown={!exiting ? onClose : undefined}
+    >
+      {apiTestMode ? (
+        <ApiTestModal org={org} onClose={handleCloseModal} noOverlay />
+      ) : (
+      <div className={`${styles.drawer} ${exiting ? styles.drawerExiting : ''}`} onMouseDown={e => e.stopPropagation()}>
 
         {/* ── Header ── */}
         <div className={styles.header}>
@@ -277,6 +305,8 @@ export default function EditOrgDrawer({ org, onClose }) {
             <div className={styles.integrationsList}>
               <IntegrationRow
                 name="Kamleon API"
+                defaultOpen={returnedFromApi}
+                rowRef={kamleonRowRef}
                 logo={
                   <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                     <circle cx="10" cy="10" r="9" stroke="white" strokeWidth="1.5"/>
@@ -284,7 +314,7 @@ export default function EditOrgDrawer({ org, onClose }) {
                   </svg>
                 }
               >
-                <KamleonContent />
+                <KamleonContent onRunTest={handleRunTest} />
               </IntegrationRow>
               <IntegrationRow
                 name="Teamworks"
@@ -308,6 +338,7 @@ export default function EditOrgDrawer({ org, onClose }) {
         </div>
 
       </div>
+      )}
     </div>
   );
 }

@@ -8,6 +8,12 @@
   animation: fadeIn 0.2s ease-out;
 }
 
+.overlayCenter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 @keyframes fadeIn {
   from { opacity: 0; }
   to   { opacity: 1; }
@@ -36,6 +42,15 @@
   0%   { transform: translateX(100%); }
   70%  { transform: translateX(-5px); }
   100% { transform: translateX(0); }
+}
+
+.drawerExiting {
+  animation: slideOut 0.22s ease-in forwards;
+}
+
+@keyframes slideOut {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(110%); }
 }
 
 /* ─── Header ──────────────────────────────────────────── */

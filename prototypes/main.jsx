@@ -9,6 +9,7 @@ import '../design-system/tokens/tokens.css';
 import StaffOrganizaciones from './StaffOrganizaciones/StaffOrganizaciones';
 import StaffOrganizacionesV2 from './StaffOrganizacionesV2/StaffOrganizacionesV2';
 import Login from './Login/Login';
+import MyData from './MyData/MyData';
 import AccountDetails from './StaffOrganizacionesV2/screens/AccountDetails';
 import { ORGS, CENTER_ADMIN_USER } from './StaffOrganizaciones/mockData';
 
@@ -35,6 +36,7 @@ function PrototypeSelector() {
     const center = org && paramCenter ? org.centers.find(c => c.id === paramCenter) : null;
     return <StaffOrganizacionesV2 initialOrgId={paramOrgId} initialCenterId={center} />;
   }
+  if (paramProto === 'mydata') return <MyData />;
   if (paramProto === 'center-admin') {
     const centersParam = urlParams.get('centers') ? Number(urlParams.get('centers')) : 2;
     const org = ORGS.find(o => o.id === CENTER_ADMIN_USER.orgId);
@@ -45,6 +47,7 @@ function PrototypeSelector() {
   if (active === 'login') return <Login />;
   if (active === 'v1') return <StaffOrganizaciones />;
   if (active === 'v2') return <StaffOrganizacionesV2 />;
+  if (active === 'mydata') return <MyData />;
   if (active === 'center-admin') {
     const org = ORGS.find(o => o.id === CENTER_ADMIN_USER.orgId);
     const assignedCenters = org.centers.filter(c => CENTER_ADMIN_USER.centerIds.slice(0, centerAdminCenters).includes(c.id));
@@ -88,6 +91,12 @@ function PrototypeSelector() {
           <span style={cardTitle}>Staff — Master Detail</span>
           <span style={cardDesc}>Vista de ficha completa. Pensado para gestores con flujo tipo Excel.</span>
           <span style={cardTag}>V2</span>
+        </button>
+
+        <button onClick={() => setActive('mydata')} style={cardStyle}>
+          <span style={cardTitle}>My Data</span>
+          <span style={cardDesc}>Vista del End User. Última muestra, progreso semanal e historial.</span>
+          <span style={cardTag}>End User</span>
         </button>
 
         <div style={cardStyle}>

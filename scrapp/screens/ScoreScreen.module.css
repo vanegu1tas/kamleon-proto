@@ -1,0 +1,42 @@
+.screen {
+  width: 1280px;
+  height: 800px;
+  background: #0d0d0d;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.status {
+  margin-top: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.statusLabel {
+  margin: 0;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-48);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.1;
+}
+
+.statusSub {
+  margin: 0;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-20);
+  font-weight: var(--font-weight-book);
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.logo {
+  position: absolute;
+  bottom: 28px;
+  right: 36px;
+  opacity: 0.25;
+}
