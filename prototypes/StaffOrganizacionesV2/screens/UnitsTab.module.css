@@ -1,0 +1,690 @@
+/* ─── Container ──────────────────────────────────────── */
+
+.container {
+  padding: 32px 64px 48px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* Usado cuando UnitsTab vive DENTRO de un tab que ya es una card en sí misma
+   (ej. OrgDetailV2's .contentCard) — sin padding ni fondo propios, para no anidar
+   una card dentro de otra card. */
+.embeddedContainer {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.card {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-m);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+}
+
+.embeddedCard {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+/* ─── Card top section (title/description/stats/toolbar) ── */
+
+.cardTop {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.pageTitle {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-24);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-strong);
+  margin: 0 0 4px;
+}
+
+.newMenuAnchor {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.newMenu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 20;
+}
+
+.pageDescription {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+  margin: 0 0 32px;
+}
+
+/* ─── Stat cards ─────────────────────────────────────── */
+
+.statsRow {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.statCard {
+  flex: 1;
+  min-width: 175px;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-m);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 24px 25px 20px;
+}
+
+.statValue {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-24);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-strong);
+  line-height: 1.2;
+}
+
+.statLabel {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.searchBar {
+  width: 180px;
+  flex-shrink: 0;
+}
+
+.filterWrap {
+  position: relative;
+}
+
+.dropdownChevron {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  color: var(--color-text-subtle);
+}
+
+.filterBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--color-text-strong);
+  color: var(--color-text-inverse);
+  font-size: 10px;
+  font-weight: var(--font-weight-medium);
+}
+
+.filterDropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 5;
+  width: 220px;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-s);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.filterSection {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.filterSectionLabel {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-subtle);
+  text-transform: uppercase;
+  letter-spacing: 0.24px;
+  margin: 0 0 4px;
+}
+
+.filterOption {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 4px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.filterOption:hover { background: var(--color-bg-surface-subtle); }
+
+.nativeCheck { position: absolute; width: 0; height: 0; opacity: 0; }
+
+.checkBox {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  border: 1.5px solid var(--color-border-default);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg-surface);
+  transition: background 0.12s ease, border-color 0.12s ease;
+}
+
+.filterOptionChecked .checkBox {
+  background: var(--color-text-strong);
+  border-color: var(--color-text-strong);
+}
+
+.checkMark { width: 10px; height: 8px; opacity: 0; }
+.filterOptionChecked .checkMark { opacity: 1; }
+
+.optionLabel {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  color: var(--color-text-strong);
+}
+
+.clearFilters {
+  padding: 6px 4px;
+  background: none;
+  border: none;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  color: var(--color-status-error);
+  cursor: pointer;
+  text-align: left;
+}
+
+/* ─── Table ──────────────────────────────────────────── */
+
+.tableWrap {
+  padding: 0 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.tableHeader {
+  display: flex;
+  align-items: center;
+  height: 40px; /* spec Figma: componente TableCell, variante Header */
+  padding: 0 12px;
+  background: var(--color-bg-page);
+  border-radius: var(--radius-s);
+  margin-bottom: 4px;
+}
+
+.colHead {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 100%;
+  padding: 0 12px;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-subtle);
+  text-transform: uppercase;
+  letter-spacing: 0.24px;
+  background: none;
+  border: none;
+  cursor: default;
+}
+
+.sortBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font: inherit;
+  color: inherit;
+  text-transform: inherit;
+  letter-spacing: inherit;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.sortIcon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  border-radius: 4px;
+  color: var(--color-text-subtle);
+  background: transparent;
+  transition: background 0.12s ease;
+}
+
+.sortBtnActive .sortIcon {
+  background: var(--color-bg-surface-disabled);
+}
+
+.sortBtn:not(.sortBtnActive):hover .sortIcon path {
+  fill: var(--color-text-subtle) !important;
+}
+
+.sortBtn:not(.sortBtnActive):hover .sortIcon {
+  background: var(--color-bg-surface-disabled);
+}
+
+.colUnit {
+  flex: 0 0 140px;
+  width: 140px;
+  min-width: 90px;
+  justify-content: flex-start;
+}
+
+.colOrg {
+  flex: 0 0 140px;
+  width: 140px;
+  min-width: 90px;
+  justify-content: flex-start;
+  overflow: hidden;
+}
+
+.colCenter {
+  flex: 1;
+  min-width: 90px;
+  justify-content: flex-start;
+  overflow: hidden;
+}
+
+/* Org/Center names pueden ser largos ("Sobha Realty Training Centre") — se
+   truncan en una sola línea en vez de romper el alto fijo de la fila (64px). */
+.colOrg .useValue,
+.colCenter .useValue {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.colUse {
+  flex: 1;
+  min-width: 70px;
+  justify-content: center;
+}
+
+.colStatus {
+  flex: 1;
+  min-width: 70px;
+  justify-content: center;
+}
+
+.colActions {
+  flex: 0 0 56px;
+  width: 56px;
+  justify-content: center;
+}
+
+/* ── Menú "..." de Actions (Edit/Delete) — mismo patrón que .teamRowMenuAnchor
+   en OrgDetailV2.module.css ── */
+.rowMenuAnchor {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.rowMenu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  z-index: 200;
+}
+
+.tableRow {
+  display: flex;
+  align-items: center;
+  height: 64px;
+  border-bottom: 1px solid var(--color-border-default);
+  position: relative;
+  isolation: isolate;
+}
+
+.tableRow::before {
+  content: '';
+  position: absolute;
+  inset: 4px 0 5px;
+  background: var(--color-bg-surface-subtle);
+  border-radius: var(--radius-s);
+  opacity: 0;
+  transition: opacity 0.1s ease;
+  z-index: -1;
+}
+
+.tableRow:hover::before { opacity: 1; }
+.tableRow:hover { z-index: 1; }
+.tableRow:last-child { border-bottom: none; }
+
+.tableRowClickable { cursor: pointer; }
+
+.cell {
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+}
+
+.unitMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.unitId {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+}
+
+.unitCenter {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+}
+
+.useValue {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-strong);
+}
+
+/* ─── Empty state ────────────────────────────────────── */
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 64px 24px;
+}
+
+.emptyTitle {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+  margin: 0;
+}
+
+.emptySubtitle {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  color: var(--color-text-subtle);
+  margin: 0;
+}
+
+/* ─── Pagination ─────────────────────────────────────── */
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+}
+
+.paginationInfo {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  color: var(--color-text-subtle);
+}
+
+.paginationInfo strong {
+  color: var(--color-text-strong);
+  font-weight: var(--font-weight-medium);
+}
+
+.paginationBtns {
+  display: flex;
+  gap: 8px;
+}
+
+.paginationBtn {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-l);
+  padding: 6px 14px;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-strong);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.paginationBtn:hover:not(:disabled) {
+  border-color: var(--color-border-strong);
+  background: var(--color-bg-surface-subtle);
+}
+
+.paginationBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ─── Unit detail ────────────────────────────────────── */
+
+.backBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  padding: 16px 16px 12px;
+  cursor: pointer;
+  align-self: flex-start;
+}
+
+.backIcon {
+  width: 28px;
+  height: 28px;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-xs);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--color-text-strong);
+  transition: border-color 0.15s ease;
+}
+
+.backBtn:hover .backIcon {
+  border-color: var(--color-border-strong);
+}
+
+.backLabel {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+}
+
+.detailHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 12px 24px 12px 48px;
+}
+
+.detailHeading {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.detailTitle {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-20);
+  font-weight: var(--font-weight-bold);
+  line-height: 24px;
+  color: var(--color-text-strong);
+  margin: 0;
+}
+
+.detailStatus {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.statusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--color-turquoise-51);
+}
+
+.statusDotInactive {
+  background: var(--color-status-inactive);
+}
+
+.statusLabel {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-subtle);
+}
+
+.detailTabsOuter {
+  width: 100%;
+  padding: 0 16px;
+}
+
+.detailTabs {
+  width: 100%;
+  border-bottom: 1px solid var(--color-border-default);
+}
+
+.detailTabsInner {
+  width: 300px;
+}
+
+.detailBody {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  width: 100%;
+  padding: 40px;
+}
+
+.infoSection {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.infoSectionLabel {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-subtle);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin: 0;
+}
+
+.infoRow {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+.infoRowHalf {
+  display: flex;
+  width: calc(50% - 6px);
+}
+
+.infoRowFull {
+  display: flex;
+  width: 100%;
+}
+
+.infoItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1;
+  min-width: 0;
+  gap: 12px;
+  padding: 12px 16px 12px 12px;
+  background: var(--color-bg-surface-subtle);
+  border-radius: var(--radius-s);
+}
+
+.infoLabel {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+  white-space: nowrap;
+}
+
+.infoValue {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+  text-align: right;
+}
+
+.infoDescription {
+  flex: 1;
+  padding: 12px 16px;
+  background: var(--color-bg-surface-subtle);
+  border-radius: var(--radius-s);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+}
+
+.rosterEmpty {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-disabled);
+  margin: 0;
+}

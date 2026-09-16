@@ -288,6 +288,13 @@
   box-sizing: border-box;
 }
 
+.input:disabled {
+  background: var(--color-bg-surface-disabled);
+  border-color: var(--color-bg-surface-disabled);
+  color: var(--color-text-disabled);
+  cursor: not-allowed;
+}
+
 .input::placeholder { color: var(--color-text-placeholder); }
 .input:focus        { border-color: var(--color-border-focus); }
 
@@ -339,6 +346,13 @@
 }
 
 .select:focus { border-color: var(--color-border-focus); }
+
+.select:disabled {
+  background: var(--color-bg-surface-disabled);
+  border-color: var(--color-bg-surface-disabled);
+  color: var(--color-text-disabled);
+  cursor: not-allowed;
+}
 
 .selectIcon {
   position: absolute;

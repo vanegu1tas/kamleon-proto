@@ -1,0 +1,186 @@
+/* ─── Welcome modal ──────────────────────────────────── */
+
+.welcomeOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(11, 15, 18, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s ease;
+}
+
+.welcomeCard {
+  /* Mismo tamaño que en desktop (1440) también en tablet (768) — no hay una
+     versión "mobile" más chica. Solo se recorta vía max-width en viewports
+     angostos (mobile), donde 420px ya no entra con margen. */
+  width: 420px;
+  max-width: calc(100vw - 32px);
+  background: var(--color-bg-surface);
+  border-radius: var(--radius-m);
+  box-shadow: 0px 12px 32px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  animation: popIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.welcomeArt {
+  height: 160px;
+  background: linear-gradient(135deg, var(--color-bg-page) 0%, var(--color-bg-surface-subtle) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.welcomeArtCircle {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.welcomeBody {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.welcomeTitle {
+  margin: 0;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-20);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+}
+
+.welcomeText {
+  margin: 0;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  color: var(--color-text-subtle);
+  line-height: 1.5;
+}
+
+.welcomeActions {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 20px;
+}
+
+/* ─── Spotlight ──────────────────────────────────────── */
+
+.spotlightOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+}
+
+.spotlightHole {
+  position: fixed;
+  border-radius: 10px;
+  box-shadow: 0 0 0 9999px rgba(11, 15, 18, 0.55);
+  transition: top 0.25s cubic-bezier(0.16, 1, 0.3, 1), left 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              width 0.25s cubic-bezier(0.16, 1, 0.3, 1), height 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+.dimFull {
+  position: fixed;
+  inset: 0;
+  background: rgba(11, 15, 18, 0.55);
+  animation: fadeIn 0.2s ease;
+}
+
+.tooltipCard {
+  position: fixed;
+  width: 320px;
+  background: var(--color-bg-surface);
+  border-radius: var(--radius-m);
+  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.2);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: top 0.25s cubic-bezier(0.16, 1, 0.3, 1), left 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.15s ease;
+}
+
+.stepCount {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-subtle);
+}
+
+.tooltipTitle {
+  margin: 0;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+}
+
+.tooltipBody {
+  margin: 0;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  color: var(--color-text-subtle);
+  line-height: 1.5;
+}
+
+.tooltipActions {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tooltipActionsRight {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* ─── Shared link buttons ────────────────────────────── */
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-subtle);
+}
+
+.backLink:hover { color: var(--color-text-strong); }
+
+.skipLink {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  color: var(--color-text-subtle);
+}
+
+.skipLink:hover { color: var(--color-text-strong); text-decoration: underline; }
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.96) translateY(8px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}

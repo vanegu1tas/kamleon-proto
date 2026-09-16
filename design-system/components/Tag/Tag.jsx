@@ -5,6 +5,8 @@ const LABELS = {
   inactive:     'Inactive',
   professional: 'Professional',
   user:         'User',
+  pending:      'Pending',
+  expired:      'Expired',
 };
 
 // Role variants don't use a dot indicator
@@ -13,7 +15,7 @@ const NO_DOT = new Set(['professional', 'user']);
 /**
  * Tag de estado o rol.
  *
- * @param {('active'|'inactive'|'professional'|'user')} status
+ * @param {('active'|'inactive'|'professional'|'user'|'pending'|'expired')} status
  * @param {string} [label] - Override the default label text
  */
 export default function Tag({ status = 'active', label }) {

@@ -1,0 +1,19 @@
+.spin {
+  transform-origin: 300px 299.5px;
+  animation: spin 9s linear infinite;
+}
+
+.pulse {
+  transform-origin: 300px 299.5px;
+  animation: pulse 2.2s ease-in-out infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(0.96); opacity: 0.85; }
+  50%      { transform: scale(1.04); opacity: 1; }
+}

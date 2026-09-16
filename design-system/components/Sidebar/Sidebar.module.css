@@ -74,10 +74,15 @@
 .nav {
   display: flex;
   flex-direction: column;
-  gap: 32px;
   flex: 1;
-  padding: 40px 16px 32px;
+  padding: 40px 16px 16px;
   overflow-y: auto;
+}
+
+.sections {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
 }
 
 /* ─── Section ────────────────────────────────────── */
@@ -86,6 +91,194 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+/* ─── Footer: pending invites + tarjeta de usuario ─── */
+
+.footer {
+  margin-top: auto;
+  padding-top: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Card que agrupa Pending invites + tarjeta de usuario (Figma: "bottom selection") */
+.bottomCard {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-grey-11);
+  border: 1px solid var(--color-grey-25);
+  border-radius: var(--radius-s);
+  padding: 4px;
+}
+
+.pendingPill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: var(--radius-xs);
+}
+
+.pendingBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-l);
+  background: var(--color-red-65);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-white);
+}
+
+.pendingLabel {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-white);
+}
+
+.userCard {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 12px;
+  padding: 8px;
+  border: none;
+  border-radius: var(--radius-s);
+  background: none;
+  cursor: pointer;
+  text-align: left;
+  box-sizing: border-box;
+  transition: background-color 0.15s ease;
+}
+
+.userCard:hover {
+  background: var(--color-grey-25);
+}
+
+.userCard:hover .userCardRole {
+  color: var(--color-white);
+}
+
+.userCardAvatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #00c9a7, #60a5fa);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-strong);
+}
+
+.userCardInfo {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.userCardName {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+  line-height: 20px;
+  color: var(--color-white);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.userCardRole {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-book);
+  line-height: 16px;
+  color: var(--color-grey-70);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.userCardChevron {
+  display: inline-flex;
+  flex-shrink: 0;
+  color: var(--color-grey-70);
+}
+
+.userCardActive {
+  background: var(--color-grey-25);
+}
+
+.userCardActive .userCardRole {
+  color: var(--color-white);
+}
+
+/* ─── Tooltip del usuario (portal, aparece arriba con delay) ─── */
+
+.userTooltip {
+  position: fixed;
+  transform: translate(-50%, calc(-100% - 8px));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 500;
+  pointer-events: none;
+  filter: drop-shadow(0 0 2px var(--color-grey-46));
+}
+
+.userTooltipBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px;
+  border-radius: var(--radius-xs);
+  background: var(--color-black);
+  box-sizing: border-box;
+  animation: userTooltipIn 0.15s ease-out;
+}
+
+.userTooltipRole {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  line-height: 15px;
+  color: var(--color-white);
+  text-align: center;
+}
+
+.userTooltipScope {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-book);
+  line-height: 15px;
+  color: var(--color-grey-65);
+  text-align: center;
+}
+
+.userTooltipArrow {
+  width: 0;
+  height: 0;
+  margin-top: -1px;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid var(--color-black);
+  animation: userTooltipIn 0.15s ease-out;
+}
+
+@keyframes userTooltipIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .sectionLabel {
@@ -98,6 +291,236 @@
   text-transform: uppercase;
   letter-spacing: 0.6px;
   line-height: normal;
+}
+
+/* ─── Menú de cuenta (portal, click en la tarjeta de usuario) ─── */
+
+.accountMenu {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 0 12px;
+  background: var(--color-grey-11);
+  border: 1px solid var(--color-grey-25);
+  border-radius: var(--radius-s);
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0.15), 0 0 4px rgba(0, 0, 0, 0.1);
+  z-index: 500;
+  animation: userTooltipIn 0.15s ease-out;
+}
+
+.accountMenuHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 0 16px;
+}
+
+.accountMenuAvatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #00c9a7, #60a5fa);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-strong);
+}
+
+.accountMenuHeaderInfo {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.accountMenuName {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+  line-height: 17.5px;
+  color: var(--color-white);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.accountMenuRole {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-book);
+  line-height: 15px;
+  color: var(--color-grey-65);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.accountMenuDivider {
+  height: 1px;
+  background: var(--color-grey-25);
+  flex-shrink: 0;
+}
+
+.accountMenuGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  padding: 0 8px;
+}
+
+.accountMenuItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px;
+  border: none;
+  border-radius: var(--radius-xs);
+  background: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  line-height: 16px;
+  color: var(--color-white);
+  transition: background-color 0.15s ease;
+}
+
+.accountMenuItem:hover {
+  background: var(--color-grey-25);
+}
+
+.accountMenuItemRow {
+  justify-content: space-between;
+}
+
+.accountMenuItemLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chevronRight {
+  display: inline-flex;
+  flex-shrink: 0;
+  transform: rotate(-90deg);
+}
+
+.accountMenuItemActive {
+  background: var(--color-grey-25);
+}
+
+.accountMenuItemLogout {
+  color: var(--color-red-83);
+}
+
+/* ─── Submenú "Switch role" (portal, hover) ─────────── */
+
+.roleSubmenu {
+  position: fixed;
+  width: 236px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 8px 8px 12px;
+  background: var(--color-grey-11);
+  border: 1px solid var(--color-grey-25);
+  border-radius: var(--radius-s);
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0.15), 0 0 4px rgba(0, 0, 0, 0.1);
+  z-index: 500;
+  animation: userTooltipIn 0.12s ease-out;
+}
+
+.roleSubmenuItemWrap {
+  width: 100%;
+}
+
+.roleSubmenuDivider {
+  width: 100%;
+  height: 1px;
+  margin: 8px 0;
+  background: var(--color-grey-25);
+  flex-shrink: 0;
+}
+
+.roleSubmenuItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px;
+  border: none;
+  border-radius: var(--radius-xs);
+  background: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.15s ease;
+}
+
+.languageSubmenuItem {
+  justify-content: space-between;
+}
+
+.roleSubmenuItem:hover {
+  background: var(--color-grey-25);
+}
+
+.roleSubmenuAvatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #00c9a7, #60a5fa);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-strong);
+}
+
+.roleSubmenuInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.roleSubmenuLabel {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-book);
+  line-height: 15px;
+  color: var(--color-white);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.roleSubmenuScope {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-book);
+  line-height: 15px;
+  color: var(--color-grey-65);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.roleSubmenuCheck {
+  display: inline-flex;
+  flex-shrink: 0;
+  color: var(--color-turquoise-51);
 }
 
 /* ─── Tablet drawer (≤768px) ─────────────────────── */

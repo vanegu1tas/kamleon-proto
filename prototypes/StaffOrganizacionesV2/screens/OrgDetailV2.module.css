@@ -113,6 +113,14 @@
   line-height: 1.25;
 }
 
+.orgEyebrow {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-subtle);
+  line-height: 1.25;
+}
+
 .orgSubtitle {
   display: flex;
   align-items: center;
@@ -275,7 +283,6 @@
 .metaItemTooltip:hover::before,
 .metaItemTooltip:hover::after {
   opacity: 1;
-  transform: translateY(0);
 }
 
 /* ─── TabBar ─────────────────────────────────────────── */
@@ -611,6 +618,13 @@
   flex-shrink: 0;
   margin: 24px 16px 0;
   border-bottom: 1px solid var(--color-border-default);
+  overflow-x: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/old Edge */
+}
+
+.innerTabBarWrap::-webkit-scrollbar {
+  display: none; /* Chrome/Safari/WebKit — scroll sigue funcionando, solo se oculta la barra */
 }
 
 .innerTabBarInner {
@@ -857,7 +871,7 @@
   right: 0;
   z-index: 200;
   transform-origin: top right;
-  animation: menuMorph 0.28s cubic-bezier(0.34, 1.25, 0.64, 1) both;
+  animation: menuMorph 0.22s cubic-bezier(0.25, 1, 0.5, 1) both;
   will-change: transform, opacity;
 }
 
@@ -955,7 +969,7 @@
   right: 0;
   z-index: 200;
   transform-origin: top right;
-  animation: menuMorph 0.28s cubic-bezier(0.34, 1.25, 0.64, 1) both;
+  animation: menuMorph 0.22s cubic-bezier(0.25, 1, 0.5, 1) both;
   will-change: transform, opacity;
 }
 
@@ -977,6 +991,8 @@
   display: flex;
   flex-direction: column;
   gap: 40px;
+  padding: 25px;
+  overflow-y: auto;
 }
 
 .detailsSection {
@@ -1090,6 +1106,16 @@
   margin: 0;
 }
 
+/* Un escalón por debajo de .peopleSectionTitle (20px) — para subtítulos de sección dentro de
+   un tab que ya tiene su propio H3 (ej. "Pending admin invitations" dentro de "Invitations"). */
+.inviteSubsectionTitle {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+  margin: 0;
+}
+
 .peopleList {
   display: flex;
   flex-direction: column;
@@ -1115,6 +1141,145 @@
   color: var(--color-text-subtle);
   text-transform: uppercase;
   letter-spacing: 0.6px;
+}
+
+/* ─── Invitations tab ─────────────────────────────────── */
+
+.inviteEmptyText {
+  margin: 0;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  color: var(--color-text-subtle);
+}
+
+.inviteList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.inviteRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 12px;
+  background: var(--color-bg-surface-subtle);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-s);
+}
+
+.inviteRowLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.inviteRowMeta {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.inviteRowActions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.inviteComposeList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.inviteComposeRow {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.inviteInput {
+  flex: 1;
+  width: 100%;
+  height: 36px;
+  background: var(--color-bg-surface-subtle);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-l);
+  padding: 0 13px;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  color: var(--color-text-strong);
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.inviteInput::placeholder { color: var(--color-text-placeholder); }
+.inviteInput:focus        { border-color: var(--color-border-focus); }
+
+.inviteRemoveBtn {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  color: var(--color-text-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.inviteRemoveBtn:hover { color: var(--color-text-strong); }
+
+.inviteComposeActions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.inviteAddBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-turquoise-30);
+  transition: opacity 0.15s ease;
+}
+
+.inviteAddBtn:hover { opacity: 0.75; }
+
+.inviteSectionSubtitle {
+  margin: -16px 0 0;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+}
+
+.inviteRowTeam {
+  flex-shrink: 0;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-subtle);
+  padding: 2px 8px;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-s);
 }
 
 /* ─── Team card ───────────────────────────────────────── */
@@ -1276,7 +1441,10 @@
   color: var(--color-text-subtle);
   text-transform: uppercase;
   letter-spacing: 0.24px;
-  background: var(--color-bg-surface-subtle);
+  /* --color-bg-page (no --color-bg-surface-subtle) — mismo tono que ya usan
+     Admins/Invitations, Users a nivel Org y la tabla propia de Team Admin;
+     eran dos grises casi iguales (#fafafa vs #f4f5f5) pero distintos. */
+  background: var(--color-bg-page);
   padding: 12px 12px;
 }
 
@@ -1289,7 +1457,7 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: var(--color-bg-page);
+  background: var(--color-bg-surface-disabled); /* mismo criterio que .userAvatar en TeamDetail.module.css */
   border: 1px solid var(--color-border-default);
   display: flex;
   align-items: center;
@@ -1309,6 +1477,7 @@
 }
 
 .memberName {
+  display: block;
   font-family: var(--font-family-primary);
   font-size: var(--font-size-14);
   font-weight: var(--font-weight-medium);
@@ -1323,6 +1492,42 @@
   font-size: var(--font-size-12);
   font-weight: var(--font-weight-book);
   color: var(--color-text-subtle);
+}
+
+/* Tooltip blanco, sin flechita, para nombre/correo truncado por ellipsis —
+   solo se activa cuando el texto realmente se corta (ver TruncatedText.jsx,
+   que agrega data-tooltip únicamente si scrollWidth > clientWidth). Aparece
+   rápido con transición propia, sin el delay nativo de `title`. */
+.nameTooltipWrap {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.nameTooltipWrap[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: -5px;
+  left: -9px;
+  background: var(--color-bg-surface);
+  color: var(--color-text-strong);
+  border: 1px solid var(--color-border-default);
+  box-shadow: 0 4px 12px rgba(11, 15, 18, 0.12);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+  padding: 4px 8px;
+  border-radius: var(--radius-xs);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.1s ease;
+  z-index: 50;
+}
+
+.nameTooltipWrap[data-tooltip]:hover::after {
+  opacity: 1;
 }
 
 .dateText {
@@ -1379,6 +1584,11 @@
   color: var(--color-text-subtle);
 }
 
+.paginationInfo strong {
+  color: var(--color-text-strong);
+  font-weight: var(--font-weight-medium);
+}
+
 .paginationBtns {
   display: flex;
   gap: 8px;
@@ -1428,11 +1638,26 @@
 
 .usersTab .teamTable {
   padding: 0 24px;
+  overflow-x: auto;
+}
+
+/* Ocultar la scrollbar solo en dispositivos sin hover (touch) — con mouse/trackpad
+   (hover:hover) la dejamos visible, es la única pista de que hay más columnas para
+   quien no conoce el atajo de Shift+scroll o no tiene gesto de scroll horizontal. */
+@media (hover: none) {
+  .usersTab .teamTable {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/old Edge */
+  }
+
+  .usersTab .teamTable::-webkit-scrollbar {
+    display: none; /* Chrome/Safari/WebKit — scroll sigue funcionando, solo se oculta la barra */
+  }
 }
 
 .usersTab .teamTableHead {
   padding: 0;
-  height: 39px;
+  height: 40px; /* spec Figma: componente TableCell, variante Header */
   align-items: center;
 }
 
@@ -1449,13 +1674,20 @@
 /* ── usersTab: column widths ── */
 
 .usersTab .teamColName {
-  width: 240px;
-  flex: 0 0 240px;
+  flex: 1;
+  width: auto;
+  min-width: 220px;
 }
 
 .usersTab .teamColStatus {
-  width: 89px;
-  flex: 0 0 89px;
+  flex: 0 0 110px;
+  width: 110px;
+  justify-content: center;
+}
+
+.usersTab .teamColTeamWide {
+  flex: 0 0 130px;
+  width: 130px;
   justify-content: center;
 }
 
@@ -1638,7 +1870,7 @@
 
 .teamsTab .teamTableHead {
   padding: 0;
-  height: 39px;
+  height: 40px; /* spec Figma: componente TableCell, variante Header */
   align-items: center;
 }
 
@@ -1711,7 +1943,7 @@
 
 .membersTab .teamTableHead {
   padding: 0;
-  height: 39px;
+  height: 40px; /* spec Figma: componente TableCell, variante Header */
   align-items: center;
 }
 
@@ -1726,28 +1958,101 @@
 .membersTab .teamTableHead .teamCol:last-child  { border-radius: 0 var(--radius-s) var(--radius-s) 0; }
 
 .membersTab .teamColName {
-  width: 240px;
-  flex: 0 0 240px;
+  flex: 1;
+  width: auto;
+  min-width: 220px;
 }
 
 .membersTab .teamColStatus {
-  width: 89px;
-  flex: 0 0 89px;
+  width: 80px;
+  flex: 0 0 80px;
   justify-content: center;
 }
 
 .membersTab .teamColPin {
-  width: 72px;
-  flex: 0 0 72px;
+  width: 130px;
+  flex: 0 0 130px;
+  justify-content: center;
+}
+
+.membersTab .teamColScreen {
+  width: 130px;
+  flex: 0 0 130px;
   justify-content: center;
 }
 
 .membersTab .teamColActions {
-  flex: 1;
-  width: auto;
-  flex-shrink: 1;
+  flex: 0 0 104px;
+  width: 104px;
+  flex-shrink: 0;
+  gap: 8px;
   justify-content: flex-end;
 }
+
+/* ── Tooltip de info en headers de tabla (PIN/Screen) ── */
+
+.infoIconWrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  margin-left: 4px;
+  color: var(--color-text-disabled);
+  cursor: default;
+}
+
+.infoIconWrap::before,
+.infoIconWrap::after {
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.infoIconWrap:hover::before,
+.infoIconWrap:hover::after {
+  opacity: 1;
+}
+
+/* Abre hacia abajo (no hacia arriba): estos íconos viven en headers de tabla,
+   que son siempre la fila de más arriba dentro de un contenedor con scroll
+   (.tableWrap/.teamTable en mobile) — hacia arriba no hay espacio y el
+   overflow:auto del contenedor lo recorta, quedando invisible. */
+.infoIconWrap::before {
+  content: '';
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 50%;
+  border: 5px solid transparent;
+  border-bottom-color: var(--color-text-strong);
+  transform: translateX(-50%) translateY(-4px);
+}
+
+/* El cuadro se ancla al borde derecho del ícono (no centrado) — estos íconos
+   viven en las últimas columnas de la tabla (PIN/Screen/Status), cerca del
+   borde derecho del contenedor con scroll; centrado, el cuadro se salía por
+   la derecha y quedaba recortado por el mismo overflow:auto de arriba. La
+   flechita sigue centrada bajo el ícono. */
+.infoIconWrap::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: calc(100% + 12px);
+  right: -8px;
+  background: var(--color-text-strong);
+  color: var(--color-text-inverse);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  text-transform: none;
+  letter-spacing: normal;
+  white-space: normal;
+  width: 160px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  z-index: 100;
+  transform: translateY(-4px);
+}
+
+.infoIconWrap:hover::before { transform: translateX(-50%) translateY(0); }
+.infoIconWrap:hover::after  { transform: translateY(0); }
 
 .membersTab .teamTableRow {
   height: 64px;
@@ -1769,6 +2074,12 @@
   margin: -16px -20px;
   display: flex;
   flex-direction: column;
+  min-height: 0;
+}
+
+.usersViewSwitch {
+  padding: 24px 24px 20px;
+  flex-shrink: 0;
 }
 
 .teamFilterPills {
@@ -1818,6 +2129,228 @@
 .teamColTeam {
   width: 150px;
   flex-shrink: 0;
+}
+
+.teamColTeamWide {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ── Units tab (center) ── */
+
+.unitColId {
+  flex: 0 0 140px;
+  width: 140px;
+  min-width: 90px;
+}
+
+.unitColType {
+  flex: 0 0 90px;
+  width: 90px;
+  min-width: 60px;
+  justify-content: center;
+}
+
+/* Date added / Sensor usage / Total usage — comparten el espacio restante
+   por igual (spec Figma: las 3 son flex:1, ninguna fija). */
+.unitColUse {
+  flex: 1;
+  min-width: 70px;
+  justify-content: center;
+}
+
+.unitColUse .sortBtn {
+  white-space: nowrap;
+}
+
+/* ── Unit detail (mismo patrón que screens/UnitsTab.jsx) ── */
+
+.unitDetailHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 12px 24px 12px 48px;
+}
+
+.unitDetailHeading {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.unitDetailTitle {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-20);
+  font-weight: var(--font-weight-bold);
+  line-height: 24px;
+  color: var(--color-text-strong);
+  margin: 0;
+}
+
+.unitDetailStatus {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.unitStatusLabel {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-subtle);
+}
+
+.unitDetailTabsOuter {
+  width: 100%;
+  padding: 0 16px;
+}
+
+.unitDetailTabs {
+  width: 100%;
+  border-bottom: 1px solid var(--color-border-default);
+}
+
+.unitDetailTabsInner {
+  width: 300px;
+}
+
+.unitDetailBody {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  width: 100%;
+  padding: 40px;
+  overflow-y: auto;
+}
+
+.unitInfoSection {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.unitInfoSectionLabel {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-subtle);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin: 0;
+}
+
+.unitInfoRow {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+.unitInfoRowHalf {
+  display: flex;
+  width: calc(50% - 6px);
+}
+
+.unitInfoRowFull {
+  display: flex;
+  width: 100%;
+}
+
+.unitInfoItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1;
+  min-width: 0;
+  gap: 12px;
+  padding: 12px 16px 12px 12px;
+  background: var(--color-bg-surface-subtle);
+  border-radius: var(--radius-s);
+}
+
+.unitInfoLabel {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+  white-space: nowrap;
+}
+
+.unitInfoValue {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+  text-align: right;
+}
+
+.unitInfoDescription {
+  flex: 1;
+  padding: 12px 16px;
+  background: var(--color-bg-surface-subtle);
+  border-radius: var(--radius-s);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+}
+
+.unitRosterEmpty {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-disabled);
+  margin: 0;
+}
+
+/* Sort headers (mismo patrón usado en screens/UnitsTab.jsx y UsageTab.jsx) */
+
+.sortBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font: inherit;
+  color: inherit;
+  text-transform: inherit;
+  letter-spacing: inherit;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.sortIcon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  border-radius: 4px;
+  color: var(--color-text-subtle);
+  background: transparent;
+  transition: background 0.12s ease;
+}
+
+.sortBtnActive .sortIcon {
+  background: var(--color-bg-surface-disabled);
+}
+
+.sortBtn:not(.sortBtnActive):hover .sortIcon path {
+  fill: var(--color-text-subtle) !important;
+}
+
+.sortBtn:not(.sortBtnActive):hover .sortIcon {
+  background: var(--color-bg-surface-disabled);
+}
+
+/* Corrige el teamColActions flexible heredado de .teamsTab (pensado para la
+   tabla de Teams) — acá necesita ancho fijo para que header y filas alineen. */
+.teamsTab.unitsCenterTab .teamColActions {
+  flex: 0 0 40px;
+  width: 40px;
+  min-width: 0;
+  justify-content: center;
 }
 
 .teamNamePill {
@@ -1899,6 +2432,325 @@
 .permItem svg { flex-shrink: 0; }
 
 
+
+/* ─── Org-level tab bar ───────────────────────────────── */
+
+.orgTabBarWrap {
+  flex-shrink: 0;
+  padding: 0 24px;
+  border-bottom: 1px solid var(--color-border-default);
+}
+
+.orgTabBarInner {
+  max-width: 240px;
+}
+
+/* Tabs de organización — viven dentro del headerCard (Centers/Users/Details/Invitations/Units) */
+.headerTabBarWrap {
+  max-width: 366px;
+  padding: 0 16px;
+  overflow-x: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/old Edge */
+}
+
+.headerTabBarWrap::-webkit-scrollbar {
+  display: none; /* Chrome/Safari/WebKit */
+}
+
+.headerTabBarWrapWide {
+  max-width: 440px;
+}
+
+/* ─── Org users tab ───────────────────────────────────── */
+
+.orgUsersTab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.orgUsersHeading {
+  padding: 24px 24px 0;
+  flex-shrink: 0;
+}
+
+.pageTitle {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-24);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-strong);
+  margin: 0 0 4px;
+}
+
+.pageDescription {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+  margin: 0;
+}
+
+.orgUsersTab .teamToolbar {
+  padding: 32px 16px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  border-bottom: none;
+}
+
+.orgUsersSearch {
+  flex: 0 0 223px;
+  width: 223px;
+}
+
+/* ─── Invitations table (Org / Center / Team) ─────────────── */
+
+.invitationsTab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* Solo a nivel Centro: ahí la tabla vive dentro de .innerTabContent (padding 32/16/24) y
+   necesita compensarlo para llegar al borde de la card. A nivel Organización el padre es
+   .contentCard, sin padding — con este margen el título quedaba a 4px del borde (24-20)
+   y la tabla se salía 4px. */
+.invitationsBleed {
+  margin: -16px -20px;
+}
+
+/* Sin título, solo descripción: el gap description→search (32px) queda igual que antes,
+   heredado de .invitationsTab. Solo se ajusta margin-top: -32px (en vez del -16px heredado)
+   para cancelar del todo el padding-top de .innerTabContent (32px) — así el único que queda
+   es el padding-top de .orgUsersHeading (24px), el espacio correcto de tab bar a descripción. */
+.invitationsNoTitle {
+  margin-top: -32px;
+}
+
+.invitationsBody {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 0;
+  overflow: hidden;
+  /* El badge de Filters se posiciona 9px arriba del botón y quedaba cortado por este
+     overflow. `overflow: hidden` recorta en el borde del padding box, así que estos 10px
+     de padding le dan aire; el margin negativo los devuelve para no mover el layout. */
+  padding-top: 10px;
+  margin-top: -10px;
+}
+
+.invitationsTab .teamToolbar {
+  /* 16px, no 24 — Figma 12818:85146: el heading va a 24 y el resto del contenido
+     (toolbar + tabla) a 16, medido contra el borde interno de la card. */
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  border-bottom: none;
+}
+
+.invitationsSearch {
+  flex: 0 0 277px;
+  width: 277px;
+}
+
+.invitationsTab .teamTable {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: auto;
+  padding: 0 16px 16px;
+}
+
+/* La fila y el header ocupan todo el ancho de la tabla: el único padding horizontal
+   es el de cada celda (12px). Sin esto se sumaban los 20px heredados de .teamTableRow
+   y el contenido arrancaba 20px más adentro que en Figma. */
+.invitationsTab .teamTableHead,
+.invitationsTab .teamTableRow {
+  padding: 0;
+}
+
+/* 64px en Figma (12818:85146) contra los 56px fijos de .teamTableRow: la celda Recipient
+   lleva dos líneas (email + "Invited …") y con 56 el contenido no entraba. */
+.invitationsTab .teamTableRow {
+  height: auto;
+  min-height: 64px;
+}
+
+/* Ocultar la scrollbar solo en dispositivos sin hover (touch) — con mouse/trackpad
+   (hover:hover) la dejamos visible, es la única pista de que hay más columnas para
+   quien no conoce el atajo de Shift+scroll o no tiene gesto de scroll horizontal. */
+@media (hover: none) {
+  .invitationsTab .teamTable {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/old Edge */
+  }
+
+  .invitationsTab .teamTable::-webkit-scrollbar {
+    display: none; /* Chrome/Safari/WebKit — scroll sigue funcionando, solo se oculta la barra */
+  }
+}
+
+.invitationsTab .teamTableHead {
+  display: flex;
+  align-items: center;
+  height: 40px; /* spec Figma: componente TableCell, variante Header */
+  padding: 0;
+  background: var(--color-bg-page);
+  border-radius: var(--radius-s);
+  gap: 0;
+  flex-shrink: 0;
+}
+
+.invitationsTab .teamTableHead .teamCol {
+  background: transparent;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-subtle);
+  text-transform: uppercase;
+  letter-spacing: 0.24px;
+  padding: 0 12px;
+}
+
+.invitationsTab .teamTableHead .teamCol:first-child { border-radius: var(--radius-s) 0 0 var(--radius-s); }
+.invitationsTab .teamTableHead .teamCol:last-child  { border-radius: 0 var(--radius-s) var(--radius-s) 0; }
+
+.invitationsTab .teamTableRow {
+  height: 64px;
+  padding: 0;
+  width: auto;
+  cursor: default;
+}
+
+.invitationsTab .teamTableRow .teamCol {
+  padding: 12px;
+}
+
+.invitationsTab .teamColName {
+  flex: 0 1 264px;
+  min-width: 200px;
+}
+
+.inviteColType,
+.inviteColScope,
+.inviteColTeam,
+.inviteColSent,
+.inviteColStatus {
+  flex: 1 1 0;
+  min-width: 0;
+  justify-content: center;
+}
+
+.inviteColActions {
+  width: 104px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+  padding: 12px;
+}
+
+.actionPlaceholder {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+}
+
+/* Sin columnas Type/Scope (nivel Equipo): Recipient crece, Sent/Status quedan fijas
+   para no estirarse a mitad del ancho de la tabla con flex:1 equitativo. */
+.invitationsCompact .teamColName {
+  flex: 1 1 auto;
+  min-width: 140px;
+}
+
+.invitationsCompact .inviteColSent {
+  flex: 0 0 140px;
+}
+
+.invitationsCompact .inviteColStatus {
+  flex: 0 0 120px;
+}
+
+.invitationsCompose {
+  padding: 0 16px;
+  flex-shrink: 0;
+}
+
+.composeButtonGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.orgUsersTab .teamTable {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 16px 16px;
+}
+
+.orgUsersTab .teamTableHead {
+  display: flex;
+  align-items: center;
+  height: 40px; /* spec Figma: componente TableCell, variante Header */
+  padding: 0 12px;
+  background: var(--color-bg-page);
+  border-radius: var(--radius-s);
+  margin: 16px 0 4px;
+  gap: 0;
+}
+
+.orgUsersTab .teamTableHead .teamCol {
+  background: transparent;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-subtle);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.orgUsersTab .teamTableHead .teamCol:first-child { border-radius: var(--radius-s) 0 0 var(--radius-s); }
+.orgUsersTab .teamTableHead .teamCol:last-child  { border-radius: 0 var(--radius-s) var(--radius-s) 0; }
+
+.orgUsersTab .teamColName {
+  flex: 1;
+  min-width: 220px;
+}
+
+.orgUsersTab .teamColStatus {
+  width: 100px;
+  flex: 0 0 100px;
+}
+
+.orgUsersTab .teamTableRow {
+  height: 64px;
+  padding: 0;
+  width: auto;
+}
+
+.orgUsersTab .teamTableRow .teamCol {
+  padding: 12px;
+}
+
+.orgUsersTab .teamTableRow .teamColActions {
+  padding: 8px 12px;
+}
+
+.orgColCenter {
+  width: 170px;
+  flex-shrink: 0;
+}
 
 /* ═══════════════════════════════════════════════════════
    RESPONSIVE — 768px
@@ -2057,6 +2909,10 @@
     max-width: 320px;
   }
 
+  .innerTabBarInnerWide {
+    max-width: 420px;
+  }
+
   /* ── centerCard: liberar overflow para scroll de página ── */
 
   .centerCard {
@@ -2122,6 +2978,82 @@
     }
   }
 
+  /* ── Invitations table (solo Org Admin por ahora, ver responsiveTable prop):
+     el buscador se achica en vez de empujar "Filters" fuera de pantalla. ── */
+  .invitationsResponsive .invitationsSearch {
+    flex: 1 1 auto;
+    width: auto;
+    min-width: 0;
+  }
+
+  /* Spec de Figma (node 10259:219892): sin scroll horizontal ni columna sticky — layout
+     flex simple. Recipient fijo, el resto (Type/Scope/Status/Actions) se reparte el
+     espacio sobrante en partes iguales con flex:1 cada una. Todo el mecanismo anterior
+     de min-width:100%/max-content/sticky/overflow-x:auto se saca — no hace falta scroll
+     porque las columnas simplemente se angostan juntas si el espacio es chico, en vez de
+     forzar overflow. Esto también evita de raíz el scrollWidth fantasma que salía al
+     mezclar un hijo flex:1 con columnas de ancho fijo dentro de un contenedor scrolleable. */
+  .invitationsResponsive .teamTable {
+    padding: 0 24px 16px;
+    overflow-x: hidden;
+  }
+
+  .invitationsResponsive .teamColName {
+    flex: 0 0 264px;
+    width: 264px;
+    min-width: 200px;
+  }
+
+  .invitationsResponsive .inviteColType,
+  .invitationsResponsive .inviteColScope,
+  .invitationsResponsive .inviteColTeam,
+  .invitationsResponsive .inviteColSent {
+    flex: 1 1 0;
+    width: auto;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  /* Status más angosta que Type/Scope a propósito — mismo criterio que el node de Figma
+     10199:155620 (ahí Status queda ~136px contra ~231px de las columnas flex vecinas,
+     no las 4 iguales que tenía antes). El contenido (Active/Inactive/Pending) no necesita
+     tanto espacio como un email o un nombre de equipo. */
+  .invitationsResponsive .inviteColStatus {
+    flex: 0 0 120px;
+    width: 120px;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .invitationsResponsive .inviteColActions {
+    flex: 0 0 104px;
+    width: 104px;
+    justify-content: flex-end;
+  }
+
+  /* Tab Users del Centro (TeamUsersSection): mismo bug, mismo fix que .invitationsResponsive
+     arriba — la fila no se estiraba a llenar el ancho de la tabla (quedaba del tamaño exacto
+     de la suma de sus columnas, 694px, dejando 24px de hueco antes del borde real, 742px).
+     min-width:100% + flex-shrink:1 en las columnas (antes era 0, no se podían achicar) resuelve
+     los dos problemas de una. Las proporciones (292/292/158/104) ya eran las correctas —
+     casi calcan el spec de Figma 10199:155620 tal cual, no hacía falta tocarlas. */
+  .usersTab .teamTableHead,
+  .usersTab .teamTableRow {
+    width: auto;
+    min-width: 100%;
+  }
+
+  .usersTab .teamColName,
+  .usersTab .teamColTeamWide,
+  .usersTab .teamColStatus {
+    flex-shrink: 1;
+    min-width: 0;
+  }
+
+  .usersTab .teamTable {
+    overflow-x: hidden;
+  }
+
 }
 
 /* ─── Keyscreen 390px ─────────────────────────────────── */
@@ -2137,6 +3069,55 @@
   .innerTabBarInner {
     max-width: 100%;
     margin-left: 0;
+  }
+
+  .innerTabBarInnerWide {
+    width: max-content;
+    max-width: none;
+    margin-left: 0;
+  }
+
+  /* ── Overview stats: 2x2 en vez de 4 en una fila ── */
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .statBlock,
+  .statBlockClickable {
+    border-bottom: 1px solid var(--color-border-default);
+  }
+
+  .statBlock:nth-child(2),
+  .statBlockClickable:nth-child(2) {
+    border-right: none;
+  }
+
+  .statBlock:nth-last-child(-n + 2),
+  .statBlockClickable:nth-last-child(-n + 2) {
+    border-bottom: none;
+  }
+
+  /* ── Invitations: fila apila email/tag/equipo arriba, acciones abajo a la derecha ── */
+  .inviteRow {
+    flex-wrap: wrap;
+    row-gap: 8px;
+  }
+
+  .inviteRowLeft {
+    flex-wrap: wrap;
+    row-gap: 6px;
+    width: 100%;
+  }
+
+  .inviteRowMeta {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    word-break: break-all;
+  }
+
+  .inviteRowActions {
+    margin-left: auto;
   }
 
   /* ── User info: apilar verticalmente ── */
@@ -2170,10 +3151,151 @@
     padding-right: 16px;
   }
 
+  .usersViewSwitch {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  /* ── Users tab (Centro): mismo patrón que .invitationsResponsive —
+     el segmented control Team Users/Center Admins vive acá y sus tablas tienen
+     más columnas de las que entran en mobile angosto sin romperse (task #31).
+     Ojo: esto va en 390px, no en 768px — a 768 hay espacio de sobra para que
+     las columnas crezcan normal, forzar ancho fijo ahí deja un hueco vacío. ── */
+  .usersTab .teamTableHead,
+  .usersTab .teamTableRow {
+    width: max-content;
+    min-width: 100%;
+  }
+
+  .usersTab .teamColTeamWide {
+    flex: 0 0 130px;
+    width: 130px;
+    min-width: 130px;
+  }
+
+  .usersTab .teamColStatus {
+    flex: 0 0 110px;
+    width: 110px;
+    min-width: 110px;
+  }
+
+  .usersTab .teamTable {
+    /* overflow-x:auto pisa el hidden que agregué a 768px — ese quedaba filtrando para
+       acá también (los @media no son excluyentes) y bloqueaba el scroll que este
+       breakpoint sí necesita para llegar a Status/Actions. */
+    overflow-x: auto;
+    padding-left: 0;
+    margin-left: 16px;
+  }
+
+  .usersTab .teamColName {
+    flex: 0 0 190px;
+    width: 190px;
+    min-width: 190px;
+    position: sticky;
+    left: 0;
+    z-index: 1;
+  }
+
+  .usersTab .teamTableHead .teamColName {
+    background: var(--color-bg-page); /* match .teamTableHead .teamCol arriba */
+    z-index: 2;
+  }
+
+  .usersTab .teamTableRow .teamColName {
+    background: var(--color-bg-surface);
+  }
+
+  /* ── Tab Admins (Org y Centro, InvitationsTable): mismo patrón sticky+scroll que
+     .usersTab arriba — a 768px no hace falta (spec de Figma, columnas se achican bien),
+     pero a este ancho 5 columnas no entran de ninguna forma sin volverse ilegibles. La
+     regla de 768px no alcanza sola porque un @media max-width:768px sigue aplicando
+     acá también — hace falta esta específica para 390 que la pise. ── */
+  .invitationsResponsive .teamTable {
+    overflow-x: auto;
+    padding-left: 0;
+    margin-left: 16px;
+  }
+
+  .invitationsResponsive .teamTableHead,
+  .invitationsResponsive .teamTableRow {
+    width: max-content;
+    min-width: 100%;
+  }
+
+  .invitationsResponsive .inviteColType,
+  .invitationsResponsive .inviteColScope,
+  .invitationsResponsive .inviteColTeam,
+  .invitationsResponsive .inviteColSent {
+    flex: 0 0 130px;
+    width: 130px;
+    min-width: 130px;
+  }
+
+  .invitationsResponsive .inviteColStatus {
+    flex: 0 0 110px;
+    width: 110px;
+    min-width: 110px;
+  }
+
+  .invitationsResponsive .inviteColActions {
+    flex: 0 0 104px;
+    width: 104px;
+  }
+
+  .invitationsResponsive .teamColName {
+    flex: 0 0 190px;
+    width: 190px;
+    min-width: 190px;
+    position: sticky;
+    left: 0;
+    z-index: 1;
+  }
+
+  .invitationsResponsive .teamTableHead .teamColName {
+    background: var(--color-bg-page);
+    z-index: 2;
+  }
+
+  .invitationsResponsive .teamTableRow .teamColName {
+    background: var(--color-bg-surface);
+  }
+
   /* ── listPanelAddBtn: touch target mínimo 44×44px ── */
   .listPanelAddBtn {
     min-width: 44px;
     min-height: 44px;
+  }
+
+  /* ── Card header (Team/Center detail): el subtítulo "Centro · N users" se
+     partía en dos líneas con el "·" y el conteo quedando sueltos. El nombre
+     (largo variable) trunca con "...", el conteo (corto, siempre útil) nunca
+     se corta. min-width:0 en toda la cadena de flex para que el truncado
+     realmente tenga efecto en vez de forzar overflow. ── */
+  .cardHeaderLeft {
+    min-width: 0;
+  }
+
+  .cardTitleGroup {
+    min-width: 0;
+  }
+
+  .cardSubtitle {
+    flex-wrap: nowrap;
+    min-width: 0;
+  }
+
+  .cardSubtitle > span:first-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+  }
+
+  .cardSubtitle > .separator,
+  .cardSubtitle > span:last-child {
+    white-space: nowrap;
+    flex-shrink: 0;
   }
 
 }
@@ -2246,4 +3368,21 @@
   font-size: var(--font-size-12);
   font-weight: var(--font-weight-medium);
   color: var(--color-text-subtle);
+}
+
+.pinBadgeOn {
+  color: var(--color-turquoise-30);
+}
+
+/* ── Bulk actions dropdown (team members toolbar) ── */
+
+.bulkActionsWrap {
+  margin-left: auto;
+}
+
+.bulkActionsMenu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 100;
 }

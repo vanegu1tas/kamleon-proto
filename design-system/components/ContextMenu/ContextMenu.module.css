@@ -44,6 +44,17 @@
   color: var(--color-status-error);
 }
 
+/* ─── Disabled ───────────────────────────────────── */
+
+.itemDisabled {
+  color: var(--color-text-disabled);
+  cursor: not-allowed;
+}
+
+.itemDisabled:hover {
+  background: none;
+}
+
 /* ─── Icon wrapper ───────────────────────────────── */
 
 .icon {

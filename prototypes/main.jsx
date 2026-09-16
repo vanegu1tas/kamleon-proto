@@ -13,11 +13,12 @@ import MyData from './MyData/MyData';
 import AccountDetails from './StaffOrganizacionesV2/screens/AccountDetails';
 import { ORGS, CENTER_ADMIN_USER } from './StaffOrganizaciones/mockData';
 
-// URL param deep-linking: ?proto=v2&org=3&center=301
+// URL param deep-linking: ?proto=v2&org=3&center=301&role=orgAdmin
 const urlParams = new URLSearchParams(window.location.search);
 const paramProto  = urlParams.get('proto');
 const paramOrgId  = urlParams.get('org')    ? Number(urlParams.get('org'))    : null;
 const paramCenter = urlParams.get('center') ? Number(urlParams.get('center')) : null;
+const paramRole   = urlParams.get('role'); // owner | admin | editor | orgAdmin | centerAdmin | teamAdmin | endUser
 
 function PrototypeSelector() {
   const [active, setActive] = useState(null);
@@ -34,14 +35,14 @@ function PrototypeSelector() {
   if (paramProto === 'v2') {
     const org = paramOrgId ? ORGS.find(o => o.id === paramOrgId) : null;
     const center = org && paramCenter ? org.centers.find(c => c.id === paramCenter) : null;
-    return <StaffOrganizacionesV2 initialOrgId={paramOrgId} initialCenterId={center} />;
+    return <StaffOrganizacionesV2 initialOrgId={paramOrgId} initialCenterId={center} role={paramRole ?? undefined} />;
   }
   if (paramProto === 'mydata') return <MyData />;
   if (paramProto === 'center-admin') {
     const centersParam = urlParams.get('centers') ? Number(urlParams.get('centers')) : 2;
     const org = ORGS.find(o => o.id === CENTER_ADMIN_USER.orgId);
     const assignedCenters = org.centers.filter(c => CENTER_ADMIN_USER.centerIds.slice(0, centersParam).includes(c.id));
-    return <StaffOrganizacionesV2 role="center-admin" currentUser={CENTER_ADMIN_USER} assignedCenters={assignedCenters} />;
+    return <StaffOrganizacionesV2 role="centerAdmin" currentUser={CENTER_ADMIN_USER} assignedCenters={assignedCenters} />;
   }
 
   if (active === 'login') return <Login />;
@@ -51,7 +52,7 @@ function PrototypeSelector() {
   if (active === 'center-admin') {
     const org = ORGS.find(o => o.id === CENTER_ADMIN_USER.orgId);
     const assignedCenters = org.centers.filter(c => CENTER_ADMIN_USER.centerIds.slice(0, centerAdminCenters).includes(c.id));
-    return <StaffOrganizacionesV2 role="center-admin" currentUser={CENTER_ADMIN_USER} assignedCenters={assignedCenters} />;
+    return <StaffOrganizacionesV2 role="centerAdmin" currentUser={CENTER_ADMIN_USER} assignedCenters={assignedCenters} />;
   }
 
   return (

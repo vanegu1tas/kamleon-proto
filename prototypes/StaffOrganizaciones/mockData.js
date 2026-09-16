@@ -19,18 +19,18 @@
 export const USERS_POOL = [
 
   // ── Astonia FC (ids 1–12) ───────────────────────────────────────────────────
-  { id: 1,  name: 'Carlos García',    email: 'c.garcia@astoniafc.com',    phone: '+44 712 100 001', birthday: '15/06/1990', gender: 'Male',   height: '178 cm', weight: '75 kg', rfid: true,  pin: false, dateAdded: '12 Jan 2024', status: 'active'   },
-  { id: 2,  name: 'Tom Whitfield',    email: 't.whitfield@astoniafc.com', phone: '+44 712 100 002', birthday: '22/03/1995', gender: 'Male',   height: '181 cm', weight: '79 kg', rfid: true,  pin: true,  dateAdded: '03 Feb 2024', status: 'active'   },
-  { id: 3,  name: 'Jordan Hobbs',     email: 'j.hobbs@astoniafc.com',     phone: '+44 712 100 003', birthday: '07/11/1992', gender: 'Male',   height: '182 cm', weight: '82 kg', rfid: false, pin: false, dateAdded: '15 Mar 2024', status: 'inactive' },
-  { id: 4,  name: 'Ryan Patel',       email: 'r.patel@astoniafc.com',     phone: '+44 712 100 004', birthday: '30/09/1997', gender: 'Male',   height: '176 cm', weight: '74 kg', rfid: true,  pin: false, dateAdded: '28 Apr 2024', status: 'active'   },
-  { id: 5,  name: 'Kwame Asante',     email: 'k.asante@astoniafc.com',    phone: '+44 712 100 005', birthday: '12/04/1993', gender: 'Male',   height: '185 cm', weight: '84 kg', rfid: true,  pin: true,  dateAdded: '05 Jan 2024', status: 'active'   },
-  { id: 6,  name: 'Sophie Clarke',    email: 's.clarke@astoniafc.com',    phone: '+44 712 100 006', birthday: '03/08/1998', gender: 'Female', height: '165 cm', weight: '60 kg', rfid: true,  pin: false, dateAdded: '20 Feb 2024', status: 'active'   },
-  { id: 7,  name: 'Emma Davies',      email: 'e.davies@astoniafc.com',    phone: '+44 712 100 007', birthday: '19/12/1997', gender: 'Female', height: '162 cm', weight: '57 kg', rfid: false, pin: true,  dateAdded: '11 Mar 2024', status: 'active'   },
-  { id: 8,  name: 'Priya Singh',      email: 'p.singh@astoniafc.com',     phone: '+44 712 100 008', birthday: '08/07/1994', gender: 'Female', height: '168 cm', weight: '63 kg', rfid: true,  pin: true,  dateAdded: '02 Apr 2024', status: 'active'   },
-  { id: 9,  name: 'Chloe Brennan',    email: 'c.brennan@astoniafc.com',   phone: '+44 712 100 009', birthday: '25/01/1999', gender: 'Female', height: '170 cm', weight: '65 kg', rfid: false, pin: false, dateAdded: '17 May 2024', status: 'active'   },
-  { id: 10, name: 'Nia Williams',     email: 'n.williams@astoniafc.com',  phone: '+44 712 100 010', birthday: '14/09/1996', gender: 'Female', height: '163 cm', weight: '58 kg', rfid: true,  pin: false, dateAdded: '29 Jun 2024', status: 'inactive' },
-  { id: 11, name: 'Amara Diallo',     email: 'a.diallo@astoniafc.com',    phone: '+44 712 100 011', birthday: '31/05/2000', gender: 'Female', height: '167 cm', weight: '61 kg', rfid: true,  pin: true,  dateAdded: '08 Jul 2024', status: 'active'   },
-  { id: 12, name: 'Layla Hassan',     email: 'l.hassan@astoniafc.com',    phone: '+44 712 100 012', birthday: '20/02/1995', gender: 'Female', height: '161 cm', weight: '55 kg', rfid: false, pin: false, dateAdded: '14 Aug 2024', status: 'active'   },
+  { id: 1,  name: 'Carlos García',    email: 'c.garcia@astoniafc.com',    phone: '+44 712 100 001', birthday: '15/06/1990', gender: 'Male',   height: '178 cm', weight: '75 kg', rfid: true,  pin: false, visibleOnScreen: true,  dateAdded: '12 Jan 2024', status: 'active',   jerseyNumber: 8  },
+  { id: 2,  name: 'Tom Whitfield',    email: 't.whitfield@astoniafc.com', phone: '+44 712 100 002', birthday: '22/03/1995', gender: 'Male',   height: '181 cm', weight: '79 kg', rfid: true,  pin: true,  visibleOnScreen: true,  dateAdded: '03 Feb 2024', status: 'active',   jerseyNumber: 9  },
+  { id: 3,  name: 'Jordan Hobbs',     email: 'j.hobbs@astoniafc.com',     phone: '+44 712 100 003', birthday: '07/11/1992', gender: 'Male',   height: '182 cm', weight: '82 kg', rfid: false, pin: false, visibleOnScreen: false, dateAdded: '15 Mar 2024', status: 'inactive', jerseyNumber: 4  },
+  { id: 4,  name: 'Ryan Patel',       email: 'r.patel@astoniafc.com',     phone: '+44 712 100 004', birthday: '30/09/1997', gender: 'Male',   height: '176 cm', weight: '74 kg', rfid: true,  pin: false, visibleOnScreen: true,  dateAdded: '28 Apr 2024', status: 'active'   },
+  { id: 5,  name: 'Kwame Asante',     email: 'k.asante@astoniafc.com',    phone: '+44 712 100 005', birthday: '12/04/1993', gender: 'Male',   height: '185 cm', weight: '84 kg', rfid: true,  pin: true,  visibleOnScreen: true,  dateAdded: '05 Jan 2024', status: 'active',   jerseyNumber: 11 },
+  { id: 6,  name: 'Sophie Clarke',    email: 's.clarke@astoniafc.com',    phone: '+44 712 100 006', birthday: '03/08/1998', gender: 'Female', height: '165 cm', weight: '60 kg', rfid: true,  pin: false, visibleOnScreen: true,  dateAdded: '20 Feb 2024', status: 'active',   jerseyNumber: 6  },
+  { id: 7,  name: 'Emma Davies',      email: 'e.davies@astoniafc.com',    phone: '+44 712 100 007', birthday: '19/12/1997', gender: 'Female', height: '162 cm', weight: '57 kg', rfid: false, pin: true,  visibleOnScreen: true,  dateAdded: '11 Mar 2024', status: 'active',   jerseyNumber: 7  },
+  { id: 8,  name: 'Priya Singh',      email: 'p.singh@astoniafc.com',     phone: '+44 712 100 008', birthday: '08/07/1994', gender: 'Female', height: '168 cm', weight: '63 kg', rfid: true,  pin: true,  visibleOnScreen: false, dateAdded: '02 Apr 2024', status: 'active'   },
+  { id: 9,  name: 'Chloe Brennan',    email: 'c.brennan@astoniafc.com',   phone: '+44 712 100 009', birthday: '25/01/1999', gender: 'Female', height: '170 cm', weight: '65 kg', rfid: false, pin: false, visibleOnScreen: true,  dateAdded: '17 May 2024', status: 'active',   jerseyNumber: 10 },
+  { id: 10, name: 'Nia Williams',     email: 'n.williams@astoniafc.com',  phone: '+44 712 100 010', birthday: '14/09/1996', gender: 'Female', height: '163 cm', weight: '58 kg', rfid: true,  pin: false, visibleOnScreen: false, dateAdded: '29 Jun 2024', status: 'inactive', jerseyNumber: 3  },
+  { id: 11, name: 'Amara Diallo',     email: 'a.diallo@astoniafc.com',    phone: '+44 712 100 011', birthday: '31/05/2000', gender: 'Female', height: '167 cm', weight: '61 kg', rfid: true,  pin: true,  visibleOnScreen: true,  dateAdded: '08 Jul 2024', status: 'active',   jerseyNumber: 5  },
+  { id: 12, name: 'Layla Hassan',     email: 'l.hassan@astoniafc.com',    phone: '+44 712 100 012', birthday: '20/02/1995', gender: 'Female', height: '161 cm', weight: '55 kg', rfid: false, pin: false, visibleOnScreen: true,  dateAdded: '14 Aug 2024', status: 'active',   jerseyNumber: 2  },
 
   // ── Arsenal FC (ids 19–31) ─────────────────────────────────────────────────
   { id: 19, name: 'Ben White',              email: 'b.white@arsenal.com',       phone: '+44 771 100 001', birthday: '08/10/1997', gender: 'Male', height: '186 cm', weight: '80 kg', rfid: true,  pin: true,  dateAdded: '01 Sep 2024', status: 'active'   },
@@ -191,9 +191,9 @@ export const ORGS = [
           },
         ],
         units: [
-          { id: 2001, description: 'Urinal 1 — Main Entrance',  status: 'active',   display: { id: 760101, status: 'active' },   kpod: { id: 2801, status: 'active' } },
-          { id: 2002, description: 'Urinal 2 — Locker Room A',  status: 'active',   display: { id: 760102, status: 'active' },   kpod: { id: 2802, status: 'needs-replacement' } },
-          { id: 2003, description: 'Urinal 3 — Locker Room B',  status: 'inactive', display: { id: 760103, status: 'inactive' }, kpod: { id: 2803, status: 'active' } },
+          { id: 2001, description: 'Urinal 1 — Main Entrance',  status: 'active',   dailyUse: 34, totalUse: 6820, display: { id: 760101, status: 'active' },   kpod: { id: 2801, status: 'active' } },
+          { id: 2002, description: 'Urinal 2 — Locker Room A',  status: 'active',   dailyUse: 21, totalUse: 4310, display: { id: 760102, status: 'active' },   kpod: { id: 2802, status: 'needs-replacement' } },
+          { id: 2003, description: 'Urinal 3 — Locker Room B',  status: 'inactive', dailyUse: 0,  totalUse: 2190, display: { id: 760103, status: 'inactive' }, kpod: { id: 2803, status: 'active' } },
         ],
       },
     ],
@@ -203,19 +203,34 @@ export const ORGS = [
   {
     id: 3, name: 'Astonia FC', status: 'active', segments: 'Sport', units: 8,
     contact: 'Robert Keane', email: 'contact@astoniafc.com', phone: '+44 121 554 1234', fiscal: '100 Trinity Rd, Birmingham B6 6HH',
+    admins: [
+      { name: 'Jordan Hobbs', email: 'j.hobbs@astoniafc.com', phone: '+44 121 554 1234' },
+      { name: 'Amara Whitfield', email: 'a.whitfield@astoniafc.com', phone: '+44 121 554 1239', joinedAgo: '13/May/26' },
+      { name: 'Noah Fischer', email: 'n.fischer@astoniafc.com', phone: '+44 121 554 1241', joinedAgo: '13/Jul/26' },
+    ],
+    pendingInvites: [
+      { email: 'sara.diaz@astoniafc.com', sentAgo: '11/Aug/26', sentMinutesAgo: 2880 },
+    ],
     centers: [
       {
         id: 301, name: 'Training Ground', status: 'active',
         contact: 'Robert Keane',
         email: 'training@astoniafc.com', phone: '+44 121 554 1235', address: '100 Trinity Rd, Birmingham',
+        admins: [
+          { name: 'Robert Keane', email: 'r.keane@astoniafc.com', phone: '+44 121 554 1235', joinedAgo: '13/Mar/26' },
+          { name: 'Casey Reeve', email: 'c.reeve@astoniafc.com', phone: '+44 121 554 1240' },
+        ],
+        pendingInvites: [
+          { email: 'priya.shah@astoniafc.com', sentAgo: '08/Aug/26', sentMinutesAgo: 7200 },
+        ],
         teams: [
-          { id: 3011, name: 'First Team', status: 'active', pin: true, professionalIds: [13, 15], email: 'firstteam@astoniafc.com', phone: '+44 121 554 1236', address: '100 Trinity Rd, Birmingham', users: [1, 2, 3, 4, 5, 95] },
-          { id: 3012, name: 'Academy',    status: 'active', professionalIds: [17],     email: 'academy@astoniafc.com',   phone: '+44 121 554 1237', address: '100 Trinity Rd, Birmingham', users: [6, 7, 8, 95] },
+          { id: 3011, name: 'First Team', status: 'active', pin: true, professionalIds: [13, 15], email: 'firstteam@astoniafc.com', phone: '+44 121 554 1236', address: '100 Trinity Rd, Birmingham', users: [1, 2, 3, 4, 5, 95], pendingInvites: [{ email: 'marcus.oyelaran@astoniafc.com', sentAgo: '12/Aug/26', sentMinutesAgo: 1440 }], pendingProfessionalInvites: [{ email: 'n.watson@astoniafc.com', sentAgo: '11/Aug/26', sentMinutesAgo: 1600 }] },
+          { id: 3012, name: 'Academy',    status: 'active', professionalIds: [17],     email: 'academy@astoniafc.com',   phone: '+44 121 554 1237', address: '100 Trinity Rd, Birmingham', users: [6, 7, 8, 95], pendingInvites: [{ email: 'leo.fontaine@astoniafc.com', sentAgo: '13/Aug/26', sentMinutesAgo: 0 }], pendingProfessionalInvites: [{ email: 'r.delgado@astoniafc.com', sentAgo: '10/Aug/26', sentMinutesAgo: 2880 }] },
         ],
         units: [
-          { id: 3001, description: 'Urinal 1 — Main Entrance',  status: 'active',   display: { id: 767401, status: 'active' },   kpod: { id: 2941, status: 'active' } },
-          { id: 3002, description: 'Urinal 2 — Locker Room A',  status: 'active',   display: { id: 767402, status: 'active' },   kpod: { id: 2942, status: 'needs-replacement' } },
-          { id: 3003, description: 'Urinal 3 — Locker Room B',  status: 'inactive', display: { id: 767403, status: 'inactive' }, kpod: { id: 2943, status: 'active' } },
+          { id: 3001, description: 'Urinal 1 — Main Entrance',  status: 'active',   type: 'Stand', model: 'Neolith', dateAdded: '08 Jun 2026', dailyUse: 41, totalUse: 9120, sensorUsage: 39, display: { id: 767401, status: 'active' },   kpod: { id: 2941, status: 'active' } },
+          { id: 3002, description: '',                          status: 'active',   type: 'Stand', model: 'Neolith', dateAdded: '08 Jun 2026', dailyUse: 27, totalUse: 5460, sensorUsage: 25, display: { id: 767402, status: 'active' },   kpod: { id: 2942, status: 'needs-replacement' } },
+          { id: 3003, description: 'Urinal 3 — Locker Room B',  status: 'inactive',                dateAdded: '08 Jun 2026', dailyUse: 0,  totalUse: 3080, sensorUsage: 0,  display: { id: 767403, status: 'inactive' }, kpod: { id: 2943, status: 'active' } },
         ],
       },
       {
@@ -226,8 +241,8 @@ export const ORGS = [
           { id: 3021, name: 'Women\'s Team', status: 'active', professionalIds: [18], email: 'womens@astoniafc.com', phone: '+44 121 554 2001', address: '45 Broad St, Birmingham', users: [9, 10, 11, 12] },
         ],
         units: [
-          { id: 3021, description: 'Urinal 1 — Gym Floor',    status: 'active', display: { id: 767501, status: 'active' }, kpod: { id: 2951, status: 'active' } },
-          { id: 3022, description: 'Urinal 2 — Changing Room', status: 'active', display: { id: 767502, status: 'active' }, kpod: { id: 2952, status: 'active' } },
+          { id: 3021, description: 'Urinal 1 — Gym Floor',    status: 'active', type: 'Stand', model: 'Embeded', dateAdded: '15 Jul 2026', dailyUse: 18, totalUse: 3640, sensorUsage: 17, display: { id: 767501, status: 'active' }, kpod: { id: 2951, status: 'active' } },
+          { id: 3022, description: 'Urinal 2 — Changing Room', status: 'active', type: 'Stand', model: 'Embeded', dateAdded: '15 Jul 2026', dailyUse: 12, totalUse: 2510, sensorUsage: 11, display: { id: 767502, status: 'active' }, kpod: { id: 2952, status: 'active' } },
         ],
       },
     ],

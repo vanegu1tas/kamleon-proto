@@ -12,7 +12,10 @@ const SEGMENTS = ['Sport', 'Fitness'];
 
 // ─── Kamleon API expanded content ────────────────────────
 
-function KamleonContent({ onRunTest }) {
+function KamleonContent({ onRunTest, role }) {
+  const isSuperRole = role === 'owner' || role === 'admin';
+  const canEditLimits       = isSuperRole; // Max tokens: exclusivo de Owner/Admin
+  const canViewConsumption  = isSuperRole || role === 'editor';
   const [enabled,   setEnabled]   = useState(true);
   const [maxTokens, setMaxTokens] = useState('0');
   const [apiToken,  setApiToken]  = useState('••••••••••••••••••••••••••••••••');
@@ -26,28 +29,30 @@ function KamleonContent({ onRunTest }) {
           <span className={styles.integrationSettingLabel}>Enable API</span>
           <span className={styles.integrationSettingDesc}>Short Description</span>
         </div>
-        <Toggle checked={enabled} onChange={setEnabled} label={false} />
+        <Toggle checked={enabled} onChange={setEnabled} label={false} disabled={role === 'orgAdmin'} />
       </div>
 
       {/* Max tokens + API Token — stacked verticalmente */}
       <div className={styles.integrationFields}>
-        <div className={styles.field}>
-          <label className={styles.fieldLabel}>Max tokens per month</label>
-          <div className={styles.inputWithBtn}>
-            <input
-              className={styles.input}
-              value={maxTokens}
-              onChange={e => setMaxTokens(e.target.value)}
-            />
-            <IconButton aria-label="Save" tooltip="Save">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M2 2h9l3 3v9H2V2z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
-                <rect x="5" y="9" width="6" height="5" rx="0.5" stroke="currentColor" strokeWidth="1.5"/>
-                <rect x="4" y="2" width="5" height="4" rx="0.5" stroke="currentColor" strokeWidth="1.5"/>
-              </svg>
-            </IconButton>
+        {canEditLimits && (
+          <div className={styles.field}>
+            <label className={styles.fieldLabel}>Max tokens per month</label>
+            <div className={styles.inputWithBtn}>
+              <input
+                className={styles.input}
+                value={maxTokens}
+                onChange={e => setMaxTokens(e.target.value)}
+              />
+              <IconButton aria-label="Save" tooltip="Save">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M2 2h9l3 3v9H2V2z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
+                  <rect x="5" y="9" width="6" height="5" rx="0.5" stroke="currentColor" strokeWidth="1.5"/>
+                  <rect x="4" y="2" width="5" height="4" rx="0.5" stroke="currentColor" strokeWidth="1.5"/>
+                </svg>
+              </IconButton>
+            </div>
           </div>
-        </div>
+        )}
         <div className={styles.field}>
           <label className={styles.fieldLabel}>API Token</label>
           <div className={styles.inputWithBtn}>
@@ -77,21 +82,23 @@ function KamleonContent({ onRunTest }) {
       </div>
 
       {/* Tokens Consume */}
-      <div className={styles.tokensSection}>
-        <span className={styles.integrationSettingLabel}>Tokens Consume</span>
-        <div className={styles.tokensTable}>
-          <div className={styles.tokensTableHeader}>
-            <span className={styles.tokensTableCell}>Year</span>
-            <span className={styles.tokensTableCell}>Month</span>
-            <span className={styles.tokensTableCell}>Tokens</span>
-          </div>
-          <div className={styles.tokensTableRow}>
-            <span className={styles.tokensTableCell}>2026</span>
-            <span className={styles.tokensTableCell}>March</span>
-            <span className={styles.tokensTableCell}>0</span>
+      {canViewConsumption && (
+        <div className={styles.tokensSection}>
+          <span className={styles.integrationSettingLabel}>Tokens Consume</span>
+          <div className={styles.tokensTable}>
+            <div className={styles.tokensTableHeader}>
+              <span className={styles.tokensTableCell}>Year</span>
+              <span className={styles.tokensTableCell}>Month</span>
+              <span className={styles.tokensTableCell}>Tokens</span>
+            </div>
+            <div className={styles.tokensTableRow}>
+              <span className={styles.tokensTableCell}>2026</span>
+              <span className={styles.tokensTableCell}>March</span>
+              <span className={styles.tokensTableCell}>0</span>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
     </div>
   );
@@ -122,7 +129,12 @@ function IntegrationRow({ logo, name, children, defaultOpen = false, rowRef }) {
 
 // ─── Component ───────────────────────────────────────────
 
-export default function EditOrgDrawer({ org, onClose }) {
+export default function EditOrgDrawer({ org, onClose, role }) {
+  // organizations.editName/editDescription/editAddress/editEmail/editPhone/editSegment: nadie del
+  // lado cliente los tiene, ni Editor (docs/permissions.md) — exclusivo de Owner/Admin.
+  const readOnly = role !== 'owner' && role !== 'admin';
+  // organizations.editImage: exclusivo de Owner/Admin y Org Admin — ni Editor lo tiene.
+  const canEditImage = role === 'owner' || role === 'admin' || role === 'orgAdmin';
   const [name,      setName]      = useState(org.name     ?? '');
   const [segment,   setSegment]   = useState(org.segments ?? SEGMENTS[0]);
   const [email,     setEmail]     = useState(org.email    ?? '');
@@ -189,11 +201,13 @@ export default function EditOrgDrawer({ org, onClose }) {
           {/* Avatar row */}
           <div className={styles.avatarRow}>
             <div className={styles.avatar}>{initial || '?'}</div>
-            <div className={styles.avatarText}>
-              <button className={styles.changePictureBtn} type="button">{org.picture ? 'Change picture' : 'Add picture'}</button>
-              <span className={styles.avatarSep}>-</span>
-              <span className={styles.avatarOptional}>Optional</span>
-            </div>
+            {canEditImage && (
+              <div className={styles.avatarText}>
+                <button className={styles.changePictureBtn} type="button">{org.picture ? 'Change picture' : 'Add picture'}</button>
+                <span className={styles.avatarSep}>-</span>
+                <span className={styles.avatarOptional}>Optional</span>
+              </div>
+            )}
           </div>
 
           {/* Organization info */}
@@ -209,7 +223,8 @@ export default function EditOrgDrawer({ org, onClose }) {
                   placeholder="Write here..."
                   value={name}
                   onChange={setName}
-                  autoFocus
+                  autoFocus={!readOnly}
+                  disabled={readOnly}
                 />
                 <Dropdown
                   label="Segment"
@@ -217,6 +232,7 @@ export default function EditOrgDrawer({ org, onClose }) {
                   options={SEGMENTS}
                   value={segment}
                   onChange={setSegment}
+                  disabled={readOnly}
                 />
               </div>
 
@@ -228,6 +244,7 @@ export default function EditOrgDrawer({ org, onClose }) {
                   placeholder="Write here..."
                   value={email}
                   onChange={setEmail}
+                  disabled={readOnly}
                 />
                 <Input
                   label="Phone number"
@@ -235,6 +252,7 @@ export default function EditOrgDrawer({ org, onClose }) {
                   placeholder="Write here..."
                   value={phone}
                   onChange={setPhone}
+                  disabled={readOnly}
                 />
               </div>
 
@@ -251,6 +269,7 @@ export default function EditOrgDrawer({ org, onClose }) {
                         placeholder="Write your address here..."
                         value={addr}
                         onChange={e => updateAddress(i, e.target.value)}
+                        disabled={readOnly}
                       />
                     ) : (
                       <div className={styles.addressRow}>
@@ -259,6 +278,7 @@ export default function EditOrgDrawer({ org, onClose }) {
                           placeholder="Write your address here..."
                           value={addr}
                           onChange={e => updateAddress(i, e.target.value)}
+                          disabled={readOnly}
                         />
                         <button
                           className={styles.removeBtn}
@@ -272,10 +292,12 @@ export default function EditOrgDrawer({ org, onClose }) {
                     )}
                   </div>
                 ))}
-                <button className={styles.addAddressBtn} type="button" onClick={addAddress}>
-                  <IconPlus size={16} />
-                  Add new address
-                </button>
+                {!readOnly && (
+                  <button className={styles.addAddressBtn} type="button" onClick={addAddress}>
+                    <IconPlus size={16} />
+                    Add new address
+                  </button>
+                )}
               </div>
 
             </div>
@@ -285,21 +307,23 @@ export default function EditOrgDrawer({ org, onClose }) {
           <div className={styles.section}>
             <h3 className={styles.sectionTitle}>Settings</h3>
 
-            <div className={styles.field}>
-              <label className={styles.fieldLabel}>Status</label>
-              <div className={styles.selectWrap}>
-                <span className={`${styles.statusDot} ${styles[status]}`} />
-                <select
-                  className={`${styles.select} ${styles.selectWithDot}`}
-                  value={status}
-                  onChange={e => setStatus(e.target.value)}
-                >
-                  <option value="active">Active</option>
-                  <option value="inactive">Inactive</option>
-                </select>
-                <span className={styles.selectIcon}><IconChevronMiniDown size={16} /></span>
+            {!readOnly && (
+              <div className={styles.field}>
+                <label className={styles.fieldLabel}>Status</label>
+                <div className={styles.selectWrap}>
+                  <span className={`${styles.statusDot} ${styles[status]}`} />
+                  <select
+                    className={`${styles.select} ${styles.selectWithDot}`}
+                    value={status}
+                    onChange={e => setStatus(e.target.value)}
+                  >
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                  </select>
+                  <span className={styles.selectIcon}><IconChevronMiniDown size={16} /></span>
+                </div>
               </div>
-            </div>
+            )}
 
             <div className={styles.subsectionLabel}>Integrations</div>
             <div className={styles.integrationsList}>
@@ -314,7 +338,7 @@ export default function EditOrgDrawer({ org, onClose }) {
                   </svg>
                 }
               >
-                <KamleonContent onRunTest={handleRunTest} />
+                <KamleonContent onRunTest={handleRunTest} role={role} />
               </IntegrationRow>
               <IntegrationRow
                 name="Teamworks"

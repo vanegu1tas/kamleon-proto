@@ -8,10 +8,11 @@ import styles from './SegmentedControl.module.css';
  * @param {Array}    options  - Array de { label, value }
  * @param {string}   value    - Valor actualmente seleccionado
  * @param {function} onChange - Callback con el nuevo value
+ * @param {'m'|'s'}  [size='m']
  */
-export default function SegmentedControl({ options = [], value, onChange }) {
+export default function SegmentedControl({ options = [], value, onChange, size = 'm' }) {
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} ${size === 's' ? styles.sm : ''}`}>
       {options.map(opt => (
         <button
           key={opt.value}

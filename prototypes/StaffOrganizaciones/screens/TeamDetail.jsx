@@ -260,7 +260,9 @@ function UsersContent({ team, center, onNavigate }) {
 
 // ─── Component ───────────────────────────────────────────
 
-export default function TeamDetail({ team, center, onBack, onNavigate }) {
+export default function TeamDetail({ team, center, onBack, onNavigate, role }) {
+  const canGoBack     = role !== 'teamAdmin'; // Team Admin entra directo a su equipo, no hay listado al que volver
+  const canDeleteTeam = role !== 'teamAdmin'; // teams.delete: solo Center Admin, Team Admin no
   const [activeTab, setActiveTab] = useState('users');
   const [showEditDrawer, setShowEditDrawer] = useState(false);
 
@@ -270,10 +272,12 @@ export default function TeamDetail({ team, center, onBack, onNavigate }) {
       {/* ── Header card ───────────────────────────────── */}
       <div className={styles.headerCard}>
 
-        <button className={styles.backBtn} onClick={onBack}>
-          <span className={styles.backIcon}><ArrowLeftIcon /></span>
-          <span className={styles.backLabel}>Back</span>
-        </button>
+        {canGoBack && (
+          <button className={styles.backBtn} onClick={onBack}>
+            <span className={styles.backIcon}><ArrowLeftIcon /></span>
+            <span className={styles.backLabel}>Back</span>
+          </button>
+        )}
 
         <div className={styles.teamInfo}>
           <div className={styles.teamInfoLeft}>
@@ -301,9 +305,11 @@ export default function TeamDetail({ team, center, onBack, onNavigate }) {
             <IconButton aria-label="Configuración de equipo" tooltip="Settings" onClick={() => setShowEditDrawer(true)}>
               <IconSettings size={16} />
             </IconButton>
-            <IconButton aria-label="Eliminar equipo" tooltip="Delete" variant="danger">
-              <IconTrash size={16} />
-            </IconButton>
+            {canDeleteTeam && (
+              <IconButton aria-label="Eliminar equipo" tooltip="Delete" variant="danger">
+                <IconTrash size={16} />
+              </IconButton>
+            )}
           </div>
         </div>
 
@@ -347,6 +353,7 @@ export default function TeamDetail({ team, center, onBack, onNavigate }) {
         <EditTeamDrawer
           team={team}
           onClose={() => setShowEditDrawer(false)}
+          role={role}
         />
       )}
 

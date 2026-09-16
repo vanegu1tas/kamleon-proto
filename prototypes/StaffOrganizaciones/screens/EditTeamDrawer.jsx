@@ -1,19 +1,9 @@
 import { useState } from 'react';
 import Button   from '../../../design-system/components/Button/Button';
 import Input    from '../../../design-system/components/Input/Input';
-import Toggle   from '../../../design-system/components/Toggle/Toggle';
 import { IconClose, IconAddImage, IconChevronDown } from '../../../design-system/icons/outline';
 import IconButton from '../../../design-system/components/IconButton/IconButton';
 import styles from './EditTeamDrawer.module.css';
-
-function IconRegenerate() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-      <path d="M13.5 8A5.5 5.5 0 1 1 8 2.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
-      <path d="M10.5 2.5H13.5V5.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
-    </svg>
-  );
-}
 
 function StatusSelect({ value, onChange }) {
   return (
@@ -37,23 +27,18 @@ function StatusSelect({ value, onChange }) {
   );
 }
 
-export default function EditTeamDrawer({ team, center, onClose, onSave }) {
-  const [name,          setName]         = useState(team.name ?? '');
-  const [status,        setStatus]       = useState(team.status ?? 'active');
-  const [pinEnabled,    setPinEnabled]   = useState(team.pin ?? false);
-  const [confirmRegen,  setConfirmRegen] = useState(false);
+export default function EditTeamDrawer({ team, center, onClose, onSave, role }) {
+  const isClientRole = role === 'orgAdmin' || role === 'centerAdmin' || role === 'teamAdmin';
+  const [name,        setName]        = useState(team.name ?? '');
+  const [description, setDescription] = useState(team.description ?? '');
+  const [status,      setStatus]      = useState(team.status ?? 'active');
 
   const initial = name.trim().charAt(0).toUpperCase();
 
   const hasChanges =
-    name       !== (team.name ?? '') ||
-    status     !== (team.status ?? 'active') ||
-    pinEnabled !== (team.pin ?? false);
-
-  function handleRegenerate() {
-    setConfirmRegen(false);
-    // simulate PDF download
-  }
+    name        !== (team.name ?? '') ||
+    description !== (team.description ?? '') ||
+    status      !== (team.status ?? 'active');
 
   return (
     <div className={styles.overlay} onMouseDown={onClose}>
@@ -67,8 +52,8 @@ export default function EditTeamDrawer({ team, center, onClose, onSave }) {
           </IconButton>
         </div>
 
-        {/* ── Subtitle ── */}
-        {center && (
+        {/* ── Subtitle — solo tiene sentido para staff de Kamleon; un rol cliente ya sabe en qué centro está ── */}
+        {center && !isClientRole && (
           <div className={styles.subtitleRow}>
             <p className={styles.subtitle}>
               Editing Team for <strong>{center.name}</strong>
@@ -100,44 +85,13 @@ export default function EditTeamDrawer({ team, center, onClose, onSave }) {
               onChange={e => setName(e.target.value)}
               placeholder="Write here..."
             />
+            <Input
+              label="Description"
+              value={description}
+              onChange={e => setDescription(e.target.value)}
+              placeholder="Write here..."
+            />
             <StatusSelect value={status} onChange={setStatus} />
-          </div>
-
-          {/* Settings */}
-          <div className={styles.section}>
-            <h3 className={styles.sectionTitle}>Settings</h3>
-            <div className={styles.settingsList}>
-
-              <div className={styles.settingRow}>
-                <div className={styles.settingInfo}>
-                  <span className={styles.settingLabel}>Set PIN</span>
-                  <span className={styles.settingDesc}>Enabling this requires the users to enter a personal PIN to log in.</span>
-                </div>
-                <Toggle checked={pinEnabled} onChange={setPinEnabled} />
-              </div>
-
-              {!confirmRegen ? (
-                <div className={styles.settingRow}>
-                  <div className={styles.settingInfo}>
-                    <span className={styles.settingLabel}>Regenerate PIN</span>
-                    <span className={styles.settingDesc}>Regenerate PIN for all users on your team.</span>
-                  </div>
-                  <button className={styles.regenBtn} type="button" onClick={() => setConfirmRegen(true)}>
-                    <IconRegenerate />
-                    Regenerate
-                  </button>
-                </div>
-              ) : (
-                <div className={styles.regenConfirm}>
-                  <p className={styles.regenConfirmText}>All current PINs will be invalidated. A PDF will download automatically for you to distribute to each member.</p>
-                  <div className={styles.regenConfirmActions}>
-                    <button className={styles.regenCancelBtn} type="button" onClick={() => setConfirmRegen(false)}>Cancel</button>
-                    <button className={styles.regenConfirmBtn} type="button" onClick={handleRegenerate}>Confirm</button>
-                  </div>
-                </div>
-              )}
-
-            </div>
           </div>
 
         </div>
@@ -149,7 +103,7 @@ export default function EditTeamDrawer({ team, center, onClose, onSave }) {
             variant="primary"
             size="m"
             disabled={!hasChanges || !name.trim()}
-            onClick={() => { onSave({ name: name.trim(), status, pin: pinEnabled }); onClose(); }}
+            onClick={() => { onSave({ name: name.trim(), description: description.trim(), status }); onClose(); }}
           >Save</Button>
         </div>
 

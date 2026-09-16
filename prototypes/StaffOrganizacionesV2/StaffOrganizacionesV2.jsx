@@ -11,10 +11,16 @@ import {
   IconSbDrop,
   IconSbChart,
   IconSbUnit,
+  IconSbMyData,
 } from '../../design-system/icons';
 // V2-specific screens
 import OrgDetailV2      from './screens/OrgDetailV2';
+import TeamAdminHome    from './screens/TeamAdminHome';
+import UnitsTab         from './screens/UnitsTab';
+import UsageTab         from './screens/UsageTab';
 import AccountDetails   from './screens/AccountDetails';
+import OnboardingTour   from './components/OnboardingTour';
+import { hasTour }      from './components/tourSteps';
 // Shared screens from V1 (unchanged)
 import CenterDetail from '../StaffOrganizaciones/screens/CenterDetail';
 import TeamDetail   from '../StaffOrganizaciones/screens/TeamDetail';
@@ -23,8 +29,9 @@ import UserDetail   from '../StaffOrganizaciones/screens/UserDetail';
 import NewCenterGlobalDrawer from '../StaffOrganizaciones/screens/NewCenterGlobalDrawer';
 import NewCenterDrawer       from '../StaffOrganizaciones/screens/NewCenterDrawer';
 import DeleteOrgModal        from '../StaffOrganizaciones/screens/DeleteOrgModal';
-import NewOrgDrawer   from '../StaffOrganizaciones/screens/NewOrgDrawer';
-import EditOrgDrawer  from '../StaffOrganizaciones/screens/EditOrgDrawer';
+import NewOrgDrawer          from '../StaffOrganizaciones/screens/NewOrgDrawer';
+import EditOrgDrawer         from '../StaffOrganizaciones/screens/EditOrgDrawer';
+import NewUserDrawer         from '../StaffOrganizaciones/screens/NewUserDrawer';
 // Shared mock data and helpers from V1
 import { ORGS, getUserCountForOrg, getUserCountForCenter, getProfessionalCountForCenter, getActiveTeamCount } from '../StaffOrganizaciones/mockData';
 import { IconFilter, IconEdit, IconPlus, IconTrash, IconSearch, IconBell, IconMenu, IconCheckCircle } from '../../design-system/icons/outline';
@@ -33,24 +40,27 @@ import NotificationsDrawer from './screens/NotificationsDrawer';
 import ToolbarButton from '../../design-system/components/ToolbarButton/ToolbarButton';
 import ContextMenu from '../../design-system/components/ContextMenu/ContextMenu';
 import Toast from '../../design-system/components/Toast/Toast';
+import { ROLES, ROLE_ORDER, HIDDEN_NAV_ITEMS, getRolePersona, getRolePersonaScope, getAssignedCenters, getAssignedTeams, getEntryStack } from './rolePersonas';
 // Shared styles from V1 (OrgList is the same)
 import styles from '../StaffOrganizaciones/StaffOrganizaciones.module.css';
 
+// Sidebar rediseñado (Figma design system, node 2155:1987): "Center control" → "Control panel",
+// "Usage" se muda de Analytics a Management y se renombra "Unit usage".
 const NAV_SECTIONS = [
   {
     id: 'management',
     label: 'Management',
     items: [
-      { id: 'center', label: 'Center control', icon: <IconSbCenter />, active: true  },
+      { id: 'center', label: 'Control panel', icon: <IconSbCenter />, active: true  },
       { id: 'units',  label: 'Units',          icon: <IconSbUnit />,  active: false },
+      { id: 'usage',  label: 'Unit usage',     icon: <IconSbChart />, active: false },
     ],
   },
   {
     id: 'analytics',
     label: 'Analytics',
     items: [
-      { id: 'hydration', label: 'Hydration',    icon: <IconSbDrop />,  active: false },
-      { id: 'uro',       label: 'Uroflowmetry', icon: <IconSbChart />, active: false },
+      { id: 'hydration', label: 'Hydration', icon: <IconSbDrop />, active: false },
     ],
   },
 ];
@@ -60,7 +70,7 @@ const NAV_SECTIONS_PERSONAL = [
     id: 'personal',
     label: '',
     items: [
-      { id: 'mydata', label: 'My data', icon: <IconSbDrop />, active: true },
+      { id: 'mydata', label: 'My data', icon: <IconSbMyData />, active: true },
     ],
   },
 ];
@@ -104,24 +114,32 @@ function SortIcon({ col, activeCol, dir }) {
   );
 }
 
-const STAFF_USER = {
-  initials: 'DV', name: 'Daniel', surname: 'Vanegas',
-  email: 'daniel.vanegas@dna.inc', role: 'Admin',
-};
+export default function StaffOrganizacionesV2({ initialOrgId, initialCenterId, role: initialRole, currentUser: currentUserOverride, assignedCenters: assignedCentersOverride } = {}) {
+  const [role, setRoleState] = useState(() => initialRole ?? 'admin');
+  const [user, setUser] = useState(() => currentUserOverride ?? getRolePersona(role));
+  const [assignedCenters, setAssignedCenters] = useState(() => assignedCentersOverride ?? getAssignedCenters(role));
+  const [assignedTeams, setAssignedTeams] = useState(() => getAssignedTeams(role));
+  const isCenterAdmin = role === 'centerAdmin';
+  const isEndUser = role === 'endUser';
 
-export default function StaffOrganizacionesV2({ initialOrgId, initialCenterId, role, currentUser, assignedCenters } = {}) {
-  const isCenterAdmin = role === 'center-admin';
-  const user = currentUser ?? STAFF_USER;
+  function handleRoleChange(newRole) {
+    setRoleState(newRole);
+    setUser(getRolePersona(newRole));
+    setAssignedCenters(getAssignedCenters(newRole));
+    setAssignedTeams(getAssignedTeams(newRole));
+    setNavStack(getEntryStack(newRole));
+    setShowAvatarMenu(false);
+    setShowMyData(false);
+    if (isTablet) setDrawerOpen(false);
+  }
 
   const [navStack, setNavStack] = useState(() => {
-    if (isCenterAdmin) {
-      return [{ screen: 'center-admin-detail', key: 'ca', params: {} }];
-    }
-    if (initialOrgId) {
+    // Deep-link directo a una org (?org=) — solo aplica a roles con entry 'org-list'.
+    if (initialOrgId && ROLES[role]?.entry === 'org-list') {
       const org = ORGS.find(o => o.id === initialOrgId);
       if (org) return [{ screen: 'org-detail', key: org.id, params: { org, initialCenter: initialCenterId ?? null } }];
     }
-    return [{ screen: 'orgs' }];
+    return getEntryStack(role);
   });
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -140,6 +158,7 @@ export default function StaffOrganizacionesV2({ initialOrgId, initialCenterId, r
   const [showNewCenterModal, setShowNewCenterModal] = useState(false);
   const [newCenterOrg, setNewCenterOrg] = useState(null);
   const [showNewOrgDrawer, setShowNewOrgDrawer]   = useState(false);
+  const [showNewUserDrawer, setShowNewUserDrawer] = useState(false);
   const [editOrgTarget,   setEditOrgTarget]       = useState(null);
   const [deleteOrgTarget, setDeleteOrgTarget]     = useState(null);
   const [newCenterOrg2,   setNewCenterOrg2]       = useState(null);
@@ -149,9 +168,12 @@ export default function StaffOrganizacionesV2({ initialOrgId, initialCenterId, r
   const [tableSearch, setTableSearch] = useState('');
   const [toast, setToast] = useState(null);
   const [showAccount, setShowAccount] = useState(false);
-  const [showPersonal, setShowPersonal] = useState(false);
+  // "My data" (tarea #47): ahora visible para todos los roles, no solo End User — mismo placeholder,
+  // pero como toggle en vez de pantalla única (End User no tiene otra pantalla a la que volver).
+  const [showMyData, setShowMyData] = useState(false);
   const [showAvatarMenu, setShowAvatarMenu] = useState(false);
   const avatarMenuRef = useRef(null);
+  const tourRef = useRef(null);
   const [showNotifications, setShowNotifications] = useState(false);
 
   const currentScreen = navStack[navStack.length - 1];
@@ -309,18 +331,52 @@ export default function StaffOrganizacionesV2({ initialOrgId, initialCenterId, r
           collapsed={sidebarCollapsed}
           onToggle={handleSidebarToggle}
           drawerOpen={isTablet ? drawerOpen : undefined}
-          sections={showPersonal
+          user={{ ...user, scope: getRolePersonaScope(role) }}
+          roleOptions={ROLE_ORDER.map(key => ({
+            key,
+            label: ROLES[key].label,
+            scope: getRolePersonaScope(key),
+            initials: getRolePersona(key).initials,
+          }))}
+          currentRoleKey={role}
+          onRoleChange={handleRoleChange}
+          onAccountDetails={() => { setShowAccount(true); setShowMyData(false); }}
+          personalItem={isEndUser ? undefined : {
+            id: 'mydata',
+            label: 'My data',
+            icon: <IconSbMyData />,
+            active: showMyData,
+            onClick: () => { setShowAccount(false); setShowMyData(true); },
+          }}
+          sections={isEndUser
             ? NAV_SECTIONS_PERSONAL
             : NAV_SECTIONS.map(section => ({
                 ...section,
                 items: section.items
-                  .filter(item => !(isCenterAdmin && item.id === 'units'))
+                  .filter(item => !HIDDEN_NAV_ITEMS[role]?.has(item.id))
                   .map(item => ({
                     ...item,
+                    // Team Admin no administra ningún centro — "Center control" no describe
+                    // lo que ve acá (su lista de equipos), a diferencia de Center Admin.
+                    label: item.id === 'center' && role === 'teamAdmin' ? 'Teams' : item.label,
+                    active: !showMyData && (item.id === 'units'
+                      ? currentScreen.screen === 'units'
+                      : item.id === 'usage'
+                        ? currentScreen.screen === 'usage'
+                        : item.id === 'center'
+                          ? currentScreen.screen !== 'units' && currentScreen.screen !== 'usage'
+                          : item.active),
                     onClick: () => {
                       setShowAccount(false);
+                      setShowMyData(false);
                       if (item.id === 'center') {
-                        setNavStack([{ screen: isCenterAdmin ? 'center-admin-detail' : 'orgs', key: isCenterAdmin ? 'ca' : undefined, params: {} }]);
+                        setNavStack(getEntryStack(role));
+                      } else if (item.id === 'units') {
+                        setSlideDirection('forward');
+                        setNavStack([{ screen: 'units', key: 'units', params: {} }]);
+                      } else if (item.id === 'usage') {
+                        setSlideDirection('forward');
+                        setNavStack([{ screen: 'usage', key: 'usage', params: {} }]);
                       } else {
                         item.onClick?.();
                       }
@@ -402,49 +458,47 @@ export default function StaffOrganizacionesV2({ initialOrgId, initialCenterId, r
                     </div>
                   </div>
 
-                  {/* Account switcher — solo Centro Admin */}
-                  {isCenterAdmin && (
-                    <div className={styles.avatarMenuAccounts}>
+                  {/* Preview as — dev tool, no es parte de la app real: cambia de rol sin credenciales */}
+                  <span className={styles.avatarMenuEyebrow}>Preview as</span>
+                  <div className={styles.avatarMenuAccounts}>
+                    {ROLE_ORDER.map(key => (
                       <button
+                        key={key}
                         className={styles.avatarMenuAccountItem}
-                        onClick={() => { if (showPersonal) { setShowAvatarMenu(false); setShowPersonal(false); setShowAccount(false); } }}
+                        onClick={() => { if (role !== key) handleRoleChange(key); else setShowAvatarMenu(false); }}
                       >
                         <div className={styles.avatarMenuAccountLeft}>
-                          <div className={styles.avatarMenuAccountAvatar}>{user.initials}</div>
-                          <span className={styles.avatarMenuAccountLabel}>{user.role}</span>
+                          <div className={`${styles.avatarMenuAccountAvatar} ${key === 'endUser' ? styles.avatarMenuAccountAvatarPersonal : ''}`}>
+                            {getRolePersona(key).initials}
+                          </div>
+                          <span className={styles.avatarMenuAccountLabel}>{ROLES[key].label}</span>
                         </div>
-                        {!showPersonal && (
+                        {role === key && (
                           <span className={styles.avatarMenuAccountCheck}>
                             <IconCheckCircle size={16} />
                           </span>
                         )}
                       </button>
-                      <button
-                        className={styles.avatarMenuAccountItem}
-                        onClick={() => { if (!showPersonal) { setShowAvatarMenu(false); setShowPersonal(true); setShowAccount(false); } }}
-                      >
-                        <div className={styles.avatarMenuAccountLeft}>
-                          <div className={`${styles.avatarMenuAccountAvatar} ${styles.avatarMenuAccountAvatarPersonal}`}>{user.initials}</div>
-                          <span className={styles.avatarMenuAccountLabel}>Personal Account</span>
-                        </div>
-                        {showPersonal && (
-                          <span className={styles.avatarMenuAccountCheck}>
-                            <IconCheckCircle size={16} />
-                          </span>
-                        )}
-                      </button>
-                    </div>
-                  )}
+                    ))}
+                  </div>
 
                   <div className={styles.avatarMenuDivider} />
 
                   <div className={styles.avatarMenuSection}>
-                    <button className={styles.avatarMenuItem} onClick={() => { setShowAvatarMenu(false); setShowAccount(true); }}>
+                    <button className={styles.avatarMenuItem} onClick={() => { setShowAvatarMenu(false); setShowAccount(true); setShowMyData(false); }}>
                       Account details
                     </button>
                     <button className={styles.avatarMenuItem}>
                       Privacy &amp; terms
                     </button>
+                    {hasTour(role) && (
+                      // TEMPORAL mientras se ajustan animaciones/copys: usa restart() para ver el welcome
+                      // cada vez. Cuando esté listo, cambiar a tourRef.current?.replay() (salta directo
+                      // al spotlight, que es el comportamiento final de este botón).
+                      <button className={styles.avatarMenuItem} onClick={() => { setShowAvatarMenu(false); tourRef.current?.restart(); }}>
+                        Take a tour
+                      </button>
+                    )}
                   </div>
 
                   <div className={styles.avatarMenuDivider} />
@@ -459,24 +513,33 @@ export default function StaffOrganizacionesV2({ initialOrgId, initialCenterId, r
           </div>
         </div>
 
+        <OnboardingTour
+          ref={tourRef}
+          role={role}
+          userName={user.name}
+          orgName={ORGS.find(o => o.id === user.orgId)?.name ?? ''}
+        />
+
         {/* ── Screens ── */}
 
         {showAccount && (
           <AccountDetails onClose={() => setShowAccount(false)} />
         )}
 
-        {showPersonal && (
+        {(isEndUser || showMyData) && (
           <div className={styles.page} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '16px' }}>
             <div style={{ textAlign: 'center', maxWidth: '320px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <span style={{ fontFamily: 'var(--font-family-primary)', fontSize: 'var(--font-size-12)', fontWeight: 'var(--font-weight-medium)', letterSpacing: '0.6px', textTransform: 'uppercase', color: 'var(--color-text-subtle)' }}>Personal account</span>
               <span style={{ fontFamily: 'var(--font-family-primary)', fontSize: 'var(--font-size-24)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-strong)' }}>My Data</span>
               <span style={{ fontFamily: 'var(--font-family-primary)', fontSize: 'var(--font-size-14)', color: 'var(--color-text-subtle)', lineHeight: '1.5' }}>Esta sección mostrará tus datos de hidratación personales. Diseño pendiente.</span>
-              <button
-                onClick={() => setShowPersonal(false)}
-                style={{ all: 'unset', cursor: 'pointer', marginTop: '8px', fontFamily: 'var(--font-family-primary)', fontSize: 'var(--font-size-13)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-strong)', textDecoration: 'underline', textUnderlineOffset: '2px' }}
-              >
-                ← Back to {user.role}
-              </button>
+              {isEndUser && (
+                <button
+                  onClick={() => setShowAvatarMenu(true)}
+                  style={{ all: 'unset', cursor: 'pointer', marginTop: '8px', fontFamily: 'var(--font-family-primary)', fontSize: 'var(--font-size-13)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-strong)', textDecoration: 'underline', textUnderlineOffset: '2px' }}
+                >
+                  Switch role →
+                </button>
+              )}
             </div>
           </div>
         )}
@@ -484,7 +547,7 @@ export default function StaffOrganizacionesV2({ initialOrgId, initialCenterId, r
         <div
           key={currentScreen.key ?? currentScreen.screen}
           className={`${styles.screenWrapper} ${isTablet ? styles[`screenSlide_${slideDirection}`] : ''}`}
-          style={(showAccount || showPersonal) ? { display: 'none' } : undefined}
+          style={(showAccount || isEndUser || showMyData) ? { display: 'none' } : undefined}
         >
 
         {currentScreen.screen === 'org-detail' && (
@@ -496,6 +559,8 @@ export default function StaffOrganizacionesV2({ initialOrgId, initialCenterId, r
             initialTeam={currentScreen.params.initialTeam}
             initialUser={currentScreen.params.initialUser}
             isMobile={isTablet}
+            role={role}
+            currentUserEmail={user.email}
           />
         )}
 
@@ -514,6 +579,7 @@ export default function StaffOrganizacionesV2({ initialOrgId, initialCenterId, r
             center={currentScreen.params.center}
             onBack={goBack}
             onNavigate={navigate}
+            role={role}
           />
         )}
 
@@ -529,10 +595,29 @@ export default function StaffOrganizacionesV2({ initialOrgId, initialCenterId, r
         {currentScreen.screen === 'center-admin-detail' && (
           <OrgDetailV2
             key="center-admin"
-            org={{ id: user.orgId, name: ORGS.find(o => o.id === user.orgId)?.name ?? '', centers: assignedCenters }}
+            org={{ id: user.orgId, name: ORGS.find(o => o.id === user.orgId)?.name ?? '', status: ORGS.find(o => o.id === user.orgId)?.status ?? 'active', centers: assignedCenters }}
             isMobile={isTablet}
             isCenterAdmin={true}
+            role={role}
+            currentUserEmail={user.email}
           />
+        )}
+
+        {currentScreen.screen === 'team-admin-home' && (
+          <TeamAdminHome
+            org={{ id: user.orgId, name: ORGS.find(o => o.id === user.orgId)?.name ?? '', status: ORGS.find(o => o.id === user.orgId)?.status ?? 'active' }}
+            assignedTeams={assignedTeams}
+            isMobile={isTablet}
+            currentUserEmail={user.email}
+          />
+        )}
+
+        {currentScreen.screen === 'units' && (
+          <UnitsTab role={role} user={user} />
+        )}
+
+        {currentScreen.screen === 'usage' && (
+          <UsageTab role={role} user={user} />
         )}
 
         {currentScreen.screen === 'orgs' && (
@@ -556,7 +641,7 @@ export default function StaffOrganizacionesV2({ initialOrgId, initialCenterId, r
                         { label: 'New Organization', icon: <IconPlus size={16} />, onClick: () => { setCreateMenuOpen(false); setShowNewOrgDrawer(true); } },
                         { label: 'New Center',       icon: <IconPlus size={16} />, onClick: () => { setCreateMenuOpen(false); setNewCenterOrg(null); setShowNewCenterModal(true); } },
                         { label: 'New Team',         icon: <IconPlus size={16} />, onClick: () => setCreateMenuOpen(false) },
-                        { label: 'New User',         icon: <IconPlus size={16} />, onClick: () => setCreateMenuOpen(false) },
+                        { label: 'New User',         icon: <IconPlus size={16} />, onClick: () => { setCreateMenuOpen(false); setShowNewUserDrawer(true); } },
                       ]}
                     />
                   </div>
@@ -813,6 +898,7 @@ export default function StaffOrganizacionesV2({ initialOrgId, initialCenterId, r
       {editOrgTarget      && <EditOrgDrawer  org={editOrgTarget}  onClose={() => setEditOrgTarget(null)} />}
       {deleteOrgTarget    && <DeleteOrgModal  org={deleteOrgTarget} onClose={() => setDeleteOrgTarget(null)} />}
       {newCenterOrg2      && <NewCenterDrawer org={newCenterOrg2}  onClose={() => setNewCenterOrg2(null)} />}
+      {showNewUserDrawer  && <NewUserDrawer onClose={() => setShowNewUserDrawer(false)} />}
       {showPalette && <SearchPalette onClose={() => setShowPalette(false)} onNavigate={navigate} />}
       {showNotifications && <NotificationsDrawer onClose={() => setShowNotifications(false)} />}
 

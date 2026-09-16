@@ -35,6 +35,18 @@
   outline-offset: 2px;
 }
 
+/* ─── Small size ──────────────────────────────────────── */
+
+.sm {
+  padding: 4px;
+  gap: 0;
+}
+
+.sm .option {
+  padding: 4px 12px;
+  font-size: var(--font-size-12);
+}
+
 /* ─── Active ──────────────────────────────────────────── */
 
 .active {

@@ -5,8 +5,10 @@ import styles from './ContextMenu.module.css';
  *
  * Menú desplegable de acciones contextuales (botón de tres puntos).
  *
- * @param {Array} items - Array de { label, icon, onClick, variant? }
+ * @param {Array} items - Array de { label, icon, onClick, variant?, disabled?, tooltip? }
  *   variant: 'default' (por defecto) | 'danger' (texto rojo)
+ *   disabled: si es true, el item no se puede clickear (ej. "no podés removerte a vos mismo")
+ *   tooltip: texto nativo (title) que explica por qué está deshabilitado
  */
 export default function ContextMenu({ items = [] }) {
   return (
@@ -14,8 +16,10 @@ export default function ContextMenu({ items = [] }) {
       {items.map((item, i) => (
         <button
           key={i}
-          className={[styles.item, item.variant === 'danger' ? styles.danger : ''].join(' ')}
-          onClick={item.onClick}
+          className={[styles.item, item.variant === 'danger' ? styles.danger : '', item.disabled ? styles.itemDisabled : ''].join(' ')}
+          onClick={item.disabled ? undefined : item.onClick}
+          disabled={item.disabled}
+          title={item.disabled ? item.tooltip : undefined}
           role="menuitem"
           type="button"
         >

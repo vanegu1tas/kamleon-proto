@@ -5,7 +5,13 @@ import IconButton from '../../../design-system/components/IconButton/IconButton'
 import Input from '../../../design-system/components/Input/Input';
 import styles from './NewCenterDrawer.module.css';
 
-export default function EditCenterDrawer({ center, org, onClose }) {
+export default function EditCenterDrawer({ center, org, onClose, role }) {
+  const isClientRole = role === 'orgAdmin' || role === 'centerAdmin';
+  // centers.editData (nombre, email, tel, dirección + contactos + Link a Unit): nadie del lado
+  // cliente lo tiene, NI Editor (docs/permissions.md) — exclusivo de Owner/Admin.
+  const readOnly = role !== 'owner' && role !== 'admin';
+  // centers.editImage: Org Admin y Center Admin sí lo tienen — Editor y Team Admin no.
+  const canEditImage = role === 'owner' || role === 'admin' || role === 'orgAdmin' || role === 'centerAdmin';
   const [name, setName]     = useState(center.name    ?? '');
   const [email, setEmail]   = useState(center.email   ?? '');
   const [phone, setPhone]   = useState(center.phone   ?? '');
@@ -15,8 +21,11 @@ export default function EditCenterDrawer({ center, org, onClose }) {
   const [contacts, setContacts] = useState(
     center.contacts ? center.contacts.map(c => ({ ...c })) : []
   );
-  const [units, setUnits]             = useState(center.units ?? []);
-  const [adminEmails, setAdminEmails] = useState(center.adminEmails ?? []);
+  // center.units son objetos completos de unit (id, description, status, etc.) — este campo
+  // solo necesita mostrar/editar el nombre, así que se convierten a string acá.
+  const [units, setUnits] = useState(
+    (center.units ?? []).map(u => typeof u === 'string' ? u : (u.description || String(u.id ?? '')))
+  );
 
   // addresses
   function addAddress()          { setAddresses(prev => [...prev, '']); }
@@ -35,11 +44,6 @@ export default function EditCenterDrawer({ center, org, onClose }) {
   function updateUnit(i, val) { setUnits(prev => prev.map((u, idx) => idx === i ? val : u)); }
   function removeUnit(i)      { setUnits(prev => prev.filter((_, idx) => idx !== i)); }
 
-  // admin emails
-  function addAdmin()          { setAdminEmails(prev => [...prev, '']); }
-  function updateAdmin(i, val) { setAdminEmails(prev => prev.map((e, idx) => idx === i ? val : e)); }
-  function removeAdmin(i)      { setAdminEmails(prev => prev.filter((_, idx) => idx !== i)); }
-
   const initial = name.trim().charAt(0).toUpperCase();
 
   return (
@@ -57,8 +61,8 @@ export default function EditCenterDrawer({ center, org, onClose }) {
         {/* ── Body ── */}
         <div className={styles.body}>
 
-          {/* Context line */}
-          {org && (
+          {/* Context line — solo tiene sentido para staff de Kamleon; un rol cliente ya sabe a qué org pertenece */}
+          {org && !isClientRole && (
             <p className={styles.contextLine}>
               Editing center for <span className={styles.contextOrg}>{org.name}</span>
             </p>
@@ -69,9 +73,11 @@ export default function EditCenterDrawer({ center, org, onClose }) {
             <div className={styles.avatar}>
               <span className={styles.avatarLetter}>{initial || '?'}</span>
             </div>
-            <div className={styles.avatarText}>
-              <button className={styles.addPictureBtn} type="button">Change picture</button>
-            </div>
+            {canEditImage && (
+              <div className={styles.avatarText}>
+                <button className={styles.addPictureBtn} type="button">Change picture</button>
+              </div>
+            )}
           </div>
 
           {/* Fields */}
@@ -83,7 +89,8 @@ export default function EditCenterDrawer({ center, org, onClose }) {
               placeholder="Write here..."
               value={name}
               onChange={setName}
-              autoFocus
+              autoFocus={!readOnly}
+              disabled={readOnly}
             />
 
             <div className={styles.formRow}>
@@ -93,6 +100,7 @@ export default function EditCenterDrawer({ center, org, onClose }) {
                 placeholder="Write here..."
                 value={email}
                 onChange={setEmail}
+                disabled={readOnly}
               />
               <Input
                 label="Phone number"
@@ -100,6 +108,7 @@ export default function EditCenterDrawer({ center, org, onClose }) {
                 placeholder="Write here..."
                 value={phone}
                 onChange={setPhone}
+                disabled={readOnly}
               />
             </div>
 
@@ -114,8 +123,9 @@ export default function EditCenterDrawer({ center, org, onClose }) {
                     placeholder="Write your address here..."
                     value={addr}
                     onChange={e => updateAddress(i, e.target.value)}
+                    disabled={readOnly}
                   />
-                  {addresses.length > 1 && (
+                  {addresses.length > 1 && !readOnly && (
                     <button className={styles.removeItemBtn} type="button" onClick={() => removeAddress(i)} aria-label="Remove">
                       <IconClose size={14} />
                     </button>
@@ -124,14 +134,17 @@ export default function EditCenterDrawer({ center, org, onClose }) {
               </div>
             ))}
 
-            <button className={styles.addBtn} type="button" onClick={addAddress}>
-              <IconPlus size={16} />
-              Add new address
-            </button>
+            {!readOnly && (
+              <button className={styles.addBtn} type="button" onClick={addAddress}>
+                <IconPlus size={16} />
+                Add new address
+              </button>
+            )}
 
           </div>
 
           {/* Add contact information */}
+          {!readOnly && (
           <div className={styles.section}>
             <div className={styles.sectionInfo}>
               <p className={styles.sectionLabel}>Contact information</p>
@@ -194,8 +207,10 @@ export default function EditCenterDrawer({ center, org, onClose }) {
               Add Contact
             </button>
           </div>
+          )}
 
           {/* Link a Unit */}
+          {!readOnly && (
           <div className={styles.section}>
             <div className={styles.sectionInfo}>
               <p className={styles.sectionLabel}>Link a Unit</p>
@@ -219,51 +234,14 @@ export default function EditCenterDrawer({ center, org, onClose }) {
               Add new unit
             </button>
           </div>
-
-          {/* Administrators */}
-          <div className={styles.section}>
-            <div className={styles.sectionInfo}>
-              <p className={styles.sectionLabel}>Administrators</p>
-              <p className={styles.sectionSubtitle}>Center administrators who have accepted their invitation.</p>
-            </div>
-
-            {/* Confirmed admins (read-only) */}
-            {(center.admins ?? []).map((admin, i) => (
-              <div key={i} className={styles.adminEntry}>
-                <span className={styles.adminEntryName}>{admin.name}</span>
-                <span className={styles.adminEntryMeta}>{admin.email}</span>
-                <span className={styles.adminEntryMeta}>{admin.phone}</span>
-              </div>
-            ))}
-
-            {/* Pending invitations */}
-            {adminEmails.map((adminEmail, i) => (
-              <div key={i} className={styles.addItemRow}>
-                <input
-                  className={styles.input}
-                  type="email"
-                  placeholder="admin@example.com"
-                  value={adminEmail}
-                  onChange={e => updateAdmin(i, e.target.value)}
-                />
-                <button className={styles.removeItemBtn} type="button" onClick={() => removeAdmin(i)} aria-label="Remove">
-                  <IconClose size={14} />
-                </button>
-              </div>
-            ))}
-
-            <button className={styles.addBtn} type="button" onClick={addAdmin}>
-              <IconPlus size={16} />
-              Invite administrator
-            </button>
-          </div>
+          )}
 
         </div>
 
         {/* ── Footer ── */}
         <div className={styles.footer}>
           <Button variant="secondary" size="m" onClick={onClose}>Cancel</Button>
-          <Button variant="primary" size="m" disabled={!name.trim()} onClick={onClose}>Save</Button>
+          <Button variant="primary" size="m" disabled={readOnly || !name.trim()} onClick={onClose}>Save</Button>
         </div>
 
       </div>

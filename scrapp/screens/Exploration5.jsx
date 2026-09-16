@@ -141,22 +141,25 @@ const scoreGradStyle = {
   backgroundClip: 'text',
 };
 
-export default function Exploration5({ score = 0, animAngle, glowZoneIdx = null, textStage = null, coloredText = true, textLayout = 'sequential', zoneShape = 'default', timerStyle = 'default', breathe = true }) {
+export default function Exploration5({ score = 0, animAngle, glowZoneIdx = null, textStage = null, coloredText = true, textLayout = 'sequential', zoneShape = 'default', timerStyle = 'default', breathe = true, onTimeout }) {
   const [countdown, setCountdown] = useState(15);
   const [msgStage, setMsgStage]   = useState(null);
 
   useEffect(() => {
     if (textStage === 'full') {
       setCountdown(15);
+      let remaining = 15;
       const interval = setInterval(() => {
-        setCountdown(prev => {
-          if (prev <= 1) { clearInterval(interval); return 0; }
-          return prev - 1;
-        });
+        remaining -= 1;
+        setCountdown(Math.max(remaining, 0));
+        if (remaining <= 0) {
+          clearInterval(interval);
+          onTimeout?.();
+        }
       }, 1000);
       return () => clearInterval(interval);
     }
-  }, [textStage]);
+  }, [textStage, onTimeout]);
 
   useEffect(() => {
     if (textStage === 'full') {

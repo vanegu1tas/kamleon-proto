@@ -104,3 +104,62 @@
 }
 
 .deleteBtn:hover { opacity: 0.85; }
+
+.deleteBtn:disabled {
+  background: var(--color-border-default);
+  color: var(--color-text-disabled);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.deleteBtn:disabled:hover { opacity: 1; }
+
+/* ─── Confirm-by-typing (Write DELETE to confirm) ────── */
+
+.confirmField {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.confirmLabel {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+  margin: 0;
+}
+
+.confirmInput {
+  width: 100%;
+  height: 36px;
+  background: var(--color-bg-surface-subtle);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-l);
+  padding: 0 13px;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  color: var(--color-text-strong);
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.confirmInput::placeholder { color: var(--color-text-placeholder); }
+.confirmInput:focus        { border-color: var(--color-border-focus); }
+
+.confirmBtn {
+  background: var(--color-text-strong);
+  border: none;
+  border-radius: var(--radius-l);
+  padding: 12px 24px;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-book);
+  color: #ffffff;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: opacity 0.15s ease;
+}
+
+.confirmBtn:hover { opacity: 0.85; }

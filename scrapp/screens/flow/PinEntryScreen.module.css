@@ -1,0 +1,139 @@
+.screen {
+  width: 1280px;
+  height: 800px;
+  background: #000000;
+  position: relative;
+  overflow: hidden;
+  font-family: var(--font-family-primary);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 44px;
+}
+
+.title {
+  color: #9a9a9a;
+  font-size: var(--font-size-32);
+  font-weight: var(--font-weight-book);
+  margin: 0;
+}
+
+.backButton,
+.closeButton {
+  position: absolute;
+  top: 44px;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.backButton { left: 48px; }
+.closeButton { right: 48px; }
+.backButton:active, .closeButton:active { opacity: 0.6; }
+
+.divider {
+  position: absolute;
+  top: 160px;
+  bottom: 96px;
+  left: 50%;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.left {
+  position: absolute;
+  top: 240px;
+  left: 96px;
+  width: 500px;
+}
+
+.welcome {
+  color: #ffffff;
+  font-size: var(--font-size-48);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.2;
+  margin: 0 0 48px;
+}
+
+.avatar {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.fallback {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: #6b6b6b;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-48);
+  font-weight: var(--font-weight-medium);
+}
+
+.right {
+  position: absolute;
+  top: 200px;
+  right: 0;
+  width: 560px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.dots {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 48px;
+}
+
+.dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  box-sizing: border-box;
+}
+
+.dotFilled {
+  background: var(--color-turquoise-51);
+  border-color: var(--color-turquoise-51);
+}
+
+.keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 90px);
+  gap: 22px;
+}
+
+.key {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  border: 2px solid var(--color-turquoise-51);
+  background: transparent;
+  color: var(--color-turquoise-51);
+  font-size: var(--font-size-32);
+  font-weight: var(--font-weight-medium);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.key:active {
+  background: rgba(47, 213, 203, 0.14);
+}

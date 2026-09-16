@@ -351,6 +351,18 @@
   animation: dropdownIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+.bulkActionsWrap {
+  margin-left: auto;
+}
+
+.bulkActionsMenu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 100;
+  animation: dropdownIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 @keyframes dropdownIn {
   from { opacity: 0; transform: translateY(-6px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -453,12 +465,15 @@
 .tableHeader {
   display: flex;
   align-items: center;
-  background: var(--color-bg-surface-subtle);
-  border-radius: 8px;
+  background: var(--color-bg-page);
+  border-radius: var(--radius-s);
 }
 
 .colHead {
-  padding: 16px 12px;
+  display: flex;
+  align-items: center;
+  height: 40px; /* spec Figma: componente TableCell, variante Header */
+  padding: 0 12px;
   font-family: var(--font-family-primary);
   font-size: var(--font-size-12);
   font-weight: var(--font-weight-medium);
@@ -467,11 +482,82 @@
   letter-spacing: 0.24px;
 }
 
-.colName    { width: 220px; flex-shrink: 0; }
+.colName    { flex: 1; min-width: 220px; }
 .colRole    { width: 130px; flex-shrink: 0; }
 .colDate    { flex: 1; text-align: center; }
-.colNum     { flex: 1; text-align: center; }
-.colActions { width: 80px; flex-shrink: 0; }
+.colNum     { flex: 1; }
+.colPin     { width: 120px; flex-shrink: 0; justify-content: center; }
+.colScreen  { width: 120px; flex-shrink: 0; justify-content: center; }
+.colStatus  { width: 120px; flex-shrink: 0; }
+
+.colHeadLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.infoIconWrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  color: var(--color-text-disabled);
+  cursor: default;
+}
+
+.infoIconWrap::before,
+.infoIconWrap::after {
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.infoIconWrap:hover::before,
+.infoIconWrap:hover::after {
+  opacity: 1;
+}
+
+/* Abre hacia abajo (no hacia arriba): estos íconos viven en headers de tabla,
+   que son siempre la fila de más arriba dentro de .tableWrap, que en mobile
+   necesita overflow:auto para el scroll horizontal — hacia arriba no hay
+   espacio y ese overflow recorta el tooltip, quedando invisible. */
+.infoIconWrap::before {
+  content: '';
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 50%;
+  border: 5px solid transparent;
+  border-bottom-color: var(--color-text-strong);
+  transform: translateX(-50%) translateY(-4px);
+}
+
+/* El cuadro se ancla al borde derecho del ícono (no centrado) — estos íconos
+   viven en las últimas columnas de la tabla (PIN/Screen/Status), cerca del
+   borde derecho del contenedor con scroll; centrado, el cuadro se salía por
+   la derecha y quedaba recortado por el mismo overflow:auto de arriba. La
+   flechita sigue centrada bajo el ícono. */
+.infoIconWrap::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: calc(100% + 12px);
+  right: -8px;
+  background: var(--color-text-strong);
+  color: var(--color-text-inverse);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  text-transform: none;
+  letter-spacing: normal;
+  white-space: normal;
+  width: 160px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  z-index: 100;
+  transform: translateY(-4px);
+}
+
+.infoIconWrap:hover::before { transform: translateX(-50%) translateY(0); }
+.infoIconWrap:hover::after  { transform: translateY(0); }
+.colActions { width: 104px; flex-shrink: 0; }
 
 .tableRow {
   display: flex;
@@ -480,6 +566,9 @@
   position: relative;
   isolation: isolate;
 }
+
+.tableRow.menuOpen { z-index: 1; }
+.tableRow:hover { z-index: 1; }
 
 .tableRowClickable {
   cursor: pointer;
@@ -517,14 +606,21 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 16px 12px;
+  padding: 12px;
+}
+
+.userNameInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
 }
 
 .userAvatar {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: var(--color-bg-surface-subtle);
+  background: var(--color-bg-surface-disabled);
   border: 1px solid var(--color-border-default);
   display: flex;
   align-items: center;
@@ -537,10 +633,21 @@
 }
 
 .userName {
+  display: block;
   font-family: var(--font-family-primary);
   font-size: var(--font-size-14);
   font-weight: var(--font-weight-medium);
   color: var(--color-text-strong);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.userSubtitle {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -569,15 +676,43 @@
   flex: 1;
   display: flex;
   align-items: center;
-  justify-content: center;
   padding: 12px;
 }
 
+.pinCell {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+}
+
+.screenCell {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+}
+
+.statusCell {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+}
+
+.toggleText {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  color: var(--color-text-disabled);
+}
+
+.toggleTextOn {
+  color: var(--color-turquoise-30);
+}
+
 .actionsCell {
-  width: 80px;
+  width: 104px;
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
   padding: 8px 12px;
 }
 
@@ -694,4 +829,260 @@
   font-size: var(--font-size-16);
   color: var(--color-text-subtle);
   margin: 0;
+}
+
+/* ── User Profile (detalle de un miembro del equipo) ── */
+
+.userProfileBody {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  width: 100%;
+  padding: 24px 16px 24px 24px;
+  overflow-y: auto;
+}
+
+.userProfileHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.userProfileTitle {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-20);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+  margin: 0;
+}
+
+.userProfileTop {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+}
+
+.userProfileAvatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #00c9a7, #60a5fa);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-20);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-strong);
+}
+
+.userProfileName {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+  text-transform: capitalize;
+  margin: 0 0 4px;
+}
+
+.userProfileMetaRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  color: var(--color-text-subtle);
+}
+
+.userProfileMetaDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.userSectionLabel {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-subtle);
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  margin: 0 0 20px;
+}
+
+.userAccountGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 48px;
+  row-gap: 20px;
+}
+
+.userAccountField {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.userAccountFieldLabel {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  color: var(--color-text-subtle);
+}
+
+.userAccountFieldValue {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  color: var(--color-text-strong);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.userProfileDivider {
+  height: 1px;
+  width: 100%;
+  background: var(--color-bg-surface-disabled);
+}
+
+.userPermGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 24px;
+  row-gap: 20px;
+}
+
+.userPermCard {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-s);
+  overflow: hidden;
+}
+
+.userPermCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 8px 9px;
+  border-bottom: 1px solid var(--color-border-default);
+}
+
+.userPermCardTitle {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+  margin: 0;
+}
+
+.userPermCardSubtitle {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  color: var(--color-text-subtle);
+  margin: 0;
+}
+
+.userPermCardBody {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+}
+
+.userPermPill {
+  background: var(--color-bg-page);
+  border-radius: 100px;
+  padding: 4px 8px;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  color: var(--color-text-strong);
+  white-space: nowrap;
+}
+
+.userPermSimpleGrid {
+  display: flex;
+  gap: 48px;
+  align-items: flex-start;
+  margin-top: 20px;
+}
+
+.userPermSimpleField {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+/* ═══════════════════════════════════════════════════════
+   RESPONSIVE — 390px: tabla de Users del Team Admin
+   Mismo patrón sticky+scroll que ya usan Admins/Users a nivel Centro
+   (OrgDetailV2.module.css) — columna Name fija a la izquierda, el resto
+   scrollea horizontal en vez de aplastarse. ═══════════════════════════ */
+
+@media (max-width: 390px) {
+
+  .tableWrap {
+    overflow-x: auto;
+    padding-left: 0;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .tableWrap::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tableHeader,
+  .tableRow {
+    width: max-content;
+    min-width: 100%;
+  }
+
+  .colPin,
+  .colScreen,
+  .colStatus {
+    width: 110px;
+    flex-shrink: 0;
+  }
+
+  .colName {
+    flex: 0 0 190px;
+    width: 190px;
+    min-width: 190px;
+    position: sticky;
+    left: 0;
+    z-index: 1;
+  }
+
+  .tableHeader .colName {
+    background: var(--color-bg-page);
+    border-top-left-radius: var(--radius-s);
+    border-bottom-left-radius: var(--radius-s);
+    z-index: 2;
+  }
+
+  .tableRow .colName {
+    background: var(--color-bg-surface);
+  }
+
+  /* La barra de búsqueda era ancho fijo (223px) — sumada a Filters + Bulk
+     actions (ícono) se pasaba 17.7px del borde real de la tarjeta. La dejamos
+     flexible para que se achique lo justo y todo entre en una sola fila. */
+  .searchBar {
+    width: auto;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  /* Search + Filters + Bulk actions no entran los 3 con texto — Bulk actions
+     pasa a ser solo ícono, mismo botón, sin agrandar nada más. */
+  .bulkActionsLabel {
+    display: none;
+  }
+
 }

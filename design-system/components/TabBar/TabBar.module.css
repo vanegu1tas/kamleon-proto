@@ -6,6 +6,35 @@
   overflow: hidden;
 }
 
+/* Un solo tab: no hay con quién repartir el ancho, así que en vez de estirarse
+   (flex:1, como si hubiera más tabs al lado) se ajusta a su propio contenido —
+   si no, el indicador (calculado sobre el ancho del botón) queda descentrado
+   respecto al texto. */
+.tabBarSingle .tab {
+  flex: 0 0 auto;
+}
+
+/* scrollable=true: en vez de repartir el ancho en partes iguales (que recorta el
+   último tab si no entran todos), cada tab hug-ea su contenido y el set entero
+   scrollea horizontal. Solo se activa en mobile/tablet — en desktop no cambia nada. */
+@media (max-width: 768px) {
+  .tabBarScrollable {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/old Edge */
+  }
+
+  .tabBarScrollable::-webkit-scrollbar {
+    display: none; /* Chrome/Safari/WebKit — scroll sigue funcionando, solo se oculta la barra */
+  }
+
+  .tabScrollable {
+    flex: 0 0 auto;
+  }
+}
+
 .tabBarS {
   height: auto;
 }
@@ -43,6 +72,8 @@
 /* ─── Label pill ─────────────────────────────────────── */
 
 .tabLabel {
+  display: inline-flex;
+  align-items: center;
   padding: 8px 12px;
   border-radius: 24px;
   transition: background 0.15s ease;
@@ -50,6 +81,15 @@
 
 .tabS .tabLabel {
   padding: 4px 12px;
+}
+
+.tabDot {
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: var(--color-status-error);
 }
 
 .tab:hover:not(.tabActive) .tabLabel {

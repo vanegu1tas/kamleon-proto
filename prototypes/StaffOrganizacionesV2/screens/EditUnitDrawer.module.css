@@ -1,0 +1,215 @@
+.footerNoBorder {
+  border-top: none;
+}
+
+.editingLine {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+  margin: 0;
+}
+
+.editingUnit {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+}
+
+.sectionHeading {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-20);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-strong);
+  margin: 0;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.labelRow {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding-left: 12px;
+}
+
+.fieldLabel {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+  padding-left: 12px;
+}
+
+.labelRow .fieldLabel {
+  padding-left: 0;
+}
+
+.required {
+  color: var(--color-status-error);
+  font-weight: var(--font-weight-medium);
+}
+
+/* ─── Status (disabled dropdown look) ────────────────── */
+
+.statusField {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 13px;
+  background: var(--color-bg-surface-disabled);
+  border: 1px solid var(--color-bg-surface-disabled);
+  border-radius: var(--radius-l);
+}
+
+.statusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--color-turquoise-51);
+  flex-shrink: 0;
+}
+
+.statusDotInactive {
+  background: var(--color-status-inactive);
+}
+
+.statusValue {
+  flex: 1;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-disabled);
+}
+
+.statusChevron {
+  display: flex;
+  align-items: center;
+  color: var(--color-text-disabled);
+  flex-shrink: 0;
+}
+
+/* ─── Login mode checkboxes ──────────────────────────── */
+
+.checkboxRow {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding-left: 12px;
+}
+
+/* ─── Screen roster ───────────────────────────────────── */
+
+.rosterWrap {
+  position: relative;
+  width: 100%;
+}
+
+.rosterTrigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 36px;
+  padding: 0 14px;
+  background: var(--color-bg-surface-subtle);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-l);
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.rosterTrigger:hover {
+  border-color: var(--color-border-strong);
+}
+
+.rosterPlaceholder {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+}
+
+.rosterChevron {
+  display: flex;
+  align-items: center;
+  color: var(--color-text-subtle);
+  flex-shrink: 0;
+}
+
+.rosterDropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-s);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  padding: 12px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.rosterDropdownUp {
+  top: auto;
+  bottom: calc(100% + 8px);
+}
+
+.rosterEmptyOption {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  color: var(--color-text-subtle);
+  margin: 0;
+  padding: 4px;
+}
+
+.chipsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-left: 12px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px 4px 12px;
+  background: var(--color-bg-surface-subtle);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-l);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+}
+
+.chipRemove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 999px;
+  color: var(--color-text-subtle);
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.chipRemove:hover {
+  background: var(--color-bg-surface-disabled);
+  color: var(--color-text-strong);
+}

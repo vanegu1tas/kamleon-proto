@@ -1,6 +1,6 @@
 # Project Summary — Kamleon Design System
 
-Estado del proyecto al 2026-04-02. Referencia rápida para retomar el trabajo.
+Estado del proyecto al 2026-04-02 (lista de pendientes en "Próximos pasos" revisada el 2026-09-15). Referencia rápida para retomar el trabajo.
 
 ---
 
@@ -517,17 +517,8 @@ Nodos relevantes:
 - [x] `docs/README.md` para navegación contextual
 - [x] README raíz con links públicos
 
-### Pendientes abiertos en docs
-- [ ] Lista completa de permisos del Admin de Centro restringido
-- [ ] Qué campos puede editar el Admin CTR sobre su propio centro
-- [ ] Dashboard/home o entrada directa a lista
-- [ ] Flujo de onboarding de nueva organización
-- [ ] Flujo de activación de cuenta de admin de centro recién creado
-
-### Pendientes de diseño / prototipo (2026-04-22)
-- [ ] **Perfil agnóstico de usuario** — wireframes Figma listos (explorations en nodos 4369:4970 y 4369:4973 · Web App). Implementar prototipo cuando Daniel confirme layout final. Jerarquía membership card: org(12px M subtle) → rol(14px M strong) → centro(12px M subtle) → equipo(12px Book subtle). Opciones D/E/F de layout pendientes de decidir en Figma.
-- [ ] **Units — crear unit** — botón "+ Assign to organization" en formulario · expandible con × · campos mínimos pendientes de confirmar · tab historial: "Sensor history"
-- [ ] **SearchPalette** — corregir tras perfil agnóstico: free users visibles, subtítulo → email, nav → user-profile
+### Pendientes abiertos
+La lista actualizada de pendientes (revisada 2026-09-15) está al final de este documento, en **"Próximos pasos"**.
 
 ---
 
@@ -715,23 +706,104 @@ Proyecto separado dentro del mismo repo para la pantalla física sobre el urinal
 
 ## Próximos pasos
 
-### Inmediatos
-- [ ] **Perfil agnostico de usuario** — wireframe Figma pendiente · incluye: datos personales + membresías (0..N) + terms consent + status · free users sin membresías
-- [ ] **SearchPalette** — corregir tras implementar perfil agnostico: incluir free users, subtítulo → email, navegación → `user-profile`
+Checklist revisado el 2026-09-15.
 
-### Design System
-- [ ] **FilterPanel** — story pendiente
-- [ ] Code Connect mappings *(bloqueado: permisos en workspace del cliente)*
-- [ ] Storybook Foundations: páginas MDX para tokens (Colors, Typography, Radius)
+**Orden sugerido:** 1) commit → 2) dropdown Role → 3) tabs secundarios.
 
-### V2 — pendientes
-- [ ] **Panel Admin de Centro** — prototipo separado (no existe aún)
-- [ ] Drawers responsive 390px — verificación visual en browser
-- [ ] Responsive drawers con contenido largo (NewCenterDrawer, EditCenterDrawer) — revisar scroll en mobile
+### 🔴 Esperando algo de Daniel
 
-### Docs / definición
-- [ ] Lista de permisos del Admin de Centro restringido
-- [ ] Qué campos puede editar el Admin CTR sobre su propio centro
-- [ ] Dashboard/home o entrada directa a lista
-- [ ] Flujo de onboarding de nueva organización
-- [ ] Flujo de activación de cuenta de admin de centro recién creado
+- [ ] **Quitar el dropdown "Role" de New User** · *paso 2 del orden sugerido*
+  Los flujos By invite (uno y varios) y By hand todavía piden elegir User o Professional. Ya no tiene sentido: los Team Admin se invitan desde su propio drawer (`InviteTeamAdminDrawer`). Quedó a medias el 26/8.
+  → Espera: decidir si se quita o si hay Figma nuevo
+
+- [ ] **Formulario para crear una unit**
+  Ya está definido el botón "+ Assign to organization" (expandible, con ×) y el tab "Sensor history". Faltan los campos.
+  → Espera: los campos mínimos
+
+- [ ] **Ilustración del modal de bienvenida del tour**
+  En código sigue un círculo de placeholder (`.welcomeArtCircle` en `OnboardingTour.module.css`). El arte real (banner turquesa con una mini-tarjeta) ya está en Figma; va para los 3 roles con tour.
+  → Espera: el diseño final de Figma
+
+- [ ] **Dónde se edita un equipo**
+  `EditTeamDrawer` (nombre, estado, PIN) funciona, pero en el diseño nuevo del panel del equipo no hay botón que lo abra.
+  → Espera: decidir dónde va el acceso
+
+- [ ] **Sección de administradores de equipo**
+  Confirmado que no va en el panel del equipo. Falta definir dónde va.
+  → Espera: decidir dónde va
+
+- [ ] **Perfil agnóstico de usuario**
+  Una persona con 0..N membresías en equipos, incluidos los free users sin organización: datos personales + membresías + terms consent + status. Wireframes en Figma (Web App, nodos 4369:4970 y 4369:4973). Jerarquía de la membership card: org (12px M subtle) → rol (14px M strong) → centro (12px M subtle) → equipo (12px Book subtle).
+  → Espera: elegir el layout D, E o F
+
+- [ ] **Selector de idioma**
+  En el menú del avatar: "Language EN ›" abre English / Español / Français. Por defecto toma `navigator.language`.
+  → Espera: diseño en Figma
+
+### 🟡 Decidido 2026-09-15
+
+- [x] **Documentar la decisión de tabs en dos niveles** · *hecha 2026-09-15*
+  `docs/features/tabs-dos-niveles.md`: problema, base en Carbon, solución y alternativas descartadas.
+
+- [ ] **Tabs del centro con estilo secundario** · *paso 3 del orden sugerido*
+  Variante más liviana del TabBar (tipo píldora) para los tabs de la card del centro, y un título con contexto en cada tab: "Users in Madrid Centro (48)". Primero en Figma (Design System), después en `design-system/components/TabBar/` y `CenterCard`.
+
+- [ ] **Breadcrumb o botón back**
+  Propuesta: en desktop, breadcrumb completo (Organizations / Acme / Madrid Centro / Equipo A) sin botones back; en mobile, solo back. Hoy el breadcrumb no muestra los niveles internos de `OrgDetailV2`.
+  → Espera: confirmar con el manager
+
+### 🟢 Listo para hacer
+
+- [ ] **Unificar el componente Tag en el DS**
+  En Figma conviven el `Tag` del design system (Active / Inactive) y "Tag status - invitations", hecho aparte con los mismos estilos. Absorber el segundo dentro del primero: agregar Pending y Expired a la propiedad Status, corregir el texto de Pending a Red/29 (contraste), documentar en la descripción qué estado se usa en qué contexto, cambiar las instancias y borrar el componente viejo. En código ya está hecho. Regla y criterio → `docs/design-system-rules.md`.
+  → Los colores de Expired en código son provisorios hasta ver la variante de Figma
+
+- [ ] **Corregir errores de "From file" tocando la celda**
+  Tabla editable en lugar de descargar el reporte y volver a subir el archivo. Copy acordado: "Some rows need fixing" / "Click a cell to correct it — no need to re-upload the file." Después, un modal para agregar foto a cada jugador importado (buscador, contador "X of Y added", Skip).
+
+- [ ] **Permisos de Kamleon Editor (#10)**
+  Global, edita Units ampliamente y es casi solo lectura en Orgs/Centers/Teams/Users (`docs/permissions.md`). Después, la pasada mobile en 768 y 390.
+
+- [ ] **Tab Units del centro para Center Admin**
+  Ve las columnas Display y K-POD y la opción de eliminar en el menú "⋯". Según el excel, eso es solo de Kamleon (`units.viewColumn.display`/`sensor`, `units.delete`).
+
+- [ ] **Botón dentro de otro botón en los menús "⋯"**
+  Error de consola en las tablas de Users (org y centro). Revisar si también pasa en Teams y Units.
+
+- [ ] **Menú "⋯" de Users dentro del equipo**
+  Conectar sus acciones. Team Admin sí puede eliminar usuarios de su equipo.
+
+- [ ] **Pulir los tabs Users y Details de la organización**
+  Se hicieron rápido como primera pasada (ver `docs/design-polish-backlog.md`).
+
+- [ ] **Buscador ⌘K con free users**
+  Que aparezcan los free users, con el email de subtítulo, y que al elegir uno abra su perfil (`user-profile`).
+  → Depende del perfil agnóstico
+
+### 📦 Guardar el trabajo
+
+- [ ] **Commit de todo lo acumulado** · *paso 1 del orden sugerido*
+  El último commit es del 23/6 y hay unos 85 archivos modificados o nuevos (Invitations, tour, permisos por rol, Units, Usage, pasada mobile, etc.).
+
+- [ ] **Deploy a GitHub Pages**
+  Publicar la versión actual del prototipo.
+  → Después del commit
+
+### ⚪ Más adelante
+
+- [ ] **Pantalla My data (#14)**: ya está en el sidebar para todos los roles (#47), pero muestra un placeholder. Incluye resolver el ítem con el sidebar colapsado.
+- [ ] **Pantalla de End User**: el rol todavía no está definido del lado real.
+- [ ] **Tour para Owner, Admin, Editor y End User**: definir si les corresponde.
+- [ ] **Huecos del design system**: componente Radio, story de FilterPanel y páginas MDX de tokens en Storybook (Colors, Typography, Radius).
+- [ ] **Reconciliar el modal Configure API**: lo hace el programador; no tocarlo hasta que esté listo.
+- [ ] **Figma Code Connect**: archivos listos; bloqueado hasta tener rol Admin en el workspace del cliente.
+- [ ] **Animación "morph" del botón Create**: que el menú crezca de verdad desde el botón.
+- [ ] **Pruebas de usuario con participantes reales**: guiones listos en `docs/features/`.
+- [ ] **Drawers largos en 390px**: verificar el scroll de NewCenterDrawer y EditCenterDrawer en el navegador.
+- [ ] **Flujos sin definir**: onboarding de una organización nueva, activación de cuenta de un admin de centro y qué ve un rol cuando entra a algo sin permiso.
+
+### Quitados de la lista anterior (ya no aplican)
+
+- **Panel Admin de Centro como prototipo separado**: el modelo v2 es una sola app con navegación por rol (`docs/navigation.md`).
+- **Permisos del Admin de Centro restringido** y **qué campos edita sobre su centro**: resueltos en `docs/permissions.md` (matriz de 94 keys) y en el backlog (solo la imagen es editable).
+- **Dashboard/home o entrada directa**: definido por rol en `docs/navigation.md`.

@@ -1,9 +1,8 @@
 import { useState, useRef } from 'react';
 import Button from '../../../design-system/components/Button/Button';
-import { IconClose, IconAddImage, IconPlus, IconChevronMiniDown } from '../../../design-system/icons/outline';
+import { IconClose, IconAddImage, IconPlus, IconChevronMiniDown, IconFile, IconResend, IconTeams } from '../../../design-system/icons/outline';
 import IconButton from '../../../design-system/components/IconButton/IconButton';
 import Toggle from '../../../design-system/components/Toggle/Toggle';
-import SegmentedControl from '../../../design-system/components/SegmentedControl/SegmentedControl';
 import Input from '../../../design-system/components/Input/Input';
 import Dropdown from '../../../design-system/components/Dropdown/Dropdown';
 import styles from './NewUserDrawer.module.css';
@@ -42,6 +41,34 @@ function isValidEmail(email) {
  *   teams            — list of all teams in the center (used when team is not pre-selected)
  *   onClose          — called when the drawer should be dismissed
  */
+const MAX_VISIBLE_ERRORS = 5;
+
+const MOCK_RESULTS = {
+  ok:     { valid: 45, errors: [] },
+  mixed:  {
+    valid: 42,
+    errors: [
+      { row: 5,  reasons: ['Email is missing'] },
+      { row: 12, reasons: ['Role is not valid ("Entrenador")', 'Name is missing'] },
+      { row: 18, reasons: ['Name is missing', 'Phone is missing', 'Date of birth is missing'] },
+    ],
+  },
+  broken: {
+    valid: 0,
+    errors: Array.from({ length: 48 }, (_, i) => ({
+      row: i + 1,
+      reasons: [['Email is missing', 'Name is missing', 'Role is not valid'][i % 3]],
+    })),
+  },
+};
+
+function getMockResult(filename) {
+  const n = filename.toLowerCase();
+  if (n.includes('ok'))    return MOCK_RESULTS.ok;
+  if (n.includes('error')) return MOCK_RESULTS.broken;
+  return MOCK_RESULTS.mixed;
+}
+
 function defaultManualUser(preselectedTeamId) {
   return {
     id: Math.random(),
@@ -55,7 +82,7 @@ function defaultManualUser(preselectedTeamId) {
 }
 
 export default function NewUserDrawer({ center, team: preselectedTeam, teams = [], onClose }) {
-  const [mode, setMode] = useState('invite'); // 'invite' | 'manual'
+  const [mode, setMode] = useState(null); // null | 'invite' | 'manual'
 
   // ── Invite state ──
   const [inviteMode, setInviteMode] = useState('single'); // 'single' | 'bulk'
@@ -64,6 +91,15 @@ export default function NewUserDrawer({ center, team: preselectedTeam, teams = [
   const [bulkText,   setBulkText]     = useState('');
   const [bulkRole,   setBulkRole]     = useState('');
   const fileInputRef = useRef(null);
+
+  // ── Manual method state ──
+  const [manualMethod, setManualMethod]       = useState(null); // null | 'one-by-one' | 'from-file'
+  const [uploadedFile, setUploadedFile]       = useState(null);
+  const [isDragging,   setIsDragging]         = useState(false);
+  const [validationResult, setValidationResult] = useState(null); // null | { valid, errors[] }
+  const [isValidating,   setIsValidating]     = useState(false);
+  const [errorsExpanded, setErrorsExpanded]   = useState(false);
+  const manualFileInputRef = useRef(null);
 
   // ── Manual state ──
   const [manualUsers, setManualUsers] = useState([defaultManualUser(preselectedTeam?.id)]);
@@ -80,6 +116,22 @@ export default function NewUserDrawer({ center, team: preselectedTeam, teams = [
     setManualUsers(prev => prev.map(u => u.id === id ? { ...u, [field]: value } : u));
   }
 
+  function clearFile() {
+    setUploadedFile(null);
+    setValidationResult(null);
+    setErrorsExpanded(false);
+  }
+
+  function runValidation() {
+    setIsValidating(true);
+    setValidationResult(null);
+    setErrorsExpanded(false);
+    setTimeout(() => {
+      setValidationResult(getMockResult(uploadedFile.name));
+      setIsValidating(false);
+    }, 900);
+  }
+
   // ── Derived ──
   const bulkEmails        = parseEmails(bulkText);
   const validBulkEmails   = bulkEmails.filter(isValidEmail);
@@ -88,6 +140,7 @@ export default function NewUserDrawer({ center, team: preselectedTeam, teams = [
   // ── Footer button ──
   let primaryLabel    = 'Create';
   let primaryDisabled = true;
+  let primaryAction   = onClose;
 
   if (mode === 'invite') {
     if (inviteMode === 'single') {
@@ -99,8 +152,29 @@ export default function NewUserDrawer({ center, team: preselectedTeam, teams = [
       primaryDisabled = n === 0 || !bulkRole || (!preselectedTeam && !inviteSelectedTeamId);
     }
   } else {
-    primaryLabel    = 'Create';
-    primaryDisabled = !privacyAccepted || manualUsers.some(u => !u.name.trim() || !u.role || (!preselectedTeam && !u.selectedTeamId));
+    if (manualMethod === 'one-by-one') {
+      primaryLabel    = 'Create';
+      primaryDisabled = !privacyAccepted || manualUsers.some(u => !u.name.trim() || !u.role || (!preselectedTeam && !u.selectedTeamId));
+    } else if (manualMethod === 'from-file') {
+      if (isValidating) {
+        primaryLabel    = 'Validating…';
+        primaryDisabled = true;
+      } else if (!validationResult) {
+        primaryLabel    = 'Continue';
+        primaryDisabled = !uploadedFile;
+        primaryAction   = runValidation;
+      } else if (validationResult.valid === 0) {
+        primaryLabel    = 'Re-upload file';
+        primaryDisabled = false;
+        primaryAction   = () => { clearFile(); setTimeout(() => manualFileInputRef.current?.click(), 0); };
+      } else {
+        primaryLabel    = `Import ${validationResult.valid} users`;
+        primaryDisabled = false;
+      }
+    } else {
+      primaryLabel    = 'Create';
+      primaryDisabled = true;
+    }
   }
 
   return (
@@ -118,15 +192,47 @@ export default function NewUserDrawer({ center, team: preselectedTeam, teams = [
         {/* ── Body ── */}
         <div className={styles.body}>
 
-          {/* Segmented control */}
-          <SegmentedControl
-            options={[
-              { label: 'By invite', value: 'invite' },
-              { label: 'Manually', value: 'manual' },
-            ]}
-            value={mode}
-            onChange={v => { setMode(v); setInviteMode('single'); }}
-          />
+          {/* ══ MÉTODO — pantalla de entrada ══════════════════ */}
+          {mode === null && (
+            <div className={styles.methodSelection}>
+              <p className={styles.inviteDesc}>Team Users are part of a team, they use the device and provide the samples that get tracked as hydration data.</p>
+
+              <p className={styles.methodSelectionLabel}>How do you want to add your Team User?</p>
+
+              <div className={styles.methodCards}>
+                <button type="button" className={styles.methodCard} onClick={() => setMode('invite')}>
+                  <span className={styles.methodCardIcon}><IconResend size={24} /></span>
+                  <div className={styles.methodCardText}>
+                    <span className={styles.methodCardTitle}>By invite</span>
+                    <span className={styles.methodCardDesc}>Send an email invite so the user can create their own account and password.</span>
+                  </div>
+                </button>
+              </div>
+
+              <div className={styles.bulkOr}>
+                <span className={styles.bulkOrLine} />
+                <span className={styles.orDividerText}>Or add directly (No email)</span>
+                <span className={styles.bulkOrLine} />
+              </div>
+
+              <div className={styles.methodCards}>
+                <button type="button" className={styles.methodCard} onClick={() => { setMode('manual'); setManualMethod('one-by-one'); }}>
+                  <span className={styles.methodCardIcon}><IconTeams size={24} /></span>
+                  <div className={styles.methodCardText}>
+                    <span className={styles.methodCardTitle}>By hand</span>
+                    <span className={styles.methodCardDesc}>Add users individually, one at a time.</span>
+                  </div>
+                </button>
+                <button type="button" className={styles.methodCard} onClick={() => { setMode('manual'); setManualMethod('from-file'); }}>
+                  <span className={styles.methodCardIcon}><IconFile size={24} /></span>
+                  <div className={styles.methodCardText}>
+                    <span className={styles.methodCardTitle}>From file</span>
+                    <span className={styles.methodCardDesc}>Import from an Excel or CSV file.</span>
+                  </div>
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* ══ INVITE MODE ══════════════════════════════════ */}
           {mode === 'invite' && (
@@ -134,6 +240,13 @@ export default function NewUserDrawer({ center, team: preselectedTeam, teams = [
             <div className={styles.section}>
 
               {inviteMode === 'single' ? (<>
+
+                <button type="button" className={styles.backLink} onClick={() => setMode(null)}>
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path d="M10 12L6 8l4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  Back
+                </button>
 
                 <p className={styles.inviteDesc}>Send email invitations to your Team's users.</p>
 
@@ -270,8 +383,15 @@ export default function NewUserDrawer({ center, team: preselectedTeam, teams = [
             </div>
           )}
 
-          {/* ══ MANUAL MODE ══════════════════════════════════ */}
-          {mode === 'manual' && (<>
+          {/* ══ MANUAL MODE — one by one ═════════════════════ */}
+          {mode === 'manual' && manualMethod === 'one-by-one' && (<>
+
+            <button type="button" className={styles.backLink} onClick={() => { setMode(null); setManualMethod(null); }}>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M10 12L6 8l4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              Back
+            </button>
 
             <p className={styles.manualDesc}>
               These users will be added immediately, without sending an invitation email or waiting for them to accept it.
@@ -448,14 +568,184 @@ export default function NewUserDrawer({ center, team: preselectedTeam, teams = [
 
           </>)}
 
+          {/* ══ MANUAL MODE — from file ═══════════════════════ */}
+          {mode === 'manual' && manualMethod === 'from-file' && (
+            <div className={styles.fromFileSection}>
+
+              <button type="button" className={styles.backLink} onClick={() => { setMode(null); setManualMethod(null); clearFile(); }}>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M10 12L6 8l4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                Back
+              </button>
+
+              <div className={styles.fromFileSteps}>
+
+                {/* Step 1 */}
+                <div className={styles.fromFileStep}>
+                  <ol className={styles.fromFileOl} start={1}>
+                    <li className={styles.fromFileOlItem}>Download the template</li>
+                  </ol>
+                  <p className={styles.fromFileStepDesc}>
+                    You will find our{' '}
+                    <button type="button" className={styles.templateLink}>template here.</button>
+                  </p>
+                </div>
+
+                {/* Step 2 */}
+                <div className={styles.fromFileStep}>
+                  <ol className={styles.fromFileOl} start={2}>
+                    <li className={styles.fromFileOlItem}>Fill in it and upload it</li>
+                  </ol>
+
+                  {uploadedFile ? (
+                    <div className={styles.fileUploaded}>
+
+                      {/* File card */}
+                      <div className={styles.fileCard}>
+                        <div className={styles.fileCardLeft}>
+                          <IconFile size={20} />
+                          <span className={styles.fileCardName}>{uploadedFile.name}</span>
+                        </div>
+                        <button type="button" className={styles.fileCardRemove} onClick={clearFile} aria-label="Remove file">
+                          <IconClose size={16} />
+                        </button>
+                      </div>
+
+                      {/* Replace file — oculto cuando todo está roto */}
+                      {!isValidating && (!validationResult || validationResult.valid > 0) && (
+                        <button type="button" className={styles.replaceFileBtn} onClick={() => manualFileInputRef.current?.click()}>
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M4 12a8 8 0 0 1 13.66-5.66L20 9M20 9V4m0 5h-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                            <path d="M20 12a8 8 0 0 1-13.66 5.66L4 15M4 15v5m0-5h5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                          Replace file
+                        </button>
+                      )}
+
+                      {/* Loading */}
+                      {isValidating && (
+                        <div className={styles.validationLoading}>
+                          <span className={styles.validationSpinner} />
+                          Validating file…
+                        </div>
+                      )}
+
+                      {/* Resultados */}
+                      {validationResult && !isValidating && (() => {
+                        const { valid, errors } = validationResult;
+                        const visibleErrors = errorsExpanded ? errors : errors.slice(0, MAX_VISIBLE_ERRORS);
+                        const hiddenCount   = errors.length - MAX_VISIBLE_ERRORS;
+                        return (
+                          <div className={`${styles.validationPanel} ${errors.length === 0 ? styles.validationPanelOk : ''}`}>
+
+                            {/* Resumen */}
+                            <div className={styles.validationSummary}>
+                              <span className={styles.validStat}>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                  <path d="M5 13l4 4L19 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                </svg>
+                                {valid} {errors.length === 0 ? 'users ready to import' : 'ready'}
+                              </span>
+                              {errors.length > 0 && <>
+                                <span className={styles.validationDot}>·</span>
+                                <span className={styles.errorStat}>
+                                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                    <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                                  </svg>
+                                  {errors.length} {errors.length === 1 ? 'row' : 'rows'} with errors
+                                </span>
+                              </>}
+                            </div>
+
+                            {/* Hint cuando todo está roto */}
+                            {valid === 0 && (
+                              <p className={styles.validationHint}>Fix the file and re-upload it.</p>
+                            )}
+
+                            {/* Lista de errores */}
+                            {errors.length > 0 && (<>
+                              <div className={styles.validationDivider} />
+                              <ul className={styles.errorList}>
+                                {visibleErrors.map((err, i) => (
+                                  <li key={i} className={styles.errorItem}>
+                                    <span className={styles.errorRowNum}>Row {err.row}</span>
+                                    <span className={styles.errorReason}>
+                                      {err.reasons.slice(0, 2).join(' · ')}
+                                      {err.reasons.length > 2 && (
+                                        <span className={styles.errorReasonMore}> · +{err.reasons.length - 2} more</span>
+                                      )}
+                                    </span>
+                                  </li>
+                                ))}
+                              </ul>
+                              {!errorsExpanded && hiddenCount > 0 && (
+                                <button type="button" className={styles.errorExpandBtn} onClick={() => setErrorsExpanded(true)}>
+                                  …and {hiddenCount} more
+                                </button>
+                              )}
+                              <div className={styles.validationDivider} />
+                              <button type="button" className={styles.downloadReportBtn}>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                  <path d="M12 16V4M8 12l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                  <path d="M4 20h16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                                </svg>
+                                Download error report (.csv)
+                              </button>
+                            </>)}
+
+                          </div>
+                        );
+                      })()}
+
+                    </div>
+                  ) : (
+                    <div
+                      className={`${styles.dropZone} ${isDragging ? styles.dropZoneDragging : ''}`}
+                      onDragOver={e => { e.preventDefault(); setIsDragging(true); }}
+                      onDragLeave={() => setIsDragging(false)}
+                      onDrop={e => {
+                        e.preventDefault();
+                        setIsDragging(false);
+                        const file = e.dataTransfer.files[0];
+                        if (file) setUploadedFile(file);
+                      }}
+                      onClick={() => manualFileInputRef.current?.click()}
+                    >
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M12 16V8M8 12l4-4 4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M4 20h16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                      </svg>
+                      <div className={styles.dropZoneTextWrap}>
+                        <span className={styles.dropZoneText}>Drop your file here or click to browse</span>
+                        <span className={styles.dropZoneFormats}>.xlsx, .csv</span>
+                      </div>
+                    </div>
+                  )}
+
+                  <input
+                    ref={manualFileInputRef}
+                    type="file"
+                    accept=".csv,.xlsx,.xls"
+                    className={styles.hiddenFileInput}
+                    onChange={e => { setUploadedFile(e.target.files[0] || null); setValidationResult(null); setErrorsExpanded(false); e.target.value = ''; }}
+                  />
+                </div>
+
+              </div>
+            </div>
+          )}
+
         </div>
 
         {/* ── Footer ── */}
         <div className={styles.footer}>
           <Button variant="secondary" size="m" onClick={onClose}>Cancel</Button>
-          <Button variant="primary" size="m" disabled={primaryDisabled} onClick={onClose}>
-            {primaryLabel}
-          </Button>
+          {mode !== null && (
+            <Button variant="primary" size="m" disabled={primaryDisabled} onClick={primaryAction}>
+              {primaryLabel}
+            </Button>
+          )}
         </div>
 
       </div>

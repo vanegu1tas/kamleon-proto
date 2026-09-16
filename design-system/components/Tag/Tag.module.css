@@ -68,3 +68,32 @@
 .user .label {
   color: var(--color-text-subtle);
 }
+
+/* ─── Pending ────────────────────────────────────── */
+
+.pending {
+  background-color: var(--color-red-91);
+}
+
+.pending .dot {
+  background-color: var(--color-red-58);
+}
+
+.pending .label {
+  /* Red/29 y no Red/58 (Figma, componente "Tag status - invitations"): el rojo del punto
+     sobre el fondo Red/91 daba 2.9:1 de contraste, por debajo del mínimo AA de 4.5:1.
+     Red/29 sobre el mismo fondo da 7.22:1. Peso Book, igual que el resto de los tags. */
+  color: var(--color-red-29);
+}
+
+/* ─── Expired ────────────────────────────────────── */
+
+/* PROVISORIO: tokens asumidos (neutro, sin alarma — la invitación ya no sirve pero no es
+   un error). Falta confirmar contra la variante Expired de "Tag status - invitations". */
+.expired .dot {
+  background-color: var(--color-text-disabled);
+}
+
+.expired .label {
+  color: var(--color-text-subtle);
+}
