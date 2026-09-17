@@ -1369,11 +1369,15 @@
   /* ── Slide animations (nivel 1: entre screens del navStack) ── */
 
   .screenSlide_forward {
-    animation: screenSlideInRight 0.28s cubic-bezier(0.4, 0, 0.2, 1) both;
+    /* `backwards`, no `both`: con `both` la animación deja `transform: translateX(0)` aplicado al
+         terminar, y un elemento con transform pasa a ser el marco de los `position: fixed` que
+         tiene adentro. Los drawers (fixed, inset 0) quedaban encerrados en el área de contenido,
+         debajo del menú superior, en vez de cubrir toda la pantalla. */
+    animation: screenSlideInRight 0.28s cubic-bezier(0.4, 0, 0.2, 1) backwards;
   }
 
   .screenSlide_back {
-    animation: screenSlideInLeft 0.28s cubic-bezier(0.4, 0, 0.2, 1) both;
+    animation: screenSlideInLeft 0.28s cubic-bezier(0.4, 0, 0.2, 1) backwards;
   }
 
   @keyframes screenSlideInRight {

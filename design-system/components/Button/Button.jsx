@@ -3,7 +3,8 @@ import styles from './Button.module.css';
 /**
  * Button
  *
- * @param {('primary'|'secondary')} variant - Variante visual del botón
+ * @param {('primary'|'secondary'|'tertiary')} variant - Variante visual del botón.
+ *   tertiary: relleno gris suave, sin borde.
  * @param {('s'|'m')}               size    - Tamaño del botón
  * @param {boolean}                 disabled - Estado deshabilitado
  * @param {React.ReactNode}         leftIcon - Ícono a la izquierda del texto

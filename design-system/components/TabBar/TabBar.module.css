@@ -1,7 +1,17 @@
+/* Envoltorio posicionado: el scroll ocurre en .tabBar, las flechas viven acá afuera para
+   que no se desplacen con el contenido. */
+.tabBarWrap {
+  position: relative;
+  min-width: 0;
+  width: 100%;
+}
+
 .tabBar {
   display: flex;
   align-items: center;
-  height: 56px;
+  /* 48px (Figma, TabBar del Design System). Estaba en 56 por una versión vieja del
+     componente — corregido 2026-09-16. */
+  height: 48px;
   position: relative;
   overflow: hidden;
 }
@@ -32,6 +42,71 @@
 
   .tabScrollable {
     flex: 0 0 auto;
+  }
+
+  /* El margen lateral va DENTRO del área que se desplaza, no afuera: así la fila arranca
+     alineada con el resto de la tarjeta, pero al desplazarse las pestañas pasan por debajo
+     del borde real de la tarjeta en vez de cortarse contra una franja blanca fija. */
+  .tabBarScrollable {
+    padding-inline: var(--tabbar-inset, 0px);
+  }
+
+  /* Pista de "hay más pestañas": degradado del color de la superficie + flecha chica encima.
+     Las clases las pone el componente midiendo el scroll, así que no aparecen si todas las
+     pestañas entran. El degradado solo no alcanza (sobre blanco se lee como que la fila
+     termina); la flecha sola se ve pegada. Juntos: el texto se desvanece y la flecha
+     queda apoyada sobre ese desvanecido, sin banda ni fondo propio. */
+  .tabBarWrap.wrapFadeEnd::after,
+  .tabBarWrap.wrapFadeStart::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 56px;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .tabBarWrap.wrapFadeEnd::after {
+    right: 0;
+    background: linear-gradient(to left, var(--color-bg-surface) 35%, transparent);
+  }
+
+  .tabBarWrap.wrapFadeStart::before {
+    left: 0;
+    background: linear-gradient(to right, var(--color-bg-surface) 35%, transparent);
+  }
+
+  .scrollHint {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 32px;
+    height: 32px;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: var(--color-text-subtle);
+    z-index: 2;
+  }
+
+  .scrollHint:hover {
+    color: var(--color-text-strong);
+  }
+
+  .scrollHintEnd {
+    right: 4px;
+  }
+
+  .scrollHintStart {
+    left: 4px;
+  }
+
+  .scrollHintStart svg {
+    transform: rotate(180deg);
   }
 }
 

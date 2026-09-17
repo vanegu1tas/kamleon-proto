@@ -740,6 +740,11 @@
     background: rgba(0, 0, 0, 0.35);
   }
 
+  /* `.modal` es la clase que usan de verdad los 7 drawers que comparten este archivo
+     (New/Edit center, New center global, Add Org Admin, Invite Center/Team Admin, Edit unit).
+     La regla solo apuntaba a `.drawer`, que ninguno usa, así que en mobile y tablet nunca
+     pasaban a pantalla completa. */
+  .modal,
   .drawer {
     top: 0;
     right: 0;

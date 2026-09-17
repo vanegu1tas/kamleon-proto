@@ -41,6 +41,22 @@
   color: var(--color-status-error);
 }
 
+/* ─── Critical ───────────────────────────────────────────
+   Rojo en reposo, no solo en hover: señala un problema que ya existe (ej. incidencia de
+   entrega de un correo). Distinto de `danger`, que es neutro hasta el hover porque marca
+   una acción destructiva disponible (eliminar), no un estado. */
+
+.critical {
+  border-color: var(--color-border-error);
+  color: var(--color-status-error);
+}
+
+.critical:hover {
+  background: var(--color-bg-surface-subtle);
+  border-color: var(--color-status-error);
+  color: var(--color-status-error);
+}
+
 /* ─── Tooltip shared ──────────────────────────────────── */
 
 [class*='tooltip-']::before,

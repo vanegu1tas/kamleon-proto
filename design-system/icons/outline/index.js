@@ -31,3 +31,5 @@ export { default as IconRefresh } from './IconRefresh';
 export { default as IconMore } from './IconMore';
 export { default as IconSort } from './IconSort';
 export { default as IconDownload } from './IconDownload';
+export { default as IconMailWarning } from './IconMailWarning';
+export { default as IconMailHistory } from './IconMailHistory';

@@ -1,6 +1,6 @@
 # Project Summary — Kamleon Design System
 
-Estado del proyecto al 2026-04-02 (lista de pendientes en "Próximos pasos" revisada el 2026-09-15). Referencia rápida para retomar el trabajo.
+Estado del proyecto al 2026-04-02 (lista de pendientes en "Próximos pasos" revisada al cierre del 2026-09-16). Referencia rápida para retomar el trabajo.
 
 ---
 
@@ -706,9 +706,9 @@ Proyecto separado dentro del mismo repo para la pantalla física sobre el urinal
 
 ## Próximos pasos
 
-Checklist revisado el 2026-09-15.
+Checklist revisado el 2026-09-16.
 
-**Orden sugerido:** 1) commit → 2) dropdown Role → 3) tabs secundarios.
+**Al retomar (2026-09-17):** 1) commit de lo del 16/9 → 2) seguir actualizando el prototipo con las pantallas de Figma (objetivo: listo para el martes 22/9) → 3) responder las preguntas abiertas sobre abrir el perfil desde las filas activas.
 
 ### 🔴 Esperando algo de Daniel
 
@@ -754,9 +754,18 @@ Checklist revisado el 2026-09-15.
 
 ### 🟢 Listo para hacer
 
-- [ ] **Unificar el componente Tag en el DS**
-  En Figma conviven el `Tag` del design system (Active / Inactive) y "Tag status - invitations", hecho aparte con los mismos estilos. Absorber el segundo dentro del primero: agregar Pending y Expired a la propiedad Status, corregir el texto de Pending a Red/29 (contraste), documentar en la descripción qué estado se usa en qué contexto, cambiar las instancias y borrar el componente viejo. En código ya está hecho. Regla y criterio → `docs/design-system-rules.md`.
-  → Los colores de Expired en código son provisorios hasta ver la variante de Figma
+- [ ] **Decidir la vista mobile de la tabla de Admins (cards vs scroll) y quitar el easter egg**
+  En 390px conviven dos propuestas: **cards** (Figma `12852:129168`: una card por admin con los valores etiquetados, incidencia como línea "Email — Delivery issue" y botón "Manage invitation" / "Manage admin" que abre un bottom sheet) y **scroll** (la tabla original con scroll horizontal y primera columna fija). Se alterna tocando tres veces seguidas el título "Admins", solo en mobile; la elección queda guardada en el navegador. Es temporal, para mostrárselas al manager. Cuando se decida: borrar la opción descartada y el gesto (`InvitationsTable.jsx`, clases `invitationsMobileList` / `invitationsMobileScroll` en `OrgDetailV2.module.css`).
+
+- [ ] **Abrir el perfil agnóstico desde las filas activas de Admins**
+  Las filas de admins activos tienen que abrir el perfil de esa persona. Criterio propuesto, "un gesto, un dueño por fila": solo las filas activas son clickeables (cursor y hover solo ahí); los botones internos (⋯, incidencia, Manage, Delivery issue) hacen lo suyo sin abrir el perfil; en desktop el tooltip de texto cortado sigue con hover en todas las filas (blanco, sin flecha, encima del texto, como acordamos con el programador); en touch, tocar un texto cortado en una fila activa abre el perfil y no el tooltip.
+  → Espera, tres preguntas: (1) ¿una invitación pendiente de alguien que ya tiene cuenta en Kamleon abre su perfil? (2) ¿se implementa ya con un aviso provisorio o se espera al diseño del perfil? (3) el tooltip abierto por toque aparece 28px más arriba, para que no lo tape el dedo; ¿se iguala al "encima" acordado con el programador?
+
+- [ ] **Igualar la tabla de Admins del centro con la de la organización**
+  Mismo componente, pero todavía con el placeholder "Search by email..." y sin "Edit user" en las acciones: hay que pasarle el permiso, porque Center Admin sí tiene `users.editData`.
+
+- [ ] **Tabs en mobile de centro, unit y Team Admin**
+  Ahora heredan la regla touch del TabBar (tamaño M, scroll con flecha y degradado), pero sus contenedores tienen padding y ancho máximo propios (`innerTabBarInner` de 320/420px) y probablemente muestren franjas blancas a los costados, como pasaba en la cabecera de la organización. Ajustar al llegar a esas pantallas.
 
 - [ ] **Corregir errores de "From file" tocando la celda**
   Tabla editable en lugar de descargar el reporte y volver a subir el archivo. Copy acordado: "Some rows need fixing" / "Click a cell to correct it — no need to re-upload the file." Después, un modal para agregar foto a cada jugador importado (buscador, contador "X of Y added", Skip).
@@ -780,10 +789,48 @@ Checklist revisado el 2026-09-15.
   Que aparezcan los free users, con el email de subtítulo, y que al elegir uno abra su perfil (`user-profile`).
   → Depende del perfil agnóstico
 
+### 🎨 Design System
+
+Todo lo que toca el design system, en Figma y en código. Relacionado: **Tabs del centro con estilo secundario**, en "Decidido 2026-09-15".
+
+- [x] **IconButton `Mode=Critical` en Figma** · *hecho por Daniel el 2026-09-16*
+  Rojo en reposo, para un problema que ya existe (incidencia). Distinto de Danger, que es una acción destructiva y solo se pone rojo en hover. En código: `variant="critical"`.
+
+- [ ] **Documentar en Figma la regla del ContextMenu en teléfono**
+  En ≤390px el ContextMenu se muestra como BottomSheet; lo aplica el componente, así que cubre los 21 menús del prototipo. Es comportamiento, no variante: va en la descripción del componente. Regla → `docs/design-system-rules.md`.
+
+- [ ] **Documentar en Figma la regla del TabBar en touch**
+  En código ya está aplicada: en ≤768px el TabBar pasa solo a tamaño M y, si las pestañas no entran, muestra scroll con flecha y degradado. Falta en el Design System: un frame de especificación al lado del componente (estados en reposo / desplazado / al final / cuando entran, con medidas) y una línea en la descripción. Es regla, no componente ni variante. Wireframe y medidas listos → `docs/features/tabbar-touch-spec.md`.
+
+- [ ] **Grosor de trazo compartido para los iconos**
+  Hoy cada icono tiene `strokeWidth="1.5"` escrito a mano en su propio archivo: si se decide cambiar el grosor del set, hay que editarlos uno por uno. Centralizarlo en un único valor compartido. Origen: `IconMailWarning` llegó primero con los trazos convertidos a relleno, que no acompañaría un cambio de grosor, y se reemplazó por la versión con trazo (2026-09-16). En Figma los iconos pueden seguir convertidos a vector para escalar; en código conviene trazo.
+
+- [ ] **Unificar el componente Tag en el DS**
+  En Figma conviven el `Tag` del design system (Active / Inactive) y "Tag status - invitations", hecho aparte con los mismos estilos. Absorber el segundo dentro del primero: agregar Pending y Expired a la propiedad Status, corregir el texto de Pending a Red/29 (contraste), documentar en la descripción qué estado se usa en qué contexto, cambiar las instancias y borrar el componente viejo. En código ya está hecho. Regla y criterio → `docs/design-system-rules.md`.
+  → Los colores de Expired en código son provisorios hasta ver la variante de Figma
+
+- [ ] **Variante `tertiary` del Button en el Design System de Figma**
+  Botón con relleno gris suave (`Background/Page`), sin borde y en forma de píldora. En código existe desde el 2026-09-16 (`design-system/components/Button/`) para el "Manage invitation" / "Manage admin" de las cards mobile de la tabla de Admins. En el Figma (nodo `12852:129168`) está dibujado como un frame suelto, no como instancia del Button: agregarlo como variante del componente.
+
+- [ ] **Llevar el BottomSheet al Design System de Figma**
+  El diseño existe en el archivo Web App 2.0 (nodo `12847:128367`) y el código ya lo sigue (`design-system/components/BottomSheet/`, reescrito el 2026-09-16): manija 48×4, opciones de 56px con icono de 24 y texto 16 Medium, separador entre todas, destructiva en rojo. Falta publicarlo como componente en el archivo del Design System para reutilizarlo en Users y Units.
+
+- [ ] **Detectar diferencias entre Figma y código automáticamente**
+  Origen: el TabBar M estaba en 56px en código y 48px en Figma, y el texto del Tag Pending tenía otro color; las dos cosas se descubrieron midiendo a mano. Explorar el MCP **figma-console** (más profundo que el MCP oficial de Figma), que trae herramientas pensadas para esto: `figma_check_design_parity`, `figma_audit_design_system`, `figma_get_design_changes`, `figma_diff_versions` y `figma_export_tokens`.
+  Objetivo: un comando que compare el DS de Figma contra `design-system/` y liste las diferencias, y evaluar dispararlo con cada publish de la librería (webhook `LIBRARY_PUBLISH` de la API de Figma).
+  Distinto de Code Connect (que muestra el código real dentro de Figma, ya listo pero bloqueado por permisos) y de la sincronización de tokens (Tokens Studio o manual, sin decidir).
+
+- [ ] **Huecos del design system**: componente Radio, story de FilterPanel y páginas MDX de tokens en Storybook (Colors, Typography, Radius).
+
+- [ ] **Figma Code Connect**: archivos listos; bloqueado hasta tener rol Admin en el workspace del cliente.
+
 ### 📦 Guardar el trabajo
 
-- [ ] **Commit de todo lo acumulado** · *paso 1 del orden sugerido*
-  El último commit es del 23/6 y hay unos 85 archivos modificados o nuevos (Invitations, tour, permisos por rol, Units, Usage, pasada mobile, etc.).
+- [x] **Commit de todo lo acumulado** · *hecho 2026-09-16, `c091caf`*
+  109 archivos: roles y permisos, Invitations, Units, Usage, tour, pasada mobile y docs.
+
+- [ ] **Commit de lo del 2026-09-16** · *lo primero al retomar*
+  Unos 27 archivos: tabla de Admins en desktop, tablet y mobile (cards) con el easter egg de vistas; TabBar a 48px con la regla touch (flecha, degradado, `inset`); BottomSheet según Figma y ContextMenu que se vuelve bottom sheet en teléfono; IconButton `critical`, Button `tertiary`, `IconMailWarning` e `IconMailHistory`; permisos por fila y "+" para staff; menú "⋯" de la cabecera en mobile; drawers a pantalla completa en mobile y tablet (animaciones que dejaban un `transform`, regla `.modal` en `NewCenterDrawer.module.css` y Notifications); arreglo de capas del menú abierto en las filas; docs.
 
 - [ ] **Deploy a GitHub Pages**
   Publicar la versión actual del prototipo.
@@ -794,9 +841,7 @@ Checklist revisado el 2026-09-15.
 - [ ] **Pantalla My data (#14)**: ya está en el sidebar para todos los roles (#47), pero muestra un placeholder. Incluye resolver el ítem con el sidebar colapsado.
 - [ ] **Pantalla de End User**: el rol todavía no está definido del lado real.
 - [ ] **Tour para Owner, Admin, Editor y End User**: definir si les corresponde.
-- [ ] **Huecos del design system**: componente Radio, story de FilterPanel y páginas MDX de tokens en Storybook (Colors, Typography, Radius).
 - [ ] **Reconciliar el modal Configure API**: lo hace el programador; no tocarlo hasta que esté listo.
-- [ ] **Figma Code Connect**: archivos listos; bloqueado hasta tener rol Admin en el workspace del cliente.
 - [ ] **Animación "morph" del botón Create**: que el menú crezca de verdad desde el botón.
 - [ ] **Pruebas de usuario con participantes reales**: guiones listos en `docs/features/`.
 - [ ] **Drawers largos en 390px**: verificar el scroll de NewCenterDrawer y EditCenterDrawer en el navegador.

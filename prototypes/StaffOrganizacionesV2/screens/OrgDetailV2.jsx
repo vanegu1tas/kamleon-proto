@@ -974,7 +974,7 @@ function OrgDetailsTab({ org }) {
       </div>
 
       {(() => {
-        const people = (org.admins ?? []).map(a => ({ role: 'Org Admin', name: a.name, email: a.email, phone: a.phone }));
+        const people = (org.admins ?? []).map(a => ({ role: a.role ?? 'Org Admin', name: a.name, email: a.email, phone: a.phone }));
         const hasOrgInfo = org.email || org.phone || org.fiscal;
         if (!hasOrgInfo && people.length === 0) return null;
         return (
@@ -1051,7 +1051,19 @@ function RemoveAdminModal({ row, onClose, onConfirm }) {
   );
 }
 
-function OrgInvitationsTab({ pendingInvites, setPendingInvites, centerAdminInvites, setCenterAdminInvites, orgAdmins, setOrgAdmins, currentUserEmail }) {
+function OrgInvitationsTab({ pendingInvites, setPendingInvites, centerAdminInvites, setCenterAdminInvites, orgAdmins, setOrgAdmins, currentUserEmail, role }) {
+  // Owner/Admin tienen bypass total; Org Admin puede quitar Org Admins
+  // (`organizations.admins.remove`) y Center Admins (`centers.admins.remove`), pero NO
+  // Team Admins: no tiene ningún permiso `teams.*` (docs/permissions.md).
+  const hasBypass = role === 'owner' || role === 'admin';
+  // `users.editData`: Center Admin y Team Admin (y Owner/Admin por bypass) — Org Admin no.
+  const canEditUsers = hasBypass;
+  const [editUserRow, setEditUserRow] = useState(null);
+  function canRemoveRow(admin) {
+    if (hasBypass) return true;
+    return (admin.role ?? 'Organization Admin') !== 'Team admin';
+  }
+
   const [inviteToast, setInviteToast] = useState(null);
   const [removeTarget, setRemoveTarget] = useState(null);
 
@@ -1062,6 +1074,7 @@ function OrgInvitationsTab({ pendingInvites, setPendingInvites, centerAdminInvit
       key: `org-${i}`, kind: 'org', index: i,
       email: invite.email, type: 'Organization Admin', scope: '-', team: '-', status: 'pending',
       sentAgo: invite.sentAgo ?? '—', sentMinutesAgo: invite.sentMinutesAgo ?? 0,
+      deliveryIssue: invite.deliveryIssue ?? false,
     })),
     ...centerAdminInvites.map(invite => ({
       key: `center-${invite.key}`, kind: 'center', centerKey: invite.key,
@@ -1070,7 +1083,12 @@ function OrgInvitationsTab({ pendingInvites, setPendingInvites, centerAdminInvit
     })),
     ...orgAdmins.map(admin => ({
       key: `active-org-${admin.key}`, kind: 'activeOrgAdmin', adminKey: admin.key,
-      email: admin.email, name: admin.name, type: 'Organization Admin', scope: '-', team: '-', status: 'active',
+      email: admin.email, name: admin.name,
+      type: admin.role ?? 'Organization Admin',
+      scope: admin.centerName ?? '-',
+      team: admin.teamName ?? '-',
+      status: 'active',
+      canRemove: canRemoveRow(admin),
       sentAgo: admin.joinedAgo ?? '—', sentMinutesAgo: 999999,
       isSelf: currentUserEmail != null && admin.email === currentUserEmail,
     })),
@@ -1091,7 +1109,7 @@ function OrgInvitationsTab({ pendingInvites, setPendingInvites, centerAdminInvit
   }
 
   function confirmRemove() {
-    setInviteToast(`${removeTarget.email} removed as Org Admin`);
+    setInviteToast(`${removeTarget.email} removed as ${removeTarget.type}`);
     setOrgAdmins(prev => prev.filter(a => a.key !== removeTarget.adminKey));
   }
 
@@ -1101,18 +1119,28 @@ function OrgInvitationsTab({ pendingInvites, setPendingInvites, centerAdminInvit
         title="Admins"
         description={'Invite and manage administrators for this organization and its centers. To invite someone new, use the "+" button above.'}
         rows={rows}
-        typeOptions={['Organization Admin', 'Center admin']}
+        typeOptions={['Organization Admin', 'Center admin', 'Team admin']}
         scopeLabel="Center"
         showTeam
-        searchPlaceholder="Search by mail"
+        searchPlaceholder="Search..."
         showSent={false}
         emptyTitle="No administrators yet"
         emptySubtitle="Administrators you invite will appear here."
         onResend={handleResend}
         onCancel={handleCancel}
         onRemove={handleRemove}
+        onDeliveryIssue={row => setInviteToast(`Email history for ${row.email} isn't part of this prototype yet`)}
+        canEditUsers={canEditUsers}
+        onEditUser={row => setEditUserRow(row)}
         responsiveTable
       />
+      {editUserRow && (
+        <EditUserDrawer
+          user={{ name: editUserRow.name ?? '', email: editUserRow.email, status: 'active' }}
+          onClose={() => setEditUserRow(null)}
+          role={role}
+        />
+      )}
       {removeTarget && (
         <RemoveAdminModal
           row={removeTarget}
@@ -2959,6 +2987,47 @@ export default function OrgDetailV2({ org, onBack, initialCenter, initialTeam, i
   const [createMenuOpen, setCreateMenuOpen]   = useState(false);
   const createMenuRef = useRef(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  // En 390 la cabecera deja a la vista solo el "+" y manda Settings/Delete a un menú "⋯":
+  // acción principal visible, secundarias y destructivas en desbordamiento (así el botón de
+  // borrar deja de estar a un dedo del de crear). En tablet hay lugar para los tres.
+  const [isPhone, setIsPhone] = useState(() => window.matchMedia('(max-width: 390px)').matches);
+  const [orgMenuOpen, setOrgMenuOpen] = useState(false);
+  const orgMenuRef = useRef(null);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 390px)');
+    const onChange = e => setIsPhone(e.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
+
+  useEffect(() => {
+    if (!orgMenuOpen) return;
+    function handleClick(e) {
+      if (orgMenuRef.current && !orgMenuRef.current.contains(e.target)) setOrgMenuOpen(false);
+    }
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [orgMenuOpen]);
+
+  // Acciones de la cabecera que se van al "⋯" en 390.
+  const orgOverflowItems = [
+    { label: 'Org settings', icon: <IconSettings size={16} />, onClick: () => { setOrgMenuOpen(false); setShowEditDrawer(true); } },
+    ...(canDeleteOrg ? [{ label: 'Delete organization', icon: <IconTrash size={16} />, variant: 'danger', onClick: () => { setOrgMenuOpen(false); setShowDeleteModal(true); } }] : []),
+  ];
+
+  const orgOverflowMenu = (
+    <div className={styles.createMenuAnchor} ref={orgMenuRef}>
+      <IconButton aria-label="More actions" tooltip="More" tooltipPosition="left" onClick={() => setOrgMenuOpen(v => !v)}>
+        <IconMore size={16} />
+      </IconButton>
+      {orgMenuOpen && (
+        <div className={styles.cardCreateMenu}>
+          <ContextMenu items={orgOverflowItems} />
+        </div>
+      )}
+    </div>
+  );
   const [orgTab, setOrgTab]                   = useState('centers');
   const [pendingInvites, setPendingInvites]   = useState(org.pendingInvites ?? []);
   const [centerAdminInvites, setCenterAdminInvites] = useState(() =>
@@ -3064,9 +3133,11 @@ export default function OrgDetailV2({ org, onBack, initialCenter, initialTeam, i
                       </div>
                     )}
                   </div>
-                  <IconButton aria-label="Org settings" tooltip="Org settings" tooltipPosition="left" onClick={() => setShowEditDrawer(true)} data-tour-id="org-settings">
-                    <IconSettings size={16} />
-                  </IconButton>
+                  {isPhone ? orgOverflowMenu : (
+                    <IconButton aria-label="Org settings" tooltip="Org settings" tooltipPosition="left" onClick={() => setShowEditDrawer(true)} data-tour-id="org-settings">
+                      <IconSettings size={16} />
+                    </IconButton>
+                  )}
                 </div>
               </div>
             ) : (
@@ -3086,13 +3157,44 @@ export default function OrgDetailV2({ org, onBack, initialCenter, initialTeam, i
                   </div>
                 </div>
                 <div className={styles.orgActions}>
-                  <IconButton aria-label="Org settings" tooltip="Org settings" tooltipPosition="left" onClick={() => setShowEditDrawer(true)} data-tour-id="org-settings">
-                    <IconSettings size={16} />
-                  </IconButton>
-                  {canDeleteOrg && (
-                    <IconButton aria-label="Eliminar organización" tooltip="Delete" tooltipPosition="left" variant="danger" onClick={() => setShowDeleteModal(true)}>
-                      <IconTrash size={16} />
-                    </IconButton>
+                  {/* Owner/Admin tienen bypass total (docs/permissions.md), así que también
+                      invitan admins — faltaba el "+" en la cabecera de staff: veían el tab
+                      Admins y podían reenviar/cancelar/quitar, pero no crear. */}
+                  {canManageOrgAdmins && (
+                    <div className={styles.createMenuAnchor} ref={createMenuRef}>
+                      <span className={createMenuOpen ? styles.createTriggerHidden : ''}>
+                        <IconButton
+                          aria-label="Create"
+                          tooltip="Create"
+                          tooltipPosition="left"
+                          onClick={() => setCreateMenuOpen(v => !v)}
+                        >
+                          <IconPlus size={16} />
+                        </IconButton>
+                      </span>
+                      {createMenuOpen && (
+                        <div className={styles.cardCreateMenu}>
+                          <ContextMenu
+                            items={[
+                              { label: 'Org Admin', icon: <IconPlus size={16} />, onClick: () => { setCreateMenuOpen(false); setShowAddAdminDrawer(true); } },
+                              { label: 'Center Admin', icon: <IconPlus size={16} />, onClick: () => { setCreateMenuOpen(false); setShowInviteCenterAdmin(true); } },
+                            ]}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  {isPhone ? orgOverflowMenu : (
+                    <>
+                      <IconButton aria-label="Org settings" tooltip="Org settings" tooltipPosition="left" onClick={() => setShowEditDrawer(true)} data-tour-id="org-settings">
+                        <IconSettings size={16} />
+                      </IconButton>
+                      {canDeleteOrg && (
+                        <IconButton aria-label="Eliminar organización" tooltip="Delete" tooltipPosition="left" variant="danger" onClick={() => setShowDeleteModal(true)}>
+                          <IconTrash size={16} />
+                        </IconButton>
+                      )}
+                    </>
                   )}
                 </div>
               </div>
@@ -3101,7 +3203,9 @@ export default function OrgDetailV2({ org, onBack, initialCenter, initialTeam, i
           </div>
 
           <div className={`${styles.headerTabBarWrap} ${orgTabs.length > 3 ? styles.headerTabBarWrapWide : ''}`} data-tour-id="org-tabs">
-            <TabBar tabs={orgTabs} activeTab={orgTab} onChange={setOrgTab} size="s" scrollable />
+            {/* En touch el TabBar pasa solo a M y a scroll (regla del componente). Figma
+                12818:85822 → 610px de ancho en tablet. inset: este contenedor no tiene padding. */}
+            <TabBar tabs={orgTabs} activeTab={orgTab} onChange={setOrgTab} size="s" inset={16} />
           </div>
 
         </div>
@@ -3133,6 +3237,7 @@ export default function OrgDetailV2({ org, onBack, initialCenter, initialTeam, i
             orgAdmins={orgAdmins}
             setOrgAdmins={setOrgAdmins}
             currentUserEmail={currentUserEmail}
+            role={role}
           />
         )}
         {orgTab === 'units' && canViewOrgUnits && (

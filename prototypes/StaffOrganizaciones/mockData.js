@@ -206,10 +206,14 @@ export const ORGS = [
     admins: [
       { name: 'Jordan Hobbs', email: 'j.hobbs@astoniafc.com', phone: '+44 121 554 1234' },
       { name: 'Amara Whitfield', email: 'a.whitfield@astoniafc.com', phone: '+44 121 554 1239', joinedAgo: '13/May/26' },
-      { name: 'Noah Fischer', email: 'n.fischer@astoniafc.com', phone: '+44 121 554 1241', joinedAgo: '13/Jul/26' },
+      // Team admin dentro de la lista de admins de la org: el tab Admins muestra los tres
+      // niveles juntos, así se ve la columna Team con contenido real.
+      { name: 'Noah Fischer', email: 'n.fischer@astoniafc.com', phone: '+44 121 554 1241', joinedAgo: '13/Jul/26', role: 'Team admin', centerName: 'Training Ground', teamName: 'First Team' },
     ],
     pendingInvites: [
-      { email: 'sara.diaz@astoniafc.com', sentAgo: '11/Aug/26', sentMinutesAgo: 2880 },
+      // deliveryIssue: el correo tuvo un problema en el gestor de emails (rebote o delay).
+      // Feature del programador — acá solo el indicador, ver docs/features/invitations-delivery-issue.md
+      { email: 'sara.diaz@astoniafc.com', sentAgo: '11/Aug/26', sentMinutesAgo: 2880, deliveryIssue: true },
     ],
     centers: [
       {

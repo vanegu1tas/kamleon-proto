@@ -7,7 +7,8 @@ import styles from './IconButton.module.css';
  * @param {string}          aria-label      - Requerido para accesibilidad
  * @param {string}          [tooltip]       - Texto del tooltip visual (data-tooltip)
  * @param {'top'|'bottom'|'left'|'right'} [tooltipPosition='bottom']
- * @param {'default'|'danger'} [variant='default']
+ * @param {'default'|'danger'|'critical'} [variant='default'] - danger: rojo solo en hover (acción
+ *   destructiva disponible). critical: rojo en reposo (un problema que ya existe).
  * @param {boolean}         [disabled=false]
  * @param {function}        [onClick]
  */

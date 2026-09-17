@@ -64,6 +64,26 @@
   color: var(--color-text-disabled);
 }
 
+/* ─── Tertiary ───────────────────────────────────────
+   Relleno gris suave, sin borde. Acción secundaria que tiene que verse como botón sin
+   competir con la principal: ej. "Manage invitation" al pie de cada card en mobile, donde
+   un botón transparente (secondary) no se distingue del texto de la card. */
+
+.tertiary {
+  background-color: var(--color-bg-page);
+  color: var(--color-text-strong);
+}
+
+.tertiary:hover:not(:disabled),
+.tertiary:active:not(:disabled) {
+  background-color: var(--color-grey-91);
+}
+
+.tertiary:disabled {
+  background-color: var(--color-grey-91);
+  color: var(--color-text-disabled);
+}
+
 /* ─── Icon ───────────────────────────────────────── */
 
 .icon {

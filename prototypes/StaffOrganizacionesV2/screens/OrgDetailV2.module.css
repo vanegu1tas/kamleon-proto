@@ -1392,7 +1392,10 @@
 .teamTableRow:hover::before { opacity: 1; }
 .teamTableRow:hover { z-index: 1; }
 .teamTableRow:last-child { border-bottom: none; }
-.teamTableRow.menuOpen { z-index: 1; }
+/* La fila con el menú "⋯" abierto va un nivel por encima de la que tiene hover: con el
+   mismo nivel, al sacar el mouse las filas siguientes (más abajo en el DOM) pintaban
+   encima del menú. */
+.teamTableRow.menuOpen { z-index: 2; }
 
 .teamTableRow:focus-visible {
   outline: 2px solid var(--color-action-primary-bg);
@@ -1526,8 +1529,28 @@
   z-index: 50;
 }
 
-.nameTooltipWrap[data-tooltip]:hover::after {
+.nameTooltipWrap[data-tooltip]:hover::after,
+.nameTooltipWrap[data-tooltip].nameTooltipOpen::after {
   opacity: 1;
+}
+
+/* Texto cortado a N líneas (N lo pone TruncatedText con WebkitLineClamp). El corte es
+   por alto, no por ancho: la última línea visible termina en ellipsis y la palabra nunca
+   se parte por la mitad. */
+.clampLines {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(--clamp-lines, 2);
+  overflow: hidden;
+  white-space: normal;
+  overflow-wrap: normal;
+}
+
+.nameTooltipOpen[data-tooltip]::after {
+  /* Abierto por toque: se despega del texto para no taparlo con el dedo encima. */
+  top: -28px;
+  max-width: 220px;
+  white-space: normal;
 }
 
 .dateText {
@@ -1535,6 +1558,22 @@
   font-size: var(--font-size-14);
   font-weight: var(--font-weight-book);
   color: var(--color-text-subtle);
+}
+
+/* Incidencia de envío como texto accionable (vista de 390): subrayado en vez de chevron
+   — no navega a otra pantalla, abre el historial del correo. */
+.deliveryIssueLink {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-red-29);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+  text-align: left;
 }
 
 /* ── More button (⋯) ── */
@@ -2823,7 +2862,11 @@
     display: flex;
     flex-direction: column;
     transform: none;
-    animation: detailFadeSlideIn 0.22s cubic-bezier(0.4, 0, 0.2, 1) both;
+    /* `backwards`, no `both`: con `both` la animación deja `transform: translateX(0)` aplicado al
+         terminar, y un elemento con transform pasa a ser el marco de los `position: fixed` que
+         tiene adentro. Los drawers (fixed, inset 0) quedaban encerrados en el área de contenido,
+         debajo del menú superior, en vez de cubrir toda la pantalla. */
+    animation: detailFadeSlideIn 0.22s cubic-bezier(0.4, 0, 0.2, 1) backwards;
   }
 
   @keyframes detailFadeSlideIn {
@@ -2834,11 +2877,11 @@
   /* ── Sub-niveles dentro del detailPanel ── */
 
   .detailSlideIn {
-    animation: subSlideInRight 0.28s cubic-bezier(0.4, 0, 0.2, 1) both;
+    animation: subSlideInRight 0.28s cubic-bezier(0.4, 0, 0.2, 1) backwards;
   }
 
   .detailSlideBack {
-    animation: subSlideInLeft 0.28s cubic-bezier(0.4, 0, 0.2, 1) both;
+    animation: subSlideInLeft 0.28s cubic-bezier(0.4, 0, 0.2, 1) backwards;
   }
 
   @keyframes subSlideInRight {
@@ -2979,9 +3022,11 @@
   }
 
   /* ── Invitations table (solo Org Admin por ahora, ver responsiveTable prop):
-     el buscador se achica en vez de empujar "Filters" fuera de pantalla. ── */
+     mantiene los 277px del Figma y solo se achica si "Filters" no entra — antes crecía
+     con flex:1 hasta ~570px, un ancho que no se corresponde con lo que se escribe
+     (un email) y que volvía al buscador el elemento más pesado de la barra. ── */
   .invitationsResponsive .invitationsSearch {
-    flex: 1 1 auto;
+    flex: 0 1 277px;
     width: auto;
     min-width: 0;
   }
@@ -3050,7 +3095,93 @@
     min-width: 0;
   }
 
+  /* Tabs de la org en tablet: 610px de ancho útil (Figma 12818:85822) + los 16px de
+     padding a cada lado del wrap = 642. Con ese ancho las 5-6 pestañas entran sin
+     scroll, así que ninguna queda escondida detrás de un arrastre. */
+  .headerTabBarWrap,
+  .headerTabBarWrapWide {
+    max-width: 642px;
+    /* Sin padding propio ni scroll propio: el margen de 16px lo pone el TabBar dentro de su
+       área de scroll (prop `inset`). Con el padding acá, el scroll ocurría 16px adentro del
+       borde y quedaban franjas blancas fijas a los dos lados, que hacían parecer que la
+       fila terminaba en "Units". */
+    padding: 0;
+    overflow: visible;
+  }
+
   .usersTab .teamTable {
+    overflow-x: hidden;
+  }
+
+  /* ── Tabla de invitaciones en tablet: entrar sin scroll horizontal ──
+     Ancho útil a 768px: 728 (página) − 48 (padding de la tabla) = 680.
+     Con anchos fijos para las 5 columnas cortas (464) le quedan 216 a Recipient,
+     que trunca el email con ellipsis en vez de empujar la tabla a lo ancho. */
+  .invitationsResponsive .teamColName {
+    flex: 1 1 auto;
+    width: auto;
+    min-width: 176px;
+  }
+
+  .invitationsResponsive .inviteColType {
+    flex: 0 0 112px;
+    width: 112px;
+    min-width: 112px;
+  }
+
+  .invitationsResponsive .inviteColScope,
+  .invitationsResponsive .inviteColSent {
+    flex: 0 0 104px;
+    width: 104px;
+    min-width: 104px;
+  }
+
+  .invitationsResponsive .inviteColTeam {
+    flex: 0 0 72px;
+    width: 72px;
+    min-width: 72px;
+  }
+
+  .invitationsResponsive .inviteColStatus {
+    flex: 0 0 96px;
+    width: 96px;
+    min-width: 96px;
+  }
+
+  /* 80px = dos IconButton de 32 + 8 de gap + 4 de aire; con 104 y padding 12 la fila
+     se pasaba del ancho disponible. */
+  .invitationsResponsive .inviteColActions {
+    flex: 0 0 80px;
+    width: 80px;
+    padding: 12px 0;
+    gap: 8px;
+  }
+
+  .invitationsResponsive .teamTableHead .teamCol,
+  .invitationsResponsive .teamTableRow .teamCol {
+    padding: 12px 8px;
+  }
+
+  /* Role, Center y Team pasan a dos líneas en vez de recortarse: son nombres propios
+     (dos centros pueden empezar igual) y la fila ya es de dos líneas por el email +
+     "Invited …", así que no se rompe el ritmo ni cambia la altura. El email sí se
+     recorta con ellipsis. Decisión de diseño 2026-09-16. */
+  .invitationsResponsive .inviteColType,
+  .invitationsResponsive .inviteColScope,
+  .invitationsResponsive .inviteColTeam {
+    overflow: visible;
+  }
+
+  .invitationsResponsive .inviteColType .dateText,
+  .invitationsResponsive .inviteColScope .dateText,
+  .invitationsResponsive .inviteColTeam .dateText {
+    white-space: normal;
+    text-align: center;
+    /* sin break-word: si una palabra no entra, se corta con ellipsis al final de la
+       segunda línea (.clampLines), nunca partida a la mitad */
+  }
+
+  .invitationsResponsive .teamTable {
     overflow-x: hidden;
   }
 
@@ -3206,44 +3337,166 @@
     background: var(--color-bg-surface);
   }
 
-  /* ── Tab Admins (Org y Centro, InvitationsTable): mismo patrón sticky+scroll que
-     .usersTab arriba — a 768px no hace falta (spec de Figma, columnas se achican bien),
-     pero a este ancho 5 columnas no entran de ninguna forma sin volverse ilegibles. La
-     regla de 768px no alcanza sola porque un @media max-width:768px sigue aplicando
-     acá también — hace falta esta específica para 390 que la pise. ── */
-  .invitationsResponsive .teamTable {
+  /* ── Tab Admins (Org y Centro, InvitationsTable) a 390: lista de cards ──
+     Figma: Web App 2.0 → "Kamleon — Prototipo / Option B" (nodo 12852:129168).
+     Con 6 columnas no hay scroll que sirva (Status y acciones quedan fuera del encuadre),
+     así que cada fila pasa a ser una card con los valores etiquetados: sin header de
+     columnas no se sabe si "Training Ground" es centro o equipo. ── */
+  .invitationsMobileList .teamTable {
+    overflow-x: hidden;
+    padding: 0 16px 16px;
+    margin-left: 0;
+    gap: 16px;
+  }
+
+  .invitationsMobileList .teamTableHead {
+    display: none;
+  }
+
+  /* Card: borde Border/Default, radio 12, padding 12. */
+  .invitationsMobileList .teamTableRow {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "name    status"
+      "type    type"
+      "scope   scope"
+      "team    team"
+      "issue   issue"
+      "actions actions";
+    row-gap: 8px;
+    width: auto;
+    min-width: 0;
+    height: auto;
+    min-height: 0;
+    padding: 12px;
+    background: var(--color-bg-surface);
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-s);
+    cursor: default;
+  }
+
+  /* Sin el resaltado de hover de la fila de tabla: la card ya tiene su propio marco. */
+  .invitationsMobileList .teamTableRow::before {
+    display: none;
+  }
+
+  /* Reset de las celdas de tabla. Va primero: las reglas de abajo ajustan cada celda. */
+  .invitationsMobileList .teamTableRow .teamCol {
+    width: auto;
+    min-width: 0;
+    flex: none;
+    padding: 0;
+    justify-content: flex-start;
+  }
+
+  .invitationsMobileList .teamTableRow .teamColName   { grid-area: name; }
+  .invitationsMobileList .teamTableRow .inviteColType   { grid-area: type; }
+  .invitationsMobileList .teamTableRow .inviteColScope  { grid-area: scope; }
+  .invitationsMobileList .teamTableRow .inviteColTeam   { grid-area: team; }
+  .invitationsMobileList .teamTableRow .inviteColIssue  { grid-area: issue; }
+  .invitationsMobileList .teamTableRow .inviteColStatus { grid-area: status; }
+  .invitationsMobileList .teamTableRow .inviteColActions { grid-area: actions; }
+
+  /* Identidad: email o nombre en 16, debajo la fecha o el email en 12. 20px hasta los
+     atributos (12 de margen + 8 de row-gap). Margen y no padding: el reset de arriba
+     pone el padding en 0. */
+  .invitationsMobileList .teamTableRow .teamColName {
+    margin-bottom: 12px;
+  }
+
+  .invitationsMobileList .teamTableRow .memberName {
+    font-size: var(--font-size-16);
+    line-height: 20px;
+  }
+
+  .invitationsMobileList .teamTableRow .inviteColStatus {
+    justify-content: flex-end;
+    align-items: flex-start;
+    margin-left: 8px;
+  }
+
+  /* Atributos: etiqueta en una columna de 64px (12 Medium, gris) + valor (14 Book, gris),
+     filas de 20px separadas 8px. */
+  .invitationsMobileList .teamTableRow [data-label] {
+    align-items: center;
+    min-height: 20px;
+  }
+
+  .invitationsMobileList .teamTableRow [data-label]::before {
+    content: attr(data-label);
+    flex: 0 0 64px;
+    font-family: var(--font-family-primary);
+    font-size: var(--font-size-12);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-subtle);
+    line-height: 20px;
+  }
+
+  /* El valor se escribe entero: en la card no hay columna angosta que respetar. */
+  .invitationsMobileList .teamTableRow .inviteColType .dateText,
+  .invitationsMobileList .teamTableRow .inviteColScope .dateText,
+  .invitationsMobileList .teamTableRow .inviteColTeam .dateText {
+    text-align: left;
+    --clamp-lines: 99;
+  }
+
+  /* Un Organization Admin no tiene centro ni equipo: la línea no se dibuja. */
+  .invitationsMobileList .teamTableRow [data-empty="true"] {
+    display: none;
+  }
+
+  /* Botón "Manage…" a lo ancho de la card, 42px de alto. 20px sobre él
+     (12 de margen + 8 de row-gap). */
+  .invitationsMobileList .teamTableRow .inviteColActions {
+    margin-top: 12px;
+  }
+
+  .invitationsMobileList .teamTableRow .inviteColActions > button {
+    width: 100%;
+    min-height: 42px;
+  }
+
+  .invitationsMobileList .teamTableRow .actionPlaceholder {
+    display: none;
+  }
+
+  /* ── Alternativa "scroll" (easter egg de InvitationsTable, 3 toques en el título) ──
+     La tabla original: scroll horizontal con la primera columna fija. Se mantiene mientras
+     se decide entre las dos propuestas de mobile. */
+  .invitationsMobileScroll .teamTable {
     overflow-x: auto;
     padding-left: 0;
     margin-left: 16px;
   }
 
-  .invitationsResponsive .teamTableHead,
-  .invitationsResponsive .teamTableRow {
+  .invitationsMobileScroll .teamTableHead,
+  .invitationsMobileScroll .teamTableRow {
     width: max-content;
     min-width: 100%;
   }
 
-  .invitationsResponsive .inviteColType,
-  .invitationsResponsive .inviteColScope,
-  .invitationsResponsive .inviteColTeam,
-  .invitationsResponsive .inviteColSent {
+  .invitationsMobileScroll .inviteColType,
+  .invitationsMobileScroll .inviteColScope,
+  .invitationsMobileScroll .inviteColTeam,
+  .invitationsMobileScroll .inviteColSent {
     flex: 0 0 130px;
     width: 130px;
     min-width: 130px;
   }
 
-  .invitationsResponsive .inviteColStatus {
+  .invitationsMobileScroll .inviteColStatus {
     flex: 0 0 110px;
     width: 110px;
     min-width: 110px;
   }
 
-  .invitationsResponsive .inviteColActions {
+  .invitationsMobileScroll .inviteColActions {
     flex: 0 0 104px;
     width: 104px;
   }
 
-  .invitationsResponsive .teamColName {
+  .invitationsMobileScroll .teamColName {
     flex: 0 0 190px;
     width: 190px;
     min-width: 190px;
@@ -3252,12 +3505,12 @@
     z-index: 1;
   }
 
-  .invitationsResponsive .teamTableHead .teamColName {
+  .invitationsMobileScroll .teamTableHead .teamColName {
     background: var(--color-bg-page);
     z-index: 2;
   }
 
-  .invitationsResponsive .teamTableRow .teamColName {
+  .invitationsMobileScroll .teamTableRow .teamColName {
     background: var(--color-bg-surface);
   }
 

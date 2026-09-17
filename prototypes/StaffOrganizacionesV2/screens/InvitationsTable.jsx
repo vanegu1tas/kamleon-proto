@@ -3,9 +3,19 @@ import Tag from '../../../design-system/components/Tag/Tag';
 import SearchBar from '../../../design-system/components/SearchBar/SearchBar';
 import ToolbarButton from '../../../design-system/components/ToolbarButton/ToolbarButton';
 import IconButton from '../../../design-system/components/IconButton/IconButton';
-import { IconFilter, IconSort, IconResend, IconTrash } from '../../../design-system/icons/outline';
+import Button from '../../../design-system/components/Button/Button';
+import Toast from '../../../design-system/components/Toast/Toast';
+import BottomSheet from '../../../design-system/components/BottomSheet/BottomSheet';
+import { IconFilter, IconSort, IconResend, IconTrash, IconMore, IconEdit, IconMailWarning, IconMailHistory } from '../../../design-system/icons/outline';
+import ContextMenu from '../../../design-system/components/ContextMenu/ContextMenu';
 import styles from './OrgDetailV2.module.css';
 import TruncatedText from './TruncatedText';
+
+// "-", "—" o vacío = ese nivel no aplica a la fila (un Organization Admin no pertenece a
+// ningún centro ni equipo).
+function isEmptyValue(v) {
+  return v == null || v === '-' || v === '—' || v === '';
+}
 
 // Tabla compartida de invitaciones pendientes, usada a nivel Org / Centro / Equipo.
 // `showType`/`showScope` se apagan a nivel Equipo (siempre el mismo tipo y alcance).
@@ -27,6 +37,10 @@ export default function InvitationsTable({
   onResend,
   onCancel,
   onRemove,
+  onDeliveryIssue,
+  onViewMailHistory,
+  onEditUser,
+  canEditUsers = false,
   toolbarExtra = null,
   composePanel = null,
   responsiveTable = false,
@@ -37,6 +51,87 @@ export default function InvitationsTable({
   const [filterOpen, setFilterOpen] = useState(false);
   const [sortDir, setSortDir] = useState(null); // null | 'asc' | 'desc'
   const filterRef = useRef(null);
+  // En 390 la tabla se vuelve lista y las acciones pasan a botones con texto: sin hover
+  // no hay tooltip, y un sobre con flecha no dice "reenviar" por sí solo.
+  const [isPhone, setIsPhone] = useState(() => window.matchMedia('(max-width: 390px)').matches);
+
+  // Easter egg para presentar las dos propuestas de mobile y cambiar en vivo: tres toques
+  // seguidos sobre el título, solo en 390. "list" = filas etiquetadas; "scroll" = la tabla
+  // original con scroll horizontal y primera columna fija. Se recuerda en el navegador.
+  // Temporal hasta que se decida una de las dos — ver docs/features (pendiente).
+  const LAYOUT_KEY = 'kamleon-invitations-mobile-layout';
+  const [mobileLayout, setMobileLayout] = useState(() => {
+    try { return localStorage.getItem(LAYOUT_KEY) === 'scroll' ? 'scroll' : 'list'; } catch { return 'list'; }
+  });
+  const [layoutToast, setLayoutToast] = useState(null);
+  const titleTaps = useRef({ count: 0, last: 0 });
+
+  function handleTitleTap() {
+    if (!isPhone) return;
+    const now = Date.now();
+    const taps = titleTaps.current;
+    taps.count = now - taps.last < 500 ? taps.count + 1 : 1;
+    taps.last = now;
+    if (taps.count < 3) return;
+    taps.count = 0;
+    const next = mobileLayout === 'list' ? 'scroll' : 'list';
+    setMobileLayout(next);
+    try { localStorage.setItem(LAYOUT_KEY, next); } catch { /* sin storage: solo esta sesión */ }
+    setLayoutToast(next === 'list' ? 'Mobile view: list' : 'Mobile view: scroll table');
+  }
+
+  const listMode = isPhone && mobileLayout === 'list';
+  // Historial del correo: mismo destino que "Delivery issue", pero disponible en todas las
+  // filas (para revisar invitaciones sin incidencia).
+  const openMailHistory = onViewMailHistory ?? onDeliveryIssue;
+  // Fila cuyas acciones están abiertas en el bottom sheet (vista lista de 390).
+  const [sheetRow, setSheetRow] = useState(null);
+
+  // Acciones de una fila. Una sola lista para las dos vistas: el menú "⋯" de desktop/tablet
+  // y el bottom sheet de mobile — así no pueden desincronizarse.
+  //   Pendiente: View mailing history · Resend invite · Cancel invitation
+  //   Activo:    View mailing history · Edit user (si el rol puede) · Remove permission (si puede)
+  function rowActions(row, iconSize) {
+    if (!row) return [];
+    const history = { label: 'View mailing history', icon: <IconMailHistory size={iconSize} />, onClick: () => openMailHistory?.(row) };
+    if (row.status === 'active') {
+      // "Edit user" solo si el rol tiene `users.editData` (lo decide quien usa la tabla vía
+      // `canEditUsers`). "Remove permission" quita el rol de admin, no borra la cuenta, y
+      // sigue el permiso por fila (`canRemove`); nadie puede quitarse a sí mismo.
+      const canRemove = row.canRemove !== false && !row.isSelf;
+      return [
+        history,
+        ...(canEditUsers ? [{ label: 'Edit user', icon: <IconEdit size={iconSize} />, onClick: () => onEditUser?.(row) }] : []),
+        ...(canRemove ? [{ label: 'Remove permission', icon: <IconTrash size={iconSize} />, variant: 'danger', onClick: () => onRemove?.(row) }] : []),
+      ];
+    }
+    return [
+      history,
+      { label: 'Resend invite', icon: <IconResend size={iconSize} />, onClick: () => onResend?.(row) },
+      { label: 'Cancel invitation', icon: <IconTrash size={iconSize} />, variant: 'danger', onClick: () => onCancel?.(row) },
+    ];
+  }
+  // Fila con el menú "⋯" abierto (solo aparece cuando hay incidencia: el icono de
+  // incidencia ocupa un lugar y el resto de acciones se agrupan, para no pasar nunca de
+  // dos botones de icono por fila).
+  const [openRowMenu, setOpenRowMenu] = useState(null);
+  const rowMenuRef = useRef(null);
+
+  useEffect(() => {
+    if (!openRowMenu) return;
+    function handleClick(e) {
+      if (rowMenuRef.current && !rowMenuRef.current.contains(e.target)) setOpenRowMenu(null);
+    }
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [openRowMenu]);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 390px)');
+    const onChange = e => setIsPhone(e.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
 
   useEffect(() => {
     if (!filterOpen) return;
@@ -80,11 +175,11 @@ export default function InvitationsTable({
   const compact = !showType && !showScope;
 
   return (
-    <div className={`${styles.invitationsTab} ${bleed ? styles.invitationsBleed : ''} ${compact ? styles.invitationsCompact : ''} ${responsiveTable ? styles.invitationsResponsive : ''} ${!title && description ? styles.invitationsNoTitle : ''}`}>
+    <div className={`${styles.invitationsTab} ${bleed ? styles.invitationsBleed : ''} ${compact ? styles.invitationsCompact : ''} ${responsiveTable ? styles.invitationsResponsive : ''} ${responsiveTable ? (mobileLayout === 'list' ? styles.invitationsMobileList : styles.invitationsMobileScroll) : ''} ${!title && description ? styles.invitationsNoTitle : ''}`}>
 
       {(title || description) && (
         <div className={styles.orgUsersHeading}>
-          {title && <h1 className={styles.pageTitle}>{title}</h1>}
+          {title && <h1 className={styles.pageTitle} onClick={handleTitleTap}>{title}</h1>}
           {description && <p className={styles.pageDescription}>{description}</p>}
         </div>
       )}
@@ -170,7 +265,7 @@ export default function InvitationsTable({
               <span className={`${styles.teamCol} ${styles.inviteColActions}`} />
             </div>
             {filtered.map(row => (
-              <div key={row.key} className={styles.teamTableRow}>
+              <div key={row.key} className={`${styles.teamTableRow} ${openRowMenu === row.key ? styles.menuOpen : ''}`}>
                 <div className={`${styles.teamCol} ${styles.teamColName}`}>
                   {row.name ? (
                     <div className={styles.memberMeta}>
@@ -186,19 +281,34 @@ export default function InvitationsTable({
                     </div>
                   )}
                 </div>
+                {/* Role/Center/Team: nombres propios, así que se cortan a 2 líneas (nunca a
+                    una: dos centros pueden empezar igual) y el valor completo se ve en el
+                    tooltip. Las filas de esta tabla no navegan a ningún detalle, así que el
+                    toque queda libre para abrirlo en touch. */}
                 {showType && (
-                  <div className={`${styles.teamCol} ${styles.inviteColType}`}>
-                    <span className={styles.dateText}>{row.type}</span>
+                  <div className={`${styles.teamCol} ${styles.inviteColType}`} data-label={typeLabel}>
+                    <TruncatedText text={row.type} textClassName={styles.dateText} lines={2} tapToReveal />
                   </div>
                 )}
+                {/* data-label/data-empty los usa la vista de 390, donde la tabla se vuelve
+                    lista: sin header de columnas hace falta la etiqueta, y las líneas sin
+                    valor ("-") no se dibujan. */}
                 {showScope && (
-                  <div className={`${styles.teamCol} ${styles.inviteColScope}`}>
-                    <span className={styles.dateText}>{row.scope ?? '—'}</span>
+                  <div
+                    className={`${styles.teamCol} ${styles.inviteColScope}`}
+                    data-label={scopeLabel}
+                    data-empty={isEmptyValue(row.scope) ? 'true' : undefined}
+                  >
+                    <TruncatedText text={row.scope ?? '—'} textClassName={styles.dateText} lines={2} tapToReveal />
                   </div>
                 )}
                 {showTeam && (
-                  <div className={`${styles.teamCol} ${styles.inviteColTeam}`}>
-                    <span className={styles.dateText}>{row.team ?? '-'}</span>
+                  <div
+                    className={`${styles.teamCol} ${styles.inviteColTeam}`}
+                    data-label={teamLabel}
+                    data-empty={isEmptyValue(row.team) ? 'true' : undefined}
+                  >
+                    <TruncatedText text={row.team ?? '-'} textClassName={styles.dateText} lines={2} tapToReveal />
                   </div>
                 )}
                 {showSent && (
@@ -206,33 +316,67 @@ export default function InvitationsTable({
                     <span className={styles.dateText}>{row.sentAgo}</span>
                   </div>
                 )}
+                {/* Incidencia del correo: en 390 es una línea etiquetada y subrayada (el
+                    icono suelto no se entiende sin tooltip); en desktop/tablet vive como
+                    icono en la columna de acciones. */}
+                {row.deliveryIssue && listMode && (
+                  <div className={`${styles.teamCol} ${styles.inviteColIssue}`} data-label="Email">
+                    <button className={styles.deliveryIssueLink} onClick={() => onDeliveryIssue?.(row)}>
+                      Delivery issue
+                    </button>
+                  </div>
+                )}
                 <div className={`${styles.teamCol} ${styles.inviteColStatus}`}>
                   <Tag status={row.status ?? 'pending'} />
                 </div>
                 <div className={`${styles.teamCol} ${styles.inviteColActions}`}>
-                  {row.status === 'active' ? (
+                  {listMode ? (
+                    // Mobile: botón al pie de la fila que abre el bottom sheet. El texto anticipa
+                    // qué hay adentro: gestionar una invitación (pendiente) o a un admin (activo).
+                    <Button
+                      variant="tertiary"
+                      size="s"
+                      aria-label={`${row.status === 'active' ? 'Manage admin' : 'Manage invitation'}: ${row.email}`}
+                      onClick={() => setSheetRow(row)}
+                    >
+                      {row.status === 'active' ? 'Manage admin' : 'Manage invitation'}
+                    </Button>
+                  ) : (
+                    // Desktop/tablet: siempre el "⋯" con todas las acciones. Solo con incidencia
+                    // se suma un segundo botón, el de la incidencia — nunca más de dos. Sin
+                    // incidencia, un hueco invisible mantiene el "⋯" en la misma columna.
                     <>
-                      {/* Placeholder invisible: alinea el botón Remove bajo la misma
-                          columna que "Cancel" en las filas pendientes (2 slots siempre). */}
-                      <span className={styles.actionPlaceholder} aria-hidden="true" />
-                      {row.isSelf ? (
-                        <IconButton aria-label="Remove" tooltip="You can't remove yourself" disabled>
-                          <IconTrash size={14} />
+                      {row.deliveryIssue && row.status !== 'active' ? (
+                        <IconButton
+                          aria-label="Email delivery issue — open email history"
+                          tooltip="Delivery issue"
+                          variant="critical"
+                          onClick={() => onDeliveryIssue?.(row)}
+                        >
+                          <IconMailWarning size={16} />
                         </IconButton>
                       ) : (
-                        <IconButton aria-label="Remove" tooltip="Remove" variant="danger" onClick={() => onRemove?.(row)}>
-                          <IconTrash size={14} />
-                        </IconButton>
+                        <span className={styles.actionPlaceholder} aria-hidden="true" />
                       )}
-                    </>
-                  ) : (
-                    <>
-                      <IconButton aria-label="Resend invitation" tooltip="Resend" onClick={() => onResend?.(row)}>
-                        <IconResend size={16} />
-                      </IconButton>
-                      <IconButton aria-label="Cancel invitation" tooltip="Cancel" onClick={() => onCancel?.(row)}>
-                        <IconTrash size={14} />
-                      </IconButton>
+                      <div className={styles.createMenuAnchor} ref={openRowMenu === row.key ? rowMenuRef : undefined}>
+                        <IconButton
+                          aria-label={`Actions for ${row.email}`}
+                          tooltip="More"
+                          onClick={() => setOpenRowMenu(prev => (prev === row.key ? null : row.key))}
+                        >
+                          <IconMore size={16} />
+                        </IconButton>
+                        {openRowMenu === row.key && (
+                          <div className={styles.cardCreateMenu}>
+                            <ContextMenu
+                              items={rowActions(row, 16).map(item => ({
+                                ...item,
+                                onClick: () => { setOpenRowMenu(null); item.onClick(); },
+                              }))}
+                            />
+                          </div>
+                        )}
+                      </div>
                     </>
                   )}
                 </div>
@@ -250,6 +394,17 @@ export default function InvitationsTable({
         )}
 
       </div>
+
+      <BottomSheet
+        open={sheetRow != null}
+        label={sheetRow ? `Actions for ${sheetRow.email}` : undefined}
+        items={rowActions(sheetRow, 24)}
+        onClose={() => setSheetRow(null)}
+      />
+
+      {layoutToast && (
+        <Toast message={layoutToast} mode="success" onClose={() => setLayoutToast(null)} />
+      )}
 
     </div>
   );
