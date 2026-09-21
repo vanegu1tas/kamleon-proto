@@ -13,3 +13,8 @@ personal/
 
 # Notas de reunión / decisiones pendientes
 docs/meeting-notes/
+
+# Config local del editor y de herramientas
+.obsidian/
+.impeccable/
+*.zip

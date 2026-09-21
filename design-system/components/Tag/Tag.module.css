@@ -97,3 +97,22 @@
 .expired .label {
   color: var(--color-text-subtle);
 }
+
+/* ─── Estados de envío de un correo (Email history) ─── */
+
+/* Delay: el gestor sigue reintentando; aviso, no error. Naranja = Content/Warning. */
+.delay .dot {
+  background-color: var(--color-yellow-47);
+}
+
+.delay .label {
+  color: var(--color-text-strong);
+}
+
+.delivered .dot {
+  background-color: var(--color-status-active);
+}
+
+.delivered .label {
+  color: var(--color-text-strong);
+}

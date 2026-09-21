@@ -33,3 +33,4 @@ export { default as IconSort } from './IconSort';
 export { default as IconDownload } from './IconDownload';
 export { default as IconMailWarning } from './IconMailWarning';
 export { default as IconMailHistory } from './IconMailHistory';
+export { default as IconMail } from './IconMail';

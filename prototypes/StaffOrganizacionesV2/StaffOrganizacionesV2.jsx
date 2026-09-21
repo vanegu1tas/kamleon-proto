@@ -863,7 +863,7 @@ export default function StaffOrganizacionesV2({ initialOrgId, initialCenterId, r
                                   <span className={styles.statDot}>·</span>
                                   <span>{users} {users === 1 ? 'user' : 'users'}</span>
                                   <span className={styles.statDot}>·</span>
-                                  <span>{profs} {profs === 1 ? 'professional' : 'professionals'}</span>
+                                  <span>{profs} {profs === 1 ? 'team admin' : 'team admins'}</span>
                                 </div>
                               </div>
                             );

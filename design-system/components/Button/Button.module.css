@@ -84,6 +84,26 @@
   color: var(--color-text-disabled);
 }
 
+/* ─── Tertiary danger ────────────────────────────────
+   Mismo relleno gris que tertiary, con texto e icono en rojo: acción destructiva que
+   convive con otra tertiary al lado (ej. "Cancel invitation" junto a "Resend invitation"
+   en Email history). */
+
+.tertiaryDanger {
+  background-color: var(--color-bg-surface-raised);
+  color: var(--color-status-error);
+}
+
+.tertiaryDanger:hover:not(:disabled),
+.tertiaryDanger:active:not(:disabled) {
+  background-color: var(--color-grey-91);
+}
+
+.tertiaryDanger:disabled {
+  background-color: var(--color-grey-91);
+  color: var(--color-text-disabled);
+}
+
 /* ─── Icon ───────────────────────────────────────── */
 
 .icon {

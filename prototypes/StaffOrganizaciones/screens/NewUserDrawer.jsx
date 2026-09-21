@@ -266,7 +266,7 @@ export default function NewUserDrawer({ center, team: preselectedTeam, teams = [
                   placeholder="Select a role…"
                   options={[
                     { label: 'User', value: 'user' },
-                    { label: 'Professional', value: 'professional' },
+                    { label: 'Team admin', value: 'professional' },
                   ]}
                   value={inviteRole}
                   onChange={setInviteRole}
@@ -336,7 +336,7 @@ export default function NewUserDrawer({ center, team: preselectedTeam, teams = [
                   placeholder="Select a role…"
                   options={[
                     { label: 'User', value: 'user' },
-                    { label: 'Professional', value: 'professional' },
+                    { label: 'Team admin', value: 'professional' },
                   ]}
                   value={bulkRole}
                   onChange={setBulkRole}
@@ -375,7 +375,7 @@ export default function NewUserDrawer({ center, team: preselectedTeam, teams = [
                 />
 
                 <p className={styles.csvHelperText}>
-                  The file must have two columns: email and user role. The accepted values for user role are User and Professional. Download our a{' '}
+                  The file must have two columns: email and user role. The accepted values for user role are User and Team admin. Download our a{' '}
                   <button type="button" className={styles.csvTemplateLink}>template here.</button>
                 </p>
 
@@ -464,7 +464,7 @@ export default function NewUserDrawer({ center, team: preselectedTeam, teams = [
                       placeholder="Select role"
                       options={[
                         { label: 'User', value: 'user' },
-                        { label: 'Professional', value: 'professional' },
+                        { label: 'Team admin', value: 'professional' },
                       ]}
                       value={user.role}
                       onChange={v => updateManualUser(user.id, 'role', v)}

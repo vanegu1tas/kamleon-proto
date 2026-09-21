@@ -65,6 +65,7 @@ export default function UnitsTab({ role, user, org: orgProp, embedded = false })
   const [openMenuId, setOpenMenuId] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleteToast, setDeleteToast] = useState(null);
+  const [saveToast, setSaveToast]     = useState(null);
   const [newMenuOpen, setNewMenuOpen] = useState(false);
   // units.delete: exclusivo de Owner/Admin — ni Kamleon Editor lo tiene (docs/permissions.md).
   const canDeleteUnit = role === 'owner' || role === 'admin';
@@ -618,7 +619,9 @@ export default function UnitsTab({ role, user, org: orgProp, embedded = false })
         <EditUnitDrawer
           unit={editUnitTarget.unit}
           center={editUnitTarget.center}
+          role={role}
           onClose={() => setEditUnitTarget(null)}
+          onSave={u => setSaveToast(`Unit ${u?.id ?? ''} updated`)}
         />
       )}
 
@@ -629,6 +632,10 @@ export default function UnitsTab({ role, user, org: orgProp, embedded = false })
           onClose={() => setDeleteTarget(null)}
           onConfirm={() => setDeleteToast(`Unit ${deleteTarget.unit.id} deleted`)}
         />
+      )}
+
+      {saveToast && (
+        <Toast message={saveToast} mode="success" onClose={() => setSaveToast(null)} />
       )}
 
       {deleteToast && (

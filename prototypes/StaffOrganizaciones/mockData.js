@@ -211,15 +211,21 @@ export const ORGS = [
       { name: 'Noah Fischer', email: 'n.fischer@astoniafc.com', phone: '+44 121 554 1241', joinedAgo: '13/Jul/26', role: 'Team admin', centerName: 'Training Ground', teamName: 'First Team' },
     ],
     pendingInvites: [
-      // deliveryIssue: el correo tuvo un problema en el gestor de emails (rebote o delay).
+      // deliveryIssue: tipo de incidencia en el gestor de emails ('delay'; 'bounce' pendiente).
       // Feature del programador — acá solo el indicador, ver docs/features/invitations-delivery-issue.md
-      { email: 'sara.diaz@astoniafc.com', sentAgo: '11/Aug/26', sentMinutesAgo: 2880, deliveryIssue: true },
+      { email: 'sara.diaz@astoniafc.com', sentAgo: '11/Aug/26', sentMinutesAgo: 2880, deliveryIssue: 'delay' },
     ],
     centers: [
       {
         id: 301, name: 'Training Ground', status: 'active',
         contact: 'Robert Keane',
         email: 'training@astoniafc.com', phone: '+44 121 554 1235', address: '100 Trinity Rd, Birmingham',
+        // Personas de contacto del centro: se cargan al crear el centro o al editarlo, y se
+        // listan en "Staff directory" dentro del tab Details.
+        contacts: [
+          { name: 'Andrés Pérez',  cargo: 'Director',    email: 'a.perez@astoniafc.com',  phone: '+44 121 554 1242' },
+          { name: 'Michael Porter', cargo: 'Maintenance', email: 'm.porter@astoniafc.com', phone: '+44 121 554 1243' },
+        ],
         admins: [
           { name: 'Robert Keane', email: 'r.keane@astoniafc.com', phone: '+44 121 554 1235', joinedAgo: '13/Mar/26' },
           { name: 'Casey Reeve', email: 'c.reeve@astoniafc.com', phone: '+44 121 554 1240' },

@@ -87,6 +87,42 @@
   color: var(--color-text-disabled);
 }
 
+/* Editable solo para Kamleon staff: entonces el campo se ve como un dropdown normal
+   (fondo claro y texto fuerte); para el resto sigue con el gris de deshabilitado. */
+.statusFieldEditable {
+  background: var(--color-bg-surface-subtle);
+  border-color: var(--color-border-default);
+}
+
+.statusSelect {
+  flex: 1;
+  min-width: 0;
+  appearance: none;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-disabled);
+  cursor: not-allowed;
+}
+
+.statusFieldEditable .statusSelect {
+  color: var(--color-text-strong);
+  cursor: pointer;
+}
+
+.statusFieldEditable .statusChevron {
+  color: var(--color-text-strong);
+}
+
+.statusSelect:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
 .statusChevron {
   display: flex;
   align-items: center;
@@ -96,11 +132,115 @@
 
 /* ─── Login mode checkboxes ──────────────────────────── */
 
+/* Texto de ayuda bajo el label (Figma 13056:136728): "How users can identify…" y
+   "Members of the selected teams…". Mismo tamaño que el label pero en Book y gris. */
+.fieldDescription {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  line-height: 18px;
+  color: var(--color-text-subtle);
+  padding-left: 12px;
+  margin-top: -4px;
+}
+
 .checkboxRow {
   display: flex;
   align-items: center;
   gap: 24px;
   padding-left: 12px;
+}
+
+/* Campo deshabilitado por dependencia (On-screen): se atenúa y no se puede tocar, pero se
+   sigue leyendo — el label, el motivo y los equipos ya elegidos quedan a la vista. */
+.fieldDisabled .fieldLabel,
+.fieldDisabled .fieldDescription {
+  color: var(--color-text-disabled);
+}
+
+.fieldDisabled .rosterTrigger {
+  background: var(--color-bg-surface-disabled);
+  color: var(--color-text-disabled);
+  cursor: not-allowed;
+}
+
+.fieldDisabled .rosterTrigger .rosterPlaceholder,
+.fieldDisabled /* Con equipos elegidos ya no es un placeholder: el texto va en color fuerte, como el valor
+   de cualquier otro campo. En gris parecía que seguía vacío. */
+.rosterValue {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-strong);
+}
+
+.rosterChevron {
+  color: var(--color-text-disabled);
+}
+
+.fieldDisabled .chip {
+  color: var(--color-text-disabled);
+}
+
+.fieldDisabled .chipRemove {
+  cursor: not-allowed;
+  color: var(--color-text-disabled);
+}
+
+.checkboxItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ⓘ de cada modo de login — tooltip hacia arriba: acá hay sitio de sobra y así no tapa
+   la fila de checkboxes ni el campo siguiente. */
+.infoIconWrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  color: var(--color-text-disabled);
+  cursor: default;
+}
+
+.infoIconWrap::before,
+.infoIconWrap::after {
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.infoIconWrap:hover::before,
+.infoIconWrap:hover::after {
+  opacity: 1;
+}
+
+.infoIconWrap::before {
+  content: '';
+  position: absolute;
+  bottom: calc(100% + 2px);
+  left: 50%;
+  border: 5px solid transparent;
+  border-top-color: var(--color-text-strong);
+  transform: translateX(-50%);
+}
+
+.infoIconWrap::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-text-strong);
+  color: var(--color-text-inverse);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  white-space: normal;
+  width: 180px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  z-index: 100;
 }
 
 /* ─── Screen roster ───────────────────────────────────── */
@@ -142,6 +282,7 @@
   flex-shrink: 0;
 }
 
+/* Figma 13060:137076 */
 .rosterDropdown {
   position: absolute;
   top: calc(100% + 8px);
@@ -154,10 +295,86 @@
   background: var(--color-bg-surface);
   border: 1px solid var(--color-border-default);
   border-radius: var(--radius-s);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-  padding: 12px;
-  max-height: 220px;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.15), 0 0 8px rgba(0, 0, 0, 0.1);
+  padding: 4px 8px 8px;
+  max-height: 260px;
   overflow-y: auto;
+}
+
+.rosterSearchRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 8px 12px;
+  border-bottom: 1px solid var(--color-border-default);
+  color: var(--color-text-subtle);
+  flex-shrink: 0;
+}
+
+.rosterSearchInput {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: none;
+  padding: 0;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  line-height: 17.5px;
+  color: var(--color-text-strong);
+}
+
+.rosterSearchInput::placeholder {
+  color: var(--color-text-subtle);
+}
+
+.rosterSearchInput:focus {
+  outline: none;
+}
+
+.rosterOption {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px;
+  border: none;
+  background: none;
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  line-height: 16px;
+  color: var(--color-text-strong);
+}
+
+.rosterOption:hover {
+  background: var(--color-bg-surface-subtle);
+}
+
+.rosterOption:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: -2px;
+}
+
+.rosterOptionLabel {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rosterOptionSelected {
+  font-weight: var(--font-weight-medium);
+}
+
+.rosterCheck {
+  display: flex;
+  flex-shrink: 0;
+  color: var(--color-turquoise-30);
 }
 
 .rosterDropdownUp {
@@ -173,11 +390,12 @@
   padding: 4px;
 }
 
+/* Sin padding: los chips arrancan alineados con el borde del selector, no con el texto de
+   dentro (el label y la descripción sí llevan los 12px para alinear con el texto del campo). */
 .chipsRow {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  padding-left: 12px;
 }
 
 .chip {

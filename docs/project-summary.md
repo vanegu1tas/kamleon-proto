@@ -716,6 +716,9 @@ Checklist revisado el 2026-09-16.
   Los flujos By invite (uno y varios) y By hand todavía piden elegir User o Professional. Ya no tiene sentido: los Team Admin se invitan desde su propio drawer (`InviteTeamAdminDrawer`). Quedó a medias el 26/8.
   → Espera: decidir si se quita o si hay Figma nuevo
 
+- [ ] **Conectar el flujo de "Set new PIN" hecho por staff**
+  En el perfil de una persona (Figma 12579:275097) la sección Security tiene el enlace "Set new Pin"; hoy en el prototipo solo lanza un toast. **El flujo ya está diseñado en Figma** (Daniel lo busca y pasa el link). Ojo: el `ChangePinDrawer` que existe pide el PIN actual, o sea que sirve para la cuenta propia, no para que un admin le ponga el PIN a otra persona — probablemente haga falta una pantalla distinta, no reutilizar esa.
+
 - [ ] **Formulario para crear una unit**
   Ya está definido el botón "+ Assign to organization" (expandible, con ×) y el tab "Sensor history". Faltan los campos.
   → Espera: los campos mínimos
@@ -754,15 +757,43 @@ Checklist revisado el 2026-09-16.
 
 ### 🟢 Listo para hacer
 
-- [ ] **Decidir la vista mobile de la tabla de Admins (cards vs scroll) y quitar el easter egg**
-  En 390px conviven dos propuestas: **cards** (Figma `12852:129168`: una card por admin con los valores etiquetados, incidencia como línea "Email — Delivery issue" y botón "Manage invitation" / "Manage admin" que abre un bottom sheet) y **scroll** (la tabla original con scroll horizontal y primera columna fija). Se alterna tocando tres veces seguidas el título "Admins", solo en mobile; la elección queda guardada en el navegador. Es temporal, para mostrárselas al manager. Cuando se decida: borrar la opción descartada y el gesto (`InvitationsTable.jsx`, clases `invitationsMobileList` / `invitationsMobileScroll` en `OrgDetailV2.module.css`).
+- [x] **Vista mobile de la tabla de Admins** · *decidido con el programador el 2026-09-17*
+  En 390px, vista **compact** por defecto: solo el destinatario, con el Tag de estado en la segunda línea ("● Pending · Invited 11/Aug/26"), y las acciones (botón de incidencia si existe y el rol puede verla, y "⋯", que en teléfono abre el bottom sheet). Motivo: en este tab lo importante es gestionar las invitaciones, y lo que dice si algo requiere atención es el estado. Tablet y desktop mantienen la tabla completa. **El easter egg se queda a propósito** (tres toques en el título "Admins"): alterna entre compact y la propuesta anterior en cards, para recordar cómo era. La vista con scroll horizontal se eliminó.
 
-- [ ] **Abrir el perfil agnóstico desde las filas activas de Admins**
-  Las filas de admins activos tienen que abrir el perfil de esa persona. Criterio propuesto, "un gesto, un dueño por fila": solo las filas activas son clickeables (cursor y hover solo ahí); los botones internos (⋯, incidencia, Manage, Delivery issue) hacen lo suyo sin abrir el perfil; en desktop el tooltip de texto cortado sigue con hover en todas las filas (blanco, sin flecha, encima del texto, como acordamos con el programador); en touch, tocar un texto cortado en una fila activa abre el perfil y no el tooltip.
-  → Espera, tres preguntas: (1) ¿una invitación pendiente de alguien que ya tiene cuenta en Kamleon abre su perfil? (2) ¿se implementa ya con un aviso provisorio o se espera al diseño del perfil? (3) el tooltip abierto por toque aparece 28px más arriba, para que no lo tape el dedo; ¿se iguala al "encima" acordado con el programador?
+- [x] **Abrir el perfil agnóstico desde las filas activas de Admins** · *hecho 2026-09-21*
+  Las filas de admins **activos** abren el perfil de esa persona (dentro del tab, con "Back to Admins"), tanto en el centro como en la organización. Criterio "un gesto, un dueño por fila": solo las activas son clickeables (cursor y teclado solo ahí) y los botones internos (⋯, incidencia, Manage) siguen haciendo lo suyo. Si la persona está en el pool se abre su ficha real; si no, el perfil muestra "—" en lo que falte.
+  **Decidido:** una invitación **pendiente no abre perfil**, aunque esa persona ya tenga cuenta en Kamleon — la fila representa *esa invitación*, no a la persona; si ya hubiera aceptado, la fila se vería como aceptada (Daniel, 21/9).
+  Queda abierto solo el detalle del tooltip en touch: al tocar un texto cortado se abre 28px más arriba para que no lo tape el dedo, en vez de "encima" como se acordó con el programador.
 
 - [ ] **Igualar la tabla de Admins del centro con la de la organización**
   Mismo componente, pero todavía con el placeholder "Search by email..." y sin "Edit user" en las acciones: hay que pasarle el permiso, porque Center Admin sí tiene `users.editData`.
+
+- [x] **Animación de entrada de los paneles de equipo y de usuario (desktop)** · *implementado 2026-09-21*
+  En desktop los sub-paneles ya no aparecen de golpe: bajar un nivel (equipo/persona/unit) entra con fade + 10px desde la derecha en 180ms, el back entra desde la izquierda en 120ms (más rápido porque se recorre muchas más veces), y cambiar de centro en la lista —mismo nivel— es solo fade de 150ms. Los cambios de tab siguen siendo instantáneos. Mobile mantiene el slide completo del 100% en 0,28s. Con `prefers-reduced-motion` se quita el desplazamiento pero se conserva el fade, para no perder el aviso de que el panel cambió. Clases: `.subFadeIn` / `.subFadeBack` / `.subFade` en `OrgDetailV2.module.css`.
+
+- [ ] **Pasarle al programador los specs de animación**
+  Sus menús contextuales se animan distinto de los nuestros, así que hay que entregarle los valores y, sobre todo, **dónde aplica cada uno**. Inventario de lo que hay hoy en el prototipo:
+
+  | Dónde | Qué hace | Valores |
+  |---|---|---|
+  | **Bajar de nivel en desktop**: entrar a un equipo desde Teams, a una persona desde la tabla del equipo o desde Users, a una unit desde Units | Fade + 10px desde la derecha | 180ms · `cubic-bezier(0.4, 0, 0.2, 1)` |
+  | **Volver con el back** (mismos sitios, desktop) | Fade + 10px desde la izquierda | 120ms · misma curva |
+  | **Cambiar de centro** en la lista de la izquierda (mismo nivel) | Solo fade | 150ms · `ease-out` |
+  | **Cambiar de tab** dentro de un centro/org | Nada, instantáneo | — |
+  | **Los mismos saltos en mobile** (la pantalla se reemplaza entera) | Slide completo del 100%, con dirección | 280ms · `cubic-bezier(0.4, 0, 0.2, 1)` |
+  | **Menú "+"** de la cabecera (org, centro, equipo) y **menú "⋯"** de las filas (Teams, Users, Units, Admins) | Crece desde el botón: `transform-origin` en la esquina por la que sale (`top right`), `scale(0) → scale(1)` + opacidad | 220ms · `cubic-bezier(0.25, 1, 0.5, 1)` |
+  | **El mismo menú en teléfono (≤390)** | No hay menú flotante: es un BottomSheet (overlay + hoja desde abajo) | overlay 180ms · hoja 240ms `cubic-bezier(0.25, 1, 0.5, 1)` |
+  | **Dropdown de filtros** ("Filters") y la aparición de "Clear filters" | Despliegue corto | 180ms · `cubic-bezier(0.16, 1, 0.3, 1)` |
+  | **Drawers laterales** (Edit user, Email history, Notifications, invitaciones…) | Overlay que aparece + panel desde la derecha | overlay 200ms · panel 280ms `ease-out` |
+  | **Toast** | Entra desde arriba con un rebote pequeño, a 52px del borde | 280ms · `cubic-bezier(0.34, 1.25, 0.64, 1)` |
+  | **TabBar** | Glow del tab activo | 300ms · `cubic-bezier(0.25, 1, 0.5, 1)` |
+  | **Tooltips del sidebar** | Fade corto | 120–150ms · `ease-out` |
+  | **Checkbox** | Se dibuja el trazo del check | 200ms · `ease-out` |
+  | **⌘K (SearchPalette)** | Overlay + panel desde arriba | overlay 100ms · panel 150ms |
+
+  **Dos reglas transversales que van con los valores:**
+  · `prefers-reduced-motion` (ajuste del sistema operativo, no de la app) quita el desplazamiento y la escala pero **deja el fade**, para no perder el aviso de que algo cambió; y la regla vive en el componente, no en cada pantalla — como ya hacen TabBar, BottomSheet y FilterPanel.
+  · Usar `backwards` y no `both` en cualquier animación con `transform`: con `both` el elemento se queda con el transform aplicado al terminar y pasa a ser el marco de los `position: fixed` que tenga dentro. Ese fue el bug que dejó los drawers sin cubrir toda la pantalla, así que le ahorra el rato de dar vueltas.
 
 - [ ] **Tabs en mobile de centro, unit y Team Admin**
   Ahora heredan la regla touch del TabBar (tamaño M, scroll con flecha y degradado), pero sus contenedores tienen padding y ancho máximo propios (`innerTabBarInner` de 320/420px) y probablemente muestren franjas blancas a los costados, como pasaba en la cabecera de la organización. Ajustar al llegar a esas pantallas.
@@ -812,6 +843,9 @@ Todo lo que toca el design system, en Figma y en código. Relacionado: **Tabs de
 - [ ] **Variante `tertiary` del Button en el Design System de Figma**
   Botón con relleno gris suave (`Background/Page`), sin borde y en forma de píldora. En código existe desde el 2026-09-16 (`design-system/components/Button/`) para el "Manage invitation" / "Manage admin" de las cards mobile de la tabla de Admins. En el Figma (nodo `12852:129168`) está dibujado como un frame suelto, no como instancia del Button: agregarlo como variante del componente.
 
+- [ ] **Estados de correo en Figma: Tag "Delay"/"Delivered" y Button "tertiaryDanger"**
+  Creados en código el 2026-09-17 para el drawer Email history: Tag `delay` (punto naranja, `Content/Warning`) y `delivered` (punto turquesa); Button `tertiaryDanger` (relleno gris y texto rojo, "Cancel invitation"). Agregarlos como variantes en el Design System.
+
 - [ ] **Llevar el BottomSheet al Design System de Figma**
   El diseño existe en el archivo Web App 2.0 (nodo `12847:128367`) y el código ya lo sigue (`design-system/components/BottomSheet/`, reescrito el 2026-09-16): manija 48×4, opciones de 56px con icono de 24 y texto 16 Medium, separador entre todas, destructiva en rojo. Falta publicarlo como componente en el archivo del Design System para reutilizarlo en Users y Units.
 
@@ -829,8 +863,8 @@ Todo lo que toca el design system, en Figma y en código. Relacionado: **Tabs de
 - [x] **Commit de todo lo acumulado** · *hecho 2026-09-16, `c091caf`*
   109 archivos: roles y permisos, Invitations, Units, Usage, tour, pasada mobile y docs.
 
-- [ ] **Commit de lo del 2026-09-16** · *lo primero al retomar*
-  Unos 27 archivos: tabla de Admins en desktop, tablet y mobile (cards) con el easter egg de vistas; TabBar a 48px con la regla touch (flecha, degradado, `inset`); BottomSheet según Figma y ContextMenu que se vuelve bottom sheet en teléfono; IconButton `critical`, Button `tertiary`, `IconMailWarning` e `IconMailHistory`; permisos por fila y "+" para staff; menú "⋯" de la cabecera en mobile; drawers a pantalla completa en mobile y tablet (animaciones que dejaban un `transform`, regla `.modal` en `NewCenterDrawer.module.css` y Notifications); arreglo de capas del menú abierto en las filas; docs.
+- [x] **Commit de lo del 2026-09-16** · *hecho 2026-09-17, `6bead45`*
+  24 archivos: tabla de Admins en 3 tamaños, BottomSheet, reglas touch del TabBar y del ContextMenu, variantes nuevas, iconos y arreglos de drawers.
 
 - [ ] **Deploy a GitHub Pages**
   Publicar la versión actual del prototipo.

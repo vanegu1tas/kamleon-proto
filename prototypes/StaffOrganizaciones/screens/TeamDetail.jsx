@@ -180,7 +180,7 @@ function UsersContent({ team, center, onNavigate }) {
               <div className={styles.filterDropdown}>
                 <div className={styles.filterSection}>
                   <p className={styles.filterSectionLabel}>Role</p>
-                  {[{ v: 'professional', label: 'Professional' }, { v: 'user', label: 'User' }].map(({ v, label }) => (
+                  {[{ v: 'professional', label: 'Team admin' }, { v: 'user', label: 'User' }].map(({ v, label }) => (
                     <label key={v} className={`${styles.filterOption} ${roleFilter.has(v) ? styles.filterOptionChecked : ''}`}>
                       <input
                         type="checkbox"

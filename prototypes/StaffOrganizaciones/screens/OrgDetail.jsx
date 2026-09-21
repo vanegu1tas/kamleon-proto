@@ -237,7 +237,7 @@ function CentersContent({ org, onNavigate }) {
           <div className={`${styles.colHead} ${styles.colCenter}`}>Center</div>
           <div className={`${styles.colHead} ${styles.colNum}`}>Status</div>
           <div className={`${styles.colHead} ${styles.colNum}`}>Active Teams</div>
-          <div className={`${styles.colHead} ${styles.colNum}`}>Professionals</div>
+          <div className={`${styles.colHead} ${styles.colNum}`}>Team admins</div>
           <div className={`${styles.colHead} ${styles.colNum}`}>Users</div>
           <div className={`${styles.colHead} ${styles.colActions}`} />
         </div>

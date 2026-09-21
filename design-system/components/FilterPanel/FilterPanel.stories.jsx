@@ -20,7 +20,7 @@ const ROLE_SECTION = {
   key: 'role',
   label: 'Role',
   options: [
-    { value: 'professional', label: 'Professional' },
+    { value: 'professional', label: 'Team admin' },
     { value: 'user',         label: 'User' },
   ],
 };

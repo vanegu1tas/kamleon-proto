@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import Button from '../../../design-system/components/Button/Button';
-import { IconClose, IconChevronDown, IconInfoCircle, IconRefresh } from '../../../design-system/icons/outline';
+import { IconClose, IconChevronDown, IconInfoCircle } from '../../../design-system/icons/outline';
 import IconButton from '../../../design-system/components/IconButton/IconButton';
 import Toggle from '../../../design-system/components/Toggle/Toggle';
 import SegmentedControl from '../../../design-system/components/SegmentedControl/SegmentedControl';
@@ -318,21 +318,18 @@ export default function EditUserDrawer({ user, team, onClose, role, onRemove }) 
             </div>
           </div>
 
-          {/* Actions */}
-          <div className={styles.section}>
-            <h3 className={styles.sectionTitle}>Actions</h3>
-            <div className={styles.actionsList}>
-              <button className={styles.actionBtn} type="button">
-                <IconRefresh size={16} />
-                Regenerate PIN
-              </button>
-              {onRemove && (
+          {/* Actions — "Regenerate PIN" se quitó (21/9): la acción ya no existe en el producto,
+              ni acá ni en el menú "⋯" de la fila ni en Bulk actions. */}
+          {onRemove && (
+            <div className={styles.section}>
+              <h3 className={styles.sectionTitle}>Actions</h3>
+              <div className={styles.actionsList}>
                 <button className={`${styles.actionBtn} ${styles.actionBtnDanger}`} type="button" onClick={onRemove}>
                   Remove from team
                 </button>
-              )}
+              </div>
             </div>
-          </div>
+          )}
 
         </div>
 

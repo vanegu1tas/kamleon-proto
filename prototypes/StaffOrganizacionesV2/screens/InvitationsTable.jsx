@@ -41,6 +41,11 @@ export default function InvitationsTable({
   onViewMailHistory,
   onEditUser,
   canEditUsers = false,
+  // Abrir el perfil de un admin activo. Solo las filas activas navegan: una invitación
+  // pendiente todavía no tiene persona detrás a la que llevar.
+  onOpenProfile,
+  // Email history y la incidencia de envío: feature del programador, solo para Kamleon staff.
+  canViewEmailHistory = false,
   toolbarExtra = null,
   composePanel = null,
   responsiveTable = false,
@@ -55,13 +60,21 @@ export default function InvitationsTable({
   // no hay tooltip, y un sobre con flecha no dice "reenviar" por sí solo.
   const [isPhone, setIsPhone] = useState(() => window.matchMedia('(max-width: 390px)').matches);
 
-  // Easter egg para presentar las dos propuestas de mobile y cambiar en vivo: tres toques
-  // seguidos sobre el título, solo en 390. "list" = filas etiquetadas; "scroll" = la tabla
-  // original con scroll horizontal y primera columna fija. Se recuerda en el navegador.
-  // Temporal hasta que se decida una de las dos — ver docs/features (pendiente).
-  const LAYOUT_KEY = 'kamleon-invitations-mobile-layout';
+  // Vistas de mobile (390). Por defecto "compact" (decidido con el programador el 17/9):
+  // en este tab lo que importa es gestionar las invitaciones, así que solo se ve quién, su
+  // estado y las acciones; tablet y desktop tienen lugar para la tabla completa.
+  // Easter egg (tres toques seguidos sobre el título, solo en 390) para alternar con la
+  // propuesta anterior y recordar cómo era: "list" = cards con valores etiquetados. Se
+  // recuerda en el navegador.
+  const LAYOUTS = ['compact', 'list'];
+  const LAYOUT_LABELS = { compact: 'Mobile view: compact', list: 'Mobile view: cards' };
+  // Clave nueva (v2): con la anterior quedaba guardada "list" y no se vería la vista por defecto.
+  const LAYOUT_KEY = 'kamleon-invitations-mobile-layout-v2';
   const [mobileLayout, setMobileLayout] = useState(() => {
-    try { return localStorage.getItem(LAYOUT_KEY) === 'scroll' ? 'scroll' : 'list'; } catch { return 'list'; }
+    try {
+      const saved = localStorage.getItem(LAYOUT_KEY);
+      return LAYOUTS.includes(saved) ? saved : 'compact';
+    } catch { return 'compact'; }
   });
   const [layoutToast, setLayoutToast] = useState(null);
   const titleTaps = useRef({ count: 0, last: 0 });
@@ -74,13 +87,14 @@ export default function InvitationsTable({
     taps.last = now;
     if (taps.count < 3) return;
     taps.count = 0;
-    const next = mobileLayout === 'list' ? 'scroll' : 'list';
+    const next = LAYOUTS[(LAYOUTS.indexOf(mobileLayout) + 1) % LAYOUTS.length];
     setMobileLayout(next);
     try { localStorage.setItem(LAYOUT_KEY, next); } catch { /* sin storage: solo esta sesión */ }
-    setLayoutToast(next === 'list' ? 'Mobile view: list' : 'Mobile view: scroll table');
+    setLayoutToast(LAYOUT_LABELS[next]);
   }
 
   const listMode = isPhone && mobileLayout === 'list';
+  const compactMode = isPhone && mobileLayout === 'compact';
   // Historial del correo: mismo destino que "Delivery issue", pero disponible en todas las
   // filas (para revisar invitaciones sin incidencia).
   const openMailHistory = onViewMailHistory ?? onDeliveryIssue;
@@ -89,24 +103,26 @@ export default function InvitationsTable({
 
   // Acciones de una fila. Una sola lista para las dos vistas: el menú "⋯" de desktop/tablet
   // y el bottom sheet de mobile — así no pueden desincronizarse.
-  //   Pendiente: View mailing history · Resend invite · Cancel invitation
-  //   Activo:    View mailing history · Edit user (si el rol puede) · Remove permission (si puede)
+  //   Pendiente: View email history (solo staff) · Resend invite · Cancel invitation
+  //   Activo:    View email history (solo staff) · Edit user (si el rol puede) · Remove permission (si puede)
   function rowActions(row, iconSize) {
     if (!row) return [];
-    const history = { label: 'View mailing history', icon: <IconMailHistory size={iconSize} />, onClick: () => openMailHistory?.(row) };
+    const history = canViewEmailHistory
+      ? [{ label: 'View email history', icon: <IconMailHistory size={iconSize} />, onClick: () => openMailHistory?.(row) }]
+      : [];
     if (row.status === 'active') {
       // "Edit user" solo si el rol tiene `users.editData` (lo decide quien usa la tabla vía
       // `canEditUsers`). "Remove permission" quita el rol de admin, no borra la cuenta, y
       // sigue el permiso por fila (`canRemove`); nadie puede quitarse a sí mismo.
       const canRemove = row.canRemove !== false && !row.isSelf;
       return [
-        history,
+        ...history,
         ...(canEditUsers ? [{ label: 'Edit user', icon: <IconEdit size={iconSize} />, onClick: () => onEditUser?.(row) }] : []),
         ...(canRemove ? [{ label: 'Remove permission', icon: <IconTrash size={iconSize} />, variant: 'danger', onClick: () => onRemove?.(row) }] : []),
       ];
     }
     return [
-      history,
+      ...history,
       { label: 'Resend invite', icon: <IconResend size={iconSize} />, onClick: () => onResend?.(row) },
       { label: 'Cancel invitation', icon: <IconTrash size={iconSize} />, variant: 'danger', onClick: () => onCancel?.(row) },
     ];
@@ -175,7 +191,7 @@ export default function InvitationsTable({
   const compact = !showType && !showScope;
 
   return (
-    <div className={`${styles.invitationsTab} ${bleed ? styles.invitationsBleed : ''} ${compact ? styles.invitationsCompact : ''} ${responsiveTable ? styles.invitationsResponsive : ''} ${responsiveTable ? (mobileLayout === 'list' ? styles.invitationsMobileList : styles.invitationsMobileScroll) : ''} ${!title && description ? styles.invitationsNoTitle : ''}`}>
+    <div className={`${styles.invitationsTab} ${bleed ? styles.invitationsBleed : ''} ${compact ? styles.invitationsCompact : ''} ${responsiveTable ? styles.invitationsResponsive : ''} ${responsiveTable ? (mobileLayout === 'list' ? styles.invitationsMobileList : styles.invitationsMobileCompact) : ''} ${!title && description ? styles.invitationsNoTitle : ''}`}>
 
       {(title || description) && (
         <div className={styles.orgUsersHeading}>
@@ -264,10 +280,33 @@ export default function InvitationsTable({
               <span className={`${styles.teamCol} ${styles.inviteColStatus}`}>Status</span>
               <span className={`${styles.teamCol} ${styles.inviteColActions}`} />
             </div>
-            {filtered.map(row => (
-              <div key={row.key} className={`${styles.teamTableRow} ${openRowMenu === row.key ? styles.menuOpen : ''}`}>
+            {filtered.map(row => {
+              const canOpenProfile = Boolean(onOpenProfile) && row.status === 'active';
+              return (
+              <div
+                key={row.key}
+                className={`${styles.teamTableRow} ${openRowMenu === row.key ? styles.menuOpen : ''} ${canOpenProfile ? styles.rowClickable : ''}`}
+                role={canOpenProfile ? 'button' : undefined}
+                tabIndex={canOpenProfile ? 0 : undefined}
+                onClick={canOpenProfile ? () => onOpenProfile(row) : undefined}
+                onKeyDown={canOpenProfile ? e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpenProfile(row); } } : undefined}
+              >
                 <div className={`${styles.teamCol} ${styles.teamColName}`}>
-                  {row.name ? (
+                  {compactMode ? (
+                    // Mobile compact: el estado va en la segunda línea, delante del dato
+                    // secundario, así es lo primero que se lee debajo de quién es.
+                    <div className={styles.memberMeta}>
+                      <TruncatedText text={row.name ?? row.email} textClassName={styles.memberName} />
+                      <div className={styles.compactSub}>
+                        <Tag status={row.status ?? 'pending'} />
+                        <span className={styles.compactSep} aria-hidden="true">·</span>
+                        <TruncatedText
+                          text={row.name ? row.email : `Invited ${row.sentAgo ?? ''}`}
+                          textClassName={styles.memberSub}
+                        />
+                      </div>
+                    </div>
+                  ) : row.name ? (
                     <div className={styles.memberMeta}>
                       <TruncatedText text={row.name} textClassName={styles.memberName} />
                       <span className={styles.memberSub}>{row.email}</span>
@@ -319,7 +358,7 @@ export default function InvitationsTable({
                 {/* Incidencia del correo: en 390 es una línea etiquetada y subrayada (el
                     icono suelto no se entiende sin tooltip); en desktop/tablet vive como
                     icono en la columna de acciones. */}
-                {row.deliveryIssue && listMode && (
+                {row.deliveryIssue && canViewEmailHistory && listMode && (
                   <div className={`${styles.teamCol} ${styles.inviteColIssue}`} data-label="Email">
                     <button className={styles.deliveryIssueLink} onClick={() => onDeliveryIssue?.(row)}>
                       Delivery issue
@@ -329,8 +368,13 @@ export default function InvitationsTable({
                 <div className={`${styles.teamCol} ${styles.inviteColStatus}`}>
                   <Tag status={row.status ?? 'pending'} />
                 </div>
-                <div className={`${styles.teamCol} ${styles.inviteColActions}`}>
-                  {listMode ? (
+                {/* Los botones de la fila hacen lo suyo y no abren el perfil. */}
+                <div className={`${styles.teamCol} ${styles.inviteColActions}`} onClick={e => e.stopPropagation()}>
+                  {rowActions(row, 16).length === 0 ? (
+                    // Sin ninguna acción permitida (ej. Org Admin en la fila de un Team Admin):
+                    // ni "⋯" ni "Manage", que abrirían un menú vacío.
+                    !listMode && <span className={styles.actionPlaceholder} aria-hidden="true" />
+                  ) : listMode ? (
                     // Mobile: botón al pie de la fila que abre el bottom sheet. El texto anticipa
                     // qué hay adentro: gestionar una invitación (pendiente) o a un admin (activo).
                     <Button
@@ -346,7 +390,7 @@ export default function InvitationsTable({
                     // se suma un segundo botón, el de la incidencia — nunca más de dos. Sin
                     // incidencia, un hueco invisible mantiene el "⋯" en la misma columna.
                     <>
-                      {row.deliveryIssue && row.status !== 'active' ? (
+                      {row.deliveryIssue && canViewEmailHistory && row.status !== 'active' ? (
                         <IconButton
                           aria-label="Email delivery issue — open email history"
                           tooltip="Delivery issue"
@@ -381,7 +425,8 @@ export default function InvitationsTable({
                   )}
                 </div>
               </div>
-            ))}
+              );
+            })}
           </div>
         ) : (
           <div className={styles.innerEmpty}>

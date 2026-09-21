@@ -963,9 +963,11 @@
   flex-shrink: 0;
 }
 
+/* Nace en el mismo punto que el botón (igual que el menú del "+"): con el botón escondido
+   mientras está abierto, el menú parece crecer desde él en vez de aparecer debajo. */
 .teamRowMenu {
   position: absolute;
-  top: calc(100% + 4px);
+  top: 0;
   right: 0;
   z-index: 200;
   transform-origin: top right;
@@ -1134,6 +1136,21 @@
   border-bottom: none;
 }
 
+/* Varias personas bajo una misma etiqueta (ej. "CENTER ADMINS"): más aire entre una y otra
+   que entre sus propias líneas, para que no se mezcle quién es quién. */
+.peopleGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Divisor entre personas del mismo grupo: con solo espacio, dos admins seguidos se leían
+   como un único bloque de datos. */
+.peopleGroup > * + * {
+  padding-top: 20px;
+  border-top: 1px solid var(--color-border-default);
+}
+
 .contactEntryTitle {
   font-family: var(--font-family-primary);
   font-size: var(--font-size-12);
@@ -1284,22 +1301,12 @@
 
 /* ─── Team card ───────────────────────────────────────── */
 
+/* Mismo botón "back" que en Unit (.backBtn/.backIcon/.backLabel): icono de 16 dentro de un
+   contenedor de 28 con borde y radius-xs, gap 8, label 14 Medium en color strong.
+   Figma: Web App 2.0 nodo 10255:216883. Acá solo se agrega la separación de abajo. */
 .teamBackBtn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: none;
-  border: none;
   padding: 0 0 16px;
-  cursor: pointer;
-  font-family: var(--font-family-primary);
-  font-size: var(--font-size-14);
-  font-weight: var(--font-weight-medium);
-  color: var(--color-text-subtle);
-  transition: color 0.15s ease;
 }
-
-.teamBackBtn:hover { color: var(--color-text-strong); }
 
 .teamBackBtn:focus-visible {
   outline: 2px solid var(--color-action-primary-bg);
@@ -1396,6 +1403,10 @@
    mismo nivel, al sacar el mouse las filas siguientes (más abajo en el DOM) pintaban
    encima del menú. */
 .teamTableRow.menuOpen { z-index: 2; }
+
+/* Solo las filas que llevan a algún sitio muestran el cursor de mano (en la tabla de Admins,
+   las activas: una invitación pendiente no tiene perfil al que ir). */
+.rowClickable { cursor: pointer; }
 
 .teamTableRow:focus-visible {
   outline: 2px solid var(--color-action-primary-bg);
@@ -1551,6 +1562,39 @@
   top: -28px;
   max-width: 220px;
   white-space: normal;
+}
+
+/* Segunda línea de la vista compact de mobile: Tag de estado · dato secundario. */
+.compactSub {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.compactSub > span:first-child {
+  flex-shrink: 0;
+}
+
+/* El dato secundario (email o "Invited …") ocupa lo que queda y se corta con ellipsis; el
+   Tag y el separador nunca se achican. */
+.compactSub > span:last-child {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.compactSub .memberSub {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.compactSep {
+  flex-shrink: 0;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  color: var(--color-text-subtle);
 }
 
 .dateText {
@@ -2177,24 +2221,23 @@
 
 /* ── Units tab (center) ── */
 
+/* Figma 12672:145865: cuatro columnas iguales (170,25px cada una en un panel de 721) más
+   40px de acciones. Unit ID alineada a la izquierda; Type, Sensor usage y Total usage
+   centradas. La columna "Date added" se quitó: no está en el diseño. */
 .unitColId {
-  flex: 0 0 140px;
-  width: 140px;
-  min-width: 90px;
+  flex: 1 1 0;
+  min-width: 140px;
 }
 
 .unitColType {
-  flex: 0 0 90px;
-  width: 90px;
-  min-width: 60px;
+  flex: 1 1 0;
+  min-width: 70px;
   justify-content: center;
 }
 
-/* Date added / Sensor usage / Total usage — comparten el espacio restante
-   por igual (spec Figma: las 3 son flex:1, ninguna fija). */
 .unitColUse {
-  flex: 1;
-  min-width: 70px;
+  flex: 1 1 0;
+  min-width: 80px;
   justify-content: center;
 }
 
@@ -2204,12 +2247,20 @@
 
 /* ── Unit detail (mismo patrón que screens/UnitsTab.jsx) ── */
 
+/* Todo el detalle de la unit comparte el mismo borde izquierdo de 24px: el "Back to Units",
+   el título, el texto de los tabs y el cuerpo. Antes cada uno tenía el suyo (0 / 48 / 16 / 40)
+   y se veía como una escalera. Los 8px de los tabs son 24 menos el padding propio del
+   TabBar (4 del tab + 12 de la píldora), para que el texto caiga en la misma línea. */
+.unitDetailBack {
+  margin: 16px 0 0 24px;
+}
+
 .unitDetailHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 12px 24px 12px 48px;
+  padding: 12px 24px;
 }
 
 .unitDetailHeading {
@@ -2242,7 +2293,7 @@
 
 .unitDetailTabsOuter {
   width: 100%;
-  padding: 0 16px;
+  padding: 0 8px;
 }
 
 .unitDetailTabs {
@@ -2259,7 +2310,7 @@
   flex-direction: column;
   gap: 32px;
   width: 100%;
-  padding: 40px;
+  padding: 32px 24px 40px;
   overflow-y: auto;
 }
 
@@ -2383,6 +2434,11 @@
   background: var(--color-bg-surface-disabled);
 }
 
+/* Fila de 64px como en Figma: el Unit ID lleva dos líneas (id + descripción). */
+.teamsTab.unitsCenterTab .teamTableRow {
+  height: 64px;
+}
+
 /* Corrige el teamColActions flexible heredado de .teamsTab (pensado para la
    tabla de Teams) — acá necesita ancho fijo para que header y filas alineen. */
 .teamsTab.unitsCenterTab .teamColActions {
@@ -2416,6 +2472,176 @@
   flex-direction: column;
   gap: 32px;
   padding: 24px 20px;
+}
+
+/* ── Perfil agnóstico (Figma 12579:275097) ──────────────────
+   Mismo contenido que Account details; acá se muestra dentro del panel del equipo. */
+
+.profileHero {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.profileAvatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #00c9a7, #60a5fa); /* mismo avatar que Account details */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-24);
+  font-weight: var(--font-weight-bold);
+  line-height: 30px;
+  color: var(--color-text-strong);
+}
+
+.profileIdentity {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.profileName {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-medium);
+  line-height: 20px;
+  color: var(--color-text-strong);
+}
+
+.profileEmail {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  line-height: 17.5px;
+  color: var(--color-text-subtle);
+  overflow-wrap: anywhere;
+}
+
+.profileMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px; /* 12px entre el bloque nombre/email y la línea de estado */
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-book);
+  line-height: 15px;
+  color: var(--color-text-subtle);
+}
+
+.profileStatus {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.profileMetaSep {
+  color: var(--color-text-subtle);
+}
+
+.profileSection {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.profileSectionTitle {
+  margin: 0;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-20);
+  font-weight: var(--font-weight-medium);
+  line-height: 25px;
+  color: var(--color-text-strong);
+}
+
+/* Dos columnas de 287px con 48px de aire, como en Figma; abajo de 640 pasa a una sola. */
+.profileGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 48px;
+  row-gap: 24px;
+  max-width: 622px;
+}
+
+.profileField {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.profileFieldLabel {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-book);
+  line-height: 15px;
+  color: var(--color-text-subtle);
+}
+
+.profileFieldValue {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  line-height: 17.5px;
+  color: var(--color-text-strong);
+  overflow-wrap: anywhere;
+}
+
+/* Píldora de solo lectura de Permissions — no es un Tag del DS: no comunica estado de una
+   entidad, solo repite el valor del ajuste (Screen: On / PIN: Off). */
+.profilePill {
+  align-self: flex-start;
+  margin-top: 8px;
+  padding: 4px 8px;
+  border-radius: 100px;
+  background: var(--color-bg-page);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-book);
+  line-height: 15px;
+  color: var(--color-text-strong);
+}
+
+.profileDivider {
+  height: 1px;
+  background: var(--color-border-default);
+  max-width: 622px;
+}
+
+.profileLink,
+.profileDangerLink {
+  align-self: flex-start;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  line-height: 15px;
+}
+
+.profileLink { color: var(--color-turquoise-30); }
+.profileDangerLink { color: var(--color-red-58); }
+
+.profileLink:hover,
+.profileDangerLink:hover { text-decoration: underline; }
+
+.profileLink:focus-visible,
+.profileDangerLink:focus-visible {
+  outline: 2px solid var(--color-action-primary-bg);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@media (max-width: 640px) {
+  .profileGrid { grid-template-columns: minmax(0, 1fr); }
 }
 
 .userSection {
@@ -3337,6 +3563,70 @@
     background: var(--color-bg-surface);
   }
 
+  /* ── Tab Admins (Org y Centro, InvitationsTable) a 390: vista compact (por defecto) ──
+     Decidido con el programador (17/9): en mobile solo quién, su estado y las acciones.
+     Recipient (con el Tag de estado en la segunda línea) + botones: incidencia (si hay y el
+     rol puede verla) y "⋯", que en teléfono abre el bottom sheet. Role, Center, Team y
+     Status como columna no se muestran; tablet y desktop mantienen la tabla completa. ── */
+  .invitationsMobileCompact .teamTable {
+    overflow-x: hidden;
+    padding: 0 16px 16px;
+    margin-left: 0;
+  }
+
+  .invitationsMobileCompact .teamTableHead {
+    display: none;
+  }
+
+  .invitationsMobileCompact .teamTableRow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: auto;
+    min-width: 0;
+    height: auto;
+    min-height: 64px;
+    padding: 12px 0;
+  }
+
+  .invitationsMobileCompact .teamTableRow .teamCol {
+    padding: 0;
+  }
+
+  .invitationsMobileCompact .teamTableRow .inviteColType,
+  .invitationsMobileCompact .teamTableRow .inviteColScope,
+  .invitationsMobileCompact .teamTableRow .inviteColTeam,
+  .invitationsMobileCompact .teamTableRow .inviteColSent,
+  .invitationsMobileCompact .teamTableRow .inviteColStatus,
+  .invitationsMobileCompact .teamTableRow .inviteColIssue {
+    display: none;
+  }
+
+  .invitationsMobileCompact .teamTableRow .teamColName {
+    flex: 1 1 auto;
+    width: auto;
+    min-width: 0;
+  }
+
+  /* 4px entre el nombre/email y la línea del estado. */
+  .invitationsMobileCompact .teamTableRow .memberMeta {
+    min-width: 0;
+    width: 100%;
+    gap: 4px;
+  }
+
+  .invitationsMobileCompact .teamTableRow .memberName {
+    font-size: var(--font-size-16);
+    line-height: 20px;
+  }
+
+  .invitationsMobileCompact .teamTableRow .inviteColActions {
+    flex: 0 0 auto;
+    width: auto;
+    gap: 8px;
+    justify-content: flex-end;
+  }
+
   /* ── Tab Admins (Org y Centro, InvitationsTable) a 390: lista de cards ──
      Figma: Web App 2.0 → "Kamleon — Prototipo / Option B" (nodo 12852:129168).
      Con 6 columnas no hay scroll que sirva (Status y acciones quedan fuera del encuadre),
@@ -3461,58 +3751,6 @@
     display: none;
   }
 
-  /* ── Alternativa "scroll" (easter egg de InvitationsTable, 3 toques en el título) ──
-     La tabla original: scroll horizontal con la primera columna fija. Se mantiene mientras
-     se decide entre las dos propuestas de mobile. */
-  .invitationsMobileScroll .teamTable {
-    overflow-x: auto;
-    padding-left: 0;
-    margin-left: 16px;
-  }
-
-  .invitationsMobileScroll .teamTableHead,
-  .invitationsMobileScroll .teamTableRow {
-    width: max-content;
-    min-width: 100%;
-  }
-
-  .invitationsMobileScroll .inviteColType,
-  .invitationsMobileScroll .inviteColScope,
-  .invitationsMobileScroll .inviteColTeam,
-  .invitationsMobileScroll .inviteColSent {
-    flex: 0 0 130px;
-    width: 130px;
-    min-width: 130px;
-  }
-
-  .invitationsMobileScroll .inviteColStatus {
-    flex: 0 0 110px;
-    width: 110px;
-    min-width: 110px;
-  }
-
-  .invitationsMobileScroll .inviteColActions {
-    flex: 0 0 104px;
-    width: 104px;
-  }
-
-  .invitationsMobileScroll .teamColName {
-    flex: 0 0 190px;
-    width: 190px;
-    min-width: 190px;
-    position: sticky;
-    left: 0;
-    z-index: 1;
-  }
-
-  .invitationsMobileScroll .teamTableHead .teamColName {
-    background: var(--color-bg-page);
-    z-index: 2;
-  }
-
-  .invitationsMobileScroll .teamTableRow .teamColName {
-    background: var(--color-bg-surface);
-  }
 
   /* ── listPanelAddBtn: touch target mínimo 44×44px ── */
   .listPanelAddBtn {
@@ -3638,4 +3876,49 @@
   top: calc(100% + 6px);
   right: 0;
   z-index: 100;
+}
+
+/* ─── Entrada de los sub-paneles en desktop ────────────────────────────────────
+   Bajar un nivel (equipo, persona, unit) mueve solo el panel derecho: la lista de la
+   izquierda se queda quieta, así que el desplazamiento es corto y sirve nada más para
+   marcar la dirección. La vuelta dura menos que la ida porque el "back" se recorre
+   muchas más veces. Cambiar de centro en la lista es el mismo nivel: solo fade.
+   Mobile mantiene el slide completo (.detailSlideIn/.detailSlideBack, en el @media 768).
+   `backwards` y no `both`: `both` deja el transform aplicado al terminar y un elemento con
+   transform se vuelve el marco de los drawers `position: fixed` que tiene dentro. */
+
+.subFadeIn {
+  animation: subFadeInRight 0.18s cubic-bezier(0.4, 0, 0.2, 1) backwards;
+}
+
+.subFadeBack {
+  animation: subFadeInLeft 0.12s cubic-bezier(0.4, 0, 0.2, 1) backwards;
+}
+
+.subFade {
+  animation: subFadeOnly 0.15s ease-out backwards;
+}
+
+@keyframes subFadeInRight {
+  from { opacity: 0; transform: translateX(10px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes subFadeInLeft {
+  from { opacity: 0; transform: translateX(-10px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes subFadeOnly {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Reducir movimiento: se quita el desplazamiento, no el aviso de que algo cambió —
+   el fade no marea y sigue diciendo que el panel es nuevo. */
+@media (prefers-reduced-motion: reduce) {
+  .subFadeIn,
+  .subFadeBack {
+    animation: subFadeOnly 0.15s ease-out backwards;
+  }
 }

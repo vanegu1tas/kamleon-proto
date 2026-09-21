@@ -3,10 +3,12 @@ import styles from './Tag.module.css';
 const LABELS = {
   active:       'Active',
   inactive:     'Inactive',
-  professional: 'Professional',
+  professional: 'Team admin',
   user:         'User',
   pending:      'Pending',
   expired:      'Expired',
+  delay:        'Delay',
+  delivered:    'Delivered',
 };
 
 // Role variants don't use a dot indicator
@@ -15,7 +17,7 @@ const NO_DOT = new Set(['professional', 'user']);
 /**
  * Tag de estado o rol.
  *
- * @param {('active'|'inactive'|'professional'|'user'|'pending'|'expired')} status
+ * @param {('active'|'inactive'|'professional'|'user'|'pending'|'expired'|'delay'|'delivered')} status
  * @param {string} [label] - Override the default label text
  */
 export default function Tag({ status = 'active', label }) {

@@ -2,7 +2,7 @@ import { useState, useMemo, useRef, useEffect, useLayoutEffect } from 'react';
 import Tag from '../../../design-system/components/Tag/Tag';
 import TabBar from '../../../design-system/components/TabBar/TabBar';
 import SearchBar from '../../../design-system/components/SearchBar/SearchBar';
-import { IconEdit, IconPlus, IconTrash, IconSettings, IconFilter, IconSort, IconPower, IconRefresh, IconEye, IconEyeClosed, IconMenu, IconClose, IconResend, IconInfoCircle, IconMore } from '../../../design-system/icons/outline';
+import { IconEdit, IconPlus, IconTrash, IconSettings, IconFilter, IconSort, IconPower, IconEye, IconEyeClosed, IconClose, IconResend, IconInfoCircle, IconMore } from '../../../design-system/icons/outline';
 import Button from '../../../design-system/components/Button/Button';
 import Input from '../../../design-system/components/Input/Input';
 import { IconUserFilled, IconMailFilled, IconPhoneFilled, IconLocationFilled } from '../../../design-system/icons/filled';
@@ -25,6 +25,7 @@ import EditUserDrawer   from '../../StaffOrganizaciones/screens/EditUserDrawer';
 import EditUnitDrawer   from './EditUnitDrawer';
 import GlobalUnitsTab   from './UnitsTab';
 import InvitationsTable from './InvitationsTable';
+import EmailHistoryDrawer from './EmailHistoryDrawer';
 import TruncatedText from './TruncatedText';
 import styles from './OrgDetailV2.module.css';
 import dstyles from '../../StaffOrganizaciones/screens/DeleteOrgModal.module.css';
@@ -158,7 +159,12 @@ function CentersContent({ org, initialCenter, initialTeam, initialUser, isMobile
   const [newTeamCenter, setNewTeamCenter]           = useState(null);
   const [newUserContext, setNewUserContext]          = useState(null); // { center, team? }
   const [inviteCenterAdminFor, setInviteCenterAdminFor] = useState(null); // center — Org Admin invitando desde dentro de un centro
+  // Tab del centro al que se vuelve tras entrar a un equipo/unit/usuario: se fija al entrar
+  // (teams/units/users) y NO se resetea al volver, si no el back siempre caía en Details.
   const [returnTab, setReturnTab]                   = useState('details');
+  // Quitar a alguien de un equipo se puede hacer desde su perfil, que vive un nivel por encima
+  // de la tabla de miembros: se guardan acá los ids quitados y la tabla los filtra.
+  const [removedMemberIds, setRemovedMemberIds]     = useState(() => new Set());
   const [centerSearch, setCenterSearch]             = useState('');
 
   // ── Mobile slide state ──
@@ -180,6 +186,7 @@ function CentersContent({ org, initialCenter, initialTeam, initialUser, isMobile
     setSelectedUnit(null);
     setSelectedUnitCenter(null);
     setReturnTab('details');
+    setSubSlideDir('none'); // cambiar de centro es el mismo nivel: fade, sin desplazamiento
     if (isMobile) setDetailVisible(true);
   }
 
@@ -209,9 +216,13 @@ function CentersContent({ org, initialCenter, initialTeam, initialUser, isMobile
         ? `team-${selectedTeam.id}`
         : `center-${selectedId}`;
 
+  // Mobile: slide completo (la pantalla entera se reemplaza). Desktop: desplazamiento corto
+  // y direccional al bajar/subir de nivel, y fade a secas al cambiar de centro (mismo nivel).
   const subSlideClass = isMobile
-    ? (subSlideDir === 'forward' ? styles.detailSlideIn : styles.detailSlideBack)
-    : undefined;
+    ? (subSlideDir === 'back' ? styles.detailSlideBack : styles.detailSlideIn)
+    : subSlideDir === 'forward' ? styles.subFadeIn
+    : subSlideDir === 'back'    ? styles.subFadeBack
+    : styles.subFade;
 
   return (
     <>
@@ -297,7 +308,7 @@ function CentersContent({ org, initialCenter, initialTeam, initialUser, isMobile
                 : selectedUnit
                   ? () => { setSubSlideDir('back'); setSelectedUnit(null); setSelectedUnitCenter(null); }
                   : selectedTeam
-                    ? () => { setSubSlideDir('back'); setReturnTab('details'); setSelectedTeam(null); setSelectedUser(null); setSelectedUserTeam(null); }
+                    ? () => { setSubSlideDir('back'); setSelectedTeam(null); setSelectedUser(null); setSelectedUserTeam(null); }
                     : handleBackToCenters
               }
             >
@@ -323,6 +334,8 @@ function CentersContent({ org, initialCenter, initialTeam, initialUser, isMobile
               backLabel={selectedTeam ? selectedTeam.name : selected?.name}
               onBack={() => { setSubSlideDir('back'); setSelectedUser(null); setSelectedUserTeam(null); }}
               isMobile={isMobile}
+              role={role}
+              onRemoveFromTeam={member => setRemovedMemberIds(prev => new Set(prev).add(member.id))}
             />
           ) : selectedUnit ? (
             <UnitCard
@@ -336,8 +349,9 @@ function CentersContent({ org, initialCenter, initialTeam, initialUser, isMobile
               team={selectedTeam}
               center={selectedTeamCenter}
               org={org}
-              onBack={() => { setSubSlideDir('back'); setReturnTab('details'); setSelectedTeam(null); setSelectedUser(null); setSelectedUserTeam(null); }}
+              onBack={() => { setSubSlideDir('back'); setSelectedTeam(null); setSelectedUser(null); setSelectedUserTeam(null); }}
               onSelectUser={(user) => { setSubSlideDir('forward'); setSelectedUser(user); }}
+              removedMemberIds={removedMemberIds}
               onNewUser={() => setNewUserContext({ center: selectedTeamCenter, team: selectedTeam })}
               onEdit={() => setEditTeamTarget({ team: selectedTeam, center: selectedTeamCenter })}
               isMobile={isMobile}
@@ -367,6 +381,7 @@ function CentersContent({ org, initialCenter, initialTeam, initialUser, isMobile
                 setSubSlideDir('forward');
                 setSelectedUser(user);
                 setSelectedUserTeam(team);
+                setReturnTab('users');
               }}
               onSelectUnit={(unit) => {
                 setSubSlideDir('forward');
@@ -446,7 +461,7 @@ const ORG_TABS = [
 
 const ORG_PAGE_SIZE = 15;
 
-function OrgUsersTab({ org }) {
+function OrgUsersTab({ org, role }) {
   const [search, setSearch]         = useState('');
   const [filters, setFilters]       = useState({ role: new Set(), status: new Set(), center: new Set() });
   const [filterOpen, setFilterOpen] = useState(false);
@@ -472,7 +487,7 @@ function OrgUsersTab({ org }) {
         const profIds = new Set(team.professionalIds ?? []);
         USERS_POOL.forEach(u => {
           if (!userIds.has(u.id) || map.has(u.id)) return;
-          map.set(u.id, { user: u, center, team, role: profIds.has(u.id) ? 'Professional' : 'User' });
+          map.set(u.id, { user: u, center, team, role: profIds.has(u.id) ? 'Team admin' : 'User' });
         });
       });
     });
@@ -520,6 +535,7 @@ function OrgUsersTab({ org }) {
         team={selectedUserMeta?.team}
         backLabel="Users"
         onBack={() => { setSelectedUser(null); setSelectedUserMeta(null); }}
+        role={role}
       />
     );
   }
@@ -562,7 +578,7 @@ function OrgUsersTab({ org }) {
             <div className={styles.filterDropdown}>
               <div className={styles.filterSection}>
                 <p className={styles.filterSectionLabel}>Role</p>
-                {[{ v: 'Professional', label: 'Professional' }, { v: 'User', label: 'User' }].map(({ v, label }) => (
+                {[{ v: 'Team admin', label: 'Team admin' }, { v: 'User', label: 'User' }].map(({ v, label }) => (
                   <label key={v} className={`${styles.filterOption} ${filters.role.has(v) ? styles.filterOptionChecked : ''}`}>
                     <input type="checkbox" className={styles.nativeCheck} checked={filters.role.has(v)} onChange={() => toggleFilter('role', v)} />
                     <span className={styles.checkBox}>
@@ -751,7 +767,7 @@ function TeamsTab({ center, onSelectTeam, onEditTeam, onNewUserForTeam, canManag
 
       <div className={styles.teamToolbar}>
         <SearchBar
-          placeholder="Search by name..."
+          placeholder="Search..."
           value={search}
           onChange={e => setSearch(e.target.value)}
           onClear={() => setSearch('')}
@@ -803,7 +819,7 @@ function TeamsTab({ center, onSelectTeam, onEditTeam, onNewUserForTeam, canManag
             return (
               <div
                 key={team.id}
-                className={styles.teamTableRow}
+                className={`${styles.teamTableRow} ${isOpen ? styles.menuOpen : ''}`}
                 role="button"
                 tabIndex={0}
                 onClick={() => onSelectTeam(team)}
@@ -814,7 +830,7 @@ function TeamsTab({ center, onSelectTeam, onEditTeam, onNewUserForTeam, canManag
                   <div className={styles.memberMeta}>
                     <span className={styles.memberName}>{team.name}</span>
                     <span className={styles.memberSub}>
-                      {userCount} {userCount === 1 ? 'user' : 'users'} · {profCount} {profCount === 1 ? 'professional' : 'professionals'}
+                      {userCount} {userCount === 1 ? 'user' : 'users'} · {profCount} {profCount === 1 ? 'team admin' : 'team admins'}
                     </span>
                   </div>
                 </div>
@@ -828,13 +844,15 @@ function TeamsTab({ center, onSelectTeam, onEditTeam, onNewUserForTeam, canManag
                 >
                   {canManageTeams && (
                     <div className={styles.teamRowMenuAnchor}>
-                      <IconButton
-                        aria-label="Team options"
-                        tooltip="More"
-                        onClick={() => setOpenMenuId(isOpen ? null : team.id)}
-                      >
-                        <IconMore size={16} />
-                      </IconButton>
+                      <span className={isOpen ? styles.createTriggerHidden : ''}>
+  <IconButton
+                          aria-label="Team options"
+                          tooltip="More"
+                          onClick={() => setOpenMenuId(isOpen ? null : team.id)}
+                        >
+                          <IconMore size={16} />
+                        </IconButton>
+                      </span>
                       {isOpen && (
                         <div className={styles.teamRowMenu}>
                           <ContextMenu
@@ -869,8 +887,25 @@ function TeamsTab({ center, onSelectTeam, onEditTeam, onNewUserForTeam, canManag
 function DetailsTab({ center, org, onTabChange }) {
   const teams = getActiveTeamCount(center);
   const users = getUserCountForCenter(center);
-  const profs = getProfessionalCountForCenter(center);
+  const teamAdmins = getProfessionalCountForCenter(center);
   const units = center.units?.length ?? 0;
+
+  // Figma 13023:127858: los stats arriba (sin título), después "Center details" (datos del
+  // centro + su admin) y "Staff directory" (las personas de contacto que se cargan al crear
+  // o editar el centro, cada una con su cargo como subtítulo).
+  const admins = center.admins ?? [];
+  const contacts = center.contacts ?? [];
+  const hasCenterInfo = center.email || center.phone || center.address;
+
+  function PersonRows({ name, email, phone }) {
+    return (
+      <div className={styles.infoList}>
+        {name && <div className={styles.infoRow}><IconUserFilled size={14} /><span>{name}</span></div>}
+        {email && <div className={styles.infoRow}><IconMailFilled size={14} /><span>{email}</span></div>}
+        {phone && <div className={styles.infoRow}><IconPhoneFilled size={14} /><span>{phone}</span></div>}
+      </div>
+    );
+  }
 
   return (
     <div className={styles.detailsTab}>
@@ -878,63 +913,71 @@ function DetailsTab({ center, org, onTabChange }) {
       <div className={styles.detailsSection}>
         <h3 className={styles.peopleSectionTitle}>Overview</h3>
         <div className={styles.statsGrid}>
-          <div className={styles.statBlock}>
-            <span className={styles.statNum}>{teams}</span>
-            <span className={styles.statName}>Teams</span>
-          </div>
-          <div className={styles.statBlock}>
-            <span className={styles.statNum}>{units}</span>
-            <span className={styles.statName}>Units</span>
-          </div>
-          <div className={styles.statBlock}>
-            <span className={styles.statNum}>{users}</span>
-            <span className={styles.statName}>Users</span>
-          </div>
-          <div className={styles.statBlock}>
-            <span className={styles.statNum}>{profs}</span>
-            <span className={styles.statName}>Professionals</span>
-          </div>
+        <div className={styles.statBlock}>
+          <span className={styles.statNum}>{teams}</span>
+          <span className={styles.statName}>Teams</span>
+        </div>
+        <div className={styles.statBlock}>
+          <span className={styles.statNum}>{units}</span>
+          <span className={styles.statName}>Units</span>
+        </div>
+        <div className={styles.statBlock}>
+          <span className={styles.statNum}>{users}</span>
+          <span className={styles.statName}>Users</span>
+        </div>
+        <div className={styles.statBlock}>
+          <span className={styles.statNum}>{teamAdmins}</span>
+          <span className={styles.statName}>{teamAdmins === 1 ? 'Team admin' : 'Team admins'}</span>
+        </div>
         </div>
       </div>
 
-      {(() => {
-        const people = [
-          ...(center.admins  ?? []).map(a => ({ role: 'Center Admin', name: a.name, email: a.email, phone: a.phone })),
-          ...(center.contacts ?? []).map(c => ({ role: c.cargo, name: c.name, email: c.email, phone: c.phone })),
-        ];
-        const hasCenterInfo = center.email || center.phone || center.address;
-        if (!hasCenterInfo && people.length === 0) return null;
-        return (
-          <div className={styles.detailsSection}>
-            <h3 className={styles.peopleSectionTitle}>Contact</h3>
-            <div className={styles.peopleList}>
+      {(hasCenterInfo || admins.length > 0) && (
+        <div className={styles.detailsSection}>
+          <h3 className={styles.peopleSectionTitle}>Center details</h3>
+          <div className={styles.peopleList}>
 
-              {hasCenterInfo && (
-                <div className={`${styles.personEntry} ${people.length === 0 ? styles.personEntryLast : ''}`}>
-                  <span className={styles.contactEntryTitle}>Center info</span>
-                  <div className={styles.infoList}>
-                    {center.email && <div className={styles.infoRow}><IconMailFilled size={14} /><span>{center.email}</span></div>}
-                    {center.phone && <div className={styles.infoRow}><IconPhoneFilled size={14} /><span>{center.phone}</span></div>}
-                    {center.address && <div className={styles.infoRow}><IconLocationFilled size={14} /><span>{center.address}</span></div>}
-                  </div>
+            {hasCenterInfo && (
+              <div className={`${styles.personEntry} ${admins.length === 0 ? styles.personEntryLast : ''}`}>
+                <span className={styles.contactEntryTitle}>Center info</span>
+                <div className={styles.infoList}>
+                  {center.email && <div className={styles.infoRow}><IconMailFilled size={14} /><span>{center.email}</span></div>}
+                  {center.phone && <div className={styles.infoRow}><IconPhoneFilled size={14} /><span>{center.phone}</span></div>}
+                  {center.address && <div className={styles.infoRow}><IconLocationFilled size={14} /><span>{center.address}</span></div>}
                 </div>
-              )}
+              </div>
+            )}
 
-              {people.map((p, i) => (
-                <div key={i} className={`${styles.personEntry} ${i === people.length - 1 ? styles.personEntryLast : ''}`}>
-                  <span className={styles.contactEntryTitle}>{p.role}</span>
-                  <div className={styles.infoList}>
-                    <div className={styles.infoRow}><IconUserFilled size={14} /><span>{p.name}</span></div>
-                    <div className={styles.infoRow}><IconMailFilled size={14} /><span>{p.email}</span></div>
-                    {p.phone && <div className={styles.infoRow}><IconPhoneFilled size={14} /><span>{p.phone}</span></div>}
-                  </div>
+            {admins.length > 0 && (
+              // Un solo bloque para todos los admins del centro: la etiqueta nombra la
+              // categoría, no a cada persona. Repetirla por admin se lee como un error.
+              <div className={`${styles.personEntry} ${styles.personEntryLast}`}>
+                <span className={styles.contactEntryTitle}>{admins.length === 1 ? 'Center admin' : 'Center admins'}</span>
+                <div className={styles.peopleGroup}>
+                  {admins.map((a, i) => (
+                    <PersonRows key={`admin-${i}`} name={a.name} email={a.email} phone={a.phone} />
+                  ))}
                 </div>
-              ))}
+              </div>
+            )}
 
-            </div>
           </div>
-        );
-      })()}
+        </div>
+      )}
+
+      {contacts.length > 0 && (
+        <div className={styles.detailsSection}>
+          <h3 className={styles.peopleSectionTitle}>Staff directory</h3>
+          <div className={styles.peopleList}>
+            {contacts.map((c, i) => (
+              <div key={`contact-${i}`} className={`${styles.personEntry} ${i === contacts.length - 1 ? styles.personEntryLast : ''}`}>
+                <span className={styles.contactEntryTitle}>{c.cargo}</span>
+                <PersonRows name={c.name} email={c.email} phone={c.phone} />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
     </div>
   );
@@ -1051,7 +1094,17 @@ function RemoveAdminModal({ row, onClose, onConfirm }) {
   );
 }
 
+// Una fila de la tabla de Admins no es un usuario completo: lleva email, nombre y poco más.
+// Si esa persona existe en el pool se abre su ficha real; si no (un admin invitado que aún no
+// tiene datos personales), se arma lo mínimo y el perfil muestra "—" en lo que falte.
+function adminRowToUser(row) {
+  const known = USERS_POOL.find(u => u.email === row.email);
+  if (known) return known;
+  return { id: row.key, name: row.name ?? row.email, email: row.email, status: 'active' };
+}
+
 function OrgInvitationsTab({ pendingInvites, setPendingInvites, centerAdminInvites, setCenterAdminInvites, orgAdmins, setOrgAdmins, currentUserEmail, role }) {
+  const [profileUser, setProfileUser] = useState(null);
   // Owner/Admin tienen bypass total; Org Admin puede quitar Org Admins
   // (`organizations.admins.remove`) y Center Admins (`centers.admins.remove`), pero NO
   // Team Admins: no tiene ningún permiso `teams.*` (docs/permissions.md).
@@ -1059,6 +1112,9 @@ function OrgInvitationsTab({ pendingInvites, setPendingInvites, centerAdminInvit
   // `users.editData`: Center Admin y Team Admin (y Owner/Admin por bypass) — Org Admin no.
   const canEditUsers = hasBypass;
   const [editUserRow, setEditUserRow] = useState(null);
+  // Email history (y la incidencia de envío): feature del programador, solo Kamleon staff.
+  const canViewEmailHistory = hasBypass;
+  const [emailHistoryRow, setEmailHistoryRow] = useState(null);
   function canRemoveRow(admin) {
     if (hasBypass) return true;
     return (admin.role ?? 'Organization Admin') !== 'Team admin';
@@ -1074,7 +1130,7 @@ function OrgInvitationsTab({ pendingInvites, setPendingInvites, centerAdminInvit
       key: `org-${i}`, kind: 'org', index: i,
       email: invite.email, type: 'Organization Admin', scope: '-', team: '-', status: 'pending',
       sentAgo: invite.sentAgo ?? '—', sentMinutesAgo: invite.sentMinutesAgo ?? 0,
-      deliveryIssue: invite.deliveryIssue ?? false,
+      deliveryIssue: invite.deliveryIssue ?? null,
     })),
     ...centerAdminInvites.map(invite => ({
       key: `center-${invite.key}`, kind: 'center', centerKey: invite.key,
@@ -1113,6 +1169,20 @@ function OrgInvitationsTab({ pendingInvites, setPendingInvites, centerAdminInvit
     setOrgAdmins(prev => prev.filter(a => a.key !== removeTarget.adminKey));
   }
 
+  // Una fila activa lleva al perfil de esa persona, igual que en la tabla de un equipo.
+  if (profileUser) {
+    return (
+      <div className={styles.subFadeIn}>
+        <UserCard
+          user={profileUser}
+          backLabel="Admins"
+          onBack={() => setProfileUser(null)}
+          role={role}
+        />
+      </div>
+    );
+  }
+
   return (
     <>
       <InvitationsTable
@@ -1120,6 +1190,7 @@ function OrgInvitationsTab({ pendingInvites, setPendingInvites, centerAdminInvit
         description={'Invite and manage administrators for this organization and its centers. To invite someone new, use the "+" button above.'}
         rows={rows}
         typeOptions={['Organization Admin', 'Center admin', 'Team admin']}
+        onOpenProfile={row => setProfileUser(adminRowToUser(row))}
         scopeLabel="Center"
         showTeam
         searchPlaceholder="Search..."
@@ -1129,11 +1200,20 @@ function OrgInvitationsTab({ pendingInvites, setPendingInvites, centerAdminInvit
         onResend={handleResend}
         onCancel={handleCancel}
         onRemove={handleRemove}
-        onDeliveryIssue={row => setInviteToast(`Email history for ${row.email} isn't part of this prototype yet`)}
+        onDeliveryIssue={row => setEmailHistoryRow(row)}
+        canViewEmailHistory={canViewEmailHistory}
         canEditUsers={canEditUsers}
         onEditUser={row => setEditUserRow(row)}
         responsiveTable
       />
+      {emailHistoryRow && (
+        <EmailHistoryDrawer
+          row={emailHistoryRow}
+          onClose={() => setEmailHistoryRow(null)}
+          onResend={handleResend}
+          onCancel={handleCancel}
+        />
+      )}
       {editUserRow && (
         <EditUserDrawer
           user={{ name: editUserRow.name ?? '', email: editUserRow.email, status: 'active' }}
@@ -1171,15 +1251,19 @@ function UnitDetailInfoRow({ label, value }) {
   );
 }
 
-function UnitsTab({ center, org }) {
+function UnitsTab({ center, org, role }) {
   const [search, setSearch] = useState('');
   const [filters, setFilters] = useState({ status: new Set(), type: new Set() });
   const [filterOpen, setFilterOpen] = useState(false);
   const [sortCol, setSortCol] = useState(null);
   const [sortDir, setSortDir] = useState('asc');
   const [selectedUnit, setSelectedUnit] = useState(null);
+  // Misma animación que al entrar a un jugador: bajar de nivel entra desde la derecha,
+  // el back entra desde la izquierda y dura menos. 'none' = primera carga del tab.
+  const [unitNav, setUnitNav] = useState('none');
   const [detailTab, setDetailTab] = useState('details');
   const [editUnitTarget, setEditUnitTarget] = useState(null);
+  const [unitToast, setUnitToast] = useState(null);
   const filterRef = useRef(null);
 
   function handleSort(col) {
@@ -1238,9 +1322,9 @@ function UnitsTab({ center, org }) {
 
   if (selectedUnit) {
     return (
-      <div className={`${styles.teamsTab} ${styles.unitsCenterTab}`}>
+      <div className={`${styles.teamsTab} ${styles.unitsCenterTab} ${styles.subFadeIn}`}>
 
-        <button className={styles.backBtn} onClick={() => setSelectedUnit(null)}>
+        <button className={`${styles.backBtn} ${styles.unitDetailBack}`} onClick={() => { setUnitNav('back'); setSelectedUnit(null); }}>
           <span className={styles.backIcon}><ArrowLeftIcon /></span>
           <span className={styles.backLabel}>Back to Units</span>
         </button>
@@ -1319,8 +1403,14 @@ function UnitsTab({ center, org }) {
           <EditUnitDrawer
             unit={editUnitTarget}
             center={center}
+            role={role}
             onClose={() => setEditUnitTarget(null)}
+            onSave={u => setUnitToast(`Unit ${u?.id ?? ''} updated`)}
           />
+        )}
+
+        {unitToast && (
+          <Toast message={unitToast} mode="success" onClose={() => setUnitToast(null)} />
         )}
 
       </div>
@@ -1328,11 +1418,11 @@ function UnitsTab({ center, org }) {
   }
 
   return (
-    <div className={`${styles.teamsTab} ${styles.unitsCenterTab}`}>
+    <div className={`${styles.teamsTab} ${styles.unitsCenterTab} ${unitNav === 'back' ? styles.subFadeBack : ''}`}>
 
       <div className={styles.teamToolbar}>
         <SearchBar
-          placeholder="Search by name or ID..."
+          placeholder="Search..."
           value={search}
           onChange={e => setSearch(e.target.value)}
           onClear={() => setSearch('')}
@@ -1364,7 +1454,9 @@ function UnitsTab({ center, org }) {
               </div>
               {typeOptions.length > 0 && (
                 <div className={styles.filterSection}>
-                  <p className={styles.filterSectionLabel}>Type</p>
+                  {/* "Model" = Stand/Seat (campo `type` en los datos). El tipo de instalación
+                      —Neolith/Embedded— es otro campo y vive en el drawer de editar. */}
+                  <p className={styles.filterSectionLabel}>Model</p>
                   {typeOptions.map(t => (
                     <label key={t} className={`${styles.filterOption} ${filters.type.has(t) ? styles.filterOptionChecked : ''}`}>
                       <input type="checkbox" className={styles.nativeCheck} checked={filters.type.has(t)} onChange={() => toggleFilter('type', t)} />
@@ -1401,8 +1493,7 @@ function UnitsTab({ center, org }) {
                 </span>
               </button>
             </span>
-            <span className={`${styles.teamCol} ${styles.unitColType}`}>Type</span>
-            <span className={`${styles.teamCol} ${styles.unitColUse}`}>Date added</span>
+            <span className={`${styles.teamCol} ${styles.unitColType}`}>Model</span>
             <span className={`${styles.teamCol} ${styles.unitColUse}`}>
               <button className={`${styles.sortBtn} ${sortCol === 'sensorUsage' ? styles.sortBtnActive : ''}`} onClick={() => handleSort('sensorUsage')}>
                 Sensor usage
@@ -1442,8 +1533,8 @@ function UnitsTab({ center, org }) {
                 className={styles.teamTableRow}
                 role="button"
                 tabIndex={0}
-                onClick={() => setSelectedUnit(unit)}
-                onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setSelectedUnit(unit); }}
+                onClick={() => { setUnitNav('forward'); setSelectedUnit(unit); }}
+                onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { setUnitNav('forward'); setSelectedUnit(unit); } }}
               >
                 <div className={`${styles.teamCol} ${styles.unitColId}`}>
                   <div className={styles.memberMeta}>
@@ -1455,9 +1546,6 @@ function UnitsTab({ center, org }) {
                   <span className={styles.dateText}>{unit.type || '-'}</span>
                 </div>
                 <div className={`${styles.teamCol} ${styles.unitColUse}`}>
-                  <span className={styles.dateText}>{unit.dateAdded || '-'}</span>
-                </div>
-                <div className={`${styles.teamCol} ${styles.unitColUse}`}>
                   <span className={styles.dateText}>{unit.sensorUsage ?? 0}</span>
                 </div>
                 <div className={`${styles.teamCol} ${styles.unitColUse}`}>
@@ -1467,10 +1555,11 @@ function UnitsTab({ center, org }) {
                   className={`${styles.teamCol} ${styles.teamColActions}`}
                   onClick={e => e.stopPropagation()}
                 >
+                  {/* El lápiz edita; el click en la fila lleva al detalle de la unit. */}
                   <IconButton
                     aria-label="Edit unit"
                     tooltip="Edit"
-                    onClick={() => setSelectedUnit(unit)}
+                    onClick={() => setEditUnitTarget(unit)}
                   >
                     <IconEdit size={16} />
                   </IconButton>
@@ -1484,6 +1573,20 @@ function UnitsTab({ center, org }) {
           title="No results"
           subtitle={search ? `No units match "${search}"` : 'No units match the selected filters'}
         />
+      )}
+
+      {editUnitTarget && (
+        <EditUnitDrawer
+          unit={editUnitTarget}
+          center={center}
+          role={role}
+          onClose={() => setEditUnitTarget(null)}
+          onSave={u => setUnitToast(`Unit ${u?.id ?? ''} updated`)}
+        />
+      )}
+
+      {unitToast && (
+        <Toast message={unitToast} mode="success" onClose={() => setUnitToast(null)} />
       )}
 
     </div>
@@ -1509,9 +1612,9 @@ function UnitCard({ unit, center, onBack, isMobile = false }) {
       <div className={styles.innerHeader}>
 
         {!isMobile && (
-          <button className={styles.teamBackBtn} onClick={onBack}>
-            <ArrowLeftIcon />
-            <span>Back to Units</span>
+          <button className={`${styles.backBtn} ${styles.teamBackBtn}`} onClick={onBack}>
+            <span className={styles.backIcon}><ArrowLeftIcon /></span>
+            <span className={styles.backLabel}>Back to Units</span>
           </button>
         )}
 
@@ -1651,7 +1754,7 @@ function CenterCard({ center, org, onEdit, onDelete, onNewTeam, onNewUser, onInv
   // Invitaciones de Team Admin pendientes (fuente separada de teamInvites, igual que Organización
   // separa pendingInvites de centerAdminInvites — sin campo `role` compartido, cada tipo vive en
   // su propio array desde el origen). Mientras están pendientes viven acá, en el tab Admins del
-  // Centro; una vez aceptadas pasan a ser fila "Professional" en el roster del equipo (con PIN/Screen).
+  // Centro; una vez aceptadas pasan a ser fila "Team admin" en el roster del equipo (con PIN/Screen).
   const [teamAdminInvites, setTeamAdminInvites] = useState(() =>
     (center.teams ?? []).flatMap(team =>
       (team.pendingProfessionalInvites ?? []).map((invite, i) => ({ ...invite, teamId: team.id, teamName: team.name, key: `${team.id}-prof-${i}` }))
@@ -1662,12 +1765,18 @@ function CenterCard({ center, org, onEdit, onDelete, onNewTeam, onNewUser, onInv
   // (consolidado con los de todos sus centros), así que acá no se le repite el tab.
   const canManageCenterAdmins = role === 'owner' || role === 'admin' || role === 'editor' || role === 'orgAdmin' || role === 'centerAdmin';
   const showAdminsTab = canManageCenterAdmins && role !== 'orgAdmin';
-  const centerTabs = [
-    ...CENTER_TABS.map(t =>
-      t.id === 'users' ? { ...t, hasDot: teamInvites.length > 0 } : t
-    ),
-    ...(showAdminsTab ? [{ id: 'admins', label: 'Admins', hasDot: pendingInvites.length > 0 || teamAdminInvites.length > 0 }] : []),
-  ];
+  // Orden: Details · Teams · Users · Admins · Units — Admins va justo después de Users
+  // (las dos tratan de personas) y Units queda al final.
+  const centerTabs = CENTER_TABS.flatMap(t => {
+    const tab = t.id === 'users' ? { ...t, hasDot: teamInvites.length > 0 } : t;
+    if (t.id === 'units' && showAdminsTab) {
+      return [
+        { id: 'admins', label: 'Admins', hasDot: pendingInvites.length > 0 || teamAdminInvites.length > 0 },
+        tab,
+      ];
+    }
+    return [tab];
+  });
   const createMenuRef  = useRef(null);
   const tabBarRef      = useRef(null);
   const tabContentRef  = useRef(null);
@@ -1786,11 +1895,12 @@ function CenterCard({ center, org, onEdit, onDelete, onNewTeam, onNewUser, onInv
           />
         )}
         {innerTab === 'units' && (
-          <UnitsTab center={center} org={org} />
+          <UnitsTab center={center} org={org} role={role} />
         )}
         {innerTab === 'admins' && showAdminsTab && (
           <AdministratorsSection
             center={center}
+            role={role}
             pendingInvites={pendingInvites}
             setPendingInvites={setPendingInvites}
             teamAdminInvites={teamAdminInvites}
@@ -1926,7 +2036,7 @@ function TeamUsersSection({ center, onSelectUser, role, canManageUsers, teamInvi
       const profIds = new Set(team.professionalIds ?? []);
       USERS_POOL.forEach(u => {
         if (!userIds.has(u.id)) return;
-        const role = profIds.has(u.id) ? 'Professional' : 'User';
+        const role = profIds.has(u.id) ? 'Team admin' : 'User';
         if (!map.has(u.id)) {
           map.set(u.id, { user: u, teams: [team], role });
         } else {
@@ -2026,7 +2136,7 @@ function TeamUsersSection({ center, onSelectUser, role, canManageUsers, teamInvi
             <div className={styles.filterDropdown}>
               <div className={styles.filterSection}>
                 <p className={styles.filterSectionLabel}>Role</p>
-                {[{ v: 'Professional', label: 'Professional' }, { v: 'User', label: 'User' }].map(({ v, label }) => (
+                {[{ v: 'Team admin', label: 'Team admin' }, { v: 'User', label: 'User' }].map(({ v, label }) => (
                   <label key={v} className={`${styles.filterOption} ${filters.role.has(v) ? styles.filterOptionChecked : ''}`}>
                     <input type="checkbox" className={styles.nativeCheck} checked={filters.role.has(v)} onChange={() => toggleFilter('role', v)} />
                     <span className={styles.checkBox}>
@@ -2114,7 +2224,7 @@ function TeamUsersSection({ center, onSelectUser, role, canManageUsers, teamInvi
             return (
             <div
               key={user.id}
-              className={styles.teamTableRow}
+              className={`${styles.teamTableRow} ${isOpen ? styles.menuOpen : ''}`}
               role="button"
               tabIndex={0}
               onClick={() => onSelectUser(user, teams[0])}
@@ -2146,18 +2256,20 @@ function TeamUsersSection({ center, onSelectUser, role, canManageUsers, teamInvi
                         que "Cancel" en las filas pendientes (2 slots siempre). */}
                     <span className={styles.actionPlaceholder} aria-hidden="true" />
                     <div className={styles.teamRowMenuAnchor}>
-                      <IconButton
-                        aria-label="More options"
-                        tooltip="More"
-                        onClick={() => setOpenMenuId(isOpen ? null : user.id)}
-                      >
-                        <IconMore size={16} />
-                      </IconButton>
+                      <span className={isOpen ? styles.createTriggerHidden : ''}>
+  <IconButton
+                          aria-label="More options"
+                          tooltip="More"
+                          onClick={() => setOpenMenuId(isOpen ? null : user.id)}
+                        >
+                          <IconMore size={16} />
+                        </IconButton>
+                      </span>
                       {isOpen && (
                         <div className={styles.teamRowMenu}>
                           <ContextMenu
                             items={[
-                              { label: 'Edit User', icon: <IconEdit size={16} />, onClick: () => { setOpenMenuId(null); setEditUserTarget({ user, team: teams[0] }); } },
+                              { label: 'Edit user', icon: <IconEdit size={16} />, onClick: () => { setOpenMenuId(null); setEditUserTarget({ user, team: teams[0] }); } },
                               { label: 'Delete user', icon: <IconTrash size={16} />, variant: 'danger', onClick: () => { setOpenMenuId(null); setDeleteUserTarget(user); } },
                             ]}
                           />
@@ -2211,24 +2323,34 @@ function TeamUsersSection({ center, onSelectUser, role, canManageUsers, teamInvi
   );
 }
 
-function AdministratorsSection({ center, pendingInvites, setPendingInvites, teamAdminInvites, setTeamAdminInvites, centerAdmins, setCenterAdmins, currentUserEmail }) {
+function AdministratorsSection({ center, pendingInvites, setPendingInvites, teamAdminInvites, setTeamAdminInvites, centerAdmins, setCenterAdmins, currentUserEmail, role }) {
   const [removeTarget, setRemoveTarget] = useState(null);
   const [actionToast, setActionToast] = useState(null);
+  // Historial de correo e incidencias: feature del programador, solo para staff de Kamleon.
+  // Center Admin no los ve, aunque sí pueda editar usuarios.
+  const canViewEmailHistory = role === 'owner' || role === 'admin' || role === 'editor';
+  // `users.editData`: Center Admin y Team Admin (y Owner/Admin por bypass); Editor no.
+  const canEditUsers = role === 'owner' || role === 'admin' || role === 'centerAdmin';
+  const [emailHistoryRow, setEmailHistoryRow] = useState(null);
+  const [editUserRow, setEditUserRow] = useState(null);
+  const [profileUser, setProfileUser] = useState(null);
 
   const rows = [
     ...pendingInvites.map((invite, i) => ({
       key: `center-admin-pending-${i}`, index: i, kind: 'centerAdminPending',
-      email: invite.email, type: 'Center Admin', scope: 'Center-wide', status: 'pending',
+      email: invite.email, type: 'Center admin', scope: '-', status: 'pending',
       sentAgo: invite.sentAgo ?? '—', sentMinutesAgo: invite.sentMinutesAgo ?? 0,
+      deliveryIssue: invite.deliveryIssue ?? null,
     })),
     ...teamAdminInvites.map(invite => ({
       key: `team-admin-pending-${invite.key}`, sourceKey: invite.key, kind: 'teamAdminPending',
-      email: invite.email, type: 'Team Admin', scope: invite.teamName, status: 'pending',
+      email: invite.email, type: 'Team admin', scope: invite.teamName, status: 'pending',
       sentAgo: invite.sentAgo ?? '—', sentMinutesAgo: invite.sentMinutesAgo ?? 0,
+      deliveryIssue: invite.deliveryIssue ?? null,
     })),
     ...centerAdmins.map(admin => ({
       key: `center-admin-active-${admin.key}`, adminKey: admin.key, kind: 'centerAdminActive',
-      email: admin.email, name: admin.name, type: 'Center Admin', scope: 'Center-wide', status: 'active',
+      email: admin.email, name: admin.name, type: 'Center admin', scope: '-', status: 'active',
       isSelf: currentUserEmail != null && admin.email === currentUserEmail,
     })),
   ];
@@ -2248,8 +2370,21 @@ function AdministratorsSection({ center, pendingInvites, setPendingInvites, team
   }
 
   function confirmRemove() {
-    setActionToast(`${removeTarget.email} removed as Center Admin`);
+    setActionToast(`${removeTarget.email} removed as ${removeTarget.type}`);
     setCenterAdmins(prev => prev.filter(a => a.key !== removeTarget.adminKey));
+  }
+
+  if (profileUser) {
+    return (
+      <div className={styles.subFadeIn}>
+        <UserCard
+          user={profileUser}
+          backLabel="Admins"
+          onBack={() => setProfileUser(null)}
+          role={role}
+        />
+      </div>
+    );
   }
 
   return (
@@ -2257,21 +2392,42 @@ function AdministratorsSection({ center, pendingInvites, setPendingInvites, team
       <InvitationsTable
         description={'Manage administrators for this center and its teams. Use the "+" button above to invite one.'}
         rows={rows}
-        typeOptions={['Center Admin', 'Team Admin']}
+        typeOptions={['Center admin', 'Team admin']}
+        onOpenProfile={row => setProfileUser(adminRowToUser(row))}
         scopeLabel="Team"
+        searchPlaceholder="Search..."
         showSent={false}
         emptyTitle="No admins yet"
         emptySubtitle="Admins you invite will appear here."
         onResend={handleResend}
         onCancel={handleCancel}
         onRemove={handleRemove}
+        onDeliveryIssue={row => setEmailHistoryRow(row)}
+        canViewEmailHistory={canViewEmailHistory}
+        canEditUsers={canEditUsers}
+        onEditUser={row => setEditUserRow(row)}
         responsiveTable
         bleed
       />
+      {emailHistoryRow && (
+        <EmailHistoryDrawer
+          row={emailHistoryRow}
+          onClose={() => setEmailHistoryRow(null)}
+          onResend={handleResend}
+          onCancel={handleCancel}
+        />
+      )}
+      {editUserRow && (
+        <EditUserDrawer
+          user={{ name: editUserRow.name ?? '', email: editUserRow.email, status: 'active' }}
+          onClose={() => setEditUserRow(null)}
+          role={role}
+        />
+      )}
 
       {removeTarget && (
         <RemoveAdminModal
-          row={{ ...removeTarget, type: 'Center Admin', scope: center.name }}
+          row={{ ...removeTarget, scope: center.name }}
           onClose={() => setRemoveTarget(null)}
           onConfirm={confirmRemove}
         />
@@ -2291,7 +2447,6 @@ const TEAM_PAGE_SIZE = 10;
 const BULK_PIN_COPY = {
   on:         { title: 'Turn PIN on for all users?',   confirmLabel: 'Turn on' },
   off:        { title: 'Turn PIN off for all users?',  confirmLabel: 'Turn off' },
-  regenerate: { title: 'Regenerate PIN for all users?', confirmLabel: 'Regenerate' },
 };
 
 function RemoveTeamMemberModal({ member, team, onClose, onConfirm }) {
@@ -2318,9 +2473,7 @@ function ConfirmBulkPinModal({ action, team, count, onClose, onConfirm }) {
   const copy = BULK_PIN_COPY[action];
   const body = action === 'on'
     ? `This will turn PIN on for all ${count} users in ${team.name}.`
-    : action === 'off'
-    ? `This will turn PIN off for all ${count} users in ${team.name}. They won't be able to log in with a PIN until it's turned back on.`
-    : `This will generate a new PIN code for all ${count} users in ${team.name}. Current PINs will stop working immediately.`;
+    : `This will turn PIN off for all ${count} users in ${team.name}. They won't be able to log in with a PIN until it's turned back on.`;
   return (
     <div className={dstyles.overlay} onMouseDown={onClose}>
       <div className={dstyles.modal} onMouseDown={e => e.stopPropagation()}>
@@ -2337,7 +2490,7 @@ function ConfirmBulkPinModal({ action, team, count, onClose, onConfirm }) {
   );
 }
 
-function TeamCard({ team, center, org, onBack, onSelectUser, onNewUser, onEdit, isMobile = false, role }) {
+function TeamCard({ team, center, org, onBack, onSelectUser, onNewUser, onEdit, isMobile = false, role, removedMemberIds }) {
   // teams.edit / teams.delete / users.invite: exclusivos de Center Admin (y Owner/Admin por bypass) —
   // Editor y Org Admin son solo-lectura en este bloque (docs/permissions.md, Bloque: Teams / Users).
   const canManageTeam = role === 'owner' || role === 'admin' || role === 'centerAdmin';
@@ -2388,7 +2541,7 @@ function TeamCard({ team, center, org, onBack, onSelectUser, onNewUser, onEdit, 
     const profIds = new Set(team.professionalIds ?? []);
     return USERS_POOL
       .filter(u => userIds.has(u.id) || profIds.has(u.id))
-      .map(u => ({ ...u, role: profIds.has(u.id) ? 'Professional' : 'User' }));
+      .map(u => ({ ...u, role: profIds.has(u.id) ? 'Team admin' : 'User' }));
   });
   // Invitaciones pendientes para este equipo (User y Team Admin) — estado local, mismo
   // criterio que allMembers: esta pantalla maneja sus propios datos sin sincronizar con el
@@ -2438,10 +2591,6 @@ function TeamCard({ team, center, org, onBack, onSelectUser, onNewUser, onEdit, 
     setActionToast(`${member.name} ${wasVisible ? 'hidden from' : 'shown on'} screen`);
   }
 
-  function regeneratePin(member) {
-    setActionToast(`PIN regenerated for ${member.name}`);
-  }
-
   function removeMember(member) {
     setAllMembers(prev => prev.filter(m => m.id !== member.id));
     setActionToast(`${member.name} removed from ${team.name}`);
@@ -2450,10 +2599,6 @@ function TeamCard({ team, center, org, onBack, onSelectUser, onNewUser, onEdit, 
   function bulkSetPin(value) {
     setAllMembers(prev => prev.map(m => ({ ...m, pin: value })));
     setActionToast(`PIN turned ${value ? 'on' : 'off'} for all users`);
-  }
-
-  function bulkRegeneratePin() {
-    setActionToast('PIN regenerated for all users');
   }
 
   function toggleFilter(group, value) {
@@ -2472,12 +2617,13 @@ function TeamCard({ team, center, org, onBack, onSelectUser, onNewUser, onEdit, 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     return allMembers.filter(m => {
+      if (removedMemberIds?.has(m.id)) return false; // quitado desde su perfil
       if (q && !m.name.toLowerCase().includes(q) && !m.email.toLowerCase().includes(q)) return false;
       if (filters.role.size   > 0 && !filters.role.has(m.role))     return false;
       if (filters.status.size > 0 && !filters.status.has(m.status)) return false;
       return true;
     });
-  }, [allMembers, search, filters]);
+  }, [allMembers, search, filters, removedMemberIds]);
 
   const totalPages  = Math.max(1, Math.ceil(filtered.length / TEAM_PAGE_SIZE));
   const safePage    = Math.min(page, totalPages);
@@ -2492,9 +2638,9 @@ function TeamCard({ team, center, org, onBack, onSelectUser, onNewUser, onEdit, 
       <div className={styles.innerHeader}>
 
         {!isMobile && (
-          <button className={styles.teamBackBtn} onClick={onBack}>
-            <ArrowLeftIcon />
-            <span>Back to Teams</span>
+          <button className={`${styles.backBtn} ${styles.teamBackBtn}`} onClick={onBack}>
+            <span className={styles.backIcon}><ArrowLeftIcon /></span>
+            <span className={styles.backLabel}>Back to Teams</span>
           </button>
         )}
 
@@ -2553,7 +2699,7 @@ function TeamCard({ team, center, org, onBack, onSelectUser, onNewUser, onEdit, 
 
         <div className={styles.teamToolbar}>
           <SearchBar
-            placeholder="Search by name..."
+            placeholder="Search..."
             value={search}
             onChange={e => handleSearch(e.target.value)}
             onClear={() => handleSearch('')}
@@ -2571,7 +2717,7 @@ function TeamCard({ team, center, org, onBack, onSelectUser, onNewUser, onEdit, 
               <div className={styles.filterDropdown}>
                 <div className={styles.filterSection}>
                   <p className={styles.filterSectionLabel}>Role</p>
-                  {[{ v: 'Professional', label: 'Professional' }, { v: 'User', label: 'User' }].map(({ v, label }) => (
+                  {[{ v: 'Team admin', label: 'Team admin' }, { v: 'User', label: 'User' }].map(({ v, label }) => (
                     <label key={v} className={`${styles.filterOption} ${filters.role.has(v) ? styles.filterOptionChecked : ''}`}>
                       <input type="checkbox" className={styles.nativeCheck} checked={filters.role.has(v)} onChange={() => toggleFilter('role', v)} />
                       <span className={styles.checkBox}>
@@ -2607,7 +2753,7 @@ function TeamCard({ team, center, org, onBack, onSelectUser, onNewUser, onEdit, 
           </div>
           {canManageTeam && (
             <div className={`${styles.filterWrap} ${styles.bulkActionsWrap}`} ref={bulkRef}>
-              <ToolbarButton icon={<IconMenu size={16} />} onClick={() => setBulkOpen(v => !v)}>
+              <ToolbarButton onClick={() => setBulkOpen(v => !v)}>
                 Bulk actions
               </ToolbarButton>
               {bulkOpen && (
@@ -2616,7 +2762,6 @@ function TeamCard({ team, center, org, onBack, onSelectUser, onNewUser, onEdit, 
                     items={[
                       { label: 'Turn PIN on for all users', onClick: () => { setBulkOpen(false); setBulkConfirm('on'); } },
                       { label: 'Turn PIN off for all users', onClick: () => { setBulkOpen(false); setBulkConfirm('off'); } },
-                      { label: 'Regenerate PIN for all users', onClick: () => { setBulkOpen(false); setBulkConfirm('regenerate'); } },
                     ]}
                   />
                 </div>
@@ -2633,7 +2778,7 @@ function TeamCard({ team, center, org, onBack, onSelectUser, onNewUser, onEdit, 
         ) : (pageMembers.length > 0 || pendingInvites.length > 0 || teamAdminInvites.length > 0) ? (
           <div className={styles.teamTable}>
             <div className={styles.teamTableHead}>
-              <span className={`${styles.teamCol} ${styles.teamColName}`}>Member</span>
+              <span className={`${styles.teamCol} ${styles.teamColName}`}>Name</span>
               {/* La columna en sí ahora siempre se muestra (la necesitan las filas pendientes,
                   con status "dentro del equipo", no el status real de cuenta). Para Center Admin
                   el status real de los miembros confirmados sigue oculto por fila — mismo criterio
@@ -2667,7 +2812,7 @@ function TeamCard({ team, center, org, onBack, onSelectUser, onNewUser, onEdit, 
                   <div className={styles.memberAvatar}>{invite.email.charAt(0).toUpperCase()}</div>
                   <div className={styles.memberMeta}>
                     <TruncatedText text={invite.email} textClassName={styles.memberName} />
-                    <span className={styles.memberSub}>Team Admin</span>
+                    <span className={styles.memberSub}>Team admin</span>
                   </div>
                 </div>
                 <div className={`${styles.teamCol} ${styles.teamColStatus}`}>
@@ -2761,25 +2906,26 @@ function TeamCard({ team, center, org, onBack, onSelectUser, onNewUser, onEdit, 
                     ref={el => { menuRefs.current[member.id] = el; }}
                     onClick={e => e.stopPropagation()}
                   >
-                    {/* teams.users.edit/remove/togglePin/regeneratePin: exclusivo de Center Admin
+                    {/* teams.users.edit/remove/togglePin: exclusivo de Center Admin
                         (y Owner/Admin) — Org Admin y Editor son solo-lectura acá (docs/permissions.md,
                         Bloque: Teams), así que ni siquiera ven el botón "···". */}
                     {canManageTeam && (
                     <div className={styles.teamRowMenuAnchor}>
-                      <IconButton
-                        aria-label="Member options"
-                        tooltip="More"
-                        onClick={() => setOpenMenuId(isOpen ? null : member.id)}
-                      >
-                        <IconMore size={16} />
-                      </IconButton>
+                      <span className={isOpen ? styles.createTriggerHidden : ''}>
+  <IconButton
+                          aria-label="Member options"
+                          tooltip="More"
+                          onClick={() => setOpenMenuId(isOpen ? null : member.id)}
+                        >
+                          <IconMore size={16} />
+                        </IconButton>
+                      </span>
                       {isOpen && (
                         <div className={styles.teamRowMenu}>
                           <ContextMenu
                             items={[
-                              { label: 'Edit User', icon: <IconEdit size={16} />, onClick: () => { setOpenMenuId(null); setEditUserTarget(member); } },
+                              { label: 'Edit user', icon: <IconEdit size={16} />, onClick: () => { setOpenMenuId(null); setEditUserTarget(member); } },
                               { label: member.pin ? 'Turn off PIN' : 'Turn on PIN', icon: <IconPower size={16} />, onClick: () => { setOpenMenuId(null); togglePin(member); } },
-                              ...(member.pin ? [{ label: 'Regenerate PIN', icon: <IconRefresh size={16} />, onClick: () => { setOpenMenuId(null); regeneratePin(member); } }] : []),
                               { label: (member.visibleOnScreen ?? true) ? 'Hide from screen' : 'Show on screen', icon: (member.visibleOnScreen ?? true) ? <IconEyeClosed size={16} /> : <IconEye size={16} />, onClick: () => { setOpenMenuId(null); toggleVisibleOnScreen(member); } },
                               { label: 'Remove from team', icon: <IconTrash size={16} />, variant: 'danger', onClick: () => { setOpenMenuId(null); setRemoveUserTarget(member); } },
                             ]}
@@ -2833,7 +2979,7 @@ function TeamCard({ team, center, org, onBack, onSelectUser, onNewUser, onEdit, 
           team={team}
           count={allMembers.length}
           onClose={() => setBulkConfirm(null)}
-          onConfirm={() => (bulkConfirm === 'regenerate' ? bulkRegeneratePin() : bulkSetPin(bulkConfirm === 'on'))}
+          onConfirm={() => bulkSetPin(bulkConfirm === 'on')}
         />
       )}
 
@@ -2859,8 +3005,36 @@ function TeamCard({ team, center, org, onBack, onSelectUser, onNewUser, onEdit, 
 
 // ─── User detail card ─────────────────────────────────────
 
-function UserCard({ user, team, backLabel, onBack, isMobile = false }) {
+// Figma: Web App 2.0 → "User profile" (nodo 12579:275097). Es el perfil agnóstico: el mismo
+// que ve Kamleon staff y el propio usuario en Account details, ahora también al entrar a una
+// persona desde un equipo. En el Figma el contenedor es un modal con X; acá vive como panel
+// del master-detail, así que la X se reemplaza por el "back" de siempre (decisión de Daniel).
+function UserCard({ user, team, backLabel, onBack, isMobile = false, role, onRemoveFromTeam }) {
   const [showEdit, setShowEdit] = useState(false);
+  const [removeOpen, setRemoveOpen] = useState(false);
+  const [actionToast, setActionToast] = useState(null);
+
+  // users.editData / teams.users.remove: Center Admin (y Owner/Admin por bypass). Org Admin y
+  // Editor entran en solo-lectura (docs/permissions.md).
+  const canManageUser = role === 'owner' || role === 'admin' || role === 'centerAdmin';
+
+  // El modelo guarda un solo "name"; Name/Surname se parten solo para mostrarlos, igual que
+  // hace EditUserDrawer.
+  const [firstName, ...restName] = (user.name ?? '').split(' ');
+  const surname = restName.join(' ');
+  const initials = `${firstName?.charAt(0) ?? ''}${(restName[restName.length - 1] ?? '').charAt(0)}`.toUpperCase() || (user.name ?? '?').charAt(0);
+  const screenOn = user.visibleOnScreen ?? true;
+
+  const fields = [
+    ['Name', firstName],
+    ['Surname', surname],
+    ['Email', user.email],
+    ['Phone number', user.phone],
+    ['Date of birth', user.birthday],
+    ['Gender', user.gender],
+    ['Height', user.height],
+    ['Weight', user.weight],
+  ];
 
   return (
     <div className={styles.centerCard}>
@@ -2869,35 +3043,21 @@ function UserCard({ user, team, backLabel, onBack, isMobile = false }) {
       <div className={styles.innerHeader}>
 
         {!isMobile && (
-          <button className={styles.teamBackBtn} onClick={onBack}>
-            <ArrowLeftIcon />
-            <span>Back to {backLabel ?? team?.name}</span>
+          <button className={`${styles.backBtn} ${styles.teamBackBtn}`} onClick={onBack}>
+            <span className={styles.backIcon}><ArrowLeftIcon /></span>
+            <span className={styles.backLabel}>Back to {backLabel ?? team?.name}</span>
           </button>
         )}
 
         <div className={styles.cardHeader}>
-          <div className={styles.cardHeaderLeft}>
-            <div className={styles.cardAvatar}>{user.name.charAt(0)}</div>
-            <div className={styles.cardTitleGroup}>
-              <h2 className={styles.cardTitle}>{user.name}</h2>
-              <div className={styles.cardSubtitle}>
-                <span>{user.role ?? team?.name}</span>
-                <span className={styles.separator}>|</span>
-                <div className={styles.statusBadgeSmall}>
-                  <div className={`${styles.statusDot} ${styles[user.status]}`} />
-                  <span>{user.status === 'active' ? 'Active' : 'Inactive'}</span>
-                </div>
-              </div>
+          <h2 className={styles.cardTitle}>User profile</h2>
+          {canManageUser && (
+            <div className={styles.cardActions}>
+              <IconButton aria-label="Edit user" tooltip="Edit" onClick={() => setShowEdit(true)}>
+                <IconEdit size={16} />
+              </IconButton>
             </div>
-          </div>
-          <div className={styles.cardActions}>
-            <IconButton aria-label="User settings" tooltip="Settings" onClick={() => setShowEdit(true)}>
-              <IconSettings size={16} />
-            </IconButton>
-            <IconButton aria-label="Delete user" tooltip="Delete" variant="danger">
-              <IconTrash size={16} />
-            </IconButton>
-          </div>
+          )}
         </div>
 
       </div>
@@ -2905,65 +3065,91 @@ function UserCard({ user, team, backLabel, onBack, isMobile = false }) {
       {/* ── Scrollable content ── */}
       <div className={styles.userContent}>
 
-        {/* Personal Information */}
-        <div className={styles.userSection}>
-          <span className={styles.sectionLabel}>Personal Information</span>
-          <div className={styles.userInfoGrid}>
-
-            <div className={styles.userInfoCol}>
-              <div className={styles.userInfoItem}>
-                <IconMailFilled size={16} />
-                <span>{user.email}</span>
-              </div>
-              <div className={styles.userInfoItem}>
-                <IconPhoneFilled size={16} />
-                <span>{user.phone}</span>
-              </div>
-            </div>
-
-            <div className={styles.userInfoCol}>
-              <div className={styles.userInfoItem}>
-                <IconCalendar />
-                <span>{user.birthday}</span>
-              </div>
-              <div className={styles.userInfoItem}>
-                <IconGender />
-                <span>{user.gender}</span>
-              </div>
-            </div>
-
-            <div className={styles.userInfoCol}>
-              <div className={styles.userInfoItem}>
-                <IconHeight />
-                <span>{user.height}</span>
-              </div>
-              <div className={styles.userInfoItem}>
-                <IconWeight />
-                <span>{user.weight}</span>
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-        {/* Login Permissions */}
-        <div className={styles.userSection}>
-          <span className={styles.sectionLabel}>Login Permissions</span>
-          <div className={styles.userPermissions}>
-            <div className={styles.permItem}>
-              <IconRfid />
-              <span>RFID: {user.rfid ? 'On' : 'Off'}</span>
-            </div>
-            <div className={styles.permItem}>
-              <IconPin />
-              <span>PIN: {user.pin ? 'On' : 'Off'}</span>
+        <div className={styles.profileHero}>
+          <div className={styles.profileAvatar}>{initials}</div>
+          <div className={styles.profileIdentity}>
+            <span className={styles.profileName}>{user.name}</span>
+            <span className={styles.profileEmail}>{user.email}</span>
+            <div className={styles.profileMeta}>
+              <span className={styles.profileStatus}>
+                <span className={`${styles.statusDot} ${styles[user.status]}`} />
+                {user.status === 'active' ? 'Active' : 'Inactive'}
+              </span>
+              <span className={styles.profileMetaSep}>|</span>
+              <span>Joined: {user.dateAdded ?? '—'}</span>
             </div>
           </div>
         </div>
+
+        <section className={styles.profileSection}>
+          <h3 className={styles.profileSectionTitle}>Account</h3>
+          <div className={styles.profileGrid}>
+            {fields.map(([label, value]) => (
+              <div key={label} className={styles.profileField}>
+                <span className={styles.profileFieldLabel}>{label}</span>
+                <span className={styles.profileFieldValue}>{value || '—'}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <div className={styles.profileDivider} />
+
+        <section className={styles.profileSection}>
+          <h3 className={styles.profileSectionTitle}>Permissions</h3>
+          <div className={styles.profileGrid}>
+            <div className={styles.profileField}>
+              <span className={styles.profileFieldLabel}>Show this user on the screen</span>
+              <span className={styles.profilePill}>Screen: {screenOn ? 'On' : 'Off'}</span>
+            </div>
+            <div className={styles.profileField}>
+              <span className={styles.profileFieldLabel}>Allow this user to log in with PIN</span>
+              <span className={styles.profilePill}>PIN: {user.pin ? 'On' : 'Off'}</span>
+            </div>
+          </div>
+        </section>
+
+        {canManageUser && (
+          <>
+            <div className={styles.profileDivider} />
+
+            <section className={styles.profileSection}>
+              <h3 className={styles.profileSectionTitle}>Security</h3>
+              <button
+                className={styles.profileLink}
+                onClick={() => setActionToast(`New PIN sent to ${user.name}`)}
+              >
+                Set new Pin
+              </button>
+            </section>
+
+            {team && (
+              <>
+                <div className={styles.profileDivider} />
+                <button className={styles.profileDangerLink} onClick={() => setRemoveOpen(true)}>
+                  Remove from team
+                </button>
+              </>
+            )}
+          </>
+        )}
 
       </div>
 
       {showEdit && <EditUserDrawer user={user} team={team} onClose={() => setShowEdit(false)} />}
+
+      {removeOpen && (
+        <RemoveTeamMemberModal
+          member={user}
+          team={team}
+          onClose={() => setRemoveOpen(false)}
+          onConfirm={() => { onRemoveFromTeam?.(user); onBack?.(); }}
+        />
+      )}
+
+      {actionToast && (
+        <Toast message={actionToast} mode="success" onClose={() => setActionToast(null)} />
+      )}
 
     </div>
   );
@@ -3226,7 +3412,7 @@ export default function OrgDetailV2({ org, onBack, initialCenter, initialTeam, i
             currentUserEmail={currentUserEmail}
           />
         )}
-        {orgTab === 'users'   && <OrgUsersTab org={org} />}
+        {orgTab === 'users'   && <OrgUsersTab org={org} role={role} />}
         {orgTab === 'details' && <OrgDetailsTab org={org} />}
         {orgTab === 'invitations' && canManageOrgAdmins && (
           <OrgInvitationsTab

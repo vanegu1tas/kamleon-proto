@@ -6,7 +6,7 @@ import ToolbarButton from '../../../design-system/components/ToolbarButton/Toolb
 import IconButton from '../../../design-system/components/IconButton/IconButton';
 import ContextMenu from '../../../design-system/components/ContextMenu/ContextMenu';
 import Toast from '../../../design-system/components/Toast/Toast';
-import { IconPlus, IconFilter, IconEdit, IconTrash, IconPower, IconRefresh, IconMore, IconInfoCircle, IconEye, IconEyeClosed, IconSettings, IconMenu, IconResend } from '../../../design-system/icons/outline';
+import { IconPlus, IconFilter, IconEdit, IconTrash, IconPower, IconMore, IconInfoCircle, IconEye, IconEyeClosed, IconSettings, IconMenu, IconResend } from '../../../design-system/icons/outline';
 import { getMembersForTeam } from '../../StaffOrganizaciones/mockData';
 import NewUserDrawer from '../../StaffOrganizaciones/screens/NewUserDrawer';
 import EditUserDrawer from '../../StaffOrganizaciones/screens/EditUserDrawer';
@@ -39,16 +39,13 @@ function RemoveUserModal({ user, team, onClose, onConfirm }) {
 const BULK_PIN_COPY = {
   on:         { title: 'Turn PIN on for all users?',  confirmLabel: 'Turn on',   danger: false },
   off:        { title: 'Turn PIN off for all users?', confirmLabel: 'Turn off',  danger: false },
-  regenerate: { title: 'Regenerate PIN for all users?', confirmLabel: 'Regenerate', danger: false },
 };
 
 function ConfirmBulkPinModal({ action, team, count, onClose, onConfirm }) {
   const copy = BULK_PIN_COPY[action];
   const body = action === 'on'
     ? `This will turn PIN on for all ${count} users in ${team.name}.`
-    : action === 'off'
-    ? `This will turn PIN off for all ${count} users in ${team.name}. They won't be able to log in with a PIN until it's turned back on.`
-    : `This will generate a new PIN code for all ${count} users in ${team.name}. Current PINs will stop working immediately.`;
+    : `This will turn PIN off for all ${count} users in ${team.name}. They won't be able to log in with a PIN until it's turned back on.`;
   return (
     <div className={dstyles.overlay} onMouseDown={onClose}>
       <div className={dstyles.modal} onMouseDown={e => e.stopPropagation()}>
@@ -223,17 +220,9 @@ function TeamUsersList({ team, assignedTeams, onSelectUser, pendingInvites, setP
     setActionToast(`${user.name} ${wasVisible ? 'hidden from' : 'shown on'} screen`);
   }
 
-  function regeneratePin(user) {
-    setActionToast(`PIN regenerated for ${user.name}`);
-  }
-
   function bulkSetPin(value) {
     setAllUsers(prev => prev.map(u => ({ ...u, pin: value })));
     setActionToast(`PIN turned ${value ? 'on' : 'off'} for all users`);
-  }
-
-  function bulkRegeneratePin() {
-    setActionToast('PIN regenerated for all users');
   }
 
   function handleRemove(user) {
@@ -300,7 +289,7 @@ function TeamUsersList({ team, assignedTeams, onSelectUser, pendingInvites, setP
             <div className={tstyles.filterDropdown}>
               <div className={tstyles.filterSection}>
                 <p className={tstyles.filterSectionLabel}>Role</p>
-                {[{ v: 'professional', label: 'Professional' }, { v: 'user', label: 'User' }].map(({ v, label }) => (
+                {[{ v: 'professional', label: 'Team admin' }, { v: 'user', label: 'User' }].map(({ v, label }) => (
                   <label key={v} className={`${tstyles.filterOption} ${roleFilter.has(v) ? tstyles.filterOptionChecked : ''}`}>
                     <input
                       type="checkbox"
@@ -335,7 +324,6 @@ function TeamUsersList({ team, assignedTeams, onSelectUser, pendingInvites, setP
                 items={[
                   { label: 'Turn PIN on for all users', onClick: () => { setBulkOpen(false); setBulkConfirm('on'); } },
                   { label: 'Turn PIN off for all users', onClick: () => { setBulkOpen(false); setBulkConfirm('off'); } },
-                  { label: 'Regenerate PIN for all users', onClick: () => { setBulkOpen(false); setBulkConfirm('regenerate'); } },
                 ]}
               />
             </div>
@@ -346,7 +334,7 @@ function TeamUsersList({ team, assignedTeams, onSelectUser, pendingInvites, setP
       <div className={tstyles.tableWrap} style={{ padding: 0 }}>
         <div className={tstyles.tableHeader}>
           <div className={`${tstyles.colHead} ${tstyles.colName}`}>Name</div>
-          {/* Sin columna Role — el subtítulo del nombre ya muestra Professional/User */}
+          {/* Sin columna Role — el subtítulo del nombre ya muestra Team admin/User */}
           {/* Sin columna Date Added — no le importa a Team Admin; PIN y Screen sí son cosas que controla */}
           <div className={`${tstyles.colHead} ${tstyles.colPin}`}>
             <span className={tstyles.colHeadLabel}>
@@ -417,7 +405,7 @@ function TeamUsersList({ team, assignedTeams, onSelectUser, pendingInvites, setP
               <div className={tstyles.userNameInfo}>
                 <TruncatedText text={user.name} textClassName={tstyles.userName} />
                 <span className={tstyles.userSubtitle}>
-                  {user.jerseyNumber ? `#${user.jerseyNumber} | ${user.role === 'professional' ? 'Professional' : 'User'}` : (user.role === 'professional' ? 'Professional' : 'User')}
+                  {user.jerseyNumber ? `#${user.jerseyNumber} | ${user.role === 'professional' ? 'Team admin' : 'User'}` : (user.role === 'professional' ? 'Team admin' : 'User')}
                 </span>
               </div>
             </div>
@@ -455,7 +443,6 @@ function TeamUsersList({ team, assignedTeams, onSelectUser, pendingInvites, setP
                       items={[
                         { label: 'Edit User', icon: <IconEdit size={16} />, onClick: () => { setOpenMenuId(null); setEditUserTarget(user); } },
                         { label: user.pin ? 'Turn off PIN' : 'Turn on PIN', icon: <IconPower size={16} />, onClick: () => { setOpenMenuId(null); togglePin(user); } },
-                        ...(user.pin ? [{ label: 'Regenerate PIN', icon: <IconRefresh size={16} />, onClick: () => { setOpenMenuId(null); regeneratePin(user); } }] : []),
                         { label: (user.visibleOnScreen ?? true) ? 'Hide from screen' : 'Show on screen', icon: (user.visibleOnScreen ?? true) ? <IconEyeClosed size={16} /> : <IconEye size={16} />, onClick: () => { setOpenMenuId(null); toggleVisibleOnScreen(user); } },
                         {
                           label: 'Remove from team', icon: <IconTrash size={16} />, variant: 'danger', disabled: isSelf,
@@ -499,7 +486,7 @@ function TeamUsersList({ team, assignedTeams, onSelectUser, pendingInvites, setP
           team={team}
           count={allUsers.length}
           onClose={() => setBulkConfirm(null)}
-          onConfirm={() => (bulkConfirm === 'regenerate' ? bulkRegeneratePin() : bulkSetPin(bulkConfirm === 'on'))}
+          onConfirm={() => bulkSetPin(bulkConfirm === 'on')}
         />
       )}
 
