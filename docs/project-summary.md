@@ -763,9 +763,24 @@ Checklist revisado el 2026-09-16.
 
 ### ▶️ Plan acordado para mañana (2026-09-22)
 
+**Meta de la semana: dejar esta lista en cero.**
+
 1. **Repasar el rol Team Admin igual que hicimos con Center Admin** (21/9): pantalla por pantalla contra Figma, permisos aplicados, y buscar caminos sin salida — ítems del sidebar que no llevan a nada, botones sin acción, menús que solo se cierran y código muerto. El método que funcionó: recorrer sidebar → tabs → filas → menús → drawers, y anotar cada hueco antes de arreglar nada.
 2. **Implementar la sección "My data"** con el Figma (Daniel lo pasa).
 3. **Implementar la sección "Hydration"** con el Figma (Daniel lo pasa).
+
+### ✅ Cerrado el 2026-09-21
+
+Repaso completo del rol **Center Admin** más una pasada al Sidebar. Cuatro commits: `bac7a90`, `b000180`, `3bd1681`, `f0c75bb`.
+
+- **Perfil de usuario** reescrito con el perfil agnóstico del Figma (hero, Account, Permissions, Security, Remove from team), con permisos por rol. Se abre desde la tabla del equipo, desde Users y desde las filas de admins activos; una invitación pendiente no abre perfil, porque la fila es la invitación y no la persona.
+- **Units del centro**: columnas del Figma (fuera "Date added", "Type" pasa a "Model"), el lápiz abre el drawer y la fila el detalle, el detalle alinea todo a 24px y avisa con un toast al guardar.
+- **Edit unit**: Installation type, textos de ayuda, modos On-screen/QR/RFID con tooltip, lista de equipos con buscador y check, campos técnicos bloqueados salvo para Owner/Admin, y el bloque de equipos se deshabilita —explicando por qué— si el modo On-screen está apagado.
+- **Borrados**: borrar un equipo no existía; ahora existe y pide escribir DELETE, igual que borrar organización, centro y la cuenta propia.
+- **Caminos sin salida**: "New Unit" oculto hasta que haya formulario, `UnitCard` duplicado eliminado, y Center Admin deja de ver "Units" en el sidebar (con eso desaparecen también las columnas Display/Sensor que no le tocaban).
+- **Animación**: los paneles entran y vuelven con un desplazamiento corto y direccional; el sidebar anima el ancho al colapsar y los textos se encogen en vez de desaparecer.
+- **Sidebar al detalle del Figma**, incluido el carril colapsado completo, y las invitaciones pendientes unificadas: una sola lista alimenta el badge y el drawer de notificaciones.
+- **Storybook**: BottomSheet (era el único componente sin historia), Tag con sus 8 estados agrupados, y Sidebar actualizado.
 
 ### 🟢 Listo para hacer
 
