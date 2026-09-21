@@ -716,6 +716,12 @@ Checklist revisado el 2026-09-16.
   Los flujos By invite (uno y varios) y By hand todavía piden elegir User o Professional. Ya no tiene sentido: los Team Admin se invitan desde su propio drawer (`InviteTeamAdminDrawer`). Quedó a medias el 26/8.
   → Espera: decidir si se quita o si hay Figma nuevo
 
+- [ ] **Sección "Hydration" del sidebar** — *diseños ya hechos en Figma*
+  El ítem está en la navegación (sección Analytics) pero **no hace nada al pulsarlo**: no tiene pantalla ni handler. Lo ven todos los roles, así que es el camino sin salida más visible del prototipo. Daniel pasa el Figma y se conecta.
+
+- [ ] **Sección "My data"** — *diseños ya hechos en Figma*
+  Hoy muestra un cartel provisional ("Esta sección mostrará tus datos de hidratación personales. Diseño pendiente.", además en español dentro de una interfaz en inglés). Está en el sidebar de todos los roles desde el cambio del 10/9. Wireframes previos en `memory/my-data-wireframes.md`; ahora hay Figma, Daniel lo pasa.
+
 - [ ] **Conectar el flujo de "Set new PIN" hecho por staff**
   En el perfil de una persona (Figma 12579:275097) la sección Security tiene el enlace "Set new Pin"; hoy en el prototipo solo lanza un toast. **El flujo ya está diseñado en Figma** (Daniel lo busca y pasa el link). Ojo: el `ChangePinDrawer` que existe pide el PIN actual, o sea que sirve para la cuenta propia, no para que un admin le ponga el PIN a otra persona — probablemente haga falta una pantalla distinta, no reutilizar esa.
 
@@ -754,6 +760,12 @@ Checklist revisado el 2026-09-16.
 - [ ] **Breadcrumb o botón back**
   Propuesta: en desktop, breadcrumb completo (Organizations / Acme / Madrid Centro / Equipo A) sin botones back; en mobile, solo back. Hoy el breadcrumb no muestra los niveles internos de `OrgDetailV2`.
   → Espera: confirmar con el manager
+
+### ▶️ Plan acordado para mañana (2026-09-22)
+
+1. **Repasar el rol Team Admin igual que hicimos con Center Admin** (21/9): pantalla por pantalla contra Figma, permisos aplicados, y buscar caminos sin salida — ítems del sidebar que no llevan a nada, botones sin acción, menús que solo se cierran y código muerto. El método que funcionó: recorrer sidebar → tabs → filas → menús → drawers, y anotar cada hueco antes de arreglar nada.
+2. **Implementar la sección "My data"** con el Figma (Daniel lo pasa).
+3. **Implementar la sección "Hydration"** con el Figma (Daniel lo pasa).
 
 ### 🟢 Listo para hacer
 
@@ -804,8 +816,8 @@ Checklist revisado el 2026-09-16.
 - [ ] **Permisos de Kamleon Editor (#10)**
   Global, edita Units ampliamente y es casi solo lectura en Orgs/Centers/Teams/Users (`docs/permissions.md`). Después, la pasada mobile en 768 y 390.
 
-- [ ] **Tab Units del centro para Center Admin**
-  Ve las columnas Display y K-POD y la opción de eliminar en el menú "⋯". Según el excel, eso es solo de Kamleon (`units.viewColumn.display`/`sensor`, `units.delete`).
+- [x] **Units para Center Admin** · *resuelto 2026-09-21*
+  El problema estaba en la **vista global** de Units (la del sidebar): mostraba Display y Sensor, que son de Editor y staff (`units.viewColumn.display`/`sensor`). Solución: quitarle el ítem "Units" del sidebar, igual que a Org Admin — ya ve las units de su centro en el tab "Units" del centro, con las columnas del Figma (Unit ID, Model, Sensor usage, Total usage) y sin opción de eliminar.
 
 - [ ] **Botón dentro de otro botón en los menús "⋯"**
   Error de consola en las tablas de Users (org y centro). Revisar si también pasa en Teams y Units.

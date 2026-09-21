@@ -31,6 +31,10 @@ export const HIDDEN_NAV_ITEMS = {
   // Org Admin ya puede ver todas las units de su org desde el tab "Units" en el header de
   // la organización (mismo contenido) — el ítem del sidebar quedaba redundante con Center control.
   orgAdmin: new Set(['units']),
+  // Mismo criterio para Center Admin: ve las units de su centro en el tab "Units" del centro.
+  // Además la vista global muestra columnas Display/Sensor que no le corresponden
+  // (`units.viewColumn.display` y `.sensor` son de Editor y staff, docs/permissions.md).
+  centerAdmin: new Set(['units']),
 };
 
 // pendingInvites: invitaciones que ESTE usuario tiene pendientes de aceptar (ej. lo invitaron

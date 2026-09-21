@@ -148,8 +148,6 @@ function CentersContent({ org, initialCenter, initialTeam, initialUser, isMobile
   const [selectedId, setSelectedId]                 = useState(isMobile ? (initialCenter?.id ?? null) : (initialCenter?.id ?? centers[0]?.id ?? null));
   const [selectedTeam, setSelectedTeam]             = useState(initialTeam ?? null);
   const [selectedTeamCenter, setSelectedTeamCenter] = useState(initialTeam ? initialCenter : null);
-  const [selectedUnit, setSelectedUnit]             = useState(null);
-  const [selectedUnitCenter, setSelectedUnitCenter] = useState(null);
   const [selectedUser, setSelectedUser]             = useState(initialUser ?? null);
   const [selectedUserTeam, setSelectedUserTeam]     = useState(null); // set when navigating from Users tab
   const [editCenterTarget, setEditCenterTarget]     = useState(null);
@@ -165,6 +163,11 @@ function CentersContent({ org, initialCenter, initialTeam, initialUser, isMobile
   // Quitar a alguien de un equipo se puede hacer desde su perfil, que vive un nivel por encima
   // de la tabla de miembros: se guardan acá los ids quitados y la tabla los filtra.
   const [removedMemberIds, setRemovedMemberIds]     = useState(() => new Set());
+  // Equipos borrados: la lista vive en el tab y el borrado se puede lanzar desde el panel del
+  // equipo (un nivel más abajo), así que el estado se guarda acá y el tab los filtra.
+  const [deletedTeamIds, setDeletedTeamIds]         = useState(() => new Set());
+  const [teamDeleteToast, setTeamDeleteToast]       = useState(null);
+  const [deleteTeamTarget, setDeleteTeamTarget]     = useState(null);
   const [centerSearch, setCenterSearch]             = useState('');
 
   // ── Mobile slide state ──
@@ -183,8 +186,6 @@ function CentersContent({ org, initialCenter, initialTeam, initialUser, isMobile
     setSelectedTeamCenter(null);
     setSelectedUser(null);
     setSelectedUserTeam(null);
-    setSelectedUnit(null);
-    setSelectedUnitCenter(null);
     setReturnTab('details');
     setSubSlideDir('none'); // cambiar de centro es el mismo nivel: fade, sin desplazamiento
     if (isMobile) setDetailVisible(true);
@@ -195,8 +196,6 @@ function CentersContent({ org, initialCenter, initialTeam, initialUser, isMobile
     setSelectedTeam(null);
     setSelectedUser(null);
     setSelectedUserTeam(null);
-    setSelectedUnit(null);
-    setSelectedUnitCenter(null);
   }
 
   function handleSaveTeam(teamId, patch) {
@@ -210,8 +209,6 @@ function CentersContent({ org, initialCenter, initialTeam, initialUser, isMobile
   // Clave para animar sub-niveles al cambiar de vista dentro del detailPanel
   const subKey = selectedUser?.id
     ? `user-${selectedUser.id}`
-    : selectedUnit?.id
-      ? `unit-${selectedUnit.id}`
       : selectedTeam?.id
         ? `team-${selectedTeam.id}`
         : `center-${selectedId}`;
@@ -305,9 +302,7 @@ function CentersContent({ org, initialCenter, initialTeam, initialUser, isMobile
               className={styles.mobilePanelBack}
               onClick={selectedUser
                 ? () => { setSubSlideDir('back'); setSelectedUser(null); setSelectedUserTeam(null); }
-                : selectedUnit
-                  ? () => { setSubSlideDir('back'); setSelectedUnit(null); setSelectedUnitCenter(null); }
-                  : selectedTeam
+                : selectedTeam
                     ? () => { setSubSlideDir('back'); setSelectedTeam(null); setSelectedUser(null); setSelectedUserTeam(null); }
                     : handleBackToCenters
               }
@@ -316,9 +311,7 @@ function CentersContent({ org, initialCenter, initialTeam, initialUser, isMobile
               <span>
                 {selectedUser
                   ? `Back to ${(selectedTeam ?? selectedUserTeam)?.name ?? 'Team'}`
-                  : selectedUnit
-                    ? 'Back to Units'
-                    : selectedTeam
+                  : selectedTeam
                       ? 'Back to Teams'
                       : 'Centers'
                 }
@@ -337,13 +330,7 @@ function CentersContent({ org, initialCenter, initialTeam, initialUser, isMobile
               role={role}
               onRemoveFromTeam={member => setRemovedMemberIds(prev => new Set(prev).add(member.id))}
             />
-          ) : selectedUnit ? (
-            <UnitCard
-              unit={selectedUnit}
-              center={selectedUnitCenter}
-              onBack={() => { setSubSlideDir('back'); setSelectedUnit(null); setSelectedUnitCenter(null); }}
-              isMobile={isMobile}
-            />
+
           ) : selectedTeam ? (
             <TeamCard
               team={selectedTeam}
@@ -352,6 +339,7 @@ function CentersContent({ org, initialCenter, initialTeam, initialUser, isMobile
               onBack={() => { setSubSlideDir('back'); setSelectedTeam(null); setSelectedUser(null); setSelectedUserTeam(null); }}
               onSelectUser={(user) => { setSubSlideDir('forward'); setSelectedUser(user); }}
               removedMemberIds={removedMemberIds}
+              onDelete={() => setDeleteTeamTarget({ team: selectedTeam, center: selectedTeamCenter })}
               onNewUser={() => setNewUserContext({ center: selectedTeamCenter, team: selectedTeam })}
               onEdit={() => setEditTeamTarget({ team: selectedTeam, center: selectedTeamCenter })}
               isMobile={isMobile}
@@ -369,6 +357,8 @@ function CentersContent({ org, initialCenter, initialTeam, initialUser, isMobile
               onInviteCenterAdmin={() => setInviteCenterAdminFor(selected)}
               currentUserEmail={currentUserEmail}
               onEditTeam={(team) => setEditTeamTarget({ team, center: selected })}
+              onDeleteTeam={(team) => setDeleteTeamTarget({ team, center: selected })}
+              deletedTeamIds={deletedTeamIds}
               onNewUserForTeam={(team) => setNewUserContext({ center: selected, team })}
               initialTab={returnTab}
               onSelectTeam={(team) => {
@@ -382,12 +372,6 @@ function CentersContent({ org, initialCenter, initialTeam, initialUser, isMobile
                 setSelectedUser(user);
                 setSelectedUserTeam(team);
                 setReturnTab('users');
-              }}
-              onSelectUnit={(unit) => {
-                setSubSlideDir('forward');
-                setSelectedUnit(unit);
-                setSelectedUnitCenter(selected);
-                setReturnTab('units');
               }}
               role={role}
             />
@@ -427,6 +411,26 @@ function CentersContent({ org, initialCenter, initialTeam, initialUser, isMobile
           message="Changes saved"
           onClose={() => setTeamSaveToast(false)}
         />
+      )}
+      {deleteTeamTarget && (
+        <DeleteOrgModal
+          org={deleteTeamTarget.team}
+          label="team"
+          requireTyping
+          onClose={() => setDeleteTeamTarget(null)}
+          onConfirm={() => {
+            setDeletedTeamIds(prev => new Set(prev).add(deleteTeamTarget.team.id));
+            setTeamDeleteToast(`${deleteTeamTarget.team.name} deleted`);
+            // Si estabas dentro del equipo que acabas de borrar, vuelves a la lista.
+            if (selectedTeam?.id === deleteTeamTarget.team.id) {
+              setSubSlideDir('back');
+              setSelectedTeam(null);
+            }
+          }}
+        />
+      )}
+      {teamDeleteToast && (
+        <Toast mode="success" message={teamDeleteToast} onClose={() => setTeamDeleteToast(null)} />
       )}
       {newTeamCenter    && <NewTeamDrawer center={newTeamCenter} onClose={() => setNewTeamCenter(null)} />}
       {newUserContext   && (
@@ -707,7 +711,7 @@ const CENTER_TABS = [
 
 // ─── Teams tab ────────────────────────────────────────────
 
-function TeamsTab({ center, onSelectTeam, onEditTeam, onNewUserForTeam, canManageTeams = true }) {
+function TeamsTab({ center, onSelectTeam, onEditTeam, onNewUserForTeam, onDeleteTeam, canManageTeams = true, deletedTeamIds }) {
   const [search, setSearch]         = useState('');
   const [filters, setFilters]       = useState({ status: new Set() });
   const [filterOpen, setFilterOpen] = useState(false);
@@ -746,7 +750,7 @@ function TeamsTab({ center, onSelectTeam, onEditTeam, onNewUserForTeam, canManag
 
   const activeFilterCount = filters.status.size;
 
-  const allTeams = center.teams ?? [];
+  const allTeams = (center.teams ?? []).filter(t => !deletedTeamIds?.has(t.id));
   const teams = allTeams.filter(t => {
     if (filters.status.size > 0 && !filters.status.has(t.status)) return false;
     if (search.trim() && !t.name.toLowerCase().includes(search.trim().toLowerCase())) return false;
@@ -859,7 +863,7 @@ function TeamsTab({ center, onSelectTeam, onEditTeam, onNewUserForTeam, canManag
                             items={[
                               { label: 'Edit Team',   icon: <IconEdit  size={16} />, onClick: () => { setOpenMenuId(null); onEditTeam(team); } },
                               { label: 'New User',    icon: <IconPlus  size={16} />, onClick: () => { setOpenMenuId(null); onNewUserForTeam(team); } },
-                              { label: 'Delete Team', icon: <IconTrash size={16} />, variant: 'danger', onClick: () => setOpenMenuId(null) },
+                              { label: 'Delete Team', icon: <IconTrash size={16} />, variant: 'danger', onClick: () => { setOpenMenuId(null); onDeleteTeam?.(team); } },
                             ]}
                           />
                         </div>
@@ -1602,109 +1606,6 @@ const UNIT_TABS = [
   { id: 'parameters', label: 'Parameters' },
 ];
 
-function UnitCard({ unit, center, onBack, isMobile = false }) {
-  const [activeTab, setActiveTab] = useState('detail');
-
-  return (
-    <div className={styles.centerCard}>
-
-      {/* ── Header ── */}
-      <div className={styles.innerHeader}>
-
-        {!isMobile && (
-          <button className={`${styles.backBtn} ${styles.teamBackBtn}`} onClick={onBack}>
-            <span className={styles.backIcon}><ArrowLeftIcon /></span>
-            <span className={styles.backLabel}>Back to Units</span>
-          </button>
-        )}
-
-        <div className={styles.cardHeader}>
-          <div className={styles.cardHeaderLeft}>
-            <div className={styles.cardAvatar}>{unit.id}</div>
-            <div className={styles.cardTitleGroup}>
-              <h2 className={styles.cardTitle}>{unit.description}</h2>
-              <div className={styles.cardSubtitle}>
-                <span>{center.name}</span>
-                <span className={styles.separator}>|</span>
-                <div className={styles.statusBadgeSmall}>
-                  <div className={`${styles.statusDot} ${styles[unit.status]}`} />
-                  <span>{unit.status === 'active' ? 'Active' : 'Inactive'}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className={styles.cardActions}>
-            <IconButton aria-label="Unit settings" tooltip="Settings">
-              <IconSettings size={16} />
-            </IconButton>
-            <IconButton aria-label="Delete unit" tooltip="Delete" variant="danger">
-              <IconTrash size={16} />
-            </IconButton>
-          </div>
-        </div>
-
-        <div className={styles.innerTabBarWrap}>
-          <div className={`${styles.innerTabBarInner} ${styles.innerTabBarInnerWide}`}>
-            <TabBar tabs={UNIT_TABS} activeTab={activeTab} onChange={setActiveTab} size="s" />
-          </div>
-        </div>
-
-      </div>
-
-      {/* ── Tab content ── */}
-      <div className={styles.innerTabContent}>
-
-        {activeTab === 'detail' && (
-          <div className={styles.drawerFields}>
-            <Input label="ID" value={String(unit.id)} disabled />
-            <Input label="Description" value={unit.description} disabled />
-            <Input label="Center" value={center.name} disabled />
-            <div className={styles.drawerFieldStatus}>
-              <span className={styles.drawerFieldStatusLabel}>Status</span>
-              <Tag status={unit.status} />
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'devices' && (
-          <div className={styles.drawerFields}>
-            <p className={styles.drawerSectionLabel}>Display</p>
-            <Input label="Display ID" value={String(unit.display.id)} disabled />
-            <div className={styles.drawerFieldStatus}>
-              <span className={styles.drawerFieldStatusLabel}>Status</span>
-              <Tag status={unit.display.status} />
-            </div>
-            <p className={styles.drawerSectionLabel}>K-POD</p>
-            <Input label="K-POD ID" value={String(unit.kpod.id)} disabled />
-            <div className={styles.drawerFieldStatus}>
-              <span className={styles.drawerFieldStatusLabel}>Status</span>
-              <Tag status={unit.kpod.status === 'needs-replacement' ? 'inactive' : unit.kpod.status} label={unit.kpod.status === 'needs-replacement' ? 'Needs replacement' : undefined} />
-            </div>
-            {unit.kpod.status === 'needs-replacement' && (
-              <div className={styles.unitReplaceAlert}>
-                <span>This K-POD needs to be replaced.</span>
-                <button className={styles.unitReplaceBtn}>Replace K-POD</button>
-              </div>
-            )}
-          </div>
-        )}
-
-        {activeTab === 'appearance' && (
-          <InnerEmptyState title="Appearance" subtitle="Appearance settings will appear here" />
-        )}
-
-        {activeTab === 'parameters' && (
-          <InnerEmptyState title="Parameters" subtitle="Unit parameters will appear here" />
-        )}
-
-      </div>
-
-    </div>
-  );
-}
-
-// ─── Center detail card ───────────────────────────────────
-
 function getScrollParent(el) {
   while (el && el !== document.body) {
     const { overflowY } = window.getComputedStyle(el);
@@ -1714,7 +1615,7 @@ function getScrollParent(el) {
   return null;
 }
 
-function CenterCard({ center, org, onEdit, onDelete, onNewTeam, onNewUser, onInviteCenterAdmin, onEditTeam, onNewUserForTeam, onSelectTeam, onSelectUser, onSelectUnit, initialTab = 'details', role, currentUserEmail }) {
+function CenterCard({ center, org, onEdit, onDelete, onNewTeam, onNewUser, onInviteCenterAdmin, onEditTeam, onNewUserForTeam, onDeleteTeam, deletedTeamIds, onSelectTeam, onSelectUser, initialTab = 'details', role, currentUserEmail }) {
   const canDeleteCenter = role === 'owner' || role === 'admin'; // centers.delete: exclusivo de Owner/Admin (ni Editor lo tiene)
   // teams.create / teams.edit / users.invite: exclusivos de Center Admin (y Owner/Admin por bypass) —
   // Editor y Org Admin son solo-lectura en Teams, y users.invite tampoco lo tienen (docs/permissions.md).
@@ -1725,7 +1626,10 @@ function CenterCard({ center, org, onEdit, onDelete, onNewTeam, onNewUser, onInv
   // del Figma) — mismo gate que crear equipos/invitar usuarios, no hay un permiso distinto
   // documentado todavía para esto específicamente.
   const canInviteTeamAdmin = canManageTeams;
-  const canCreateUnit   = role === 'owner' || role === 'admin' || role === 'editor'; // units.create: exclusivo de Kamleon Editor (y Owner/Admin por bypass)
+  // units.create es de Kamleon Editor (y Owner/Admin por bypass), pero el formulario de crear
+  // unit todavía no está diseñado (pendiente: Daniel pasa los campos). Hasta entonces el ítem
+  // no se muestra: un "New Unit" que solo cierra el menú es peor que no tenerlo.
+  const canCreateUnit   = false;
   // Org Admin no tiene el segmento "Administrators" dentro del tab Users de este centro (ve todo
   // consolidado a nivel Org), así que el "+" de acá es su único atajo para invitar un Center Admin
   // sin salir del centro. Editor y Center Admin ya tienen ese flujo cubierto por su propio segmento.
@@ -1882,6 +1786,8 @@ function CenterCard({ center, org, onEdit, onDelete, onNewTeam, onNewUser, onInv
             onSelectTeam={onSelectTeam}
             onEditTeam={onEditTeam}
             onNewUserForTeam={onNewUserForTeam}
+            onDeleteTeam={onDeleteTeam}
+            deletedTeamIds={deletedTeamIds}
             canManageTeams={canManageTeams}
           />
         )}
@@ -1916,6 +1822,7 @@ function CenterCard({ center, org, onEdit, onDelete, onNewTeam, onNewUser, onInv
         <DeleteOrgModal
           org={center}
           label="center"
+          requireTyping
           onClose={() => setShowDeleteModal(false)}
           onConfirm={() => { setShowDeleteModal(false); setShowToast(true); }}
         />
@@ -2490,7 +2397,7 @@ function ConfirmBulkPinModal({ action, team, count, onClose, onConfirm }) {
   );
 }
 
-function TeamCard({ team, center, org, onBack, onSelectUser, onNewUser, onEdit, isMobile = false, role, removedMemberIds }) {
+function TeamCard({ team, center, org, onBack, onSelectUser, onNewUser, onEdit, onDelete, isMobile = false, role, removedMemberIds }) {
   // teams.edit / teams.delete / users.invite: exclusivos de Center Admin (y Owner/Admin por bypass) —
   // Editor y Org Admin son solo-lectura en este bloque (docs/permissions.md, Bloque: Teams / Users).
   const canManageTeam = role === 'owner' || role === 'admin' || role === 'centerAdmin';
@@ -2685,7 +2592,7 @@ function TeamCard({ team, center, org, onBack, onSelectUser, onNewUser, onEdit, 
               </IconButton>
             )}
             {canManageTeam && (
-              <IconButton aria-label="Delete team" tooltip="Delete" variant="danger">
+              <IconButton aria-label="Delete team" tooltip="Delete" variant="danger" onClick={onDelete}>
                 <IconTrash size={16} />
               </IconButton>
             )}
@@ -3438,7 +3345,7 @@ export default function OrgDetailV2({ org, onBack, initialCenter, initialTeam, i
       {showInviteCenterAdmin && (
         <InviteCenterAdminDrawer org={org} onClose={() => setShowInviteCenterAdmin(false)} onSave={handleSaveCenterAdminInvite} />
       )}
-      {showDeleteModal && <DeleteOrgModal org={org} onClose={() => setShowDeleteModal(false)} onConfirm={onBack} />}
+      {showDeleteModal && <DeleteOrgModal org={org} requireTyping onClose={() => setShowDeleteModal(false)} onConfirm={onBack} />}
       {adminInviteToast && (
         <Toast message={adminInviteToast} mode="success" onClose={() => setAdminInviteToast(null)} />
       )}

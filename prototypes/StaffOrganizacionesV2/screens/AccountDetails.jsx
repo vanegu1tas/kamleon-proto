@@ -127,6 +127,7 @@ export default function AccountDetails({ onClose }) {
       {showDeleteConfirm && (
         <DeleteOrgModal
           label="account"
+          requireTyping
           org={{ name: `${userData.name} ${userData.surname}` }}
           onClose={() => setShowDeleteConfirm(false)}
           onConfirm={onClose}

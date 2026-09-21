@@ -896,7 +896,7 @@ export default function StaffOrganizacionesV2({ initialOrgId, initialCenterId, r
       {showNewCenterModal && <NewCenterGlobalDrawer org={newCenterOrg} onClose={() => { setShowNewCenterModal(false); setNewCenterOrg(null); }} />}
       {showNewOrgDrawer   && <NewOrgDrawer   onClose={(created) => { setShowNewOrgDrawer(false); if (created) setToast('New organization created'); }} />}
       {editOrgTarget      && <EditOrgDrawer  org={editOrgTarget}  onClose={() => setEditOrgTarget(null)} />}
-      {deleteOrgTarget    && <DeleteOrgModal  org={deleteOrgTarget} onClose={() => setDeleteOrgTarget(null)} />}
+      {deleteOrgTarget    && <DeleteOrgModal  org={deleteOrgTarget} requireTyping onClose={() => setDeleteOrgTarget(null)} />}
       {newCenterOrg2      && <NewCenterDrawer org={newCenterOrg2}  onClose={() => setNewCenterOrg2(null)} />}
       {showNewUserDrawer  && <NewUserDrawer onClose={() => setShowNewUserDrawer(false)} />}
       {showPalette && <SearchPalette onClose={() => setShowPalette(false)} onNavigate={navigate} />}

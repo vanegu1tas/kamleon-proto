@@ -50,6 +50,7 @@ ANALYTICS
 Ítems ocultos por rol (`rolePersonas.js`, `HIDDEN_NAV_ITEMS`):
 - **Team Admin**: no ve "Units" ni "Usage" (no administra hardware).
 - **Org Admin**: no ve "Units" en el sidebar — ya tiene ese mismo contenido dentro del tab "Units" a nivel organización, sería redundante.
+- **Center Admin**: tampoco ve "Units" en el sidebar (21/9), por el mismo motivo: las units de su centro están en el tab "Units" del centro. De paso evita la vista global, que muestra columnas Display y Sensor reservadas a Editor y staff de Kamleon.
 
 ---
 

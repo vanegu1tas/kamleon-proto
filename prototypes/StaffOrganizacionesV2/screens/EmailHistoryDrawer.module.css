@@ -19,11 +19,15 @@
   background: var(--color-bg-surface);
   border: 1px solid var(--color-border-default);
   border-radius: var(--radius-m);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), -8px 0 32px rgba(0, 0, 0, 0.08);
+  /* La sombra grande (32px de desenfoque sobre medio viewport) se pinta entera en cada
+     fotograma mientras el panel se desliza: es lo más caro de la animación. Entra al
+     terminar el movimiento, así el deslizamiento solo mueve píxeles ya pintados. */
+  box-shadow: none;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  animation: slideIn 0.28s ease-out;
+  animation: slideIn 0.28s ease-out, drawerShadowIn 0.15s ease-out 0.28s forwards;
+  will-change: transform;
 }
 
 /* ─── Header ─── */
@@ -341,7 +345,16 @@
     animation: none;
   }
 
+  /* Sin animación no corre drawerShadowIn, así que la sombra se pone directa. */
+  .drawer {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), -8px 0 32px rgba(0, 0, 0, 0.08);
+  }
+
   .chevron {
     transition: none;
   }
+}
+
+@keyframes drawerShadowIn {
+  to { box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), -8px 0 32px rgba(0, 0, 0, 0.08); }
 }
