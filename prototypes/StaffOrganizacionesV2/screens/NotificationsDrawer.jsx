@@ -7,29 +7,20 @@ import styles from './NotificationsDrawer.module.css';
 
 const AVATAR_GRADIENT = 'linear-gradient(45deg, #00c9a7 0%, #60a5fa 100%)';
 
-const MOCK_GROUPS = [
-  {
-    label: 'Today',
-    notifications: [
-      { id: 1, initials: 'XB', unread: true,  name: 'Xavier B.', action: 'has invited you to become an admin of', target: 'Training Ground.' },
-    ],
-  },
-  {
-    label: '2 days ago',
-    notifications: [
-      { id: 2, initials: 'XB', unread: true,  name: 'Xavier B.', action: 'has invited you to become an admin of', target: 'Astonia FC.' },
-      { id: 3, initials: 'XB', unread: true,  name: 'Xavier B.', action: 'has invited you to become an admin of', target: 'City Campus.' },
-    ],
-  },
-  {
-    label: '7 days ago',
-    notifications: [
-      { id: 4, initials: 'XB', unread: false, name: 'Xavier B.', action: 'has invited you to become member of', target: 'Team Alpha.' },
-    ],
-  },
-];
+// Las invitaciones llegan de fuera (rolePersonas → StaffOrganizacionesV2): son las mismas
+// que cuenta el badge del sidebar. Acá solo se agrupan por el momento en que llegaron.
+function groupInvites(invites) {
+  const order = [];
+  const byGroup = new Map();
+  invites.forEach(invite => {
+    const label = invite.group ?? 'Earlier';
+    if (!byGroup.has(label)) { byGroup.set(label, []); order.push(label); }
+    byGroup.get(label).push(invite);
+  });
+  return order.map(label => ({ label, notifications: byGroup.get(label) }));
+}
 
-function NotifItem({ notif, onAccept }) {
+function NotifItem({ notif, onAccept, onDecline }) {
   const [agreed, setAgreed]       = useState(false);
   const [attempted, setAttempted] = useState(false);
   const [shaking, setShaking]     = useState(false);
@@ -92,7 +83,7 @@ function NotifItem({ notif, onAccept }) {
       </div>
 
       <div className={styles.actions}>
-        <button className={styles.declineBtn}>Decline</button>
+        <button className={styles.declineBtn} onClick={() => onDecline(notif.id)}>Decline</button>
         <Button size="s" style={{ flex: 1 }} onClick={handleAccept}>
           Accept
         </Button>
@@ -101,21 +92,19 @@ function NotifItem({ notif, onAccept }) {
   );
 }
 
-export default function NotificationsDrawer({ onClose }) {
-  const [accepted, setAccepted] = useState(new Set());
-  const [toast, setToast]       = useState(false);
+export default function NotificationsDrawer({ invites = [], onResolve, onClose }) {
+  const [toast, setToast] = useState(false);
 
   function handleAccept(id) {
-    setAccepted(prev => new Set([...prev, id]));
+    onResolve?.(id);
     setToast(true);
   }
 
-  const visibleGroups = MOCK_GROUPS
-    .map(group => ({
-      ...group,
-      notifications: group.notifications.filter(n => !accepted.has(n.id)),
-    }))
-    .filter(group => group.notifications.length > 0);
+  function handleDecline(id) {
+    onResolve?.(id);
+  }
+
+  const visibleGroups = groupInvites(invites);
 
   return (
     <div className={styles.overlay} onMouseDown={onClose}>
@@ -139,7 +128,7 @@ export default function NotificationsDrawer({ onClose }) {
                 <span className={styles.groupLabel}>{group.label}</span>
                 <div className={styles.groupNotifications}>
                   {group.notifications.map(notif => (
-                    <NotifItem key={notif.id} notif={notif} onAccept={handleAccept} />
+                    <NotifItem key={notif.id} notif={notif} onAccept={handleAccept} onDecline={handleDecline} />
                   ))}
                 </div>
               </div>

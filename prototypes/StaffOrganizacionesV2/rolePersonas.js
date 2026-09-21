@@ -45,10 +45,24 @@ const PERSONAS = {
   admin:       { initials: 'DV', name: 'Daniel',  surname: 'Vanegas', email: 'daniel.vanegas@dna.inc',   role: 'Kamleon Admin',  pendingInvites: 0 },
   editor:      { initials: 'KE', name: 'Kamleon', surname: 'Editor',  email: 'editor@kamleon.io',        role: 'Kamleon Editor', pendingInvites: 0 },
   orgAdmin:    { initials: 'JH', name: 'Jordan',  surname: 'Hobbs',   email: 'j.hobbs@astoniafc.com',    role: 'Org Admin',    orgId: ORG_ID,                       pendingInvites: 0 },
-  centerAdmin: { initials: 'CR', name: 'Casey',   surname: 'Reeve',   email: 'c.reeve@astoniafc.com',    role: 'Center Admin', orgId: ORG_ID, centerIds: CENTER_IDS, pendingInvites: 2 },
+  centerAdmin: { initials: 'CR', name: 'Casey',   surname: 'Reeve',   email: 'c.reeve@astoniafc.com',    role: 'Center Admin', orgId: ORG_ID, centerIds: CENTER_IDS },
   teamAdmin:   { initials: 'SA', name: 'Sam',     surname: 'Alcaraz', email: 's.alcaraz@astoniafc.com',  role: 'Team Admin',   orgId: ORG_ID, teamIds: TEAM_IDS,    pendingInvites: 0 },
   endUser:     { initials: 'AR', name: 'Alex',    surname: 'Rivera',  email: 'a.rivera@astoniafc.com',   role: 'End User',                                          pendingInvites: 0 },
 };
+
+// Invitaciones que ESTA persona tiene pendientes de aceptar. Una sola fuente: de acá sale
+// el número del badge del sidebar y el contenido del drawer de notificaciones — antes el
+// badge decía 2 y el drawer enseñaba cuatro cosas distintas.
+export const PENDING_INVITES = {
+  centerAdmin: [
+    { id: 'inv-ca-1', initials: 'XB', name: 'Xavier B.', action: 'has invited you to become an admin of', target: 'City Campus.', group: 'Today',      unread: true },
+    { id: 'inv-ca-2', initials: 'XB', name: 'Xavier B.', action: 'has invited you to become member of',   target: 'Team Alpha.',  group: '2 days ago', unread: true },
+  ],
+};
+
+export function getPendingInvites(roleKey) {
+  return PENDING_INVITES[roleKey] ?? [];
+}
 
 export function getRolePersona(roleKey) {
   return PERSONAS[roleKey] ?? PERSONAS.admin;

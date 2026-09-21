@@ -40,7 +40,7 @@ import NotificationsDrawer from './screens/NotificationsDrawer';
 import ToolbarButton from '../../design-system/components/ToolbarButton/ToolbarButton';
 import ContextMenu from '../../design-system/components/ContextMenu/ContextMenu';
 import Toast from '../../design-system/components/Toast/Toast';
-import { ROLES, ROLE_ORDER, HIDDEN_NAV_ITEMS, getRolePersona, getRolePersonaScope, getAssignedCenters, getAssignedTeams, getEntryStack } from './rolePersonas';
+import { ROLES, ROLE_ORDER, HIDDEN_NAV_ITEMS, getPendingInvites, getRolePersona, getRolePersonaScope, getAssignedCenters, getAssignedTeams, getEntryStack } from './rolePersonas';
 // Shared styles from V1 (OrgList is the same)
 import styles from '../StaffOrganizaciones/StaffOrganizaciones.module.css';
 
@@ -117,6 +117,9 @@ function SortIcon({ col, activeCol, dir }) {
 export default function StaffOrganizacionesV2({ initialOrgId, initialCenterId, role: initialRole, currentUser: currentUserOverride, assignedCenters: assignedCentersOverride } = {}) {
   const [role, setRoleState] = useState(() => initialRole ?? 'admin');
   const [user, setUser] = useState(() => currentUserOverride ?? getRolePersona(role));
+  // Invitaciones pendientes de aceptar: el badge del sidebar y el drawer de notificaciones
+  // leen esta misma lista, así que aceptar una baja el número.
+  const [pendingInvites, setPendingInvites] = useState(() => getPendingInvites(role));
   const [assignedCenters, setAssignedCenters] = useState(() => assignedCentersOverride ?? getAssignedCenters(role));
   const [assignedTeams, setAssignedTeams] = useState(() => getAssignedTeams(role));
   const isCenterAdmin = role === 'centerAdmin';
@@ -125,6 +128,7 @@ export default function StaffOrganizacionesV2({ initialOrgId, initialCenterId, r
   function handleRoleChange(newRole) {
     setRoleState(newRole);
     setUser(getRolePersona(newRole));
+    setPendingInvites(getPendingInvites(newRole));
     setAssignedCenters(getAssignedCenters(newRole));
     setAssignedTeams(getAssignedTeams(newRole));
     setNavStack(getEntryStack(newRole));
@@ -331,7 +335,7 @@ export default function StaffOrganizacionesV2({ initialOrgId, initialCenterId, r
           collapsed={sidebarCollapsed}
           onToggle={handleSidebarToggle}
           drawerOpen={isTablet ? drawerOpen : undefined}
-          user={{ ...user, scope: getRolePersonaScope(role) }}
+          user={{ ...user, scope: getRolePersonaScope(role), pendingInvites: pendingInvites.length }}
           roleOptions={ROLE_ORDER.map(key => ({
             key,
             label: ROLES[key].label,
@@ -341,6 +345,7 @@ export default function StaffOrganizacionesV2({ initialOrgId, initialCenterId, r
           currentRoleKey={role}
           onRoleChange={handleRoleChange}
           onAccountDetails={() => { setShowAccount(true); setShowMyData(false); }}
+          onPendingInvitesClick={() => setShowNotifications(true)}
           personalItem={isEndUser ? undefined : {
             id: 'mydata',
             label: 'My data',
@@ -900,7 +905,13 @@ export default function StaffOrganizacionesV2({ initialOrgId, initialCenterId, r
       {newCenterOrg2      && <NewCenterDrawer org={newCenterOrg2}  onClose={() => setNewCenterOrg2(null)} />}
       {showNewUserDrawer  && <NewUserDrawer onClose={() => setShowNewUserDrawer(false)} />}
       {showPalette && <SearchPalette onClose={() => setShowPalette(false)} onNavigate={navigate} />}
-      {showNotifications && <NotificationsDrawer onClose={() => setShowNotifications(false)} />}
+      {showNotifications && (
+        <NotificationsDrawer
+          invites={pendingInvites}
+          onResolve={id => setPendingInvites(prev => prev.filter(i => i.id !== id))}
+          onClose={() => setShowNotifications(false)}
+        />
+      )}
 
       {toast && (
         <div className={styles.toastWrap}>

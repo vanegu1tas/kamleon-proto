@@ -52,7 +52,15 @@
   width: 52px;
   height: 32px;
   margin-top: 6px;
+  border: none;
+  background: none;
+  cursor: pointer;
   border-radius: var(--radius-xs);
+  transition: background-color 0.15s ease;
+}
+
+.pendingRail:hover {
+  background: var(--color-grey-25);
 }
 
 .userRailBand {
@@ -199,7 +207,17 @@
   margin: 4px;
   padding: 0 4px;
   min-height: 28px;
+  border: none;
+  background: none;
+  width: calc(100% - 8px);
+  cursor: pointer;
+  text-align: left;
   border-radius: var(--radius-xs);
+  transition: background-color 0.15s ease;
+}
+
+.pendingPill:hover {
+  background: var(--color-grey-25);
 }
 
 .pendingBadge {

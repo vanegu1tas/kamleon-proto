@@ -55,7 +55,15 @@ const ROLE_OPTIONS = Object.values(PERSONAS).map(p => ({
 function SidebarWithState({ startCollapsed = false, initialRoleKey = 'centerAdmin', withFooter = true, sections = SECTIONS_CLIENT, personalItem = PERSONAL_ITEM }) {
   const [collapsed, setCollapsed] = useState(startCollapsed);
   const [roleKey, setRoleKey] = useState(initialRoleKey);
-  const user = PERSONAS[roleKey];
+  // El número del badge y lo que abriría el drawer de notificaciones salen de la misma
+  // lista: aceptar una invitación baja el contador. Acá se simula quitándolas de una en una.
+  const [invites, setInvites] = useState(() => PERSONAS[initialRoleKey].pendingInvites);
+  const user = { ...PERSONAS[roleKey], pendingInvites: invites };
+
+  function handleRoleChange(key) {
+    setRoleKey(key);
+    setInvites(PERSONAS[key].pendingInvites);
+  }
 
   return (
     <Sidebar
@@ -66,8 +74,9 @@ function SidebarWithState({ startCollapsed = false, initialRoleKey = 'centerAdmi
       user={withFooter ? user : undefined}
       roleOptions={withFooter ? ROLE_OPTIONS : []}
       currentRoleKey={roleKey}
-      onRoleChange={setRoleKey}
+      onRoleChange={handleRoleChange}
       onAccountDetails={() => console.log('Account details clicked')}
+      onPendingInvitesClick={() => setInvites(n => Math.max(0, n - 1))}
     />
   );
 }
@@ -88,7 +97,10 @@ export default {
           + 'viewport.\n\n**Colapsado**: el ancho se anima (240ms) y los textos se encogen y desvanecen '
           + 'en lugar de desaparecer de golpe. El carril mantiene el pie completo — "My data", el badge '
           + 'de pendientes y el avatar — y ahí los tooltips (incluido el del avatar) salen por fuera, a '
-          + 'la derecha. Todo se desactiva con `prefers-reduced-motion`.',
+          + 'la derecha. Todo se desactiva con `prefers-reduced-motion`.\n\n**Invitaciones pendientes**: '
+          + '`user.pendingInvites` pinta el badge y `onPendingInvitesClick` se dispara tanto desde la fila '
+          + 'expandida como desde el badge del carril; en la app abre el drawer de notificaciones con esas '
+          + 'mismas invitaciones.',
       },
     },
   },
@@ -121,7 +133,19 @@ export const WithoutFooter = {
 };
 
 export const PendingInvites = {
+  name: 'Con invitaciones pendientes',
+  parameters: {
+    docs: { description: { story: 'La fila "Pending invites" es un botón: en la app abre el drawer de notificaciones, que lee esas mismas invitaciones. Acá cada click descuenta una para que se vea que el badge y el contenido son la misma fuente.' } },
+  },
   render: () => <SidebarWithState startCollapsed={false} initialRoleKey="centerAdmin" />,
+};
+
+export const PendingInvitesCollapsed = {
+  name: 'Invitaciones pendientes (colapsado)',
+  parameters: {
+    docs: { description: { story: 'En el carril, las invitaciones son el badge rojo, también clicable.' } },
+  },
+  render: () => <SidebarWithState startCollapsed initialRoleKey="centerAdmin" />,
 };
 
 export const NoScope = {

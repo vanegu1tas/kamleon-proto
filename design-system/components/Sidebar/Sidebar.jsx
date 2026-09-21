@@ -83,6 +83,8 @@ function useHoverSubmenu() {
  *   sections: [{ id, label, items: [{ id, label, icon, active, onClick }] }]
  * @param {Object}         user        - { initials, name, surname, role, scope, pendingInvites } — footer del
  *                                        sidebar. scope = a qué está limitado (org/centro/equipo), opcional.
+ * @param {function}       onPendingInvitesClick - Click en "Pending invites" (y en el badge del
+ *                                         carril colapsado): abre el drawer de notificaciones.
  * @param {Object}         personalItem - { id, label, icon, active, onClick } — ítem "My data", se muestra
  *                                         pegado al footer (arriba de pending invites / tarjeta de usuario).
  * @param {Array}          roleOptions - [{ key, label, scope, initials }] — opciones del submenú "Switch role".
@@ -91,7 +93,7 @@ function useHoverSubmenu() {
  * @param {function}       onAccountDetails - callback del ítem "Account details"
  */
 export default function Sidebar({
-  collapsed = false, onToggle, sections = [], drawerOpen, user, personalItem,
+  collapsed = false, onToggle, sections = [], drawerOpen, user, personalItem, onPendingInvitesClick,
   roleOptions = [], currentRoleKey, onRoleChange, onAccountDetails,
 }) {
   const inDrawerMode = drawerOpen !== undefined;
@@ -226,9 +228,14 @@ export default function Sidebar({
               </div>
             )}
             {user.pendingInvites > 0 && (
-              <div className={styles.pendingRail}>
+              <button
+                type="button"
+                className={styles.pendingRail}
+                onClick={onPendingInvitesClick}
+                aria-label={`${user.pendingInvites} pending invites`}
+              >
                 <span className={styles.pendingBadge}>{user.pendingInvites}</span>
-              </div>
+              </button>
             )}
             <div className={styles.userRailBand}>
               <button
@@ -262,10 +269,10 @@ export default function Sidebar({
             <div className={styles.bottomBlock}>
             <div className={styles.bottomCard}>
               {user.pendingInvites > 0 && (
-                <div className={styles.pendingPill}>
+                <button type="button" className={styles.pendingPill} onClick={onPendingInvitesClick}>
                   <span className={styles.pendingBadge}>{user.pendingInvites}</span>
                   <span className={styles.pendingLabel}>Pending invites</span>
-                </div>
+                </button>
               )}
               <button
                 ref={userCardRef}
