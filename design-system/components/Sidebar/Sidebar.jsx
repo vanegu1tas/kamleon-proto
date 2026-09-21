@@ -104,6 +104,18 @@ export default function Sidebar({
   function handleUserCardEnter() {
     hoverTimerRef.current = setTimeout(() => {
       const rect = userCardRef.current.getBoundingClientRect();
+      // Colapsado: el tooltip sale por fuera del sidebar, a la derecha y centrado, igual que
+      // el del resto de ítems del carril. Expandido sigue saliendo encima de la tarjeta.
+      if (!showExpanded) {
+        const sidebar = userCardRef.current.closest('aside');
+        const sidebarRight = sidebar ? sidebar.getBoundingClientRect().right : rect.right;
+        setUserTooltipPos({
+          top: rect.top + rect.height / 2,
+          left: sidebarRight + 8,
+          placement: 'right',
+        });
+        return;
+      }
       setUserTooltipPos({ top: rect.top, left: rect.left + rect.width / 2, width: rect.width });
     }, USER_TOOLTIP_DELAY);
   }
@@ -158,7 +170,10 @@ export default function Sidebar({
 
       {/* Header */}
       <div className={styles.header}>
-        {showExpanded && <LogoKamleon />}
+        {/* Igual que los labels: el logo se encoge y se desvanece en vez de desmontarse. */}
+        <span className={`${styles.logoWrap} ${showExpanded ? '' : styles.logoWrapHidden}`}>
+          <LogoKamleon />
+        </span>
         <button
           className={styles.toggleBtn}
           onClick={onToggle}
@@ -176,8 +191,10 @@ export default function Sidebar({
         <div className={styles.sections}>
           {sections.map(section => (
             <div key={section.id} className={styles.section}>
-              {showExpanded && (
-                <span className={styles.sectionLabel}>{section.label}</span>
+              {section.label && (
+                <span className={`${styles.sectionLabel} ${showExpanded ? '' : styles.sectionLabelHidden}`}>
+                  {section.label}
+                </span>
               )}
               {section.items.map(item => (
                 <SidebarItem
@@ -193,17 +210,56 @@ export default function Sidebar({
           ))}
         </div>
 
+        {/* Carril colapsado (Figma 2593:3751): abajo van "My data", el badge de pendientes y
+            el avatar, cada uno en su banda. Sin esto, al colapsar desaparecía todo el pie. */}
+        {!showExpanded && user && (
+          <div className={styles.collapsedFooter}>
+            {personalItem && (
+              <div className={styles.personalBandCollapsed}>
+                <SidebarItem
+                  icon={personalItem.icon}
+                  label={personalItem.label}
+                  state={personalItem.active ? 'selected' : 'default'}
+                  collapsed
+                  onClick={personalItem.onClick}
+                />
+              </div>
+            )}
+            {user.pendingInvites > 0 && (
+              <div className={styles.pendingRail}>
+                <span className={styles.pendingBadge}>{user.pendingInvites}</span>
+              </div>
+            )}
+            <div className={styles.userRailBand}>
+              <button
+                ref={userCardRef}
+                type="button"
+                className={`${styles.userRail} ${menuOpen ? styles.userCardActive : ''}`}
+                onClick={handleUserCardClick}
+                onMouseEnter={handleUserCardEnter}
+                onMouseLeave={handleUserCardLeave}
+                aria-label={`${user.name} ${user.surname}`}
+              >
+                <span className={styles.userCardAvatar}>{user.initials}</span>
+              </button>
+            </div>
+          </div>
+        )}
+
         {showExpanded && user && (
           <div className={styles.footer}>
             {personalItem && (
-              <SidebarItem
-                icon={personalItem.icon}
-                label={personalItem.label}
-                state={personalItem.active ? 'selected' : 'default'}
-                collapsed={false}
-                onClick={personalItem.onClick}
-              />
+              <div className={styles.personalBand}>
+                <SidebarItem
+                  icon={personalItem.icon}
+                  label={personalItem.label}
+                  state={personalItem.active ? 'selected' : 'default'}
+                  collapsed={false}
+                  onClick={personalItem.onClick}
+                />
+              </div>
             )}
+            <div className={styles.bottomBlock}>
             <div className={styles.bottomCard}>
               {user.pendingInvites > 0 && (
                 <div className={styles.pendingPill}>
@@ -222,12 +278,17 @@ export default function Sidebar({
                 <span className={styles.userCardAvatar}>{user.initials}</span>
                 <span className={styles.userCardInfo}>
                   <span className={styles.userCardName}>{user.name} {user.surname}</span>
-                  <span className={styles.userCardRole}>{user.role}</span>
+                  {/* Figma: "Center admin - Center name" — el rol solo no dice a qué está
+                      scopeado, y es justo lo que distingue a dos cuentas del mismo rol. */}
+                  <span className={styles.userCardRole}>
+                    {user.scope ? `${user.role} - ${user.scope}` : user.role}
+                  </span>
                 </span>
                 <span className={styles.userCardChevron}>
                   <IconChevronDown size={16} />
                 </span>
               </button>
+            </div>
             </div>
           </div>
         )}
@@ -235,12 +296,16 @@ export default function Sidebar({
 
       {userTooltipPos && createPortal(
         <div
-          className={styles.userTooltip}
+          className={`${styles.userTooltip} ${userTooltipPos.placement === 'right' ? styles.userTooltipRight : ''}`}
           style={{ top: userTooltipPos.top, left: userTooltipPos.left }}
         >
           <div className={styles.userTooltipBox} style={{ width: userTooltipPos.width }}>
-            <span className={styles.userTooltipRole}>{user.role}</span>
-            {user.scope && <span className={styles.userTooltipScope}>{user.scope}</span>}
+            <span className={styles.userTooltipRole}>{user.name} {user.surname}</span>
+            {(user.role || user.scope) && (
+              <span className={styles.userTooltipScope}>
+                {user.scope ? `${user.role} - ${user.scope}` : user.role}
+              </span>
+            )}
           </div>
           <span className={styles.userTooltipArrow} />
         </div>,

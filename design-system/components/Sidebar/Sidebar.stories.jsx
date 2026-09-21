@@ -2,31 +2,39 @@ import { useState } from 'react';
 import Sidebar from './Sidebar';
 import {
   IconSbCenter,
-  IconSbTeams,
   IconSbDrop,
   IconSbChart,
   IconSbUnit,
+  IconSbMyData,
 } from '../../icons';
 
+// Mismas secciones que la app (Figma DS "Sidebar-v2", 2155:1987). "Units" no lo ven ni
+// Org Admin ni Center Admin: tienen ese contenido en el tab de su organización/centro.
 const SECTIONS = [
   {
-    id: 'main',
-    label: 'GESTIÓN',
+    id: 'management',
+    label: 'Management',
     items: [
-      { id: 'centros',  label: 'Centros',       icon: <IconSbCenter />, active: true  },
-      { id: 'equipos',  label: 'Equipos',        icon: <IconSbTeams />,  active: false },
+      { id: 'center', label: 'Control panel', icon: <IconSbCenter />, active: true  },
+      { id: 'units',  label: 'Units',         icon: <IconSbUnit />,   active: false },
+      { id: 'usage',  label: 'Unit usage',    icon: <IconSbChart />,  active: false },
     ],
   },
   {
-    id: 'clinical',
-    label: 'CLÍNICA',
+    id: 'analytics',
+    label: 'Analytics',
     items: [
-      { id: 'hidra',    label: 'Hidratación',    icon: <IconSbDrop />,   active: false },
-      { id: 'uro',      label: 'Uroflujometría', icon: <IconSbChart />,  active: false },
-      { id: 'devices',  label: 'Dispositivos',   icon: <IconSbUnit />,   active: false },
+      { id: 'hydration', label: 'Hydration', icon: <IconSbDrop />, active: false },
     ],
   },
 ];
+
+const SECTIONS_CLIENT = SECTIONS.map(section => ({
+  ...section,
+  items: section.items.filter(item => item.id !== 'units'),
+}));
+
+const PERSONAL_ITEM = { id: 'mydata', label: 'My data', icon: <IconSbMyData />, active: false, onClick: () => {} };
 
 // Mock de personas por rol — mismo shape que prototypes/StaffOrganizacionesV2/rolePersonas.js,
 // duplicado acá a propósito para que esta story no dependa de un prototipo específico.
@@ -44,7 +52,7 @@ const ROLE_OPTIONS = Object.values(PERSONAS).map(p => ({
   key: p.key, label: p.role, scope: p.scope, initials: p.initials,
 }));
 
-function SidebarWithState({ startCollapsed = false, initialRoleKey = 'centerAdmin', withFooter = true }) {
+function SidebarWithState({ startCollapsed = false, initialRoleKey = 'centerAdmin', withFooter = true, sections = SECTIONS_CLIENT, personalItem = PERSONAL_ITEM }) {
   const [collapsed, setCollapsed] = useState(startCollapsed);
   const [roleKey, setRoleKey] = useState(initialRoleKey);
   const user = PERSONAS[roleKey];
@@ -53,7 +61,8 @@ function SidebarWithState({ startCollapsed = false, initialRoleKey = 'centerAdmi
     <Sidebar
       collapsed={collapsed}
       onToggle={() => setCollapsed(c => !c)}
-      sections={SECTIONS}
+      sections={sections}
+      personalItem={personalItem}
       user={withFooter ? user : undefined}
       roleOptions={withFooter ? ROLE_OPTIONS : []}
       currentRoleKey={roleKey}
@@ -72,12 +81,14 @@ export default {
     backgrounds: { default: 'page' },
     docs: {
       description: {
-        component: 'Shell de navegación lateral. El footer (tarjeta de usuario + "Pending invites") es '
-          + 'opcional vía la prop `user` — sin ella, el sidebar queda solo con la navegación. Con `user`, '
-          + 'se habilita: tooltip con delay al hover de la tarjeta (rol + a qué está limitado, para cuando '
-          + 'el texto se corta), y un menú de cuenta al hacer click, con un submenú "Switch role" (hover) '
-          + 'que lista `roleOptions` y un submenú "Language" fijo. Ambos submenús se centran respecto a la '
-          + 'fila que los abre y se recortan (clamp) para nunca salirse del viewport.',
+        component: 'Shell de navegación lateral. El pie (ítem "My data" vía `personalItem`, "Pending '
+          + 'invites" y la tarjeta de usuario) es opcional vía la prop `user`. Con `user` se habilita: '
+          + 'tooltip con delay al hover de la tarjeta, y un menú de cuenta al hacer click, con submenús '
+          + '"Switch role" y "Language" que se centran en su fila y se recortan para no salirse del '
+          + 'viewport.\n\n**Colapsado**: el ancho se anima (240ms) y los textos se encogen y desvanecen '
+          + 'en lugar de desaparecer de golpe. El carril mantiene el pie completo — "My data", el badge '
+          + 'de pendientes y el avatar — y ahí los tooltips (incluido el del avatar) salen por fuera, a '
+          + 'la derecha. Todo se desactiva con `prefers-reduced-motion`.',
       },
     },
   },
@@ -88,7 +99,21 @@ export const Expanded = {
 };
 
 export const Collapsed = {
+  name: 'Colapsado',
   render: () => <SidebarWithState startCollapsed={true} />,
+};
+
+export const CollapseAnimation = {
+  name: 'Animación de colapsar',
+  parameters: {
+    docs: { description: { story: 'Usa el botón « / » de la cabecera para ver la transición de ancho y cómo los textos se encogen dentro del icono.' } },
+  },
+  render: () => <SidebarWithState startCollapsed={false} />,
+};
+
+export const StaffFullNav = {
+  name: 'Kamleon staff (con Units)',
+  render: () => <SidebarWithState startCollapsed={false} initialRoleKey="admin" sections={SECTIONS} />,
 };
 
 export const WithoutFooter = {

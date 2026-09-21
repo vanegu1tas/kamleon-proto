@@ -52,7 +52,9 @@ export default function SidebarItem({
         onMouseLeave={handleMouseLeave}
       >
         {icon && <span className={styles.icon}>{icon}</span>}
-        {!collapsed && <span className={styles.label}>{label}</span>}
+        {/* El label no se desmonta al colapsar: se encoge a 0 y se desvanece, así el texto
+            se mete dentro del icono en vez de desaparecer de golpe. */}
+        <span className={styles.label} aria-hidden={collapsed || undefined}>{label}</span>
       </button>
 
       {tooltipPos && createPortal(

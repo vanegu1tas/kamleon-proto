@@ -4,6 +4,10 @@
   display: flex;
   flex-direction: column;
   height: 100%;
+  /* Colapsar/expandir: el ancho se anima, y los textos de dentro se encogen y desvanecen
+     con él (ver .label de SidebarItem, .logoWrap y .sectionLabel). Sin esto el sidebar
+     saltaba de 256 a 66 en un fotograma. */
+  transition: width 0.24s cubic-bezier(0.4, 0, 0.2, 1);
   border: 1px solid var(--color-grey-25);
   border-radius: 20px;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.8), 0 0 16px rgba(0, 0, 0, 0.25);
@@ -20,9 +24,56 @@
   background: linear-gradient(134.24deg, #0b0f12 63.877%, #161d24 100%);
 }
 
+/* Carril colapsado, medidas del Figma 2593:3751: 14px a los lados (ítems de 36), 16 entre
+   ítems y 24 entre secciones. */
 .collapsed .nav {
-  padding-left: 12px;
-  padding-right: 12px;
+  padding-left: 14px;
+  padding-right: 14px;
+}
+
+.collapsed .sections { gap: 24px; }
+.collapsed .section  { gap: 16px; }
+
+.collapsedFooter {
+  margin: auto -14px -16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.personalBandCollapsed {
+  padding: 8px 0;
+}
+
+.pendingRail {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 32px;
+  margin-top: 6px;
+  border-radius: var(--radius-xs);
+}
+
+.userRailBand {
+  margin: 6px 0 12px;
+}
+
+.userRail {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border: none;
+  border-radius: var(--radius-s);
+  background: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.userRail:hover,
+.userRail.userCardActive {
+  background: var(--color-grey-25);
 }
 
 /* ─── Header ─────────────────────────────────────── */
@@ -38,6 +89,20 @@
 
 .collapsed .header {
   justify-content: center;
+}
+
+.logoWrap {
+  display: inline-flex;
+  align-items: center;
+  overflow: hidden;
+  max-width: 130px;
+  opacity: 1;
+  transition: max-width 0.24s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.14s ease;
+}
+
+.logoWrapHidden {
+  max-width: 0;
+  opacity: 0;
 }
 
 .toggleBtn {
@@ -95,29 +160,45 @@
 
 /* ─── Footer: pending invites + tarjeta de usuario ─── */
 
+/* Figma: "My data" vive en su propia banda con 8px de inset y el bloque de abajo con 12px,
+   los dos más anchos que los ítems del nav (que llevan los 16px del .nav). Por eso el footer
+   sale del padding del nav con márgenes negativos. */
 .footer {
-  margin-top: auto;
-  padding-top: 32px;
+  /* -16px abajo también: el padding del .nav ya no cuenta acá, el aire lo pone .bottomBlock. */
+  margin: auto -16px -16px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+}
+
+.personalBand {
+  padding: 8px;
+}
+
+.bottomBlock {
+  padding: 8px 12px 12px;
 }
 
 /* Card que agrupa Pending invites + tarjeta de usuario (Figma: "bottom selection") */
+/* Figma 2764:4782: la tarjeta exterior NO tiene padding y la de usuario va pegada a sus
+   bordes, las dos con radio 12. El aire de 4px lo pone solo la fila de pendientes.
+   Las dos cajas llevan su propio borde de 1px (la de usuario es un componente que también
+   se usa suelto). Para que no se vean como una línea de 2px, la de dentro se saca 1px con
+   margen negativo y pinta su borde justo encima del de fuera: misma curva, una sola línea. */
 .bottomCard {
   display: flex;
   flex-direction: column;
   background: var(--color-grey-11);
   border: 1px solid var(--color-grey-25);
   border-radius: var(--radius-s);
-  padding: 4px;
 }
 
 .pendingPill {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 8px;
+  margin: 4px;
+  padding: 0 4px;
+  min-height: 28px;
   border-radius: var(--radius-xs);
 }
 
@@ -129,7 +210,7 @@
   width: 20px;
   height: 20px;
   border-radius: var(--radius-l);
-  background: var(--color-red-65);
+  background: var(--color-red-48);
   font-family: var(--font-family-primary);
   font-size: var(--font-size-14);
   font-weight: var(--font-weight-medium);
@@ -147,10 +228,13 @@
   display: flex;
   align-items: center;
   width: 100%;
-  gap: 12px;
+  height: 52px;
+  gap: 8px;
   padding: 8px;
-  border: none;
+  border: 1px solid var(--color-grey-25);
   border-radius: var(--radius-s);
+  margin: -1px;
+  width: calc(100% + 2px);
   background: none;
   cursor: pointer;
   text-align: left;
@@ -171,8 +255,8 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   background: linear-gradient(45deg, #00c9a7, #60a5fa);
   font-family: var(--font-family-primary);
@@ -276,6 +360,27 @@
   animation: userTooltipIn 0.15s ease-out;
 }
 
+/* Variante del tooltip para el sidebar colapsado: sale a la derecha, fuera del carril, y
+   centrado verticalmente — el mismo sitio que el tooltip de los demás ítems. */
+.userTooltipRight {
+  transform: translateY(-50%);
+  flex-direction: row-reverse;
+  align-items: center;
+}
+
+.userTooltipRight .userTooltipBox {
+  align-items: flex-start;
+  white-space: nowrap;
+}
+
+.userTooltipRight .userTooltipArrow {
+  margin: 0 -1px 0 0;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-right: 5px solid var(--color-black);
+  border-left: none;
+}
+
 @keyframes userTooltipIn {
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -284,6 +389,10 @@
 .sectionLabel {
   display: block;
   padding: 2px 12px;
+  overflow: hidden;
+  white-space: nowrap;
+  transition: opacity 0.14s ease, max-height 0.24s ease, padding 0.24s ease;
+  max-height: 24px;
   font-family: var(--font-family-primary);
   font-size: var(--font-size-12);
   font-weight: var(--font-weight-medium);
@@ -544,5 +653,20 @@
 
   .drawerVisible {
     transform: translateX(0);
+  }
+}
+
+.sectionLabelHidden {
+  opacity: 0;
+  max-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebar,
+  .logoWrap,
+  .sectionLabel {
+    transition: none;
   }
 }

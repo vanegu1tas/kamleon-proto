@@ -18,9 +18,15 @@
 
 /* ─── Modos ──────────────────────────────────────── */
 
+/* Figma (Sidebar-v2, DS 2155:1987): el ítem activo es una píldora; el resto usa una esquina
+   de 6px, que solo se ve en el hover. */
 .expanded {
   gap: 12px;
   padding: 8px 16px;
+  border-radius: 6px;
+}
+
+.expanded.selected {
   border-radius: var(--radius-l);
 }
 
@@ -28,6 +34,16 @@
   padding: 8px;
   border-radius: var(--radius-l);
   justify-content: center;
+}
+
+.collapsed .label {
+  flex: 0 0 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .label { transition: none; }
 }
 
 /* ─── Default ────────────────────────────────────── */
@@ -64,6 +80,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  transition: opacity 0.14s ease, flex-basis 0.24s cubic-bezier(0.4, 0, 0.2, 1);
   font-family: var(--font-family-primary);
   font-size: var(--font-size-14);
   font-weight: var(--font-weight-book);
@@ -73,7 +90,7 @@
 
 .selected .label {
   font-weight: var(--font-weight-medium);
-  line-height: 24px;
+  line-height: 17.5px;
   color: var(--color-white);
 }
 
