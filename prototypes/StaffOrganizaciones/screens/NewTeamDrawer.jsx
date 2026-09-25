@@ -4,13 +4,22 @@ import { IconClose, IconAddImage } from '../../../design-system/icons/outline';
 import IconButton from '../../../design-system/components/IconButton/IconButton';
 import Toggle from '../../../design-system/components/Toggle/Toggle';
 import Input from '../../../design-system/components/Input/Input';
+import Dropdown from '../../../design-system/components/Dropdown/Dropdown';
 import styles from './NewTeamDrawer.module.css';
 
-export default function NewTeamDrawer({ center, onClose }) {
+export default function NewTeamDrawer({ center, orgs = [], onClose }) {
   const [name,    setName]    = useState('');
   const [setPin,  setSetPin]  = useState(false);
 
-  const canCreate = name.trim().length > 0;
+  // Desde un centro, el destino ya se sabe. Desde la lista de organizaciones hay que
+  // preguntarlo — mismo criterio que en "Add users": solo se pregunta lo que falta.
+  const [orgId, setOrgId]       = useState('');
+  const [centerId, setCenterId] = useState('');
+  const needsDestination = !center && orgs.length > 0;
+  const selectedOrg    = orgs.find(o => String(o.id) === orgId) ?? null;
+  const selectedCenter = center ?? (selectedOrg?.centers ?? []).find(c => String(c.id) === centerId) ?? null;
+
+  const canCreate = name.trim().length > 0 && (!needsDestination || !!selectedCenter);
 
   return (
     <div className={styles.overlay} onMouseDown={onClose}>
@@ -28,10 +37,32 @@ export default function NewTeamDrawer({ center, onClose }) {
         <div className={styles.body}>
 
           {/* Subtitle */}
-          {center && (
+          {selectedCenter && (
             <p className={styles.subtitle}>
-              New Team for <span className={styles.subtitleCenter}>{center.name}</span>
+              New Team for <span className={styles.subtitleCenter}>{selectedCenter.name}</span>
             </p>
+          )}
+
+          {needsDestination && (
+            <>
+              <Dropdown
+                label="Organization"
+                required
+                placeholder="Select an organization…"
+                options={orgs.map(o => ({ label: o.name, value: String(o.id) }))}
+                value={orgId}
+                onChange={value => { setOrgId(value); setCenterId(''); }}
+              />
+              <Dropdown
+                label="Center"
+                required
+                placeholder={selectedOrg ? 'Select a center…' : 'Select an organization first'}
+                options={(selectedOrg?.centers ?? []).map(c => ({ label: c.name, value: String(c.id) }))}
+                value={centerId}
+                onChange={setCenterId}
+                disabled={!selectedOrg}
+              />
+            </>
           )}
 
           {/* Avatar row */}

@@ -114,7 +114,7 @@ Trabajo de diseño e implementación, sobre el flujo de pantallas que ya existe.
 | 5   | Implementar los diseños en el prototipo                                                                                                 | 4 – 5                                        |
 | 6   | Presentación a business (ellos la llevan al cliente) y correcciones) (iterativo)<br><br>Afinar motion<br><br>QA - Por parte de business | 2 -3 (Por iteración)<br><br>2-3<br><br>(TBD) |
 | 7   | Colchón para pulir el prototipo                                                                                                         | 2 – 3 (depende de feedback)                  |
-|     | **Total**                                                                                                                               | **10,5 – 16,5 días**                         |
+|     | **Total**                                                                                                                               | **24 – 33 días**                             |
 
 
 **Dependencias:**

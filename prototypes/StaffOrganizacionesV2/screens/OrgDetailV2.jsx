@@ -711,7 +711,12 @@ const CENTER_TABS = [
 
 // ─── Teams tab ────────────────────────────────────────────
 
-function TeamsTab({ center, onSelectTeam, onEditTeam, onNewUserForTeam, onDeleteTeam, canManageTeams = true, deletedTeamIds }) {
+// El estado de un equipo (activo/inactivo) lo administra Kamleon: para los roles de cliente
+// no aporta nada saber si un equipo está inactivo, así que ni la columna ni su filtro se les
+// muestran (decisión de Daniel, 23/9). Sin filtros que ofrecer, el botón "Filters" tampoco
+// aparece: abriría un desplegable vacío.
+function TeamsTab({ center, onSelectTeam, onEditTeam, onNewUserForTeam, onDeleteTeam, canManageTeams = true, deletedTeamIds, role }) {
+  const showStatus = role !== 'orgAdmin' && role !== 'centerAdmin';
   const [search, setSearch]         = useState('');
   const [filters, setFilters]       = useState({ status: new Set() });
   const [filterOpen, setFilterOpen] = useState(false);
@@ -776,6 +781,7 @@ function TeamsTab({ center, onSelectTeam, onEditTeam, onNewUserForTeam, onDelete
           onChange={e => setSearch(e.target.value)}
           onClear={() => setSearch('')}
         />
+        {showStatus && (
         <div className={styles.filterWrap} ref={filterRef}>
           <ToolbarButton
             icon={<IconFilter size={16} />}
@@ -807,13 +813,14 @@ function TeamsTab({ center, onSelectTeam, onEditTeam, onNewUserForTeam, onDelete
             </div>
           )}
         </div>
+        )}
       </div>
 
       {teams.length > 0 ? (
         <div className={styles.teamTable}>
           <div className={styles.teamTableHead}>
             <span className={`${styles.teamCol} ${styles.teamColName}`}>Team Name</span>
-            <span className={`${styles.teamCol} ${styles.teamColStatus}`}>Status</span>
+            {showStatus && <span className={`${styles.teamCol} ${styles.teamColStatus}`}>Status</span>}
             <span className={`${styles.teamCol} ${styles.teamColActions}`} />
           </div>
           {teams.map(team => {
@@ -838,9 +845,11 @@ function TeamsTab({ center, onSelectTeam, onEditTeam, onNewUserForTeam, onDelete
                     </span>
                   </div>
                 </div>
-                <div className={`${styles.teamCol} ${styles.teamColStatus}`}>
-                  <Tag status={team.status} />
-                </div>
+                {showStatus && (
+                  <div className={`${styles.teamCol} ${styles.teamColStatus}`}>
+                    <Tag status={team.status} />
+                  </div>
+                )}
                 <div
                   className={`${styles.teamCol} ${styles.teamColActions}`}
                   ref={el => { menuRefs.current[team.id] = el; }}
@@ -1789,6 +1798,7 @@ function CenterCard({ center, org, onEdit, onDelete, onNewTeam, onNewUser, onInv
             onDeleteTeam={onDeleteTeam}
             deletedTeamIds={deletedTeamIds}
             canManageTeams={canManageTeams}
+            role={role}
           />
         )}
         {innerTab === 'users' && (

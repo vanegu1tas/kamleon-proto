@@ -34,7 +34,7 @@ export default function InviteCenterAdminDrawer({ org, presetCenter = null, onCl
         <div className={styles.body}>
 
           <p className={styles.contextLine}>
-            They'll receive an email to accept the role and access {presetCenter ? presetCenter.name : 'the selected center'}.
+            A Center Admin manages this center day-to-day. They can create teams, invite users and team admins, set up PIN and screen access, and view the center's data and reports. They'll receive an email to accept the role and access {presetCenter ? presetCenter.name : 'this center'}.
           </p>
 
           <div className={styles.permissionsCard}>
@@ -45,7 +45,7 @@ export default function InviteCenterAdminDrawer({ org, presetCenter = null, onCl
               <p className={styles.permissionsCardTitle}>Center admin permissions</p>
             </div>
             <p className={styles.permissionsCardBody}>
-              Full access to manage teams, users, units, and administrators for the selected center.
+              Creates and manages the teams of this center, its users and its administrators. Center data and unit settings are managed by Kamleon.
             </p>
           </div>
 

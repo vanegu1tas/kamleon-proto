@@ -81,16 +81,27 @@ function defaultManualUser(preselectedTeamId) {
   };
 }
 
-export default function NewUserDrawer({ center, team: preselectedTeam, teams = [], onClose }) {
+export default function NewUserDrawer({ center, team: preselectedTeam, teams = [], orgs = [], onClose }) {
   const [mode, setMode] = useState(null); // null | 'invite' | 'manual'
+
+  // ── Destino ──
+  // Desde un centro o un equipo la pantalla ya sabe dónde va la persona. Desde la lista de
+  // organizaciones no hay contexto, así que hay que preguntarlo: primero cómo se añade
+  // (esta pantalla) y después a dónde, junto con los datos.
+  const [destOrgId, setDestOrgId]       = useState('');
+  const [destCenterId, setDestCenterId] = useState('');
+  const needsDestination = !center && orgs.length > 0;
+  const destOrg    = orgs.find(o => String(o.id) === destOrgId) ?? null;
+  const destCenter = (destOrg?.centers ?? []).find(c => String(c.id) === destCenterId) ?? null;
+  const teamOptions = needsDestination ? (destCenter?.teams ?? []) : teams;
+  const destinationReady = !needsDestination || (!!destOrg && !!destCenter);
 
   // ── Invite state ──
   const [inviteMode, setInviteMode] = useState('single'); // 'single' | 'bulk'
   const [inviteEmail, setInviteEmail] = useState('');
-  const [inviteRole, setInviteRole]   = useState('');
+  // Sin selector de rol: por acá solo entran usuarios del equipo. Los admins se invitan
+  // desde "Invite an admin", que es siempre por correo.
   const [bulkText,   setBulkText]     = useState('');
-  const [bulkRole,   setBulkRole]     = useState('');
-  const fileInputRef = useRef(null);
 
   // ── Manual method state ──
   const [manualMethod, setManualMethod]       = useState(null); // null | 'one-by-one' | 'from-file'
@@ -137,6 +148,46 @@ export default function NewUserDrawer({ center, team: preselectedTeam, teams = [
   const validBulkEmails   = bulkEmails.filter(isValidEmail);
   const invalidBulkEmails = bulkEmails.filter(e => !isValidEmail(e));
 
+  // Selectores de destino: van dentro de cada modo, justo debajo del texto que explica
+  // qué vas a hacer, y con los componentes del design system como el resto del formulario.
+  const destinationFields = needsDestination ? (
+    <>
+      {manualMethod === 'from-file' && (
+        <p className={styles.destinationNote}>
+          Everyone in the file will be added to the team you select here.
+        </p>
+      )}
+      <Dropdown
+        label="Organization"
+        required
+        placeholder="Select an organization…"
+        options={orgs.map(o => ({ label: o.name, value: String(o.id) }))}
+        value={destOrgId}
+        onChange={value => { setDestOrgId(value); setDestCenterId(''); setInviteSelectedTeamId(''); }}
+      />
+      <Dropdown
+        label="Center"
+        required
+        placeholder={destOrg ? 'Select a center…' : 'Select an organization first'}
+        options={(destOrg?.centers ?? []).map(c => ({ label: c.name, value: String(c.id) }))}
+        value={destCenterId}
+        onChange={value => { setDestCenterId(value); setInviteSelectedTeamId(''); }}
+        disabled={!destOrg}
+      />
+      {!preselectedTeam && (
+        <Dropdown
+          label="Team"
+          required
+          placeholder={destCenter ? 'Select a team…' : 'Select a center first'}
+          options={teamOptions.map(t => ({ label: t.name, value: String(t.id) }))}
+          value={String(inviteSelectedTeamId)}
+          onChange={setInviteSelectedTeamId}
+          disabled={!destCenter}
+        />
+      )}
+    </>
+  ) : null;
+
   // ── Footer button ──
   let primaryLabel    = 'Create';
   let primaryDisabled = true;
@@ -145,23 +196,23 @@ export default function NewUserDrawer({ center, team: preselectedTeam, teams = [
   if (mode === 'invite') {
     if (inviteMode === 'single') {
       primaryLabel    = 'Send';
-      primaryDisabled = !inviteEmail.trim() || !inviteRole || (!preselectedTeam && !inviteSelectedTeamId);
+      primaryDisabled = !destinationReady || !inviteEmail.trim() || (!preselectedTeam && !inviteSelectedTeamId);
     } else {
       const n = validBulkEmails.length;
       primaryLabel    = n > 0 ? `Send ${n}` : 'Send';
-      primaryDisabled = n === 0 || !bulkRole || (!preselectedTeam && !inviteSelectedTeamId);
+      primaryDisabled = !destinationReady || n === 0 || (!preselectedTeam && !inviteSelectedTeamId);
     }
   } else {
     if (manualMethod === 'one-by-one') {
       primaryLabel    = 'Create';
-      primaryDisabled = !privacyAccepted || manualUsers.some(u => !u.name.trim() || !u.role || (!preselectedTeam && !u.selectedTeamId));
+      primaryDisabled = !destinationReady || !privacyAccepted || manualUsers.some(u => !u.name.trim() || !u.role || (!preselectedTeam && !u.selectedTeamId));
     } else if (manualMethod === 'from-file') {
       if (isValidating) {
         primaryLabel    = 'Validating…';
         primaryDisabled = true;
       } else if (!validationResult) {
         primaryLabel    = 'Continue';
-        primaryDisabled = !uploadedFile;
+        primaryDisabled = !destinationReady || !uploadedFile;
         primaryAction   = runValidation;
       } else if (validationResult.valid === 0) {
         primaryLabel    = 'Re-upload file';
@@ -248,7 +299,11 @@ export default function NewUserDrawer({ center, team: preselectedTeam, teams = [
                   Back
                 </button>
 
-                <p className={styles.inviteDesc}>Send email invitations to your Team's users.</p>
+                <p className={styles.inviteDesc}>
+                  Send email invitations to your Team's users.{needsDestination && ' Pick the organization, center and team they belong to.'}
+                </p>
+
+                {destinationFields}
 
                 <Input
                   label="Add User's email"
@@ -259,26 +314,13 @@ export default function NewUserDrawer({ center, team: preselectedTeam, teams = [
                   autoFocus
                 />
 
-                <Dropdown
-                  label="User role"
-                  required
-                  description="Select the type of user that you want to add."
-                  placeholder="Select a role…"
-                  options={[
-                    { label: 'User', value: 'user' },
-                    { label: 'Team admin', value: 'professional' },
-                  ]}
-                  value={inviteRole}
-                  onChange={setInviteRole}
-                />
-
-                {!preselectedTeam && (
+                {!needsDestination && !preselectedTeam && (
                   <Dropdown
                     label="Team"
                     required
                     description="Select the team this user will join."
                     placeholder="Select a team…"
-                    options={teams.map(t => ({ label: t.name, value: String(t.id) }))}
+                    options={teamOptions.map(t => ({ label: t.name, value: String(t.id) }))}
                     value={String(inviteSelectedTeamId)}
                     onChange={setInviteSelectedTeamId}
                   />
@@ -294,8 +336,6 @@ export default function NewUserDrawer({ center, team: preselectedTeam, teams = [
 
               </>) : (<>
 
-                <p className={styles.inviteDesc}>Send email invitations to your Team's users.</p>
-
                 <button
                   type="button"
                   className={styles.backLink}
@@ -306,6 +346,12 @@ export default function NewUserDrawer({ center, team: preselectedTeam, teams = [
                   </svg>
                   Back to single invite
                 </button>
+
+                <p className={styles.inviteDesc}>
+                  Send email invitations to your Team's users.{needsDestination && ' Pick the organization, center and team they belong to.'}
+                </p>
+
+                {destinationFields}
 
                 <div className={styles.field}>
                   <label className={styles.fieldLabel}>Emails <span className={styles.required}>*</span></label>
@@ -329,55 +375,20 @@ export default function NewUserDrawer({ center, team: preselectedTeam, teams = [
                   )}
                 </div>
 
-                <Dropdown
-                  label="User role"
-                  required
-                  description="Assign a user role to these emails."
-                  placeholder="Select a role…"
-                  options={[
-                    { label: 'User', value: 'user' },
-                    { label: 'Team admin', value: 'professional' },
-                  ]}
-                  value={bulkRole}
-                  onChange={setBulkRole}
-                />
-
-                {!preselectedTeam && (
+                {!needsDestination && !preselectedTeam && (
                   <Dropdown
                     label="Team"
                     required
                     description="Select the team these users will join."
                     placeholder="Select a team…"
-                    options={teams.map(t => ({ label: t.name, value: String(t.id) }))}
+                    options={teamOptions.map(t => ({ label: t.name, value: String(t.id) }))}
                     value={String(inviteSelectedTeamId)}
                     onChange={setInviteSelectedTeamId}
                   />
                 )}
 
-                <div className={styles.bulkOr}>
-                  <span className={styles.bulkOrLine} />
-                  <span className={styles.bulkOrText}>OR</span>
-                  <span className={styles.bulkOrLine} />
-                </div>
-
-                <button
-                  type="button"
-                  className={styles.csvUploadBtn}
-                  onClick={() => fileInputRef.current?.click()}
-                >
-                  + Upload CSV or Excel
-                </button>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept=".csv,.xlsx,.xls"
-                  className={styles.hiddenFileInput}
-                />
-
-                <p className={styles.csvHelperText}>
-                  The file must have two columns: email and user role. The accepted values for user role are User and Team admin. Download our a{' '}
-                  <button type="button" className={styles.csvTemplateLink}>template here.</button>
-                </p>
+                {/* Acá no va el atajo del Excel: importar por archivo es su propia rama
+                    ("Without invitation → From file"), con su plantilla y su validación. */}
 
               </>)}
             </div>
@@ -394,8 +405,10 @@ export default function NewUserDrawer({ center, team: preselectedTeam, teams = [
             </button>
 
             <p className={styles.manualDesc}>
-              These users will be added immediately, without sending an invitation email or waiting for them to accept it.
+              These users will be added immediately, without sending an invitation email or waiting for them to accept it.{needsDestination && ' Pick the organization, center and team they belong to.'}
             </p>
+
+            {destinationFields}
 
             <div className={styles.cardsSection}>
             {/* User cards */}
@@ -440,7 +453,7 @@ export default function NewUserDrawer({ center, team: preselectedTeam, teams = [
                       required
                       description="Select the team for your new user"
                       placeholder="Select team"
-                      options={teams.map(t => ({ label: t.name, value: String(t.id) }))}
+                      options={teamOptions.map(t => ({ label: t.name, value: String(t.id) }))}
                       value={user.selectedTeamId}
                       onChange={v => updateManualUser(user.id, 'selectedTeamId', v)}
                       onSubtle
@@ -578,6 +591,8 @@ export default function NewUserDrawer({ center, team: preselectedTeam, teams = [
                 </svg>
                 Back
               </button>
+
+              {destinationFields}
 
               <div className={styles.fromFileSteps}>
 

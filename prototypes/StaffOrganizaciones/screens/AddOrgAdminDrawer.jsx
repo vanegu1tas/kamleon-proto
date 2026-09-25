@@ -30,7 +30,7 @@ export default function AddOrgAdminDrawer({ org, onClose, onSave }) {
         <div className={styles.body}>
 
           <p className={styles.contextLine}>
-            They'll receive an email to accept the role and access this organization.
+            An Org Admin manages this organization and all of its centers. They can invite and remove organization and center admins, see every user across centers, and view the organization's data and reports. They'll receive an email to accept the role and access this organization.
           </p>
 
           <div className={styles.permissionsCard}>
@@ -41,7 +41,7 @@ export default function AddOrgAdminDrawer({ org, onClose, onSave }) {
               <p className={styles.permissionsCardTitle}>Org admin permissions</p>
             </div>
             <p className={styles.permissionsCardBody}>
-              Full access to manage API integrations, organization settings, centers, and all users.
+              Manages administrators and integrations for the whole organization, and sees the users of every center. Center data and settings are managed by Kamleon.
             </p>
           </div>
 

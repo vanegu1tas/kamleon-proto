@@ -825,6 +825,9 @@ Repaso completo del rol **Center Admin** más una pasada al Sidebar. Cuatro comm
 - [ ] **Tabs en mobile de centro, unit y Team Admin**
   Ahora heredan la regla touch del TabBar (tamaño M, scroll con flecha y degradado), pero sus contenedores tienen padding y ancho máximo propios (`innerTabBarInner` de 320/420px) y probablemente muestren franjas blancas a los costados, como pasaba en la cabecera de la organización. Ajustar al llegar a esas pantallas.
 
+- [ ] **Tarjetas de "By hand" en Add users: rol y equipo por tarjeta**
+  Al partir el flujo en dos ramas (23/9), "Add users" dejó de preguntar el rol: por ahí solo entran usuarios del equipo y los admins van por "Invite an admin". Las vistas de invitación ya están limpias, pero **las tarjetas de "By hand" siguen teniendo un selector de Role y uno de Team por cada usuario**. Dos decisiones: (1) quitar el Role, que sobra por el mismo motivo; (2) si el Team de cada tarjeta se reemplaza por el del bloque de destino — más simple y coherente con "estos usuarios pertenecen a este equipo", pero se pierde poder crear en una sola tanda gente de equipos distintos.
+
 - [ ] **Corregir errores de "From file" tocando la celda**
   Tabla editable en lugar de descargar el reporte y volver a subir el archivo. Copy acordado: "Some rows need fixing" / "Click a cell to correct it — no need to re-upload the file." Después, un modal para agregar foto a cada jugador importado (buscador, contador "X of Y added", Skip).
 

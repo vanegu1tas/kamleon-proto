@@ -35,7 +35,7 @@
 }
 
 .item:hover {
-  background: var(--color-bg-surface-subtle);
+  background: var(--color-bg-surface-raised);
 }
 
 /* ─── Danger variant ─────────────────────────────── */
@@ -61,4 +61,12 @@
   display: inline-flex;
   align-items: center;
   flex-shrink: 0;
+}
+
+/* Separador entre grupos de opciones (ej. crear estructura vs invitar personas). */
+.separator {
+  display: block;
+  height: 1px;
+  margin: 4px 8px;
+  background: var(--color-border-default);
 }

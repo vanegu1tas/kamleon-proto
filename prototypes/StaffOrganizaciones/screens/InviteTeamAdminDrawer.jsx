@@ -59,7 +59,7 @@ export default function InviteTeamAdminDrawer({ center, presetTeam = null, onClo
         <div className={styles.body}>
 
           <p className={styles.contextLine}>
-            Team Admins manage this team day-to-day — they can invite and remove users, set up PIN and screen access, and view the team's data and reports.
+            A Team Admin manages this team day-to-day. They can invite and remove users, set up PIN and screen access, and view the team's data and reports. They'll receive an email to accept the role and access this team.
           </p>
 
           {!presetTeam && (

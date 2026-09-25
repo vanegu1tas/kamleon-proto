@@ -138,7 +138,7 @@ export default function EditUnitDrawer({ unit, center, onClose, onSave, role }) 
               required
               options={['Stand', 'Seat']}
               value={model}
-              onChange={e => setModel(e.target.value)}
+              onChange={setModel}
               disabled={!canEditTechnical}
             />
           </div>
@@ -148,7 +148,7 @@ export default function EditUnitDrawer({ unit, center, onClose, onSave, role }) 
               label="Unit language"
               options={LANGUAGE_OPTIONS}
               value={language}
-              onChange={e => setLanguage(e.target.value)}
+              onChange={setLanguage}
             />
             {/* Status conserva el punto de color (decisión de Daniel) y va sin asterisco: para
                 Center Admin no es un campo obligatorio, es información que no puede tocar.
@@ -177,7 +177,7 @@ export default function EditUnitDrawer({ unit, center, onClose, onSave, role }) 
             placeholder="Select installation"
             options={INSTALLATION_OPTIONS}
             value={installation}
-            onChange={e => setInstallation(e.target.value)}
+            onChange={setInstallation}
             disabled={!canEditTechnical}
           />
 

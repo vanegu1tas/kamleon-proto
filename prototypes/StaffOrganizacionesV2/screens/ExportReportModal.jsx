@@ -28,13 +28,13 @@ export default function ExportReportModal({ onClose, onExport, scopeLabel }) {
                 label="Month"
                 options={MONTHS}
                 value={month}
-                onChange={e => setMonth(e.target.value)}
+                onChange={setMonth}
               />
               <Dropdown
                 label="Year"
                 options={years}
                 value={year}
-                onChange={e => setYear(e.target.value)}
+                onChange={setYear}
               />
             </div>
 

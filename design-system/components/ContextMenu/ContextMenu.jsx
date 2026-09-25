@@ -22,6 +22,8 @@ function dismissFromOutside() {
  * tiene que pedir.
  *
  * @param {Array} items - Array de { label, icon, onClick, variant?, disabled?, tooltip? }
+ *   Un item { type: 'separator' } dibuja una línea para agrupar opciones (en teléfono no
+ *   hace falta: el BottomSheet ya separa todas las filas, así que se descarta).
  *   variant: 'default' (por defecto) | 'danger' (texto rojo)
  *   disabled: si es true, el item no se puede clickear (ej. "no podés removerte a vos mismo")
  *   tooltip: texto nativo (title) que explica por qué está deshabilitado
@@ -43,7 +45,7 @@ export default function ContextMenu({ items = [], onClose }) {
     return (
       <BottomSheet
         open
-        items={items}
+        items={items.filter(item => item.type !== 'separator')}
         onClose={onClose ?? dismissFromOutside}
       />
     );
@@ -51,7 +53,9 @@ export default function ContextMenu({ items = [], onClose }) {
 
   return (
     <div className={styles.menu} role="menu">
-      {items.map((item, i) => (
+      {items.map((item, i) => item.type === 'separator' ? (
+        <span key={i} className={styles.separator} role="separator" />
+      ) : (
         <button
           key={i}
           className={[styles.item, item.variant === 'danger' ? styles.danger : '', item.disabled ? styles.itemDisabled : ''].join(' ')}

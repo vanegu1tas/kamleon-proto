@@ -32,6 +32,8 @@ import DeleteOrgModal        from '../StaffOrganizaciones/screens/DeleteOrgModal
 import NewOrgDrawer          from '../StaffOrganizaciones/screens/NewOrgDrawer';
 import EditOrgDrawer         from '../StaffOrganizaciones/screens/EditOrgDrawer';
 import NewUserDrawer         from '../StaffOrganizaciones/screens/NewUserDrawer';
+import NewTeamDrawer         from '../StaffOrganizaciones/screens/NewTeamDrawer';
+import InviteAdminDrawer     from './screens/InviteAdminDrawer';
 // Shared mock data and helpers from V1
 import { ORGS, getUserCountForOrg, getUserCountForCenter, getProfessionalCountForCenter, getActiveTeamCount } from '../StaffOrganizaciones/mockData';
 import { IconFilter, IconEdit, IconPlus, IconTrash, IconSearch, IconBell, IconMenu, IconCheckCircle } from '../../design-system/icons/outline';
@@ -179,6 +181,10 @@ export default function StaffOrganizacionesV2({ initialOrgId, initialCenterId, r
   const avatarMenuRef = useRef(null);
   const tourRef = useRef(null);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showInviteAdminDrawer, setShowInviteAdminDrawer] = useState(false);
+  const [showInviteStaffDrawer, setShowInviteStaffDrawer] = useState(false);
+  const [inviteToast, setInviteToast] = useState(null);
+  const [showNewTeamDrawer, setShowNewTeamDrawer] = useState(false);
 
   const currentScreen = navStack[navStack.length - 1];
   const [slideDirection, setSlideDirection] = useState('forward');
@@ -641,12 +647,21 @@ export default function StaffOrganizacionesV2({ initialOrgId, initialCenterId, r
                 </Button>
                 {createMenuOpen && (
                   <div className={styles.createMenuWrap}>
+                    {/* Dos grupos: crear estructura e invitar personas. "New user" se partió en
+                        dos porque escondía siete roles detrás de un nombre que sonaba a jugador:
+                        "Invite an admin" es para quien gestiona (siempre por correo) y "Add users"
+                        para quien usa las unidades (con invitación, a mano o por Excel). */}
                     <ContextMenu
                       items={[
-                        { label: 'New Organization', icon: <IconPlus size={16} />, onClick: () => { setCreateMenuOpen(false); setShowNewOrgDrawer(true); } },
-                        { label: 'New Center',       icon: <IconPlus size={16} />, onClick: () => { setCreateMenuOpen(false); setNewCenterOrg(null); setShowNewCenterModal(true); } },
-                        { label: 'New Team',         icon: <IconPlus size={16} />, onClick: () => setCreateMenuOpen(false) },
-                        { label: 'New User',         icon: <IconPlus size={16} />, onClick: () => { setCreateMenuOpen(false); setShowNewUserDrawer(true); } },
+                        { label: 'New organization', icon: <IconPlus size={16} />, onClick: () => { setCreateMenuOpen(false); setShowNewOrgDrawer(true); } },
+                        { label: 'New center',       icon: <IconPlus size={16} />, onClick: () => { setCreateMenuOpen(false); setNewCenterOrg(null); setShowNewCenterModal(true); } },
+                        { label: 'New team',         icon: <IconPlus size={16} />, onClick: () => { setCreateMenuOpen(false); setShowNewTeamDrawer(true); } },
+                        { type: 'separator' },
+                        { label: 'Invite an admin',  icon: <IconPlus size={16} />, onClick: () => { setCreateMenuOpen(false); setShowInviteAdminDrawer(true); } },
+                        { label: 'Add users',        icon: <IconPlus size={16} />, onClick: () => { setCreateMenuOpen(false); setShowNewUserDrawer(true); } },
+                        ...(role === 'owner' || role === 'admin'
+                          ? [{ label: 'Invite Kamleon team', icon: <IconPlus size={16} />, onClick: () => { setCreateMenuOpen(false); setShowInviteStaffDrawer(true); } }]
+                          : []),
                       ]}
                     />
                   </div>
@@ -903,7 +918,24 @@ export default function StaffOrganizacionesV2({ initialOrgId, initialCenterId, r
       {editOrgTarget      && <EditOrgDrawer  org={editOrgTarget}  onClose={() => setEditOrgTarget(null)} />}
       {deleteOrgTarget    && <DeleteOrgModal  org={deleteOrgTarget} requireTyping onClose={() => setDeleteOrgTarget(null)} />}
       {newCenterOrg2      && <NewCenterDrawer org={newCenterOrg2}  onClose={() => setNewCenterOrg2(null)} />}
-      {showNewUserDrawer  && <NewUserDrawer onClose={() => setShowNewUserDrawer(false)} />}
+      {/* Desde la lista de orgs no hay contexto: el drawer pregunta también a qué organización
+          y centro van, después de elegir cómo se añaden. */}
+      {showNewUserDrawer  && <NewUserDrawer orgs={ORGS} onClose={() => setShowNewUserDrawer(false)} />}
+      {showNewTeamDrawer  && <NewTeamDrawer orgs={ORGS} onClose={() => setShowNewTeamDrawer(false)} />}
+      {showInviteAdminDrawer && (
+        <InviteAdminDrawer
+          onClose={() => setShowInviteAdminDrawer(false)}
+          onSave={({ emails }) => setInviteToast(emails.length === 1 ? 'Invitation sent' : `${emails.length} invitations sent`)}
+        />
+      )}
+      {showInviteStaffDrawer && (
+        <InviteAdminDrawer
+          staff
+          onClose={() => setShowInviteStaffDrawer(false)}
+          onSave={({ emails }) => setInviteToast(emails.length === 1 ? 'Invitation sent' : `${emails.length} invitations sent`)}
+        />
+      )}
+      {inviteToast && <Toast message={inviteToast} mode="success" onClose={() => setInviteToast(null)} />}
       {showPalette && <SearchPalette onClose={() => setShowPalette(false)} onNavigate={navigate} />}
       {showNotifications && (
         <NotificationsDrawer

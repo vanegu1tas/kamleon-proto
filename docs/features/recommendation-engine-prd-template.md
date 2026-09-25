@@ -103,16 +103,16 @@ The following will **not** be part of this version:
 
 Design and implementation work, on top of the screen flow that already exists.
 
-| # | Task | Days |
-|---|---|---|
-| 1 | Update the score screen in the prototype (the base for everything else) | 1 – 2 |
-| 2 | Explorations of the **sequential** proposal | 2 – 3 |
-| 3 | Presentation to business (they take it to the client) and corrections | 1.5 |
-| 4 | Explorations of the **simultaneous** proposal | 2 – 3 |
-| 5 | Implement the designs in the prototype | 2 – 3 |
-| 6 | Motion polish | 1 – 2 |
-| 7 | Buffer to refine the prototype | 1 – 2 |
-| | **Total** | **10.5 – 16.5 days** |
+| #   | Task                                                                                                                       | Days                                          |
+| --- | -------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
+| 1   | Update the score screen in the prototype (the base for everything else)                                                     | 2 – 3                                         |
+| 2   | Explorations of the **sequential** proposal                                                                                 | 4 – 5                                         |
+| 3   | Presentation to business (they take it to the client) and corrections (iterative)                                           | 2 – 3 (per iteration)                         |
+| 4   | Explorations of the **simultaneous** proposal<br>Presentation to business and corrections (iterative)                       | 4 – 5<br>2 – 3 (per iteration)                |
+| 5   | Implement the designs in the prototype                                                                                      | 4 – 5                                         |
+| 6   | Presentation to business and corrections (iterative)<br><br>Motion polish<br><br>QA — by business                           | 2 – 3 (per iteration)<br><br>2 – 3<br><br>(TBD) |
+| 7   | Buffer to refine the prototype                                                                                              | 2 – 3 (depends on feedback)                   |
+|     | **Total**                                                                                                                   | **24 – 33 days**                              |
 
 **Dependencies:**
 - Task 1 blocks everything else: without the updated score there is no base to build on.

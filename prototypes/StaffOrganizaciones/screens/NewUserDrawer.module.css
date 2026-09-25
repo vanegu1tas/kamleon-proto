@@ -1293,3 +1293,14 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Línea sobre los selectores de destino (organización / centro / equipo), que solo se
+   muestran cuando el drawer se abre sin contexto, desde la lista de organizaciones. */
+.destinationNote {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+  margin: 0;
+  padding-left: 12px;
+}
