@@ -1,0 +1,464 @@
+# Mapa del Design System — Figma ↔ código
+
+Qué componente de Figma se corresponde con qué componente de código, con qué ejes, y dónde
+los dos lados se han separado.
+
+Sirve para tres cosas: saber qué existe antes de dibujar o programar algo nuevo, saber qué
+hay que tocar en los dos sitios cuando algo cambia, y ser la referencia contra la que se
+comparan las dos partes de forma automática más adelante.
+
+Archivos: Figma `ozgwasF3ziQyznQS0z0dM1` (Design system) · código `design-system/`
+Levantado el 2026-09-26. **Es una foto, no se actualiza solo** — ver "Cómo mantener esto vivo".
+
+---
+
+## Cómo leer el mapa
+
+Lo primero que hay que entender es que **este mapa no puede ser una tabla uno a uno**, y no
+porque el trabajo esté mal hecho: es que los dos medios modelan los estados de forma
+distinta, y los dos tienen razón.
+
+En Figma, casi todos los componentes tienen un eje `State` con un valor `Hover`. Tiene que
+tenerlo: Figma no puede ejecutar un `:hover`, así que si quieres ver cómo queda el botón
+cuando pasas el ratón, no hay otra que dibujarlo como una variante aparte.
+
+En código ese valor **no existe y no debe existir**. No hay ningún `<Button state="hover">`:
+hay una regla CSS `:hover` que el navegador aplica sola. Si añadiéramos la propiedad,
+estaríamos pidiéndole al programador que gestione a mano algo que el navegador ya hace.
+
+Por eso cada fila del mapa separa tres cosas:
+
+- **Ejes que se corresponden** — las propiedades que significan lo mismo en los dos lados y
+  que por tanto tienen que tener los mismos valores. Aquí es donde una diferencia es un error.
+- **Solo en Figma** — normalmente `State=Hover/Focus`. Es correcto que no esté en código.
+- **Solo en código** — props de comportamiento (`onClick`, `tooltip`) o estados que Figma no
+  dibujó. Hay que mirar caso por caso si falta en Figma o si no hace falta.
+
+Si no separamos esto, cualquier comparación automática va a reportar decenas de diferencias
+falsas para siempre, y nadie va a volver a mirarla. Es el error clásico.
+
+---
+
+## El mapa
+
+### Botones
+
+| Figma | Código | Ejes que se corresponden | Solo en Figma | Solo en código |
+|---|---|---|---|---|
+| `Button` | `Button` | `Type` ↔ `variant` (Primary·Secondary·Tertiary) · `Size` ↔ `size` (S·M) | `State=Hover` | `variant=tertiaryDanger` · `leftIcon` |
+| `Icon Button` | `IconButton` | `Mode` ↔ `variant` (Default·Danger·Critical) ✅ completo | `State=Hover` | `tooltip` · `tooltipPosition` |
+| `Toolbar Button` | `ToolbarButton` | `State=Selected` ↔ `selected` · `State=Disabled` ↔ `disabled` ✅ | `State=Hover` | — |
+
+`tertiaryDanger` existe en código desde el 17/9 (Email history) y no está en Figma.
+
+### Formularios
+
+| Figma | Código | Ejes que se corresponden | Solo en Figma | Solo en código |
+|---|---|---|---|---|
+| `Text input` | `Input` | `State=Error` ↔ `error` · `State=Disabled` ↔ `disabled` | `Hover` · `Focus` · `Active` | `onSubtle` · `suffix` · `type` · `required` · `description` |
+| `Text area` | `Textarea` | ídem | ídem | `rows` — **le falta `onSubtle`**, que sí tienen sus hermanos |
+| `Dropdown` | `Dropdown` | ídem | ídem | `onSubtle` · `required` · `description` |
+| `Search bar` | `SearchBar` | `State=Error` ↔ `error` · `Disabled` ↔ `disabled` | `Hover` · `Active` · `Focus` (**era `State6`; renombrado el 26/9, pero su dibujo sigue siendo idéntico a `Active`: no tiene anillo de foco**) | `onClear` |
+| `Checkbox` | `Checkbox` | `Checked` ↔ `checked` ✅ | — | `disabled` · `label` |
+| `Toggle` | `Toggle` | `State=On/Off` ↔ `checked` · `Size` ↔ `size` (S 40×24 · M 56×32) ✅ | — | `disabled` · `label` |
+| `Radio button` | **no existe** | — | todo | — |
+
+El **`Radio button` está dibujado en Figma y no programado** — es el hueco conocido del DS.
+
+Y una lección del 26/9 que conviene no olvidar: el Toggle parecía no tener eje `Size` en
+Figma, y tenía dos variantes llamadas `State3` y `State4` que parecían basura. Medían 32px de
+alto contra 24 de las otras dos: **eran el tamaño M sin nombrar**. Borrarlas habría destruido
+justo el eje que el código sí tiene. Una variante mal nombrada no es una variante vacía — hay
+que mirar dentro antes de borrar.
+
+### Navegación
+
+| Figma | Código | Ejes que se corresponden | Solo en Figma | Solo en código |
+|---|---|---|---|---|
+| `TabBar` | `TabBar` | `Size` ↔ `size` (S·M) | `Tabs`=1·2·3·4·5 · `State=Hover` | `tabs` (array sin límite) · `scrollable` · `inset` · punto de aviso |
+| `.Tab` | (interno) | — | — | — |
+| `Sidebar-v2` | `Sidebar` | `Collapse` ↔ `collapsed` | `Role` = 5 roles · `State=Hover` | `sections` (datos) · 9 props más |
+| `Segmented control` | `SegmentedControl` | `Size` ↔ `size` (M·S) ✅ | — | — |
+| `.Tab SC` | (interno, `.option`) | `Mode=Active` ↔ `.active` · `State=Hover` ↔ `:hover` · `Size` | — | — |
+| `.Sidebar-Item` **y** `.Sidebar-Item2` | `SidebarItem` | `State=Selected` ↔ `state` · `Collapse` ↔ `collapsed` | `State=Hover` | `state=expanded` |
+| `.User menu` | (dentro de `Sidebar.jsx`) | — | — | no es componente propio |
+
+Aquí están dos diferencias estructurales que conviene tener claras:
+
+**El TabBar de Figma fija el número de pestañas como variante** (1 a 5) y el de código recibe
+una lista de cualquier longitud. Consecuencia práctica: el día que una pantalla necesite 6
+pestañas, el código ya funciona y en Figma no se puede dibujar. Es la diferencia entre
+*enumerar* y *parametrizar*, y no tiene arreglo limpio en Figma — lo que hay que hacer es
+dejarlo escrito para que nadie piense que 5 es un máximo del sistema.
+
+**El Sidebar de Figma tiene el rol como variante** (Team admin, Center admin, Organization
+admin, Kamleon Staff, End user) y el de código recibe los ítems como datos. La consecuencia
+buena: el renombrado a "Team admin" ya está hecho en Figma. La mala: cada rol nuevo obliga a
+dibujar una variante más.
+
+**Y hay dos `.Sidebar-Item` distintos** (`.Sidebar-Item` y `.Sidebar-Item2`) con casi los
+mismos ejes. Uno de los dos es el vivo; hay que decidir cuál y llevarse el otro al cementerio.
+
+### Estados y avisos
+
+| Figma | Código | Ejes que se corresponden | Solo en Figma | Solo en código |
+|---|---|---|---|---|
+| `Tag status` | `Tag` | `Active` ↔ `active` | `Disabled` (= `inactive` en código, **otro nombre**) | — |
+| `Tag status - invitations` | el **mismo** `Tag` | `Expired`·`Pending` ↔ `expired`·`pending` | — | `delay` · `delivered` · **`user`** · **`professional`** |
+| `Toast` | `Toast` | `Mode` ↔ `mode` (Success·Critic) ✅ completo | — | `onUndo` · `duration` · `delay` |
+| `Tooltip` | (dentro de `IconButton` y `SidebarItem`) | — | es componente propio | no es componente propio |
+
+El caso del `Tag` es el más desalineado de la librería y merece su apartado:
+
+- En Figma son **dos componentes**; en código es **uno con 8 valores**.
+- `Active` aparece en los dos componentes de Figma a la vez.
+- `Expired` está en el de invitaciones, pero también es un estado que se le puede poner a una
+  persona: la frontera entre los dos componentes no está limpia.
+- Figma dice `Disabled` donde el código dice `inactive`. Es el mismo estado con dos nombres,
+  y eso es lo peor que puede pasarle a un sistema: nadie sabe cuál es el término oficial.
+- **El tag de rol no existe en Figma.** `user` y `professional` son valores de código con su
+  propio color (turquesa y gris). En Figma se está poniendo cambiando el texto a mano, así que
+  el color sale el que toque. Es divergencia de las caras: en código el color viene solo.
+
+Los 8 valores del código son en realidad **tres familias distintas**:
+
+```
+ciclo de vida     active · inactive · pending · expired
+envío de correo   delay · delivered
+rol               user · professional
+```
+
+Por eso la pregunta al unificar **no es "¿uno o dos componentes?" sino "¿cuántas
+propiedades?"**. Con un solo `Status` de 8 valores, cualquiera puede poner "Delivered" donde
+va un rol, y el sistema no lo impide. Decisión pendiente.
+
+### Menús
+
+| Figma | Código | Ejes que se corresponden | Solo en Figma | Solo en código |
+|---|---|---|---|---|
+| `Contextual menu` + `.c-menu Item` | `ContextMenu` | `Variant=Critic` ↔ `danger` del ítem | `State=Hover` | `separator` · `disabled` por ítem |
+| **no existe** | `BottomSheet` | — | — | todo |
+
+`BottomSheet` ya estaba en pendientes. Y ojo: no es un componente independiente, es **lo que
+el `ContextMenu` se convierte por debajo de 390px**. Cuando se lleve a Figma hay que
+documentar esa regla o parecerán dos componentes sin relación.
+
+### Sin pareja
+
+**Solo en Figma (7)** — dibujados, no programados:
+
+| Componente | Estado |
+|---|---|
+| `Table Cell` (9 tipos) | Las tablas del prototipo se montan a mano en cada pantalla. Es la deuda más grande de las dos listas |
+| `Calendar` + `.Day` (8 estados) | Sin uso en el prototipo |
+| `Accordion` | Sin uso |
+| `Radio button` | Hueco conocido |
+| `Tooltip` | En código vive dentro de otros componentes |
+| `Logo` (4 tipos) | En código es un icono, `LogoKamleon` |
+| `Urine color` (8 niveles) | Es de la scrapp, no de la web |
+
+**Solo en código (2)**: `BottomSheet` · `FilterPanel`.
+
+Que la lista de "solo en código" tenga dos elementos es buena señal: significa que casi nada
+se ha programado sin pasar por diseño.
+
+### Nombres que no coinciden
+
+Ninguno es grave por separado; juntos son la razón por la que nadie encuentra las cosas.
+
+```
+Figma                       Código
+────────────────────────────────────────────
+Text input              →   Input
+Text area               →   Textarea
+Contextual menu         →   ContextMenu
+Search bar              →   SearchBar
+Segmented control       →   SegmentedControl
+Icon Button             →   IconButton
+Toolbar Button          →   ToolbarButton
+Tag status              →   Tag
+Sidebar-v2              →   Sidebar
+Radio button            →   (sin programar)
+```
+
+El patrón: Figma usa espacios y frases naturales, el código usa PascalCase pegado. Eso es
+normal y no hay que forzarlo — lo que hace falta es que **esta tabla exista**, que es lo que
+convierte "no encuentro el componente" en una búsqueda de diez segundos.
+
+El caso distinto es `Tag status` ↔ `Tag`: ahí no es una convención de escritura, es que en
+Figma el nombre ya afirma que el componente es de *estado*, y en código se usa también para
+rol. El nombre está prometiendo algo que no cumple.
+
+---
+
+## Tokens
+
+| Capa | Figma | Código | Estado |
+|---|---|---|---|
+| Colores base | `Global Colors` 35 + **`Global Colors 2` 39** | `colors.css` 36 | dos colecciones en Figma contra una en código |
+| Colores semánticos | `Semantic Colors` 25 | `semantic-colors.css` 26 | muy cerca, comparar valor por valor |
+| Tipografía | `Global Typography` 10 | `typography.css` 10 | cuadran en número |
+| Estilos de texto | 14 text styles | clases en `text-styles.css` | comparar |
+| Radios | `Border Radius` 7 | `tokens.css` **4** (xs 8 · s 12 · m 24 · l 40) | 3 radios de Figma sin token en código |
+| Números | `Global Numbers` 5 | — | sin equivalente |
+| Sombras | **0 effect styles** | **0 tokens, 33 sombras distintas a mano** | no existe la capa en ningún lado |
+
+Dos cosas que hay que mirar de frente:
+
+**`Global Colors 2`.** Ese "2" es la huella de haber duplicado una colección en vez de
+ampliar la que había. Ahora hay 74 variables de color repartidas en dos sitios y nada dice
+cuál manda. Cuando alguien busque un gris, va a encontrar dos candidatos.
+
+**Las sombras.** No hay ni un token de sombra en ninguno de los dos lados, y en el código hay
+**33 sombras distintas escritas a mano**. Eso quiere decir que el sistema no tiene opinión
+sobre la elevación, y que cada panel flotante inventó la suya. Es de las cosas más visibles
+para alguien que sepa mirar un DS: si abres dos drawers y las sombras no son iguales, se ve.
+
+Y una inconsistencia concreta: el anillo de foco está escrito de dos formas. `Input`,
+`Dropdown` y `Textarea` usan `#fff` a pelo; `SearchBar` usa `var(--color-bg-surface)`. Es el
+mismo color hoy, así que no se nota — hasta el día que ese token cambie y tres componentes se
+queden atrás.
+
+---
+
+## Estado de salud de la librería
+
+Esto no es contenido, es construcción, y es lo primero que revisa alguien con criterio.
+
+| Qué | Cómo está |
+|---|---|
+| **Descripciones de componente** | **0 de 39.** Ninguno tiene descripción ni enlace a documentación |
+| Variantes sin nombrar | todas renombradas el 26/9 (`Toggle`, `Toolbar Button`, `Radio button`, `Search bar`) |
+| Nombres que prometen más que el dibujo | `Search bar · State=Focus` se llama Focus pero está dibujado igual que `Active` |
+| Erratas en valores | ~~`Radio button` → `DEfault`~~ corregido el 26/9 |
+| Component sets roto | `.Tab SC` (2226:397) tiene errores de variantes |
+| Duplicados vivos | ~~`Global Colors 2`~~ fusionada el 26/9 · ~~`.Sidebar-Item`~~ (estaba dentro de `❌ Deprecated`, no era duplicado) · los dos `Tag` |
+| Deprecados sin retirar | `❌ Sidebar-v1` sigue publicado |
+| Componentes fuera de sitio | 8 iconos `vuesax/bulk/*` sueltos en la página Sidebar |
+| Modos de variables | todas las colecciones en un único modo llamado `Mode 1` |
+| Cementerio | `🪦 Graveyard` con 49 sets — bien, eso es hacerlo como se debe |
+
+**Las descripciones son lo más importante de esta tabla.** Un componente sin descripción
+obliga a adivinar cuándo usarlo y cuándo no, y esa es exactamente la información que no está
+en el dibujo. Además tú ya tienes reglas decididas que hoy no viven en ninguna parte visible:
+que el `ContextMenu` se convierte en `BottomSheet` por debajo de 390px, que el `TabBar` en
+táctil fuerza el tamaño M, que el rojo en reposo del `IconButton` significa "problema que ya
+existe" y el `Danger` significa "esta acción destruye algo". Todo eso está en documentos del
+repo, donde solo lo lee quien programa. El sitio donde sirve es el panel de la derecha de
+Figma, cuando alguien selecciona el componente.
+
+Las variantes sin nombrar (`State3`, `Variant4`, `State6`) son el segundo problema real: están
+publicadas en la librería, cualquiera puede elegirlas desde el desplegable, y no significan
+nada. Son también lo que más va a ensuciar cualquier intento de generación automática.
+
+---
+
+## Reglas ya decididas y dónde viven
+
+Que un DS sea profesional no es tener más componentes: es que las decisiones estén escritas y
+se puedan encontrar. Lo que ya está decidido:
+
+| Regla | Documento |
+|---|---|
+| Cuándo es variante y cuándo componente nuevo (caso Tag) | `docs/design-system-rules.md` |
+| `ContextMenu` → `BottomSheet` por debajo de 390px | `docs/design-system-rules.md` |
+| `TabBar` en táctil: medidas y por qué | `docs/features/tabbar-touch-spec.md` |
+| Tabs en dos niveles | `docs/features/tabs-dos-niveles.md` |
+| Animaciones: qué se anima, dónde y con qué valores | `docs/project-summary.md` |
+| Trampas de Figma → CSS (stroke Outside, bordes dobles) | `MEMORY.md` |
+
+Ninguna de estas reglas está en Figma. Ese es el trabajo pendiente: **no reescribirlas, sino
+llevar cada una a la descripción del componente al que afecta.**
+
+---
+
+## Qué NO está en este mapa
+
+Para que nadie lo busque aquí:
+
+- **Iconos**: 61 en Figma (página `-- Icons`), en código en `design-system/icons/`. Merecen su
+  propio mapa; el pendiente conocido es centralizar el grosor de trazo, hoy `1.5` a mano en
+  cada uno.
+- **Pantallas**: viven en el archivo Web App (`sklnDzfw72Z1tDM46vkTGl`) y en `prototypes/`.
+  Los flujos por rol están en `docs/features/center-admin-flujos-figma.md` y
+  `team-admin-flujos-figma.md`.
+- **Valores concretos** de cada token: aquí solo están los recuentos. La comparación valor por
+  valor es el paso siguiente.
+
+---
+
+## Componentes ya igualados
+
+Cuando un componente se compara a fondo y se resuelven sus diferencias, se anota aquí con lo
+que hubo que tocar. Es el registro de lo que ya no hay que volver a mirar.
+
+### `Segmented control` / `.Tab SC` — 26/09/2026
+
+Figma quedó como fuente en todo. Cambios aplicados al código:
+
+| Qué | Antes (código) | Ahora | Por qué |
+|---|---|---|---|
+| Fondo del hover en la opción inactiva | ninguno | `--color-bg-surface-raised` (#f4f5f5) | Solo oscurecer el texto es una señal débil; el fondo es lo que dice "esta vas a pulsar" |
+| Padding del contenedor, tamaño M | 5px | 4px | El control medía 46px en vez de 44 |
+| Padding del contenedor, tamaño S | 4px | 2px | Medía 33px en vez de 29 |
+| Blanco del estado activo | `#fff` a mano | `--color-text-inverse` | El día que cambie el blanco del sistema, este componente no se queda atrás |
+| Transición del hover | solo `color` | `background` y `color` | Al añadir el fondo, aparecía de golpe mientras el texto se atenuaba |
+
+Ya coincidían y no se tocaron: las pastillas (8/16 en M, 4/12 en S), el radio 40, los colores del
+estado activo (`#0b0f12` sobre borde `#32404d`), la tipografía (14/12, Book → Medium al activarse)
+y **el hover sobre una opción ya activa, que en los dos lados no hace nada** — decisión correcta:
+un elemento seleccionado no reacciona al ratón.
+
+Queda en Figma: `Mode=Unactive` → `Inactive` (errata). La estructura de dos ejes (`Mode` = si está
+elegido, `State` = qué hace el ratón) **está bien y no hay que cambiarla**.
+
+---
+
+### `Search bar` — 26/09/2026
+
+| Qué | Antes | Ahora | Quién mandaba |
+|---|---|---|---|
+| Color del placeholder | `#9ca3af` | `#6b7280` | Figma |
+| Alto total | 37,5px | 36px | Figma |
+| Icono desde el borde | 14px | 12px | Figma |
+
+El placeholder no era cosa del Search bar: en Figma los **cuatro** campos (Text input, Dropdown,
+Text area, Search bar) usan la misma escala —`#6b7280` vacío · `#0b0f12` escrito · `#9ca3af`
+bloqueado— y el código tenía el placeholder en `#9ca3af`, **el mismo valor que el texto
+deshabilitado**. Un campo vacío se veía igual que uno bloqueado. Además `#9ca3af` sobre `#fafafa`
+da 2,44:1 de contraste y no llega al mínimo AA de 4,5:1; `#6b7280` da 4,64:1. Se cambió el token
+`--color-text-placeholder`, así que se arregla en los cuatro componentes y en los ~25 sitios de
+los prototipos que lo usan.
+
+Efecto colateral: el `BottomSheet` usaba ese token como **fondo** de la manija de arrastre. Se
+desacopló para que no se oscureciera sin motivo; le falta un token propio.
+
+Ya coincidían: fondo, borde, radio 40, gap 8, tipografía, hover, error, disabled y **el anillo de
+foco, exacto hasta el grosor de las dos capas** (blanco 2px + turquesa 4px).
+
+### La trampa del trazo, matizada — 26/09/2026
+
+`MEMORY.md` dice que en Figma el trazo `INSIDE` se come el padding y el radio, y que hay que
+restarlo al pasar a CSS. **Eso solo es cierto si "Strokes included in layout" está desactivado.**
+
+Cuando ese ajuste está activo —como en el `Search bar`— Figma suma el trazo por fuera del
+padding, igual que hace el `border` de CSS, y las medidas se copian tal cual:
+
+```
+Figma   trazo 1 + pad 8 + contenido 18 + pad 8 + trazo 1 = 36
+CSS     border 1 + pad 8 + line-height 18 + pad 8 + border 1 = 36
+```
+
+Antes de copiar medidas de un componente hay que mirar ese ajuste. Copiar restando cuando está
+activo deja el componente 2px estrecho — que es justo el error que se cometió y se corrigió aquí.
+
+### Dos negros llamados `Black` — 26/09/2026
+
+```
+Global Colors    / Black  =  #221e1e     ← viejo
+Global Colors 2  / Black  =  #0b0f12     ← el del código (`--color-text-strong`)
+```
+
+Dos colecciones, dos variables con el mismo nombre y distinto valor: quien elige "Black" en el
+panel no puede saber cuál coge. Había **31 capas de componentes reales** enganchadas a la vieja
+(Inputs 12, Dropdown 6, Buttons 6, Sidebar 6, Tab Bar 1) — incluido el texto de los botones
+secundarios. Reenlazadas a `Semantic Colors / Content/Strong` el 26/9.
+
+Es invisible a simple vista: `#221e1e` y `#0b0f12` no se distinguen en pantalla. Por eso sobrevivió.
+
+Quedan a propósito 5 en la página `-- Colors` (documenta la paleta) y 1 en `Calendar`.
+
+**Esto dio pie a la fusión de las dos colecciones**, que ocupó el resto del día — ver la sección
+siguiente. Y una corrección de registro: aquí se escribió que borrar `Global Colors` sería
+"limpio porque lo único que aporta es un negro equivocado". **Era falso**: tenía 10 variables
+propias y 783 capas enganchadas.
+
+---
+
+### Fusión de las dos colecciones de color — 26/09/2026
+
+Punto de partida: `Global Colors` (35 variables) y `Global Colors 2` (39), las dos publicadas, sin
+que nada dijera cuál manda. No eran "vieja y nueva": cada una tenía cosas que la otra no, y dos
+nombres coincidían con distinto valor.
+
+**Resultado: `Global Colors` quedó con 0 capas y 0 aliases.** Falta comprobar el archivo Web App
+antes de borrarla.
+
+| Grupo | Qué se hizo | Capas |
+|---|---|---|
+| Valor idéntico | `Turquoise/51`→`Turquose/51` · `White` · `Red/65` · `Grey/98` · `Red/58` | 167 |
+| Mismo nombre, otro valor | `Black` `#221e1e`→`#0b0f12` (fuera de la página `-- Colors`) | 17 |
+| Sin equivalente | `Grey/70` `#b1b2b4` y `Grey/15` `#232727` **creadas** en `Global Colors 2` | 162 |
+| Huérfano | `Grey/50` del `Toggle` → `Content/Subtle`, que es lo que usa el código | 4 |
+| Archivo | `Green/50` y `Yellow/61` del Graveyard **desvinculadas** (hex fijo) | 10 |
+| Aliases | 5 variables de `Semantic Colors` que tiraban de la vieja, reapuntadas | 5 |
+
+Colores que cambiaron en todo el proceso: el `Black` viejo (17 capas, hacia el valor del código),
+el `Grey/50` del Toggle (4) y `Data Colors/Usage` (`#414042`→`#32404d`, también el del código).
+Todo lo demás fue cambiar de dónde cuelga cada capa, sin mover un píxel.
+
+**Las dos lecciones que costaron tiempo:**
+
+1. **Mirar solo capas no basta.** Se dio por terminada la migración con 0 capas enganchadas, y
+   quedaban **5 variables de `Semantic Colors` que hacían alias a la vieja** — invisibles desde la
+   capa, porque la capa apunta a `Content/Success` y es `Content/Success` quien tira de la vieja.
+   Una de ellas, `Data Colors/Usage`, servía el valor equivocado de `Grey/25`.
+2. **Los enlaces también viven en los trazos**, no solo en los rellenos. El primer recuento solo
+   miraba `fills` y dejaba fuera decenas de `strokes`.
+
+**Lo que no se puede tocar y por qué:**
+
+- `Grey/70` `#b1b2b4` **no es sustituible por `Grey/65`**. Es el gris de las etiquetas de
+  navegación del sidebar; `Grey/65` es el de las cabeceras de sección. Sobre el fondo oscuro del
+  sidebar forman una escala de tres niveles con el blanco: blanco = ítem seleccionado, `#b1b2b4` =
+  ítems navegables, `#9ca3af` = cabeceras e iconos. Aplastarla deja el sidebar plano.
+- La página `-- Colors` se excluyó del reenlace de `Black`: documenta la paleta, y reenlazarla
+  haría que el muestrario enseñara un color distinto del que dice su etiqueta.
+
+**Pendiente para cerrarlo:**
+
+1. Abrir el archivo Web App con el Desktop Bridge y contar qué cuelga de `Global Colors`
+2. Marcar la colección como **oculta al publicar** (deja de sangrar, no rompe nada existente)
+3. Borrarla
+
+El paso 1 es obligatorio: la colección **está publicada**, así que las pantallas pueden depender
+de ella. Si se borra con dependencias fuera, esas capas no se ven rotas — **se ven bien y dejan de
+seguir al sistema**, que es peor.
+
+### Cosas que quedaron nombradas — 26/09/2026
+
+| Antes | Ahora |
+|---|---|
+| `Toggle` `State3` / `State4` | `Size=S` / `Size=M` — era el tamaño M sin nombrar |
+| `Toolbar Button` `Variant4` | `State=Disabled` |
+| `Radio button` `DEfault` | `Default` |
+| `Search bar` `State6` | `Focus` — y Daniel le dibujó el anillo de foco, que no tenía |
+
+Y el `Button` pasó a estar 100% sobre tokens semánticos: 10 capas que colgaban de colores base
+(`White`, `Grey/65`, `Black`) ahora usan `Content/Inverse`, `Content/Disabled` y `Content/Strong`.
+
+### Divergencias abiertas
+
+| Qué | Figma | Código | Nota |
+|---|---|---|---|
+| Hover del ítem de sidebar | sólido `#232727` | `rgba(255,255,255,0.05)` | El fondo es un degradado: el translúcido del código se adapta, el sólido no |
+| Asterisco de obligatorio | `Red/65` `#fc664e` | `--color-status-error` `#e04f4a` | Falta un `Content/Required`: un campo obligatorio no es un campo con error |
+| `Content/Placeholder` | Grey/65, y **la usa el sidebar**, no los placeholders | `--color-text-placeholder` = `#6b7280` | El nombre miente en Figma. Los 4 campos usan `Content/Subtle` |
+| Gris apagado sobre oscuro | sin token: `Grey/70` y `Grey/65` sueltos | `--color-grey-65` a pelo, 6 sitios | Falta la familia "sobre oscuro": `Content/Inverse` es el primario y el resto no tiene nombre |
+
+---
+
+## Cómo mantener esto vivo
+
+Este documento es una foto del 2026-09-26 y **se va a quedar viejo**, que es exactamente lo que
+le pasa a todos los mapas de DS escritos a mano. Dos formas de evitarlo, y hay que elegir:
+
+1. **Revisarlo a mano** cada vez que se publica la librería. Funciona hasta que alguien tiene
+   prisa, o sea, funciona unas tres veces.
+2. **Generarlo.** Las dos columnas de este mapa salen de leer los dos lados, y las dos
+   lecturas son automatizables: el código con un script, Figma con el MCP. Lo que se escribe a
+   mano es solo la interpretación — los ejes que se corresponden y por qué una diferencia es
+   correcta.
+
+La opción 2 es la que hay que montar, y es la tarea 9. Hasta entonces, la fecha de arriba es
+la que dice cuánto hay que desconfiar de este documento.

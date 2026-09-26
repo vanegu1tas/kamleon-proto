@@ -40,7 +40,10 @@
   width: 48px;
   height: 4px;
   border-radius: 2px;
-  background: var(--color-text-placeholder);
+  /* Token base a propósito: es una manija, no texto. Usaba --color-text-placeholder, que
+     al aclararse el placeholder (26/9) la habría oscurecido sin motivo. Falta un token
+     semántico propio para elementos de arrastre. */
+  background: var(--color-grey-65);
 }
 
 .list {
