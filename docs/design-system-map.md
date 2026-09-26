@@ -562,6 +562,55 @@ hay.**
 
 ---
 
+### Radios y anillo de foco — 26/09/2026
+
+**Los radios ya estaban bien, y avisé de un problema que no existía.** Comparé el código contra
+`Global Numbers`, que es la paleta cruda (8·12·16·24·40) y **no la usa ningún componente: 0 usos
+directos**, que es justo lo que debe pasar con una paleta. Lo que los componentes usan es
+`Border Radius`, la capa semántica, y esa cuadraba exacta con el código desde el principio.
+
+Lección: antes de comparar dos listas, mirar **cuál de las dos se usa**. Había dos colecciones de
+radios y elegí la que no era.
+
+Lo que sí se limpió: `Border Radius` tenía los radios partidos por dispositivo
+(`Desktop/*` y `Mobile/*`), y **las tres variantes Mobile tenían cero usos**. La escala responsive
+se montó y no se usó nunca. Se borraron y se quitó el prefijo `Desktop/`, que prometía una
+distinción que no existe.
+
+```
+Figma · Border Radius      Código
+radius-xs   8        →     --radius-xs   8
+radius-s    12       →     --radius-s    12
+radius-m    24       →     --radius-m    24
+radius-l    40       →     --radius-l    40
+```
+
+**Por qué una sola escala y no una por breakpoint:** un radio es una propiedad de la forma, no del
+espacio disponible. El espaciado y la tipografía sí escalan con el ancho; un botón mide 36-40px de
+alto en escritorio y en móvil, así que su esquina no tiene motivo para cambiar. Lo que sí cambia
+en móvil no es el valor del radio sino si el componente lo tiene — una card que va de borde a
+borde pierde las esquinas — y eso se resuelve en el componente, no en el token. Material 3,
+Polaris, Carbon y Primer tienen todos una sola escala de forma.
+
+### El anillo de foco
+
+Estaba copiado ocho veces y no idéntico: `Input`, `Dropdown` y `Textarea` usaban `#fff` a pelo
+mientras `SearchBar` usaba `var(--color-bg-surface)`. Ahora la receta vive en `--focus-ring` y
+`--focus-ring-error`.
+
+**Queda abierto y necesita decisión: el sistema tiene dos anillos de foco distintos.**
+
+```
+box-shadow con hueco blanco    Input · Dropdown · Textarea · SearchBar
+outline simple                 Checkbox · SegmentedControl · Toggle · BottomSheet
+```
+
+Tabulando por un formulario que mezcle un campo y un checkbox, el indicador cambia de forma a
+mitad de camino. Y en Figma solo los cuatro campos tienen variante `Focus` dibujada: `Checkbox`,
+`Toggle` y `Segmented control` tienen estado de foco en código y no está diseñado.
+
+---
+
 ## Cómo mantener esto vivo
 
 Este documento es una foto del 2026-09-26 y **se va a quedar viejo**, que es exactamente lo que
