@@ -61,6 +61,12 @@
 
   --color-status-active:        var(--color-turquoise-51); /* #2fd5cb */
   --color-status-inactive:      var(--color-red-75);       /* #fc8c85 */
+  --color-status-pending:       var(--color-red-58);       /* #e04f4a */
+  --color-status-expired:       var(--color-orange-65);    /* #fda650 */
+  /* El Pending es el unico tag con fondo propio, asi que necesita su pareja. */
+  --color-status-pending-surface: var(--color-red-91);     /* #fad6d4 */
+  --color-status-pending-text:    var(--color-red-29);     /* #8b0e0a */
+  --color-status-delay:         var(--color-yellow-47);   /* Email history */
   --color-status-error:         var(--color-red-58);       /* #e04f4a */
   --color-status-error-subtle:  var(--color-red-75);       /* #fc8c85 */
 

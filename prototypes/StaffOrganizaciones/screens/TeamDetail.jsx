@@ -232,7 +232,7 @@ function UsersContent({ team, center, onNavigate }) {
               <Tag status={user.status} />
             </div>
             <div className={`${styles.roleCell} ${styles.colRole}`}>
-              <Tag status={user.role} />
+              <span>{user.role === 'professional' ? 'Team admin' : 'User'}</span>
             </div>
             <div className={`${styles.dateCell} ${styles.colDate}`}>{user.dateAdded}</div>
             <div className={`${styles.actionsCell} ${styles.colActions}`}>

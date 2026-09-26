@@ -1,6 +1,6 @@
 import Tag from './Tag';
 
-const STATUSES = ['active', 'inactive', 'professional', 'user', 'pending', 'expired', 'delay', 'delivered'];
+const STATUSES = ['active', 'inactive', 'pending', 'expired', 'delay', 'delivered'];
 
 export default {
   title: 'Components/Tag',
@@ -43,14 +43,6 @@ export const AllStatuses = {
       >
         <Tag status="active" />
         <Tag status="inactive" />
-      </Row>
-
-      <Row
-        title="Rol dentro de un equipo"
-        description="Sin punto: no comunican un estado, distinguen qué es esa persona en el equipo."
-      >
-        <Tag status="professional" />
-        <Tag status="user" />
       </Row>
 
       <Row

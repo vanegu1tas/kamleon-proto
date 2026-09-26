@@ -501,6 +501,67 @@ Cuatro mecanismos, de menos a más fiable. Los tres primeros avisan; solo el ter
 
 ---
 
+### El Tag — 26/09/2026
+
+Era el componente más desalineado de la librería: dos componentes en Figma, uno con 8 valores en
+código, y tres familias de significado mezcladas en una sola lista de opciones.
+
+**Se eliminó la familia de rol.** `user` y `professional` solo se usaban en `TeamDetail` de V1
+—que está congelada desde el 21/9— y en su propia página de Storybook. La columna "Role" con
+píldora no sobrevivió al rediseño de V2: hoy el rol se muestra como texto plano en la segunda
+línea. En V1 se sustituyó por texto plano para que no quedara un tag sin estilo.
+
+Con eso el Tag se queda en **dos familias**:
+
+```
+ciclo de vida     active · inactive · pending · expired
+envío de correo   delay · delivered
+```
+
+**Decisiones tomadas donde los dos lados discrepaban:**
+
+| Qué | Figma decía | Código decía | Gana |
+|---|---|---|---|
+| Nombre del estado | `Disabled` | `inactive` | **inactive** — "disabled" ya significa otra cosa en un DS (un control que no se puede pulsar); aquí es el estado de una organización o un equipo |
+| Fondo del tag | `#f4f5f5` | `#fafafa` | **código** (`Background/Surface Subtle`) |
+| Punto del Expired | naranja `#fda650` | gris `#9ca3af` | **Figma** |
+| Texto del Expired | `#0b0f12` | `#6b7280` | **Figma** |
+
+El naranja no existía en la paleta del código: se añadió `--color-orange-65`.
+
+**El punto del Expired estaba cogido del sitio equivocado.** Colgaba de
+`Semantic Colors / Hydration ranges / Over hydrated` — el naranja del gráfico de hidratación,
+usado para una invitación caducada. El día que se ajuste la escala de hidratación, el tag habría
+cambiado de color sin que nadie relacionara las dos cosas.
+
+Se creó la familia `Status/*` que faltaba, en los dos lados:
+
+```
+Status/Active           Turquose/51    --color-status-active      (ya existía)
+Status/Inactive         Red/75         --color-status-inactive    (ya existía)
+Status/Pending          Red/58         --color-status-pending     nuevo
+Status/Expired          Orange/65      --color-status-expired     nuevo
+Status/Pending Surface  Red/91         --color-status-pending-surface
+Status/Pending Text     Red/29         --color-status-pending-text
+                        Yellow/47      --color-status-delay       nuevo
+```
+
+Los dos component sets quedan **al 100% sobre tokens semánticos**: ni un solo relleno colgando
+de un color base.
+
+**Pendiente:** partirlos en `Tag / Status` y `Tag / Delivery` usando la carpeta, para que no se
+pueda elegir "Delivered" donde va un estado de entidad. Y `Tag / Delivery` todavía no existe en
+Figma: `delay` y `delivered` solo están en código desde el 17/9.
+
+**Tres veces me equivoqué al informar sobre este componente**, todas por describir sin mirar:
+dije que el tag de rol tenía punto de color (no lo tiene, `NO_DOT` lo excluye), que el `Pending`
+de Figma no tenía punto (sí lo tiene: es un `FRAME` de 8×8 llamado "Text", y mi búsqueda solo
+miraba elipses) y que la familia de rol había que diseñarla en Figma (había que borrarla del
+código). El patrón es siempre el mismo: **buscar por la forma que espero en vez de mirar lo que
+hay.**
+
+---
+
 ## Cómo mantener esto vivo
 
 Este documento es una foto del 2026-09-26 y **se va a quedar viejo**, que es exactamente lo que

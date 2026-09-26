@@ -49,41 +49,21 @@
   color: var(--color-text-disabled);
 }
 
-/* ─── Professional ───────────────────────────────── */
-
-.professional .dot {
-  background-color: var(--color-turquoise-30);
-}
-
-.professional .label {
-  color: var(--color-text-strong);
-}
-
-/* ─── User ───────────────────────────────────────── */
-
-.user .dot {
-  background-color: var(--color-border-strong);
-}
-
-.user .label {
-  color: var(--color-text-subtle);
-}
-
 /* ─── Pending ────────────────────────────────────── */
 
 .pending {
-  background-color: var(--color-red-91);
+  background-color: var(--color-status-pending-surface);
 }
 
 .pending .dot {
-  background-color: var(--color-red-58);
+  background-color: var(--color-status-pending);
 }
 
 .pending .label {
   /* Red/29 y no Red/58 (Figma, componente "Tag status - invitations"): el rojo del punto
      sobre el fondo Red/91 daba 2.9:1 de contraste, por debajo del mínimo AA de 4.5:1.
      Red/29 sobre el mismo fondo da 7.22:1. Peso Book, igual que el resto de los tags. */
-  color: var(--color-red-29);
+  color: var(--color-status-pending-text);
 }
 
 /* ─── Expired ────────────────────────────────────── */
@@ -91,18 +71,20 @@
 /* PROVISORIO: tokens asumidos (neutro, sin alarma — la invitación ya no sirve pero no es
    un error). Falta confirmar contra la variante Expired de "Tag status - invitations". */
 .expired .dot {
-  background-color: var(--color-text-disabled);
+  background-color: var(--color-status-expired);
 }
 
 .expired .label {
-  color: var(--color-text-subtle);
+  /* Negro, no gris: decision del 26/9 con Figma. El punto naranja ya marca que
+     esta caducada; apagar tambien el texto lo hacia ilegible de mas. */
+  color: var(--color-text-strong);
 }
 
 /* ─── Estados de envío de un correo (Email history) ─── */
 
 /* Delay: el gestor sigue reintentando; aviso, no error. Naranja = Content/Warning. */
 .delay .dot {
-  background-color: var(--color-yellow-47);
+  background-color: var(--color-status-delay);
 }
 
 .delay .label {
