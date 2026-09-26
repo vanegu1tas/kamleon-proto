@@ -43,7 +43,9 @@ body {
   --shadow-sidebar: 0 0 2px rgba(0, 0, 0, 0.8), 0 0 16px rgba(0, 0, 0, 0.25);
 
   /* La bolita del Toggle. Tampoco es un nivel de elevación: es una pieza que se
-     mueve dentro de un control, y su sombra solo la separa del carril. */
-  --shadow-control-thumb: 0 1px 3px rgba(0, 0, 0, 0.2);
+     mueve dentro de un control, y su sombra solo la separa del carril. Dos capas,
+     igual que --elevation-2: una que cae para dar la distancia y otra pegada al
+     borde para el contacto. Figma: Shadow/Control thumb. */
+  --shadow-control-thumb: 0 2px 4px rgba(0, 0, 0, 0.14), 0 0 1px rgba(0, 0, 0, 0.10);
 
 }
