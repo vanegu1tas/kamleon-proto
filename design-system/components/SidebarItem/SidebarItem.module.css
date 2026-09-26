@@ -49,16 +49,16 @@
 /* ─── Default ────────────────────────────────────── */
 
 .default:hover {
-  background-color: var(--color-bg-nav-hover);
+  background-color: var(--color-bg-inverse-hover);
 }
 
 /* ─── Selected ───────────────────────────────────── */
 
 .selected {
-  background-color: var(--color-bg-nav-active);
+  background-color: var(--color-bg-inverse-selected);
   --icon-primary:   var(--color-turquoise-51);
   --icon-secondary: var(--color-turquoise-30);
-  --icon-accent:    var(--color-bg-nav-active);
+  --icon-accent:    var(--color-bg-inverse-selected);
 }
 
 /* ─── Icon ───────────────────────────────────────── */

@@ -19,10 +19,13 @@
   --color-bg-critic-subtle:     var(--color-red-91);      /* #fad6d4 */
   --color-bg-icon-hover:        var(--color-grey-91);   /* #e5e7eb — hover de icon buttons */
   --color-bg-sidebar:           var(--color-black);     /* #0b0f12 */
-  --color-bg-nav-active:        var(--color-grey-11);   /* #161d24 */
-  /* Velo translúcido, no un color sólido: el fondo del sidebar es un degradado
-     (#0b0f12 → #161d24) y un sólido solo encaja a una altura. Figma: Background/Nav Hover. */
-  --color-bg-nav-hover:         rgba(255, 255, 255, 0.05);
+  /* Fondos de un ítem sobre superficie OSCURA — hoy el sidebar, cuyo fondo es un
+     degradado de #0b0f12 a #161d24. Pareja de Content/Inverse/*.
+     El hover es un velo translúcido, no un sólido: al ser transparente aclara lo que
+     tenga debajo, así que funciona igual arriba y abajo del degradado.
+     Figma: Background/Inverse/Hover · Background/Inverse/Selected */
+  --color-bg-inverse-hover:     rgba(255, 255, 255, 0.05);
+  --color-bg-inverse-selected:  var(--color-grey-11);   /* #161d24 */
 
 
   /* ─── Border ────────────────────────────────── */
