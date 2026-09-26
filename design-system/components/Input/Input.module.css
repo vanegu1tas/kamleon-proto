@@ -83,7 +83,7 @@
 
 /* Focus — teclado: borde + ring exterior */
 .input:focus-visible {
-  box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--color-border-focus);
+  box-shadow: var(--focus-ring);
 }
 
 /* Suprime el ring cuando el foco vino del mouse */
@@ -106,7 +106,7 @@
 }
 
 .inputError:focus-visible {
-  box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--color-border-error);
+  box-shadow: var(--focus-ring-error);
 }
 
 .inputError[data-mouse-focus]:focus-visible {

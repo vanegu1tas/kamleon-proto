@@ -79,12 +79,18 @@
 
 /* Focus — teclado */
 .textarea:focus-visible {
-  box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--color-border-focus);
+  box-shadow: var(--focus-ring);
 }
 
 /* Suprime el ring cuando el foco vino del mouse */
 .textarea[data-mouse-focus]:focus-visible {
   box-shadow: none;
+}
+
+/* Sobre una superficie gris (dentro de una card o un drawer) el campo se pone
+   blanco para no perderse con el fondo. Igual que Input y Dropdown. */
+.textareaOnSubtle {
+  background: var(--color-bg-surface);
 }
 
 /* ─── Error state ─────────────────────────────────────── */
@@ -102,7 +108,7 @@
 }
 
 .textareaError:focus-visible {
-  box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--color-border-error);
+  box-shadow: var(--focus-ring-error);
 }
 
 .textareaError[data-mouse-focus]:focus-visible {

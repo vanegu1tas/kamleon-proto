@@ -15,6 +15,7 @@ import styles from './Textarea.module.css';
  * @param {string}   error        - Mensaje de error (activa estado error)
  * @param {boolean}  disabled
  * @param {number}   rows         - Filas visibles (por defecto 5)
+ * @param {boolean}  onSubtle     - Sobre superficie gris: el campo se pone blanco
  */
 export default function Textarea({
   label,
@@ -26,6 +27,7 @@ export default function Textarea({
   error,
   disabled = false,
   rows = 5,
+  onSubtle = false,
   ...props
 }) {
   const mouseDown = useRef(false);
@@ -45,7 +47,7 @@ export default function Textarea({
       )}
 
       <textarea
-        className={`${styles.textarea} ${error ? styles.textareaError : ''} ${disabled ? styles.textareaDisabled : ''}`}
+        className={`${styles.textarea} ${onSubtle ? styles.textareaOnSubtle : ''} ${error ? styles.textareaError : ''} ${disabled ? styles.textareaDisabled : ''}`}
         value={value}
         onChange={e => onChange?.(e.target.value)}
         disabled={disabled}

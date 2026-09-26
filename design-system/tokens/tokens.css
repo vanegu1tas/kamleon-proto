@@ -20,4 +20,11 @@ body {
   --radius-m:  24px;
   --radius-l:  40px;
 
+  /* ─── Anillo de foco ────────────────────────────── */
+  /* Indicador de teclado de los campos de formulario: 2px del color de la
+     superficie para separarlo del borde propio del campo, y 2px más del color
+     de foco por fuera. Los componentes lo usan entero, no lo reescriben. */
+  --focus-ring:       0 0 0 2px var(--color-bg-surface), 0 0 0 4px var(--color-border-focus);
+  --focus-ring-error: 0 0 0 2px var(--color-bg-surface), 0 0 0 4px var(--color-border-error);
+
 }

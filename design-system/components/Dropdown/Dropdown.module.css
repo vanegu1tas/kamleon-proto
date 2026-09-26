@@ -89,7 +89,7 @@
 /* Focus — teclado */
 .select:focus-visible {
   border-color: var(--color-border-focus);
-  box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--color-border-focus);
+  box-shadow: var(--focus-ring);
   color: var(--color-text-strong);
 }
 
@@ -125,7 +125,7 @@
 
 .selectError:focus-visible {
   border-color: var(--color-border-error);
-  box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--color-border-error);
+  box-shadow: var(--focus-ring-error);
 }
 
 /* ─── Disabled state ──────────────────────────────────── */
