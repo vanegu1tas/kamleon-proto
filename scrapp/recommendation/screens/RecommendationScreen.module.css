@@ -1,0 +1,133 @@
+/* Recomendación — Figma Explorations Web App 3.0, 111:24021. Pantalla de 1280×800. */
+
+.screen {
+  position: relative;
+  width: 1280px;
+  height: 800px;
+  overflow: hidden;
+  background: #000000;
+  color: #ffffff;
+}
+
+/* Los elementos no entran juntos: primero el score —que viene de la pantalla anterior—,
+   después la frase y por último el producto. Así el ojo sigue un orden de lectura en vez
+   de recibir la pantalla entera de golpe. */
+@keyframes riseIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes productIn {
+  from { opacity: 0; transform: translateY(24px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+
+.left {
+  position: absolute;
+  left: 52px;
+  top: 119px;
+  width: 470px;
+}
+
+.scoreChip {
+  animation: riseIn 0.45s ease-out 0.05s both;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-family: var(--font-family-primary);
+  font-weight: var(--font-weight-medium);
+}
+
+.scoreNumber { font-size: 64px; line-height: 1; }
+.scorePercent { font-size: 30px; line-height: 1; }
+
+.scoreLabel {
+  margin-left: 14px;
+  font-size: 24px;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.headline {
+  animation: riseIn 0.55s ease-out 0.35s both;
+  margin: 36px 0 0;
+  font-family: var(--font-family-primary);
+  font-size: 56px;
+  font-weight: var(--font-weight-medium);
+  line-height: 1.2;
+  color: #ffffff;
+}
+
+.bottle {
+  animation: productIn 1.3s cubic-bezier(0.22, 1, 0.36, 1) 0.7s both;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* ── Cuánto tomar: línea que sube sobre la botella ───────────────────────────── */
+
+.product {
+  position: absolute;
+  left: 609px;
+  top: 89px;
+  width: 264px;
+  height: 659px;
+}
+
+.level {
+  position: absolute;
+  left: -28px;
+  right: -200px;   /* la cantidad cae fuera de la botella, no encima de la etiqueta */
+  top: 636px;                       /* base del líquido; sube con la animación */
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  /* Más lenta y con una desaceleración marcada: la línea es el dato que hay que leer, así
+     que llega al final y se queda, en vez de dispararse. Entra bien después de la botella,
+     para que no compitan. */
+  animation: fillRise 2.8s cubic-bezier(0.16, 1, 0.3, 1) 1.6s both;
+}
+
+@keyframes fillRise {
+  from { transform: translateY(0);                 opacity: 0; }
+  20%  { opacity: 1; }
+  to   { transform: translateY(calc(-1 * var(--rise))); opacity: 1; }
+}
+
+.levelLine {
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--level-color, #ffffff);
+  /* Sombra oscura + halo del color: la línea cruza la etiqueta blanca de la botella y con
+     blanco puro desaparecía justo en el tramo que importa. */
+  box-shadow:
+    0 1px 6px rgba(0, 0, 0, 0.65),
+    0 0 14px var(--level-color, rgba(255, 255, 255, 0.55));
+}
+
+.levelAmount {
+  font-family: var(--font-family-primary);
+  font-size: 40px;
+  font-weight: var(--font-weight-medium);
+  line-height: 1;
+  color: #ffffff;
+}
+
+.levelUnit {
+  font-size: 20px;
+  font-weight: var(--font-weight-book);
+}
+
+.levelMl {
+  position: absolute;
+  right: 0;
+  top: 48px;
+  font-family: var(--font-family-primary);
+  font-size: 16px;
+  font-weight: var(--font-weight-book);
+  color: rgba(255, 255, 255, 0.55);
+}

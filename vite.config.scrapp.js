@@ -10,5 +10,13 @@ export default defineConfig({
   build: {
     outDir: '../gh-pages/scrapp',
     emptyOutDir: true,
+    rollupOptions: {
+      // Dos entradas: la scrapp interna (explorations + flujos) y la demo del
+      // recommendation engine, que se comparte con business por su propio link.
+      input: {
+        main: 'scrapp/index.html',
+        recommendation: 'scrapp/recommendation.html',
+      },
+    },
   },
 });

@@ -1,0 +1,30 @@
+.wrap {
+  position: absolute;
+  left: 38px;
+  top: 718px;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.track {
+  fill: rgba(255, 255, 255, 0.10);
+  stroke: rgba(255, 255, 255, 0.18);
+}
+
+.ring {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.85);
+  stroke-linecap: round;
+}
+
+.value {
+  position: absolute;
+  font-family: var(--font-family-primary);
+  font-size: 24px;
+  font-weight: var(--font-weight-book);
+  color: #ffffff;
+  line-height: 1;
+}

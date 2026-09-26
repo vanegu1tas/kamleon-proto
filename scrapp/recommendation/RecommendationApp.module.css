@@ -1,0 +1,15 @@
+/* Contenedor del tamaño de la pantalla física: las pantallas y el contador se posicionan
+   dentro de él, así el contador no se desmonta al cambiar de pantalla. */
+.stage {
+  position: relative;
+  width: 1280px;
+  height: 800px;
+}
+
+.logo {
+  position: absolute;
+  top: 56px;
+  right: 48px;
+  opacity: 0.6;
+  color: #ffffff;
+}

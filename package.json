@@ -1,7 +1,7 @@
 {
   "name": "kamleon",
   "version": "1.0.0",
-  "description": "Repositorio de referencia para el diseño y prototipado de la plataforma interna de staff.",
+  "description": "Repositorio de referencia para el dise\u00f1o y prototipado de la plataforma interna de staff.",
   "main": "index.js",
   "directories": {
     "doc": "docs"
@@ -11,7 +11,8 @@
     "prototype": "vite",
     "scrapp": "vite --config vite.config.scrapp.js",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "recommendation": "vite --config vite.config.scrapp.js --open /recommendation.html"
   },
   "keywords": [],
   "author": "",

@@ -1,0 +1,53 @@
+/* Pantalla física de la unidad: 1280×800. El DeviceFrame ya escala, acá se trabaja a 1:1. */
+
+.screen {
+  position: relative;
+  width: 1280px;
+  height: 800px;
+  overflow: hidden;
+  background: #0c1016; /* fondo si el equipo no tiene WebGL */
+  cursor: pointer;
+}
+
+.shader {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.content {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+}
+
+/* Grupo centrado en la pantalla (probamos con el divider en el eje exacto y pesaba hacia la
+   derecha: el logo de Kamleon es bastante más ancho que la estrella). */
+.logos {
+  display: flex;
+  align-items: center;
+  gap: 48px;
+  color: #ffffff;
+}
+
+.divider {
+  width: 1px;
+  height: 96px;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.tagline {
+  margin: 0;
+  font-family: var(--font-family-primary);
+  font-size: 18px;
+  font-weight: var(--font-weight-book);
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+}
