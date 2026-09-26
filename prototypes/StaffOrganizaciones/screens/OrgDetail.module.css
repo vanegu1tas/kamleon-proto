@@ -183,7 +183,7 @@
   left: 50%;
   transform: translateX(-50%) translateY(-4px);
   background: var(--color-text-strong);
-  color: var(--color-text-inverse);
+  color: var(--color-text-inverse-strong);
   font-family: var(--font-family-primary);
   font-size: var(--font-size-12);
   font-weight: var(--font-weight-medium);
@@ -251,7 +251,7 @@
   bottom: calc(100% + 12px);
   left: -16px;
   background: var(--color-text-strong);
-  color: var(--color-text-inverse);
+  color: var(--color-text-inverse-strong);
   font-family: var(--font-family-primary);
   font-size: var(--font-size-12);
   font-weight: var(--font-weight-medium);

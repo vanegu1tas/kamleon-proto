@@ -203,7 +203,7 @@
   left: 50%;
   transform: translateX(-50%) translateY(-4px);
   background: var(--color-text-strong);
-  color: var(--color-text-inverse);
+  color: var(--color-text-inverse-strong);
   font-family: var(--font-family-primary);
   font-size: var(--font-size-12);
   font-weight: var(--font-weight-medium);
@@ -266,7 +266,7 @@
   bottom: calc(100% + 12px);
   left: -16px;
   background: var(--color-text-strong);
-  color: var(--color-text-inverse);
+  color: var(--color-text-inverse-strong);
   font-family: var(--font-family-primary);
   font-size: var(--font-size-12);
   font-weight: var(--font-weight-medium);
@@ -434,7 +434,7 @@
   right: calc(100% + 12px);
   transform: translateY(-50%) translateX(4px);
   background: var(--color-text-strong);
-  color: var(--color-text-inverse);
+  color: var(--color-text-inverse-strong);
   font-family: var(--font-family-primary);
   font-size: var(--font-size-12);
   font-weight: var(--font-weight-medium);
@@ -758,7 +758,7 @@
   left: 50%;
   transform: translateX(-50%) translateY(-4px);
   background: var(--color-text-strong);
-  color: var(--color-text-inverse);
+  color: var(--color-text-inverse-strong);
   font-family: var(--font-family-primary);
   font-size: var(--font-size-12);
   font-weight: var(--font-weight-medium);
@@ -1808,7 +1808,7 @@
   height: 20px;
   padding: 0 4px 1px;
   background: var(--color-text-strong);
-  color: var(--color-text-inverse);
+  color: var(--color-text-inverse-strong);
   border-radius: 40px;
   font-family: var(--font-family-primary);
   font-size: 12px;
@@ -2126,7 +2126,7 @@
   top: calc(100% + 12px);
   right: -8px;
   background: var(--color-text-strong);
-  color: var(--color-text-inverse);
+  color: var(--color-text-inverse-strong);
   font-family: var(--font-family-primary);
   font-size: var(--font-size-12);
   font-weight: var(--font-weight-medium);
@@ -2202,12 +2202,12 @@
 .filterPillActive {
   background: var(--color-text-strong);
   border-color: var(--color-text-strong);
-  color: var(--color-text-inverse);
+  color: var(--color-text-inverse-strong);
 }
 
 .filterPillActive:hover {
   background: var(--color-text-strong);
-  color: var(--color-text-inverse);
+  color: var(--color-text-inverse-strong);
 }
 
 .filterPill:focus-visible {

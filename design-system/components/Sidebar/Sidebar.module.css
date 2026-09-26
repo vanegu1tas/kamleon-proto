@@ -124,7 +124,7 @@
   border-radius: 8px;
   background: none;
   cursor: pointer;
-  color: var(--color-grey-65);
+  color: var(--color-text-inverse-muted);
   flex-shrink: 0;
   transition: color 0.15s ease, border-color 0.15s ease;
 }
@@ -306,7 +306,7 @@
   font-size: var(--font-size-12);
   font-weight: var(--font-weight-book);
   line-height: 16px;
-  color: var(--color-grey-70);
+  color: var(--color-text-inverse-subtle);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -315,7 +315,7 @@
 .userCardChevron {
   display: inline-flex;
   flex-shrink: 0;
-  color: var(--color-grey-70);
+  color: var(--color-text-inverse-subtle);
 }
 
 .userCardActive {
@@ -364,7 +364,7 @@
   font-size: var(--font-size-12);
   font-weight: var(--font-weight-book);
   line-height: 15px;
-  color: var(--color-grey-65);
+  color: var(--color-text-inverse-muted);
   text-align: center;
 }
 
@@ -414,7 +414,7 @@
   font-family: var(--font-family-primary);
   font-size: var(--font-size-12);
   font-weight: var(--font-weight-medium);
-  color: var(--color-grey-65);
+  color: var(--color-text-inverse-muted);
   text-transform: uppercase;
   letter-spacing: 0.6px;
   line-height: normal;
@@ -481,7 +481,7 @@
   font-size: var(--font-size-12);
   font-weight: var(--font-weight-book);
   line-height: 15px;
-  color: var(--color-grey-65);
+  color: var(--color-text-inverse-muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -638,7 +638,7 @@
   font-size: var(--font-size-12);
   font-weight: var(--font-weight-book);
   line-height: 15px;
-  color: var(--color-grey-65);
+  color: var(--color-text-inverse-muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

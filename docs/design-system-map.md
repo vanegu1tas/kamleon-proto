@@ -437,14 +437,67 @@ seguir al sistema**, que es peor.
 Y el `Button` pasó a estar 100% sobre tokens semánticos: 10 capas que colgaban de colores base
 (`White`, `Grey/65`, `Black`) ahora usan `Content/Inverse`, `Content/Disabled` y `Content/Strong`.
 
-### Divergencias abiertas
+### Divergencias cerradas — 26/09/2026
 
-| Qué | Figma | Código | Nota |
-|---|---|---|---|
-| Hover del ítem de sidebar | sólido `#232727` | `rgba(255,255,255,0.05)` | El fondo es un degradado: el translúcido del código se adapta, el sólido no |
-| Asterisco de obligatorio | `Red/65` `#fc664e` | `--color-status-error` `#e04f4a` | Falta un `Content/Required`: un campo obligatorio no es un campo con error |
-| `Content/Placeholder` | Grey/65, y **la usa el sidebar**, no los placeholders | `--color-text-placeholder` = `#6b7280` | El nombre miente en Figma. Los 4 campos usan `Content/Subtle` |
-| Gris apagado sobre oscuro | sin token: `Grey/70` y `Grey/65` sueltos | `--color-grey-65` a pelo, 6 sitios | Falta la familia "sobre oscuro": `Content/Inverse` es el primario y el resto no tiene nombre |
+Las cuatro que quedaban abiertas al acabar la fusión de colecciones, resueltas el mismo día.
+
+**1 · Asterisco de campo obligatorio.** Figma `Red/65` `#fc664e` (colgado de un color base) contra
+`--color-status-error` `#e04f4a` del código. **Ganó el código**: el contexto ya distingue un
+asterisco de un error (el asterisco está en la etiqueta, el error es borde rojo y mensaje), es la
+convención, y `#e04f4a` tiene mejor contraste (4,0:1 contra 3,4:1). 18 capas a `Content/Critic`,
+que además quita uno de los últimos enganches a color base de los formularios.
+
+Se descartó crear un `Content/Required`: era separar dos cosas que nadie confunde.
+
+**2 · Hover del ítem de sidebar.** Figma usaba un sólido `#232727`; el código, `rgba(255,255,255,0.05)`.
+**Ganó el código**, y se puede demostrar: el fondo del sidebar es un degradado `#0b0f12` → `#161d24`,
+y el velo al 5% da `#171b1e` arriba y `#22282f` abajo. Un sólido encaja en un sitio y no en el otro
+— `#232727` iluminaba de más los ítems de arriba.
+
+Se creó la pareja que faltaba en los dos lados: `Background/Nav Hover` (con el alfa dentro del
+token) y `Background/Nav Active`, que además dejó de colgar de `Grey/11`. En código,
+`--color-bg-nav-hover` junto al `--color-bg-nav-active` que ya existía.
+
+**3 y 4 · La escala de texto sobre fondo oscuro.** Eran el mismo problema. El sidebar tiene tres
+niveles y solo uno tenía nombre:
+
+```
+#ffffff   ítem seleccionado          Content/Inverse/Strong   (antes Content/Inverse)
+#b1b2b4   ítems navegables           Content/Inverse/Subtle   nuevo
+#9ca3af   cabeceras, iconos, roles   Content/Inverse/Muted    nuevo
+```
+
+El `/` agrupa la familia en una carpeta, así que en el selector de Figma aparecen los tres juntos
+y en orden. En código: `--color-text-inverse-strong` (renombrado, 56 apariciones en 17 archivos),
+`-subtle` y `-muted`. El Sidebar deja de usar `--color-grey-65` y `--color-grey-70` a pelo.
+
+Con eso `Content/Placeholder` quedó libre y **pasa a ser alias de `Content/Subtle`** — alias, no
+copia del valor, para que no puedan separarse por descuido. Los cuatro campos se enganchan ahí:
+mismo color que antes, pero el token dice dónde va.
+
+**Ámbitos configurados** (lo único que *impide* el error, en vez de solo avisarlo): los tres
+`Content/Inverse/*` quedan restringidos a texto, formas y trazos, y los dos `Background/Nav *` a
+fondos. Un token de fondo ya no aparece al elegir el color de un texto.
+
+**Lo que costó dos pasadas:** en el sidebar había dos caminos distintos para llegar al mismo
+`#9ca3af` —unas capas por `Grey/65` y otras por `Content/Placeholder`— y la primera pasada solo
+cubrió las primeras. Y tres enlaces vivían en `textRangeFills`: el color estaba en *un trozo* del
+texto, no en el nodo entero, así que no aparecían mirando `fills`.
+
+### Cómo sabe un diseñador qué color usar
+
+Cuatro mecanismos, de menos a más fiable. Los tres primeros avisan; solo el tercero impide.
+
+1. **El nombre lleva la superficie dentro.** `Content/Inverse/Subtle` ya dice para qué sirve.
+   `Grey/70` no dice nada y `Sidebar Label` dice demasiado (¿y en un modal oscuro?). Se nombra la
+   superficie y el nivel, que es lo que no cambia.
+2. **La carpeta los agrupa.** La barra `/` crea carpetas reales en el selector: se ve la escala
+   entera en vez de un color suelto.
+3. **Los ámbitos.** Restringir cada variable a las propiedades donde tiene sentido. Es el único
+   mecanismo que hace imposible el error.
+4. **La documentación, en contexto.** Un muestrario de cuadraditos no enseña nada: sobre blanco
+   todos los grises se parecen. Hay que pintar la superficie oscura y poner los tres niveles
+   encima, con su nombre al lado.
 
 ---
 

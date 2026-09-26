@@ -725,7 +725,7 @@
   height: 32px;
   padding: 0 16px;
   background: var(--color-action-primary-bg);
-  color: var(--color-text-inverse);
+  color: var(--color-text-inverse-strong);
   border: none;
   border-radius: var(--radius-s);
   font-family: var(--font-family-primary);

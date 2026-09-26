@@ -120,3 +120,63 @@ No es un componente nuevo ni una variante: es **comportamiento** del mismo TabBa
 **En código:** `ContextMenu` acepta un `onClose` opcional (cerrar con Escape o arrastrando la manija). Si no se pasa, simula un toque afuera, que es como todas las pantallas ya cierran sus menús. El `BottomSheet` bloquea que los toques dentro del panel lleguen al documento: sin eso, tocar una opción cerraba el menú antes de registrar la elección.
 
 **En Figma:** es comportamiento, igual que la regla del TabBar en touch. Se documenta en la descripción del ContextMenu, no con variantes.
+
+---
+
+## Las tres capas de color, y qué va en cada una (2026-09-26)
+
+```
+Paleta       Global Colors 2      Grey/11 · White · Red/58        el color, sin significado
+Semántica    Semantic Colors      Background/Nav Active           el papel que juega
+Componente   Button, Sidebar…     usa SIEMPRE la capa semántica
+```
+
+**Un componente nunca apunta a la paleta.** Si `Button` cuelga de `Grey/65` en vez de
+`Content/Disabled`, el día que cambie el gris del texto deshabilitado hay que ir capa por capa,
+y nadie se entera de que se quedó atrás. El 26/9 se encontraron 31 capas así, todas colgando de
+un `Black` que valía `#221e1e` mientras el resto del sistema usaba `#0b0f12`. La diferencia es
+invisible a simple vista: por eso sobrevivió meses.
+
+### Las transparencias van en la capa semántica, no en la paleta
+
+**La paleta solo tiene colores sólidos.** Una variable con alfa —`rgba(255,255,255,0.05)`— se
+define directamente en `Semantic Colors`, sin apuntar a ningún color base.
+
+El motivo: un 5% de blanco **no es un color, es un comportamiento** — "aclara un 5% lo que tengas
+debajo". Eso describe el papel, no el pigmento. Si las opacidades entran en la paleta, acaba
+llenándose de `White 10%`, `White 20%`, `Black 40%`… y deja de ser una escala.
+
+Aplica a los velos de hover, al fondo oscuro detrás de un modal, a las sombras (negro con alfa) y
+a los degradados de desvanecido.
+
+**Caso que originó la regla:** el hover del ítem del sidebar. El fondo del sidebar es un degradado
+(`#0b0f12` arriba → `#161d24` abajo). Figma lo resolvía con un sólido `#232727`, que encaja abajo
+pero arriba queda demasiado claro; el código ya usaba `rgba(255,255,255,0.05)`, que aclara lo que
+tenga debajo sea lo que sea. Se creó `Background/Nav Hover` en la capa semántica con el alfa
+dentro, y su pareja `Background/Nav Active`, que sí es un alias de `Grey/11` porque es sólido.
+
+### Un token semántico se nombra por el trabajo, nunca por el color ni por el sitio
+
+`Content/Subtle`, no `Grey Medium` ni `Sidebar Header`. Por el color, porque el color cambia.
+Por el sitio, porque mañana lo usarás en otro.
+
+**Dos tokens con el mismo valor se justifican solo si puedes contar una situación realista en la
+que uno cambiaría y el otro no.** Si no se te ocurre ninguna, sobra uno.
+
+Ejemplo de que sí: `Content/Disabled` y el gris apagado del sidebar valen los dos `#9ca3af`, pero
+el texto deshabilitado está exento de los mínimos de contraste y una cabecera de sección no. El
+día que se revise accesibilidad, uno se mueve y el otro no.
+
+Ejemplo de que no: un `Content/Placeholder` distinto de `Content/Subtle` cuando el placeholder y
+la descripción del campo están a tres píxeles el uno del otro. Salvo que ya existan cientos de
+capas usándolo, en cuyo caso el coste de fusionarlos supera al de mantenerlos.
+
+### Cuidado con los nombres que mienten
+
+Un token puede estar bien cableado y aun así ser un problema si su nombre no describe lo que hace.
+`Content/Placeholder` no la usa ningún placeholder: la usa el sidebar para sus cabeceras de
+sección. Quien busque el color de un placeholder la encuentra y la usa, y quien cambie su valor
+repinta el sidebar sin saberlo.
+
+Antes de renombrar una variable así, mirar **quién la usa de verdad**. Cambiarle el valor porque
+el nombre sugiere una cosa, sin comprobar la otra, repinta lo que no tocaba.

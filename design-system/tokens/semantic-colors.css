@@ -18,6 +18,9 @@
   --color-bg-icon-hover:        var(--color-grey-91);   /* #e5e7eb — hover de icon buttons */
   --color-bg-sidebar:           var(--color-black);     /* #0b0f12 */
   --color-bg-nav-active:        var(--color-grey-11);   /* #161d24 */
+  /* Velo translúcido, no un color sólido: el fondo del sidebar es un degradado
+     (#0b0f12 → #161d24) y un sólido solo encaja a una altura. Figma: Background/Nav Hover. */
+  --color-bg-nav-hover:         rgba(255, 255, 255, 0.05);
 
 
   /* ─── Border ────────────────────────────────── */
@@ -33,8 +36,16 @@
   --color-text-strong:          var(--color-black);     /* #0b0f12 */
   --color-text-subtle:          var(--color-grey-46);   /* #6b7280 */
   --color-text-disabled:        var(--color-grey-65);   /* #9ca3af */
-  --color-text-placeholder:     var(--color-grey-46);   /* #6b7280 */
-  --color-text-inverse:         var(--color-white);     /* #ffffff */
+  /* Alias de text-subtle, no una copia del valor: así no pueden separarse por descuido.
+     El nombre existe porque dice dónde aplicarlo; el día que un placeholder deba verse
+     distinto de una descripción, se rompe el alias a propósito. Figma: Content/Placeholder. */
+  --color-text-placeholder:     var(--color-text-subtle);
+  --color-text-inverse-strong:  var(--color-white);         /* #ffffff */
+  /* Escala de texto sobre superficie oscura (el sidebar). Tres niveles a propósito:
+     Strong = lo seleccionado · Subtle = lo navegable · Muted = lo que solo organiza.
+     Figma: Content/Inverse/Strong · Subtle · Muted */
+  --color-text-inverse-subtle:  var(--color-grey-70);   /* #b1b2b4 */
+  --color-text-inverse-muted:   var(--color-grey-65);   /* #9ca3af */
 
 
   /* ─── Actions ───────────────────────────────── */

@@ -80,7 +80,7 @@
   padding: 0 4px;
   border-radius: 999px;
   background: var(--color-text-strong);
-  color: var(--color-text-inverse);
+  color: var(--color-text-inverse-strong);
   font-size: 10px;
   font-weight: var(--font-weight-medium);
 }
