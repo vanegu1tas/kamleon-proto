@@ -611,6 +611,54 @@ mitad de camino. Y en Figma solo los cuatro campos tienen variante `Focus` dibuj
 
 ---
 
+### Sombras: de 33 valores sueltos a una escala — 26/09/2026
+
+Antes: **0 estilos de efecto en Figma y 33 sombras escritas a mano en el código**. Al normalizar
+notación (`0` vs `0px`, `0.10` vs `.1`, espacios) resultaron ser **20 sombras de elevación reales
+en 65 sitios**, y muy mal repartidas: tres hacían el 60% del trabajo y el desorden estaba
+concentrado en los menús, con **cinco sombras distintas para el mismo trabajo** — cuatro de ellas
+en elementos llamados `filterDropdown` en pantallas diferentes.
+
+Para elegir la de los menús se montó la página **`-- Elevation`** con los cinco candidatos
+aplicados al mismo menú, sobre el mismo fondo, con su origen y su número de usos debajo. Ganó la
+que ya usaba el `FilterPanel`: es la única con dos capas.
+
+**La escala, idéntica en los dos lados:**
+
+| Figma (Effect Style) | Código | Para qué |
+|---|---|---|
+| `Elevation/1` | `--elevation-1` | Cards, paneles y tablas. Lo que reposa sobre la página |
+| `Elevation/2` | `--elevation-2` | Menús, desplegables y tooltips |
+| `Shadow/Drawer` | `--shadow-drawer` | Panel anclado al borde derecho |
+| `Shadow/Sidebar` | `--shadow-sidebar` | El sidebar sobre el fondo de la página |
+| — | `--shadow-control-thumb` | La bolita del Toggle |
+
+**Por qué el nivel 2 tiene dos capas** y los demás una: una sombra real tiene una parte oscura
+pegada al objeto (el contacto) y otra que se difumina con la distancia. Con una sola capa hay que
+elegir entre las dos, y el resultado se ve plano. Es el detalle que separaba la opción ganadora de
+las otras cuatro.
+
+**Tres cosas no entraron en la escala, a propósito:**
+
+- El **drawer** tiene desplazamiento horizontal (`-8px 0`) porque está anclado al borde derecho.
+  Eso no es un nivel de elevación, es la sombra de una pieza pegada a un borde.
+- El **sidebar** igual: es estructura fija, no algo que flote.
+- El **pulsador del Toggle** es una pieza que se mueve dentro de un control; su sombra solo lo
+  separa del carril.
+
+Un nivel se define por **cuánto flota algo sobre el fondo**. Si una sombra existe por otra razón
+—dirección, estructura, separar dos piezas del mismo control— no pertenece a la escala aunque
+visualmente se parezca.
+
+**Pendiente:** falta el nivel 3, para lo que tapa el resto de la interfaz (modal, paleta ⌘K, tour,
+Toast). Hoy son siete sombras sueltas, una por pantalla. Y en Figma queda una sombra de menú
+usada 38 veces en `Calendar` que debería pasar a `Elevation/2` cuando ese componente se programe.
+
+**Divergencia detectada de paso:** el pulsador del Toggle no coincide. Figma usa
+`0 2 4 a0.14 + 0 0 1 a0.10`, el código `0 1px 3px rgba(0,0,0,.2)`.
+
+---
+
 ## Cómo mantener esto vivo
 
 Este documento es una foto del 2026-09-26 y **se va a quedar viejo**, que es exactamente lo que

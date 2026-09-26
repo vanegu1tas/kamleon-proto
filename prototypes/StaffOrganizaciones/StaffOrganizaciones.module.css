@@ -219,7 +219,7 @@
   background: var(--color-bg-surface);
   border: 1px solid var(--color-border-default);
   border-radius: var(--radius-m);
-  box-shadow: 0 0 2px rgba(0, 0, 0, 0.15), 0 0 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--elevation-2);
   min-width: 220px;
   z-index: 200;
   overflow: hidden;
@@ -496,7 +496,7 @@
   background: var(--color-bg-surface);
   border: 1px solid var(--color-border-default);
   border-radius: var(--radius-m);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--elevation-1);
   min-height: 500px;
   display: flex;
   flex-direction: column;
@@ -589,7 +589,7 @@
   background: var(--color-bg-surface);
   border: 1px solid var(--color-border-default);
   border-radius: var(--radius-m);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.10), 0 2px 6px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--elevation-2);
   padding: 16px;
   display: flex;
   flex-direction: column;
@@ -1075,7 +1075,7 @@
   background: var(--color-bg-surface);
   border: 1px solid var(--color-border-default);
   border-radius: var(--radius-m);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--elevation-1);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -1241,7 +1241,7 @@
     background: var(--color-bg-sidebar);
     border: 1px solid #32404d;
     border-radius: 12px;
-    box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.80), 0 0 16px 0 rgba(0, 0, 0, 0.25);
+    box-shadow: var(--shadow-sidebar);
     color: #ffffff;
     justify-content: space-between;
   }

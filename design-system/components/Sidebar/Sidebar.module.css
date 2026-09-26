@@ -10,7 +10,7 @@
   transition: width 0.24s cubic-bezier(0.4, 0, 0.2, 1);
   border: 1px solid var(--color-grey-25);
   border-radius: 20px;
-  box-shadow: 0 0 2px rgba(0, 0, 0, 0.8), 0 0 16px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--shadow-sidebar);
   overflow: hidden;
 }
 
@@ -431,7 +431,7 @@
   background: var(--color-grey-11);
   border: 1px solid var(--color-grey-25);
   border-radius: var(--radius-s);
-  box-shadow: 0 0 1px rgba(0, 0, 0, 0.15), 0 0 4px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--elevation-2);
   z-index: 500;
   animation: userTooltipIn 0.15s ease-out;
 }
@@ -560,7 +560,7 @@
   background: var(--color-grey-11);
   border: 1px solid var(--color-grey-25);
   border-radius: var(--radius-s);
-  box-shadow: 0 0 1px rgba(0, 0, 0, 0.15), 0 0 4px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--elevation-2);
   z-index: 500;
   animation: userTooltipIn 0.12s ease-out;
 }

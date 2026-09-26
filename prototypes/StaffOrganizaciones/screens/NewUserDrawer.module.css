@@ -25,7 +25,7 @@
   background: var(--color-bg-surface);
   border: 1px solid var(--color-border-default);
   border-radius: var(--radius-m);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), -8px 0 32px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-drawer);
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -350,7 +350,7 @@
   height: 20px;
   border-radius: 50%;
   background: white;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-control-thumb);
   transition: transform 0.2s ease;
 }
 

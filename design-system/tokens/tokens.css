@@ -27,4 +27,23 @@ body {
   --focus-ring:       0 0 0 2px var(--color-bg-surface), 0 0 0 4px var(--color-border-focus);
   --focus-ring-error: 0 0 0 2px var(--color-bg-surface), 0 0 0 4px var(--color-border-error);
 
+  /* ─── Elevación ─────────────────────────────────── */
+  /* Cuánto flota algo sobre el fondo. Dos capas en el nivel 2: una larga y
+     difusa para la distancia y otra corta para el contacto, que es como se
+     comporta una sombra real. */
+  --elevation-1: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --elevation-2: 0 8px 24px rgba(0, 0, 0, 0.10), 0 2px 6px rgba(0, 0, 0, 0.06);
+
+  /* El drawer no es un nivel de elevación: su sombra es direccional porque el
+     panel está anclado al borde derecho. Por eso tiene token propio. */
+  --shadow-drawer: 0 1px 2px rgba(0, 0, 0, 0.05), -8px 0 32px rgba(0, 0, 0, 0.08);
+
+  /* El sidebar tampoco es un nivel: es una pieza fija de la estructura, con una
+     sombra corta y muy opaca que le dibuja el contorno sobre el fondo claro. */
+  --shadow-sidebar: 0 0 2px rgba(0, 0, 0, 0.8), 0 0 16px rgba(0, 0, 0, 0.25);
+
+  /* La bolita del Toggle. Tampoco es un nivel de elevación: es una pieza que se
+     mueve dentro de un control, y su sombra solo la separa del carril. */
+  --shadow-control-thumb: 0 1px 3px rgba(0, 0, 0, 0.2);
+
 }

@@ -36,7 +36,7 @@
   background: var(--color-bg-surface);
   border: 1px solid var(--color-border-default);
   border-radius: var(--radius-m);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--elevation-1);
   padding: 17px 25px;
   display: flex;
   flex-direction: column;
@@ -67,7 +67,7 @@
   background: var(--color-bg-surface);
   border: 1px solid var(--color-border-default);
   border-radius: var(--radius-m);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--elevation-1);
   display: flex;
   flex-direction: column;
 }
@@ -174,7 +174,7 @@
   background: var(--color-bg-surface);
   border: 1px solid var(--color-border-default);
   border-radius: var(--radius-s);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--elevation-2);
   z-index: 200;
   overflow: hidden;
   animation: pillMenuIn 0.1s ease;
