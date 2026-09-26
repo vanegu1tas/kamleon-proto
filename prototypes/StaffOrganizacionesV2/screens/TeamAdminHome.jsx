@@ -208,9 +208,20 @@ function TeamAdminsList({ team }) {
 }
 
 function TeamUsersList({ team, assignedTeams, onSelectUser, pendingInvites, setPendingInvites, currentUserEmail }) {
+  // Un Team Admin solo alcanza sus propios equipos: si la persona está además en otro que él
+  // no administra, esa pertenencia no se le muestra.
+  function visibleMemberships(user) {
+    if (!user) return [];
+    return (assignedTeams ?? [])
+      .filter(({ team: t }) => (t.users ?? []).includes(user.id) || (t.professionalIds ?? []).includes(user.id))
+      .map(({ team: t }) => ({
+        teamId: t.id,
+        teamName: t.name,
+        role: (t.professionalIds ?? []).includes(user.id) ? 'Team admin' : 'User',
+      }));
+  }
+
   const [allUsers, setAllUsers] = useState(() => getMembersForTeam(team).filter(u => u.role !== 'professional'));
-  const [roleFilter, setRoleFilter] = useState(new Set());
-  const [filterOpen, setFilterOpen] = useState(false);
   const [search, setSearch]         = useState('');
   const [editUserTarget, setEditUserTarget] = useState(null);
   const [openMenuId, setOpenMenuId] = useState(null);
@@ -218,18 +229,9 @@ function TeamUsersList({ team, assignedTeams, onSelectUser, pendingInvites, setP
   const [actionToast, setActionToast] = useState(null);
   const [bulkOpen, setBulkOpen] = useState(false);
   const [bulkConfirm, setBulkConfirm] = useState(null);
-  const filterRef = useRef(null);
   const bulkRef   = useRef(null);
   const menuRefs  = useRef({});
 
-  useEffect(() => {
-    if (!filterOpen) return;
-    function handleClick(e) {
-      if (filterRef.current && !filterRef.current.contains(e.target)) setFilterOpen(false);
-    }
-    document.addEventListener('mousedown', handleClick);
-    return () => document.removeEventListener('mousedown', handleClick);
-  }, [filterOpen]);
 
   useEffect(() => {
     if (!openMenuId) return;
@@ -250,13 +252,6 @@ function TeamUsersList({ team, assignedTeams, onSelectUser, pendingInvites, setP
     return () => document.removeEventListener('mousedown', handleClick);
   }, [bulkOpen]);
 
-  function toggleRole(v) {
-    setRoleFilter(prev => {
-      const next = new Set(prev);
-      next.has(v) ? next.delete(v) : next.add(v);
-      return next;
-    });
-  }
 
   function togglePin(user) {
     setAllUsers(prev => prev.map(u => (u.id === user.id && u.role === user.role) ? { ...u, pin: !u.pin } : u));
@@ -289,7 +284,6 @@ function TeamUsersList({ team, assignedTeams, onSelectUser, pendingInvites, setP
   }
 
   const users = allUsers.filter(u => {
-    if (roleFilter.size > 0 && !roleFilter.has(u.role)) return false;
     if (search.trim() && !u.name.toLowerCase().includes(search.trim().toLowerCase())) return false;
     return true;
   });
@@ -297,7 +291,7 @@ function TeamUsersList({ team, assignedTeams, onSelectUser, pendingInvites, setP
   // Invitaciones pendientes — se muestran como filas "Pending" en esta misma tabla
   // (no hay tab de Invitations aparte). Sin rol/PIN/Screen todavía, así que si hay un
   // filtro de Role activo no tiene sentido mostrarlas (no pueden cumplirlo).
-  const pendingRows = roleFilter.size > 0 ? [] : pendingInvites
+  const pendingRows = pendingInvites
     .map((invite, i) => ({ ...invite, key: invite.key ?? `pending-${i}` }))
     .filter(invite => !search.trim() || invite.email.toLowerCase().includes(search.trim().toLowerCase()));
 
@@ -325,44 +319,8 @@ function TeamUsersList({ team, assignedTeams, onSelectUser, pendingInvites, setP
           onChange={e => setSearch(e.target.value)}
           onClear={() => setSearch('')}
         />
-        <div className={tstyles.filterWrap} ref={filterRef}>
-          <ToolbarButton
-            icon={<IconFilter size={16} />}
-            selected={roleFilter.size > 0}
-            onClick={() => setFilterOpen(prev => !prev)}
-          >
-            Filters
-            {roleFilter.size > 0 && <span className={tstyles.filterBadge}>{roleFilter.size}</span>}
-          </ToolbarButton>
-          {filterOpen && (
-            <div className={tstyles.filterDropdown}>
-              <div className={tstyles.filterSection}>
-                <p className={tstyles.filterSectionLabel}>Role</p>
-                {[{ v: 'professional', label: 'Team admin' }, { v: 'user', label: 'User' }].map(({ v, label }) => (
-                  <label key={v} className={`${tstyles.filterOption} ${roleFilter.has(v) ? tstyles.filterOptionChecked : ''}`}>
-                    <input
-                      type="checkbox"
-                      className={tstyles.nativeCheck}
-                      checked={roleFilter.has(v)}
-                      onChange={() => toggleRole(v)}
-                    />
-                    <span className={tstyles.checkBox}>
-                      <svg className={tstyles.checkMark} viewBox="0 0 10 8" fill="none">
-                        <path d="M1 4l3 3 5-6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
-                    </span>
-                    {label}
-                  </label>
-                ))}
-              </div>
-              {roleFilter.size > 0 && (
-                <button className={tstyles.clearFilters} onClick={() => setRoleFilter(new Set())}>
-                  Clear filters
-                </button>
-              )}
-            </div>
-          )}
-        </div>
+        {/* Sin filtro de rol: en este tab ya solo hay jugadores — los team admins viven en
+            el tab Admins. Filtrar por un rol que no puede aparecer no lleva a ningún lado. */}
         <div className={`${tstyles.filterWrap} ${tstyles.bulkActionsWrap}`} ref={bulkRef}>
           <ToolbarButton icon={<IconMenu size={16} />} onClick={() => setBulkOpen(prev => !prev)}>
             <span className={tstyles.bulkActionsLabel}>Bulk actions</span>
@@ -490,7 +448,7 @@ function TeamUsersList({ team, assignedTeams, onSelectUser, pendingInvites, setP
                   <div className={shell.teamRowMenu}>
                     <ContextMenu
                       items={[
-                        { label: 'Edit User', icon: <IconEdit size={16} />, onClick: () => { setOpenMenuId(null); setEditUserTarget(user); } },
+                        { label: 'Edit user', icon: <IconEdit size={16} />, onClick: () => { setOpenMenuId(null); setEditUserTarget(user); } },
                         { label: user.pin ? 'Turn off PIN' : 'Turn on PIN', icon: <IconPower size={16} />, onClick: () => { setOpenMenuId(null); togglePin(user); } },
                         { label: (user.visibleOnScreen ?? true) ? 'Hide from screen' : 'Show on screen', icon: (user.visibleOnScreen ?? true) ? <IconEyeClosed size={16} /> : <IconEye size={16} />, onClick: () => { setOpenMenuId(null); toggleVisibleOnScreen(user); } },
                         {
@@ -514,6 +472,7 @@ function TeamUsersList({ team, assignedTeams, onSelectUser, pendingInvites, setP
         <EditUserDrawer
           user={editUserTarget}
           team={team}
+          memberships={visibleMemberships(editUserTarget)}
           onClose={() => setEditUserTarget(null)}
           role="teamAdmin"
           onRemove={() => { setEditUserTarget(null); setRemoveTarget(editUserTarget); }}

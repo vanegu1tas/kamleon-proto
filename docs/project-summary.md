@@ -785,7 +785,13 @@ Repaso completo del rol **Center Admin** más una pasada al Sidebar. Cuatro comm
 - [ ] **Validar con el programador los tabs Users | Admins dentro de un equipo** *(añadido 2026-09-26)*
   El panel del equipo (el que ven Center Admin y Kamleon staff) no tenía tabs: los team admins salían mezclados en la tabla de miembros, con columnas de PIN y Screen que no les aplican, y sus invitaciones pendientes aparecían como filas de miembro con guiones. Se separó en dos tabs, igual que el centro. **No estaba pedido ni está en Figma**: confirmar si se queda antes de dibujarlo.
 
-- [ ] **Montar en Figma los 5 flujos clave del Center Admin** — guion listo en `docs/features/center-admin-flujos-figma.md`
+- [ ] **Probar las dos vías de código → Figma y la sincronización del DS**
+  Tras cerrar el barrido: generar el mismo frame (el perfil de usuario, que ya existe dibujado) con el **MCP oficial de Figma** y con **figma-console**, ponerlos al lado del original y juzgar fidelidad. Antes, comparar qué componentes hay en código y cuáles en Figma. El mapeo formal es Code Connect y sigue bloqueado por permisos, pero las herramientas de comparación (`figma_check_design_parity`, `figma_audit_design_system`, `figma_export_tokens`) no lo necesitan. Con tiempo limitado: si sale una maqueta de cajas grises, se descarta para pantallas y se deja solo para diagramas de flujo.
+
+- [ ] **Montar en Figma los flujos clave, un documento por rol** — guiones listos en `docs/features/center-admin-flujos-figma.md` y `docs/features/team-admin-flujos-figma.md`
+  Se separan por rol a propósito: así una persona hace QA de un rol completo de una sentada. Cada guion trae los frames en orden, los textos exactos y qué verificar.
+
+- [ ] **(Center Admin) Los 5 flujos** — guion en `docs/features/center-admin-flujos-figma.md`
   Añadir personas · ciclo de vida de una invitación · crear y borrar un equipo · editar una unit · estados vacíos y de error. Con pantallas reales, no cajas: al construirlos se actualizan de paso los frames que estaban desfasados, así que sustituyen a la lista de arreglos sueltos. El guion tiene los frames en orden, qué estado es cada uno y los textos exactos.
 
 ### 🟢 Listo para hacer

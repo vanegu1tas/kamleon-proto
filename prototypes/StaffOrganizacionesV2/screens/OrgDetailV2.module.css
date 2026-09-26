@@ -2557,6 +2557,37 @@
   gap: 20px;
 }
 
+/* Cabecera de sección con su acción a la derecha (Figma 12394:487494). */
+.profileSectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 622px;
+}
+
+.profileSectionLabel {
+  margin: 0;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--color-text-subtle);
+}
+
+/* Fila de enlaces separados por "|" (Set New Pin · Download PIN sheet). */
+.profileLinkRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.profileLinkSep {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  color: var(--color-text-subtle);
+}
+
 .profileSectionTitle {
   margin: 0;
   font-family: var(--font-family-primary);

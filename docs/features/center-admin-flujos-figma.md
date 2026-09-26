@@ -177,6 +177,64 @@ Textos:
 
 ---
 
+## 4 bis · Editar un usuario: permisos por pertenencia
+
+**La regla, en una frase para el programador**: se dibuja **una tarjeta por cada pertenencia
+que quien está mirando tenga permiso de ver**. Si solo se dibuja una, se oculta la cabecera de
+rol y equipo.
+
+**Por qué**: el PIN y la visibilidad en pantalla no son ajustes de la persona, son de su
+pertenencia a un equipo. Alguien que juega en un equipo y administra otro no tiene "un PIN":
+tiene ajustes en cada sitio donde está. Por eso "Remove from team" vive **dentro** de la
+tarjeta — lo que se quita es esa pertenencia, no la cuenta.
+
+### Una sola pertenencia (el caso normal)
+
+```
+Permissions
+
+┌───────────────────────────────────────────────────────┐
+│   Visible on screen ⓘ                  [ On | Off ]   │
+│   PIN ⓘ                                [ On | Off ]   │
+│   ┌─────────────────────────────────────────────────┐ │
+│   │                Remove from team                 │ │
+│   └─────────────────────────────────────────────────┘ │
+└───────────────────────────────────────────────────────┘
+```
+
+### Dos o más pertenencias visibles
+
+```
+┌───────────────────────────────────────────────────────┐
+│   Team admin                                          │
+│   Academy                                             │
+│   Visible on screen ⓘ                  [ On | Off ]   │
+│   PIN ⓘ                                [ On | Off ]   │
+│   ┌─────────────────────────────────────────────────┐ │
+│   │                Remove from team                 │ │
+│   └─────────────────────────────────────────────────┘ │
+└───────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────┐
+│   User                                                │
+│   First team                                          │
+│   …mismos ajustes, su propio Remove from team         │
+└───────────────────────────────────────────────────────┘
+```
+
+**Quién ve cuántas**: Kamleon staff ve todas las pertenencias de la persona. Un Team Admin solo
+las de los equipos que administra — si la persona está además en otro equipo, esa tarjeta no
+se le muestra. Por eso la cabecera depende de **cuántas tarjetas se dibujan**, no del rol de
+quien mira: el mismo Team Admin puede ver una pantalla con cabecera y otra sin ella.
+
+**No es un caso teórico**: en los datos del prototipo, Xavi Olmo está en First Team y Academy,
+y el Team Admin de prueba administra los dos.
+
+**Ojo con Figma**: ese frame (11642:263414) todavía tiene el botón **Regenerate PIN**, que se
+quitó del producto el 21/9. Hay que borrarlo.
+
+---
+
 ## 5 · Estados vacíos y de error
 
 Transversal, y el que siempre falta: si no está en Figma, lo acaba inventando el programador.

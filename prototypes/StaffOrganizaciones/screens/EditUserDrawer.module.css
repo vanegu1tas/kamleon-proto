@@ -551,3 +551,34 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ─── Tarjeta de permisos (una por pertenencia) ──────────────────────────────── */
+
+.permissionsCard {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-s);
+}
+
+.permissionsCardHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.permissionsCardRole {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+}
+
+.permissionsCardTeam {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+}

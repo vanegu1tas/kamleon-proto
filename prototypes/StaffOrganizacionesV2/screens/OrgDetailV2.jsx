@@ -2967,13 +2967,10 @@ function UserCard({ user, team, backLabel, onBack, isMobile = false, role, onRem
   // El modelo guarda un solo "name"; Name/Surname se parten solo para mostrarlos, igual que
   // hace EditUserDrawer.
   const [firstName, ...restName] = (user.name ?? '').split(' ');
-  const surname = restName.join(' ');
   const initials = `${firstName?.charAt(0) ?? ''}${(restName[restName.length - 1] ?? '').charAt(0)}`.toUpperCase() || (user.name ?? '?').charAt(0);
   const screenOn = user.visibleOnScreen ?? true;
 
   const fields = [
-    ['Name', firstName],
-    ['Surname', surname],
     ['Email', user.email],
     ['Phone number', user.phone],
     ['Date of birth', user.birthday],
@@ -3015,12 +3012,18 @@ function UserCard({ user, team, backLabel, onBack, isMobile = false, role, onRem
           <div className={styles.profileAvatar}>{initials}</div>
           <div className={styles.profileIdentity}>
             <span className={styles.profileName}>{user.name}</span>
-            <span className={styles.profileEmail}>{user.email}</span>
+            {/* El correo no va acá: vive como campo dentro de Account (Figma 12394:487494). */}
             <div className={styles.profileMeta}>
               <span className={styles.profileStatus}>
                 <span className={`${styles.statusDot} ${styles[user.status]}`} />
                 {user.status === 'active' ? 'Active' : 'Inactive'}
               </span>
+              {user.jerseyNumber != null && (
+                <>
+                  <span className={styles.profileMetaSep}>|</span>
+                  <span>#{user.jerseyNumber}</span>
+                </>
+              )}
               <span className={styles.profileMetaSep}>|</span>
               <span>Joined: {user.dateAdded ?? '—'}</span>
             </div>
@@ -3028,7 +3031,9 @@ function UserCard({ user, team, backLabel, onBack, isMobile = false, role, onRem
         </div>
 
         <section className={styles.profileSection}>
-          <h3 className={styles.profileSectionTitle}>Account</h3>
+          {/* En Figma "Account" es una etiqueta pequeña en mayúsculas, no un título como
+              Permissions o Security. */}
+          <p className={styles.profileSectionLabel}>Account</p>
           <div className={styles.profileGrid}>
             {fields.map(([label, value]) => (
               <div key={label} className={styles.profileField}>
@@ -3042,7 +3047,14 @@ function UserCard({ user, team, backLabel, onBack, isMobile = false, role, onRem
         <div className={styles.profileDivider} />
 
         <section className={styles.profileSection}>
-          <h3 className={styles.profileSectionTitle}>Permissions</h3>
+          <div className={styles.profileSectionHeader}>
+            <h3 className={styles.profileSectionTitle}>Permissions</h3>
+            {canManageUser && (
+              <IconButton aria-label="Edit permissions" tooltip="Edit" onClick={() => setShowEdit(true)}>
+                <IconEdit size={16} />
+              </IconButton>
+            )}
+          </div>
           <div className={styles.profileGrid}>
             <div className={styles.profileField}>
               <span className={styles.profileFieldLabel}>Show this user on the screen</span>
@@ -3063,10 +3075,25 @@ function UserCard({ user, team, backLabel, onBack, isMobile = false, role, onRem
               <h3 className={styles.profileSectionTitle}>Security</h3>
               <button
                 className={styles.profileLink}
-                onClick={() => setActionToast(`New PIN sent to ${user.name}`)}
+                onClick={() => setActionToast(`Password reset sent to ${user.name}`)}
               >
-                Set new Pin
+                Change password
               </button>
+              <div className={styles.profileLinkRow}>
+                <button
+                  className={styles.profileLink}
+                  onClick={() => setActionToast(`New PIN sent to ${user.name}`)}
+                >
+                  Set New Pin
+                </button>
+                <span className={styles.profileLinkSep}>|</span>
+                <button
+                  className={styles.profileLink}
+                  onClick={() => setActionToast(`PIN sheet downloaded for ${user.name}`)}
+                >
+                  Download PIN sheet
+                </button>
+              </div>
             </section>
 
             {team && (

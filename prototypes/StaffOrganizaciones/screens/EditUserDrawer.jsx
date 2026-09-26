@@ -61,7 +61,12 @@ function StatusField({ value, onChange }) {
 
 // ─── Component ───────────────────────────────────────────
 
-export default function EditUserDrawer({ user, team, onClose, role, onRemove }) {
+export default function EditUserDrawer({ user, team, onClose, role, onRemove, memberships: membershipsProp }) {
+  // Pertenencias que quien está mirando puede ver. Si no se pasan, se asume la única que
+  // conoce la pantalla: el equipo desde el que se abrió el drawer.
+  const memberships = membershipsProp?.length
+    ? membershipsProp
+    : [{ teamId: team?.id, teamName: team?.name, role: user.role === 'professional' ? 'Team admin' : 'User' }];
   // El excel da users.viewStatus Y users.changeStatus a Team Admin (docs/permissions.md) —
   // antes lo ocultábamos del todo por confusión en testing con el switch viejo; ahora que
   // Status usa el mismo dropdown establecido en el resto de la app (EditOrgDrawer/EditTeamDrawer),
@@ -299,37 +304,53 @@ export default function EditUserDrawer({ user, team, onClose, role, onRemove }) 
 
           </div>
 
-          {/* Permissions */}
+          {/* Permissions — una tarjeta por pertenencia.
+              El PIN y la visibilidad en pantalla no son de la persona: son de su pertenencia a
+              un equipo. Por eso cada tarjeta lleva sus propios ajustes y su propio "Remove from
+              team" (lo que quitás es esa pertenencia, no la cuenta).
+              La cabecera con rol y equipo aparece solo cuando se dibuja más de una tarjeta: con
+              una sola no hay nada que distinguir. Quien mira ve únicamente las pertenencias sobre
+              las que tiene competencia — un Team Admin, las de sus equipos.
+              "Regenerate PIN" se quitó el 21/9: la acción ya no existe en el producto. */}
           <div className={styles.section}>
             <h3 className={styles.sectionTitle}>Permissions</h3>
-            <div className={styles.permissionsGroup}>
-              <PermissionRow
-                label="Visible on screen"
-                tooltip="Show members on the device's roster screen."
-                value={visibleOnScreen}
-                onChange={setVisibleOnScreen}
-              />
-              <PermissionRow
-                label="PIN"
-                tooltip="Allow members to log in with a PIN."
-                value={pin}
-                onChange={setPin}
-              />
-            </div>
-          </div>
 
-          {/* Actions — "Regenerate PIN" se quitó (21/9): la acción ya no existe en el producto,
-              ni acá ni en el menú "⋯" de la fila ni en Bulk actions. */}
-          {onRemove && (
-            <div className={styles.section}>
-              <h3 className={styles.sectionTitle}>Actions</h3>
-              <div className={styles.actionsList}>
-                <button className={`${styles.actionBtn} ${styles.actionBtnDanger}`} type="button" onClick={onRemove}>
-                  Remove from team
-                </button>
+            {memberships.map((membership, i) => (
+              <div key={membership.teamId ?? i} className={styles.permissionsCard}>
+                {memberships.length > 1 && (
+                  <div className={styles.permissionsCardHeader}>
+                    <span className={styles.permissionsCardRole}>{membership.role}</span>
+                    <span className={styles.permissionsCardTeam}>{membership.teamName}</span>
+                  </div>
+                )}
+
+                <div className={styles.permissionsGroup}>
+                  <PermissionRow
+                    label="Visible on screen"
+                    tooltip="Show members on the device's roster screen."
+                    value={visibleOnScreen}
+                    onChange={setVisibleOnScreen}
+                  />
+                  <PermissionRow
+                    label="PIN"
+                    tooltip="Allow members to log in with a PIN."
+                    value={pin}
+                    onChange={setPin}
+                  />
+                </div>
+
+                {onRemove && (
+                  <button
+                    className={`${styles.actionBtn} ${styles.actionBtnDanger}`}
+                    type="button"
+                    onClick={() => onRemove(membership)}
+                  >
+                    Remove from team
+                  </button>
+                )}
               </div>
-            </div>
-          )}
+            ))}
+          </div>
 
         </div>
 
