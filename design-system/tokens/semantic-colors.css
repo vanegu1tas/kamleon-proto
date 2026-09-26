@@ -15,6 +15,8 @@
   --color-bg-surface-raised:    var(--color-grey-96);   /* #f4f5f5 */
   --color-bg-surface-subtle:    var(--color-grey-98);   /* #fafafa */
   --color-bg-surface-disabled: var(--color-grey-91);   /* #e5e7eb */
+  /* Fondo rojo palido: hoy lo usa el tag Pending, vale para cualquier aviso. */
+  --color-bg-critic-subtle:     var(--color-red-91);      /* #fad6d4 */
   --color-bg-icon-hover:        var(--color-grey-91);   /* #e5e7eb — hover de icon buttons */
   --color-bg-sidebar:           var(--color-black);     /* #0b0f12 */
   --color-bg-nav-active:        var(--color-grey-11);   /* #161d24 */
@@ -40,6 +42,8 @@
      El nombre existe porque dice dónde aplicarlo; el día que un placeholder deba verse
      distinto de una descripción, se rompe el alias a propósito. Figma: Content/Placeholder. */
   --color-text-placeholder:     var(--color-text-subtle);
+  /* Rojo oscuro sobre fondo rojo palido, para que cumpla contraste. */
+  --color-text-critic-strong:   var(--color-red-29);      /* #8b0e0a */
   --color-text-inverse-strong:  var(--color-white);         /* #ffffff */
   /* Escala de texto sobre superficie oscura (el sidebar). Tres niveles a propósito:
      Strong = lo seleccionado · Subtle = lo navegable · Muted = lo que solo organiza.
@@ -63,9 +67,6 @@
   --color-status-inactive:      var(--color-red-75);       /* #fc8c85 */
   --color-status-pending:       var(--color-red-58);       /* #e04f4a */
   --color-status-expired:       var(--color-orange-65);    /* #fda650 */
-  /* El Pending es el unico tag con fondo propio, asi que necesita su pareja. */
-  --color-status-pending-surface: var(--color-red-91);     /* #fad6d4 */
-  --color-status-pending-text:    var(--color-red-29);     /* #8b0e0a */
   --color-status-delay:         var(--color-yellow-47);   /* Email history */
   --color-status-error:         var(--color-red-58);       /* #e04f4a */
   --color-status-error-subtle:  var(--color-red-75);       /* #fc8c85 */
