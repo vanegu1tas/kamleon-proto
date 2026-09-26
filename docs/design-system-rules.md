@@ -180,3 +180,104 @@ repinta el sidebar sin saberlo.
 
 Antes de renombrar una variable así, mirar **quién la usa de verdad**. Cambiarle el valor porque
 el nombre sugiere una cosa, sin comprobar la otra, repinta lo que no tocaba.
+
+---
+
+## Cómo se nombra un token (2026-09-26)
+
+### La prueba: ¿puedo decir para qué sirve sin nombrar un componente?
+
+Si la respuesta es sí, es un token semántico. Si es no, o describe una pieza concreta y hay que
+subirlo de nivel, o le falta un nombre mejor.
+
+```
+"el color que significa activo"                     ✓  Status/Active
+"texto secundario sobre superficie oscura"          ✓  Content/Inverse/Subtle
+"un fondo rojo pálido para avisos"                  ✓  Background/Critic Subtle
+"el fondo del tag cuando está pendiente"            ✗  describe una pieza
+```
+
+El último caso ocurrió de verdad: `Status/Pending Surface` y `Status/Pending Text` nacieron
+describiendo la anatomía de un tag. Renombrados a `Background/Critic Subtle` y
+`Content/Critic Strong`, valen también para un banner de error o una fila marcada — el tag deja
+de ser el dueño del color y pasa a ser solo el primer sitio donde se usó.
+
+**No se monta una tercera capa de tokens de componente** (`Tag/background/pending`). Esa capa
+compensa cuando hay varias marcas, varios temas o equipos que no se hablan, porque permite
+cambiar un componente sin tocar los demás. Con un diseñador y un programador solo añade un sitio
+más donde algo se puede desincronizar. Dos capas bien nombradas valen más que tres a medias.
+
+### Una superficie oscura no es el modo oscuro
+
+Son cosas distintas y se confunden constantemente:
+
+- **Modo oscuro**: toda la aplicación cambia y *los mismos tokens pasan a valer otra cosa*. Se
+  resuelve con **modos** en la colección de variables y, en CSS, con un bloque que redefine los
+  tokens. No existe en este sistema y no hace falta todavía.
+- **Una zona oscura**: el sidebar es oscuro siempre, mientras el resto de la app es clara. No es
+  un modo: es una superficie con su propia escala de contenido.
+
+El sidebar seguiría siendo oscuro aunque mañana se implemente el modo oscuro. Por eso la familia
+`Inverse` no se toca el día que eso ocurra: seguirá significando "sobre superficie oscura".
+
+```
+Content/Inverse/Strong · Subtle · Muted      el texto
+Background/Inverse/Hover · Selected          los fondos
+```
+
+El nombre dice **sobre qué** vive el color, no **dónde** se usa hoy. Estos dos fondos se llamaron
+primero `Background/Nav *`, y "nav" describe el patrón pero se queda corto: el hover es blanco al
+5% precisamente porque el fondo es oscuro; sobre blanco no funcionaría.
+
+**`Selected`, no `Active`**: en un design system "active" suele significar *pulsado en este
+instante*. El ítem en el que estás es `Selected`.
+
+### Tokens que van en pareja: superficie teñida + su texto
+
+Un fondo de color obliga a un texto pensado para ese fondo, porque el texto normal deja de
+cumplir contraste:
+
+```
+Content/Critic        #e04f4a  sobre  #fad6d4   →  2,91:1   ✗
+Content/Critic Strong #8b0e0a  sobre  #fad6d4   →  7,22:1   ✓
+```
+
+Los dos se documentan como pareja y la descripción de cada uno nombra al otro. Es el patrón que
+Material llama `errorContainer` / `onErrorContainer`.
+
+**El nombre no siempre alcanza**, y para eso está el campo de descripción de la variable.
+"Strong" suena a énfasis cuando la razón real es "va encima del fondo teñido": eso se escribe en
+la descripción, no se resuelve alargando el nombre.
+
+### Lo que no puede ser una variable de color
+
+Una variable guarda un color, **no un degradado**. El fondo del sidebar
+(`#0b0f12` → `#161d24`) vive dentro del componente. Si hace falta tokenizarlo, se hace con un
+estilo de relleno, que es otro mecanismo.
+
+---
+
+## Cuando el rótulo y el enganche no coinciden (2026-09-26)
+
+En una página de documentación, una muestra de color puede tener el rótulo diciendo una cosa y el
+relleno enganchado a otra. **Hay dos historias posibles y llevan a arreglos opuestos:**
+
+1. Alguien cambió el color y no actualizó el texto → **el enganche es la verdad**, hay que
+   reescribir el rótulo.
+2. Alguien escribió el nombre de lo que iba a hacer y todavía no lo hizo → **el rótulo es la
+   intención**, hay que reenganchar la muestra.
+
+La segunda es lo normal cuando el trabajo está a medias, y es fácil de distinguir: **si el nombre
+del rótulo corresponde a una variable que existe, es la intención.** Si no corresponde a nada, es
+basura y se reescribe.
+
+Se descubrió a base de equivocarse: al ver `Content/Critic Strong` con la muestra enganchada a
+`Content/Critic`, se corrigió el rótulo — y el resultado fue duplicar la fila anterior y borrar
+la intención de quien la había creado.
+
+### Y las muestras se enganchan al token, nunca al color base
+
+Una muestra que apunta a `Grey/46` en vez de a `Content/Subtle` **deja de seguir al sistema**: el
+día que el token se repunte, la página sigue enseñando el color viejo y nadie lo nota, porque el
+cuadrado se ve igual de bien. Pasó con el negro: `Content/Strong` cambió de `#221e1e` a `#0b0f12`
+y la documentación no se movió.
