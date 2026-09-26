@@ -27,6 +27,18 @@
   transform: scale(0.8);
 }
 
+/* El número viaja a la esquina superior izquierda, al mismo sitio y tamaño que ocupa en la
+   recomendación: la misma caja, escalada a 0.32 (64px de los 200 originales) y colocada en
+   (20, 100). Y de paso pasa del blanco al color de su rango, para llegar ya siendo el dato
+   de la pantalla siguiente. */
+/* Viaje del número a la esquina: recto, con una curva de tiempo que arranca decidida y
+   frena al final. Probamos con trayectoria curva (Bézier muestreada) y con anticipación, y
+   ninguna convenció; se aparca hasta poder ajustarla viendo el resultado en vivo. */
+.screenExiting .center {
+  transform: translate(-410px, -241px) scale(0.32);
+  transition: transform 0.75s cubic-bezier(0.22, 1, 0.36, 1), color 0.75s ease-out;
+}
+
 
 .gauge {
   position: absolute;
@@ -45,18 +57,26 @@
   opacity: 0.85;
 }
 
-/* Número centrado en el arco (no en la pantalla): el arco está un poco por encima del medio. */
+/* Caja de tamaño fijo centrada en el arco. Es fija a propósito: al salir, el número tiene
+   que aterrizar en la esquina con una posición calculada, y con una caja que cambia de ancho
+   según el número (48 / 100) el destino bailaría. La recomendación usa esta misma caja. */
 .center {
   position: absolute;
-  top: 441px;
-  left: 640px;
-  transform: translate(-50%, -50%);
+  top: 341px;      /* 441 − 200/2 */
+  left: 430px;     /* 640 − 420/2 */
+  width: 420px;
+  height: 200px;
   display: flex;
-  align-items: baseline;
+  align-items: center;
+  justify-content: center;
   gap: 8px;
+  transform-origin: left top;
+  transition: transform 0.75s cubic-bezier(0.22, 1, 0.36, 1), color 0.75s ease-out;
+  color: #ffffff;
 }
 
 .number {
+  color: inherit;
   font-family: var(--font-family-primary);
   font-size: 200px;
   font-weight: var(--font-weight-medium);
@@ -65,6 +85,7 @@
 }
 
 .percent {
+  color: inherit;
   font-family: var(--font-family-primary);
   font-size: 64px;
   font-weight: var(--font-weight-medium);

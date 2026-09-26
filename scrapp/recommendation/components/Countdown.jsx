@@ -12,6 +12,14 @@ export default function Countdown({ seconds = 15, running = true, onFinish, onTi
   const [left, setLeft] = useState(seconds);
   const rafRef = useRef(null);
 
+  // Los callbacks viven en refs: si el efecto dependiera de ellos, cada render del padre que
+  // pase una función nueva reiniciaría la cuenta — que es justo lo que pasaba al cambiar de
+  // pantalla, el contador volvía a empezar en 12.
+  const onFinishRef = useRef(onFinish);
+  const onTickRef   = useRef(onTick);
+  onFinishRef.current = onFinish;
+  onTickRef.current   = onTick;
+
   useEffect(() => {
     if (!running) { setLeft(seconds); return; }
 
@@ -21,13 +29,13 @@ export default function Countdown({ seconds = 15, running = true, onFinish, onTi
       const elapsed = (now - t0) / 1000;
       const remaining = Math.max(0, seconds - elapsed);
       setLeft(remaining);
-      onTick?.(remaining);
+      onTickRef.current?.(remaining);
       if (remaining > 0) rafRef.current = requestAnimationFrame(frame);
-      else onFinish?.();
+      else onFinishRef.current?.();
     }
     rafRef.current = requestAnimationFrame(frame);
     return () => cancelAnimationFrame(rafRef.current);
-  }, [running, seconds, onFinish, onTick]);
+  }, [running, seconds]);
 
   const progress = left / seconds;
 

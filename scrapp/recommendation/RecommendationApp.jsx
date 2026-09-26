@@ -24,7 +24,8 @@ const TOTAL_SECONDS = 12;
 const SWITCH_AT     = 7;    // segundos restantes cuando el score se va y entra la recomendación
                             // → 5 s de score y 7 s de recomendación. El score no necesita más:
                             // su animación dura 2,2 s y lo que sobra se siente como una espera.
-const EXIT_MS       = 600;  // lo que tarda el score en encogerse (igual que en su CSS)
+const EXIT_MS       = 750;  // lo que tarda el número en llegar a la esquina (igual que en su CSS;
+                            // el arco se apaga antes, en 600 ms)
 
 export default function RecommendationApp() {
   const [screen, setScreen]   = useState('start');

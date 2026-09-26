@@ -136,15 +136,17 @@ export default function ScoreScreen({ score = 48, exiting = false }) {
         <circle cx={mx} cy={my} r={20} fill="none" stroke={zone.color} strokeWidth="5" opacity="0.9" />
       </svg>
 
-      <div className={styles.center}>
-        <span className={styles.number}>{display}</span>
-        <span className={styles.percent}>%</span>
-      </div>
-
       <div className={`${styles.result} ${revealed ? styles.resultVisible : ''}`}>
         <p className={styles.status} style={{ color: zone.color }}>{zone.label}</p>
         <p className={styles.message}>{getMessageText(score)}</p>
       </div>
+      </div>
+
+      {/* El número no se apaga con el resto: viaja hasta la esquina donde vive en la
+          recomendación, para que se lea como el mismo dato y no como otro nuevo. */}
+      <div className={styles.center} style={exiting ? { color: zone.color } : undefined}>
+        <span className={styles.number}>{display}</span>
+        <span className={styles.percent}>%</span>
       </div>
     </div>
   );

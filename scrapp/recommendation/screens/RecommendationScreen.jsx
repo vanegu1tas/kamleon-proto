@@ -47,14 +47,16 @@ export default function RecommendationScreen({ score = 48, playerName = 'Carlos'
 
   return (
     <div className={styles.screen}>
-      <div className={styles.left}>
-        {/* El score no desaparece del todo: se queda de referencia, en el color de su rango */}
-        <div className={styles.scoreChip} style={{ color: zone.color }}>
-          <span className={styles.scoreNumber}>{score}</span>
-          <span className={styles.scorePercent}>%</span>
-          <span className={styles.scoreLabel}>{zone.label}</span>
-        </div>
+      {/* El score no desaparece del todo: se queda de referencia, en el color de su rango.
+          Misma caja y mismo escalado que en la pantalla anterior, porque el número llega
+          viajando desde allá y tiene que encontrarse exactamente en este sitio. */}
+      <div className={styles.scoreBox} style={{ color: zone.color }}>
+        <span className={styles.scoreNumber}>{score}</span>
+        <span className={styles.scorePercent}>%</span>
+      </div>
+      <span className={styles.scoreLabel} style={{ color: zone.color }}>{zone.label}</span>
 
+      <div className={styles.headlineWrap}>
         <h1 className={styles.headline}>
           {playerName}, you need to drink {product}
         </h1>

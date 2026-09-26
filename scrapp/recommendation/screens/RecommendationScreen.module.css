@@ -23,35 +23,51 @@
 }
 
 
-.left {
+/* El score y su etiqueta se posicionan solos (coinciden con la pantalla anterior), así que
+   el titular baja a su altura sin depender de ellos. */
+.headlineWrap {
   position: absolute;
   left: 52px;
-  top: 119px;
+  top: 223px;
   width: 470px;
 }
 
-.scoreChip {
-  animation: riseIn 0.45s ease-out 0.05s both;
+/* Sin animación de entrada: el número viene viajando desde la pantalla del score, con la
+   misma caja de 420×200 escalada a 0.32. Solo la etiqueta del rango aparece. */
+.scoreBox {
+  position: absolute;
+  left: 20px;
+  top: 100px;
+  width: 420px;
+  height: 200px;
   display: flex;
-  align-items: baseline;
-  gap: 6px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transform: scale(0.32);
+  transform-origin: left top;
   font-family: var(--font-family-primary);
   font-weight: var(--font-weight-medium);
 }
 
-.scoreNumber { font-size: 64px; line-height: 1; }
-.scorePercent { font-size: 30px; line-height: 1; }
+.scoreNumber  { font-size: 200px; line-height: 1; letter-spacing: -4px; }
+.scorePercent { font-size: 64px;  line-height: 1; }
 
 .scoreLabel {
-  margin-left: 14px;
+  animation: riseIn 0.4s ease-out 0.15s both;
+  position: absolute;
+  left: 176px;
+  top: 141px;
   font-size: 24px;
+  font-weight: var(--font-weight-medium);
+  font-family: var(--font-family-primary);
   text-transform: uppercase;
   line-height: 1;
 }
 
 .headline {
   animation: riseIn 0.55s ease-out 0.35s both;
-  margin: 36px 0 0;
+  margin: 0;
   font-family: var(--font-family-primary);
   font-size: 56px;
   font-weight: var(--font-weight-medium);
