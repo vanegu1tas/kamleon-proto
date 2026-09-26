@@ -330,6 +330,24 @@ Los nombres de variables siguen estos prefijos exactos. **No usar nombres cortos
 | `--radius-m` | 24px |
 | `--radius-l` | 40px |
 
+Una sola escala, sin variantes por dispositivo: un radio es una propiedad de la forma, no del
+espacio disponible. En Figma, colección `Border Radius`, con los mismos cuatro nombres.
+
+### Elevación y anillo de foco (tokens.css) — 26/09/2026
+
+| Token | Para qué | Figma |
+|---|---|---|
+| `--elevation-1` | Cards, paneles y tablas | `Elevation/1` |
+| `--elevation-2` | Menús, desplegables y tooltips | `Elevation/2` |
+| `--shadow-drawer` | Panel anclado al borde derecho | `Shadow/Drawer` |
+| `--shadow-sidebar` | El sidebar sobre el fondo de la página | `Shadow/Sidebar` |
+| `--shadow-control-thumb` | La bolita del Toggle | `Shadow/Control thumb` |
+| `--focus-ring` / `--focus-ring-error` | Indicador de teclado de los campos | — |
+
+Drawer, sidebar y pulsador **no son niveles de elevación**: un nivel se define por cuánto flota
+algo sobre el fondo, y esas tres sombras existen por otra razón (dirección, estructura, separar
+dos piezas del mismo control). Falta el nivel 3, para lo que tapa el resto de la interfaz.
+
 ---
 
 ## Tokens de color
@@ -426,11 +444,38 @@ Nodos relevantes:
 
 ---
 
+## Cerrado el 2026-09-26 — sincronización Design System ↔ código
+
+Diez commits (`f6df952` → `69cdf27`). El detalle completo, con el razonamiento de cada decisión,
+está en `docs/design-system-map.md`; las reglas que salieron, en `docs/design-system-rules.md`.
+
+**En Figma:** las dos colecciones de color fusionadas en una (`Global Colors` quedó con 0 capas y
+0 aliases, renombrada a deprecated) · página `-- Colors` completa, 35 de 35 variables con la
+muestra enganchada al token · página `-- Elevation` nueva · 5 estilos de efecto · 7 variantes sin
+nombre resueltas (`Toggle` Size, `Toolbar Button` Disabled, `Radio` Default, `Search bar` Focus,
+`.Tab SC` Inactive) · errata `Turquose` → `Turquoise` y el `61` → `63` por luminosidad.
+
+**En código:** `SegmentedControl` y `SearchBar` igualados al píxel · 33 sombras a mano → 5 tokens
+· anillo de foco de 8 copias a 1 · `--color-text-placeholder` de `#9ca3af` a `#6b7280` (tenía el
+mismo valor que el texto deshabilitado y no llegaba al mínimo AA) · `Textarea` gana `onSubtle` ·
+familias `Content/Inverse/*` y `Background/Inverse/*` para la superficie oscura del sidebar.
+
+**Lo que enseñó:** cinco de los diez commits arreglan cosas que nadie sabía que estaban mal —dos
+variables llamadas `Black` con distinto valor, hex que mentían en la documentación, radios
+responsive que nunca se usaron, un tag de rol muerto, la errata del turquesa—. Ninguna se
+encuentra mirando; solo comparando.
+
+**Siguiente (27/9):** decidir y escribir **quién manda en cada capa**. El 26/9 se decidió ocho
+veces, unas ganó Figma y otras el código, con un motivo concreto cada vez, pero esos motivos
+están dispersos en los mensajes de commit.
+
+---
+
 ## Plan de trabajo pendiente
 
 ### Design System — Componentes
 - [x] Button — primary/secondary · s/m · default/hover/disabled
-- [x] Tag — active/inactive/professional/user · dot + label
+- [x] Tag — ciclo de vida (active/inactive/pending/expired) + envío de correo (delay/delivered) · dot + label. La familia de rol se eliminó el 26/9: solo la usaba V1, congelada
 - [x] SidebarItem — icon + label · default/selected · expanded/collapsed · tooltips portal
 - [x] Sidebar — shell completo con header (logo SVG), toggle, secciones y nav
 - [x] SearchBar — lupa + placeholder + clear button · estados: default/hover/focus/error/disabled
