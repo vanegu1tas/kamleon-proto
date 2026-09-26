@@ -116,7 +116,7 @@ export default function EditUserDrawer({ user, team, onClose, role, onRemove }) 
 
         {/* ── Header ── */}
         <div className={styles.header}>
-          <h2 className={styles.title}>Edit User</h2>
+          <h2 className={styles.title}>Edit user</h2>
           <IconButton aria-label="Close" onClick={onClose}>
             <IconClose size={16} />
           </IconButton>

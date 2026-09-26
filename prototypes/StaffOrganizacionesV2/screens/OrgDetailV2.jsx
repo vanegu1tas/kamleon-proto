@@ -2453,6 +2453,12 @@ function TeamCard({ team, center, org, onBack, onSelectUser, onNewUser, onEdit, 
     return () => document.removeEventListener('mousedown', handleClick);
   }, [bulkOpen]);
 
+  // El equipo tiene dos tabs, como el centro: los jugadores por un lado y quien administra el
+  // equipo por otro. Antes los team admins salían mezclados en la tabla de miembros, con
+  // columnas de PIN y Screen que no les aplican, y sus invitaciones pendientes aparecían como
+  // filas de miembro con guiones.
+  const [teamTab, setTeamTab] = useState('users');
+
   const [allMembers, setAllMembers] = useState(() => {
     const userIds = new Set(team.users ?? []);
     const profIds = new Set(team.professionalIds ?? []);
@@ -2534,6 +2540,7 @@ function TeamCard({ team, center, org, onBack, onSelectUser, onNewUser, onEdit, 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     return allMembers.filter(m => {
+      if (m.role === 'Team admin') return false;     // viven en el tab Admins
       if (removedMemberIds?.has(m.id)) return false; // quitado desde su perfil
       if (q && !m.name.toLowerCase().includes(q) && !m.email.toLowerCase().includes(q)) return false;
       if (filters.role.size   > 0 && !filters.role.has(m.role))     return false;
@@ -2541,6 +2548,20 @@ function TeamCard({ team, center, org, onBack, onSelectUser, onNewUser, onEdit, 
       return true;
     });
   }, [allMembers, search, filters, removedMemberIds]);
+
+  const adminRows = [
+    ...teamAdminInvites.map((invite, i) => ({
+      key: `team-admin-pending-${invite.email}-${i}`, sourceKey: invite.key, kind: 'pending',
+      email: invite.email, type: 'Team admin', status: 'pending',
+      sentAgo: invite.sentAgo ?? '—',
+    })),
+    ...allMembers
+      .filter(m => m.role === 'Team admin' && !removedMemberIds?.has(m.id))
+      .map(m => ({
+        key: `team-admin-active-${m.id}`, memberId: m.id, kind: 'active',
+        email: m.email, name: m.name, type: 'Team admin', status: 'active',
+      })),
+  ];
 
   const totalPages  = Math.max(1, Math.ceil(filtered.length / TEAM_PAGE_SIZE));
   const safePage    = Math.min(page, totalPages);
@@ -2611,7 +2632,46 @@ function TeamCard({ team, center, org, onBack, onSelectUser, onNewUser, onEdit, 
 
       </div>
 
-      {/* ── Scrollable content ── */}
+      {/* ── Tabs: jugadores y administradores del equipo ── */}
+      <div className={styles.innerTabBarWrap}>
+        <div className={`${styles.innerTabBarInner} ${styles.innerTabBarInnerTwo}`}>
+          <TabBar
+            tabs={[
+              { id: 'users',  label: 'Users' },
+              { id: 'admins', label: 'Admins', hasDot: teamAdminInvites.length > 0 },
+            ]}
+            activeTab={teamTab}
+            onChange={setTeamTab}
+            size="s"
+          />
+        </div>
+      </div>
+
+      {teamTab === 'admins' ? (
+        <div className={styles.teamContent}>
+          <InvitationsTable
+            description={'Manage the administrators of this team. Use the "+" button above to invite one.'}
+            rows={adminRows}
+            showType={false}
+            showScope={false}
+            showSent={false}
+            searchPlaceholder="Search..."
+            emptyTitle="No team admins yet"
+            emptySubtitle="Admins you invite will appear here."
+            canEditUsers={canManageTeam}
+            onResend={row => setActionToast(`Invitation resent to ${row.email}`)}
+            onCancel={row => {
+              setActionToast(`Invitation to ${row.email} cancelled`);
+              setTeamAdminInvites(prev => prev.filter(i => i.key !== row.sourceKey));
+            }}
+            onRemove={row => setActionToast(`${row.email} removed as Team admin`)}
+            onEditUser={row => {
+              const member = allMembers.find(m => m.id === row.memberId);
+              if (member) setEditUserTarget(member);
+            }}
+          />
+        </div>
+      ) : (
       <div className={`${styles.teamContent} ${styles.membersTab}`}>
 
         <div className={styles.teamToolbar}>
@@ -2687,12 +2747,12 @@ function TeamCard({ team, center, org, onBack, onSelectUser, onNewUser, onEdit, 
           )}
         </div>
 
-        {(allMembers.length === 0 && pendingInvites.length === 0 && teamAdminInvites.length === 0) ? (
+        {(filtered.length === 0 && pendingInvites.length === 0 && search === '') ? (
           <InnerEmptyState
             title="No members yet..."
             subtitle="Add users to this team to see them here"
           />
-        ) : (pageMembers.length > 0 || pendingInvites.length > 0 || teamAdminInvites.length > 0) ? (
+        ) : (pageMembers.length > 0 || pendingInvites.length > 0) ? (
           <div className={styles.teamTable}>
             <div className={styles.teamTableHead}>
               <span className={`${styles.teamCol} ${styles.teamColName}`}>Name</span>
@@ -2723,38 +2783,6 @@ function TeamCard({ team, center, org, onBack, onSelectUser, onNewUser, onEdit, 
               </span>
               <span className={`${styles.teamCol} ${styles.teamColActions}`} />
             </div>
-            {teamAdminInvites.map(invite => (
-              <div key={`team-admin-${invite.email}`} className={styles.teamTableRow}>
-                <div className={`${styles.teamCol} ${styles.teamColName}`}>
-                  <div className={styles.memberAvatar}>{invite.email.charAt(0).toUpperCase()}</div>
-                  <div className={styles.memberMeta}>
-                    <TruncatedText text={invite.email} textClassName={styles.memberName} />
-                    <span className={styles.memberSub}>Team admin</span>
-                  </div>
-                </div>
-                <div className={`${styles.teamCol} ${styles.teamColStatus}`}>
-                  <Tag status="pending" />
-                </div>
-                <div className={`${styles.teamCol} ${styles.teamColPin}`}>
-                  <span className={styles.pinBadge}>—</span>
-                </div>
-                <div className={`${styles.teamCol} ${styles.teamColScreen}`}>
-                  <span className={styles.pinBadge}>—</span>
-                </div>
-                <div className={`${styles.teamCol} ${styles.teamColActions}`}>
-                  {canManageTeam ? (
-                    <>
-                      <IconButton aria-label="Resend invitation" tooltip="Resend" onClick={() => handleResendTeamAdminInvite(invite)}>
-                        <IconResend size={16} />
-                      </IconButton>
-                      <IconButton aria-label="Cancel invitation" tooltip="Cancel" onClick={() => handleCancelTeamAdminInvite(invite)}>
-                        <IconTrash size={14} />
-                      </IconButton>
-                    </>
-                  ) : null}
-                </div>
-              </div>
-            ))}
             {pendingInvites.map(invite => (
               <div key={`pending-${invite.email}`} className={styles.teamTableRow}>
                 <div className={`${styles.teamCol} ${styles.teamColName}`}>
@@ -2876,6 +2904,7 @@ function TeamCard({ team, center, org, onBack, onSelectUser, onNewUser, onEdit, 
         )}
 
       </div>
+      )}
 
       {editUserTarget && (
         <EditUserDrawer user={editUserTarget} team={team} onClose={() => setEditUserTarget(null)} role="centerAdmin" />

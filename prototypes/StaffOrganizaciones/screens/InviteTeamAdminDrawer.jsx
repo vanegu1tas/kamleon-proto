@@ -49,7 +49,7 @@ export default function InviteTeamAdminDrawer({ center, presetTeam = null, onClo
 
         {/* ── Header ── */}
         <div className={styles.header}>
-          <h2 className={styles.title}>New Team admin</h2>
+          <h2 className={styles.title}>New team admin</h2>
           <IconButton aria-label="Close" onClick={onClose}>
             <IconClose size={16} />
           </IconButton>

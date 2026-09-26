@@ -12,6 +12,7 @@ import NewUserDrawer from '../../StaffOrganizaciones/screens/NewUserDrawer';
 import EditUserDrawer from '../../StaffOrganizaciones/screens/EditUserDrawer';
 import EditTeamDrawer from '../../StaffOrganizaciones/screens/EditTeamDrawer';
 import TruncatedText from './TruncatedText';
+import InvitationsTable from './InvitationsTable';
 import shell from './OrgDetailV2.module.css';
 import tstyles from '../../StaffOrganizaciones/screens/TeamDetail.module.css';
 import dstyles from '../../StaffOrganizaciones/screens/DeleteOrgModal.module.css';
@@ -62,7 +63,13 @@ function ConfirmBulkPinModal({ action, team, count, onClose, onConfirm }) {
   );
 }
 
-const TEAM_TABS = [{ id: 'users', label: 'Users' }];
+// Dos tabs, como en el panel del equipo del centro: los jugadores por un lado y quien
+// administra el equipo por otro. Antes los team admins salían mezclados entre los miembros,
+// con columnas de PIN y Screen que no les aplican.
+const TEAM_TABS = [
+  { id: 'users',  label: 'Users'  },
+  { id: 'admins', label: 'Admins' },
+];
 
 function ArrowLeftIcon() {
   return (
@@ -158,8 +165,50 @@ function UserProfileDetail({ user, team, onBack, onEdit }) {
   );
 }
 
+// Administradores del equipo: los ya activos y las invitaciones que están sin aceptar.
+// Usa la misma tabla compartida que la organización y el centro.
+function TeamAdminsList({ team }) {
+  const [pending, setPending] = useState(() => team.pendingProfessionalInvites ?? []);
+  const [toast, setToast] = useState(null);
+
+  const admins = getMembersForTeam(team).filter(u => u.role === 'professional');
+
+  const rows = [
+    ...pending.map((invite, i) => ({
+      key: `pending-${invite.email}-${i}`, kind: 'pending',
+      email: invite.email, type: 'Team admin', status: 'pending', sentAgo: invite.sentAgo ?? '—',
+    })),
+    ...admins.map(a => ({
+      key: `active-${a.id}`, kind: 'active',
+      email: a.email, name: a.name, type: 'Team admin', status: 'active',
+    })),
+  ];
+
+  return (
+    <>
+      <InvitationsTable
+        description="Manage the administrators of this team."
+        rows={rows}
+        showType={false}
+        showScope={false}
+        showSent={false}
+        searchPlaceholder="Search..."
+        emptyTitle="No team admins yet"
+        emptySubtitle="Admins you invite will appear here."
+        onResend={row => setToast(`Invitation resent to ${row.email}`)}
+        onCancel={row => {
+          setToast(`Invitation to ${row.email} cancelled`);
+          setPending(prev => prev.filter(i => i.email !== row.email));
+        }}
+        onRemove={row => setToast(`${row.email} removed as Team admin`)}
+      />
+      {toast && <Toast message={toast} mode="success" onClose={() => setToast(null)} />}
+    </>
+  );
+}
+
 function TeamUsersList({ team, assignedTeams, onSelectUser, pendingInvites, setPendingInvites, currentUserEmail }) {
-  const [allUsers, setAllUsers] = useState(() => getMembersForTeam(team));
+  const [allUsers, setAllUsers] = useState(() => getMembersForTeam(team).filter(u => u.role !== 'professional'));
   const [roleFilter, setRoleFilter] = useState(new Set());
   const [filterOpen, setFilterOpen] = useState(false);
   const [search, setSearch]         = useState('');
@@ -552,7 +601,10 @@ export default function TeamAdminHome({ org, assignedTeams, isMobile = false, cu
 
   const selectedEntry = patchedTeams.find(({ team }) => team.id === selectedId) ?? null;
   const teamTabs = selectedEntry
-    ? [{ ...TEAM_TABS[0], hasDot: getTeamPendingInvites(selectedEntry.team).length > 0 }]
+    ? [
+        { ...TEAM_TABS[0], hasDot: getTeamPendingInvites(selectedEntry.team).length > 0 },
+        { ...TEAM_TABS[1], hasDot: (selectedEntry.team.pendingProfessionalInvites ?? []).length > 0 },
+      ]
     : TEAM_TABS;
 
   return (
@@ -700,12 +752,15 @@ export default function TeamAdminHome({ org, assignedTeams, isMobile = false, cu
                 </div>
 
                 <div className={shell.innerTabBarWrap}>
-                  <div className={shell.innerTabBarInner}>
+                  <div className={`${shell.innerTabBarInner} ${shell.innerTabBarInnerTwo}`}>
                     <TabBar tabs={teamTabs} activeTab={teamTab} onChange={setTeamTab} size="s" />
                   </div>
                 </div>
 
                 <div className={shell.innerTabContent}>
+                  {teamTab === 'admins' && (
+                    <TeamAdminsList key={`admins-${selectedEntry.team.id}`} team={selectedEntry.team} />
+                  )}
                   {teamTab === 'users' && (
                     <TeamUsersList
                       key={selectedEntry.team.id}

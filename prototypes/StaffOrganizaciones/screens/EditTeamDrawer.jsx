@@ -46,7 +46,7 @@ export default function EditTeamDrawer({ team, center, onClose, onSave, role }) 
 
         {/* ── Header ── */}
         <div className={styles.header}>
-          <h2 className={styles.title}>Edit Team</h2>
+          <h2 className={styles.title}>Edit team</h2>
           <IconButton aria-label="Close" onClick={onClose}>
             <IconClose size={16} />
           </IconButton>

@@ -782,6 +782,9 @@ Repaso completo del rol **Center Admin** más una pasada al Sidebar. Cuatro comm
 - **Sidebar al detalle del Figma**, incluido el carril colapsado completo, y las invitaciones pendientes unificadas: una sola lista alimenta el badge y el drawer de notificaciones.
 - **Storybook**: BottomSheet (era el único componente sin historia), Tag con sus 8 estados agrupados, y Sidebar actualizado.
 
+- [ ] **Validar con el programador los tabs Users | Admins dentro de un equipo** *(añadido 2026-09-26)*
+  El panel del equipo (el que ven Center Admin y Kamleon staff) no tenía tabs: los team admins salían mezclados en la tabla de miembros, con columnas de PIN y Screen que no les aplican, y sus invitaciones pendientes aparecían como filas de miembro con guiones. Se separó en dos tabs, igual que el centro. **No estaba pedido ni está en Figma**: confirmar si se queda antes de dibujarlo.
+
 - [ ] **Montar en Figma los 5 flujos clave del Center Admin** — guion listo en `docs/features/center-admin-flujos-figma.md`
   Añadir personas · ciclo de vida de una invitación · crear y borrar un equipo · editar una unit · estados vacíos y de error. Con pantallas reales, no cajas: al construirlos se actualizan de paso los frames que estaban desfasados, así que sustituyen a la lista de arreglos sueltos. El guion tiene los frames en orden, qué estado es cada uno y los textos exactos.
 

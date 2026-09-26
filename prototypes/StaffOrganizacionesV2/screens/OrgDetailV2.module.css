@@ -631,6 +631,12 @@
   max-width: 320px;
 }
 
+/* Dos pestañas: 96px cada una, como en Figma (TabBar de 192). Con el ancho genérico de
+   320 se separaban de más — las pestañas reparten el ancho entre ellas. */
+.innerTabBarInnerTwo {
+  max-width: 192px;
+}
+
 .innerTabBarInnerWide {
   max-width: 420px;
 }

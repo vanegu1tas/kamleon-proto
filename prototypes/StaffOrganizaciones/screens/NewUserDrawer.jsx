@@ -234,7 +234,7 @@ export default function NewUserDrawer({ center, team: preselectedTeam, teams = [
 
         {/* ── Header ── */}
         <div className={styles.header}>
-          <h2 className={styles.title}>New User</h2>
+          <h2 className={styles.title}>New user</h2>
           <IconButton aria-label="Close" onClick={onClose}>
             <IconClose size={16} />
           </IconButton>

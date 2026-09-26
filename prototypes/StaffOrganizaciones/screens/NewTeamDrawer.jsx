@@ -27,7 +27,7 @@ export default function NewTeamDrawer({ center, orgs = [], onClose }) {
 
         {/* ── Header ── */}
         <div className={styles.header}>
-          <h2 className={styles.title}>New Team</h2>
+          <h2 className={styles.title}>New team</h2>
           <IconButton aria-label="Close" onClick={onClose}>
             <IconClose size={16} />
           </IconButton>
