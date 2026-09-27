@@ -23,6 +23,16 @@ body {
   --font-size-24: 24px;
   --font-size-32: 32px;
 
+  /* ─── Line Height ───────────────────────────── */
+  /* Nombradas por el tamaño con el que van, igual que en Figma. Toda la escala
+     es el tamaño × 1,25. Figma: Line Height/12 … /32 */
+  --line-height-12: 15px;
+  --line-height-14: 17.5px;
+  --line-height-16: 20px;
+  --line-height-20: 25px;
+  --line-height-24: 30px;
+  --line-height-32: 40px;
+
   /* ─── Font Weight ───────────────────────────── */
   --font-weight-book:   400;
   --font-weight-medium: 500;

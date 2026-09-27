@@ -659,6 +659,63 @@ usada 38 veces en `Calendar` que debería pasar a `Elevation/2` cuando ese compo
 
 ---
 
+### Tipografía — 27/09/2026
+
+**Las primitivas coincidían exactamente.** `Font Size/12…32`, `Font Weight/book·medium·bold` y
+`Font Family/Primary` en Figma = `--font-size-*`, `--font-weight-*` y `--font-family-primary` en
+código. Seis tamaños, tres pesos, una familia, mismos valores.
+
+Y eso confirmó que `--font-size-13` (6 usos) y `--font-size-15` (2 usos) **son un error**: no
+existen en ninguno de los dos lados, así que el navegador descarta la declaración entera y el
+texto hereda el tamaño del padre. Las ocho están en drawers de V1, congelada.
+
+**Lo que no coincidía era el mecanismo.** En Figma la tipografía se *compone*: un estilo empaqueta
+familia + tamaño + peso + interlineado y se aplica de una. En código se *descompone*: cada
+componente elige tamaño y peso por separado, en 617 sitios.
+
+Existía el equivalente —`text-styles.css`, 11 clases— pero **no lo usaba nadie**, y además decía
+`line-height: normal` donde Figma dice valores explícitos.
+
+Buena noticia al medir lo que se renderiza de verdad en V2: **49 de 72 interlineados siguen la
+proporción de Figma** (el tamaño × 1,25 exacto). El desorden era menor de lo que parecía.
+
+**Decisión: `text-styles.css` es la referencia, no se adopta.** Con 617 sitios declarando
+tipografía, media adopción dejaría dos mecanismos conviviendo — peor que uno solo imperfecto. El
+archivo se reescribió para que diga la verdad: los 14 estilos (faltaban `Headings/H3 Bold`,
+`Body/S Book` y `Body/S Medium`), los interlineados reales, y una tabla que mapea cada clase con
+su estilo de Figma. Sirve para responder "¿qué es exactamente un Body/M Medium?" sin abrir Figma.
+
+### Los estilos de texto de Figma no usaban sus propias variables
+
+Mismo caso que los radios y que las muestras de color: la capa de arriba no tiraba de la de
+abajo. **Los 14 estilos tenían tamaño, peso y familia escritos dentro**, así que la colección
+`Global Typography` no la usaba nadie y cambiar `Font Size/14` no movía nada.
+
+Se ligaron los 14 a sus primitivas. Y faltaba una primitiva entera: **el interlineado**. Se
+crearon seis, nombradas **por el tamaño con el que van** —`Line Height/14` = 17,5— para que se
+vea que son pareja de `Font Size/14`. Las mismas seis existen ahora en código como
+`--line-height-*`.
+
+Los dos `Label/*` quedan con tres de cuatro: su interlineado es `auto` y Figma no permite ligar
+una variable a `auto`. Es correcto: son textos de una sola línea.
+
+**Aviso para quien repita esto:** `Line Height/17.5` **no es un nombre válido** — Figma no admite
+puntos en el nombre de una variable. Y la referencia a una colección **caduca en cuanto creas una
+variable**: hay que volver a pedirla en cada vuelta del bucle o la siguiente llamada falla.
+
+### La variable que llevaba meses rota
+
+`Font Family/Primary` tenía dentro el texto de relleno que Figma pone al crear una variable de
+texto: literalmente **`"String value"`**. Nunca se rellenó.
+
+No se notaba porque no la usaba nadie. Al ligarla a los estilos, los 14 pasaron a pedir una
+fuente llamada "String value" y se rompieron a la vez. Se corrigió a `Circular Pro`.
+
+El error de método fue ligar sin comprobar qué valía la variable — el mismo patrón que el rótulo
+de `Content/Critic Strong` el día anterior: **actuar sobre el nombre sin verificar el contenido**.
+
+---
+
 ## Cómo mantener esto vivo
 
 Este documento es una foto del 2026-09-26 y **se va a quedar viejo**, que es exactamente lo que

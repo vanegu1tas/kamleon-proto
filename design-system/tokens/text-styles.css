@@ -1,48 +1,76 @@
 /**
  * Text Styles
- * Equivalente en código a los estilos de texto de Figma.
+ * Equivalente en código a los estilos de texto de Figma. Uno por uno, mismos valores.
  *
- * Cada clase agrupa: font-family + font-size + font-weight
- * + line-height y letter-spacing propios del estilo.
+ * | Clase                      | Estilo en Figma      | Tamaño · peso · interlineado |
+ * |----------------------------|----------------------|------------------------------|
+ * | .text-heading-h1-medium    | Headings/H1          | 32 · Medium · 40             |
+ * | .text-heading-h1-bold      | Headings/H1 Bold     | 32 · Bold   · 40             |
+ * | .text-heading-h2           | Headings/H2          | 24 · Medium · 30             |
+ * | .text-heading-h2-bold      | Headings/H2 Bold     | 24 · Bold   · 30             |
+ * | .text-heading-h3           | Headings/H3          | 20 · Medium · 25             |
+ * | .text-heading-h3-bold      | Headings/H3 Bold     | 20 · Bold   · 25             |
+ * | .text-body-l-medium        | Body/L Medium        | 16 · Medium · 20             |
+ * | .text-body-l-book          | Body/L Book          | 16 · Book   · 20             |
+ * | .text-body-m-medium        | Body/M Medium        | 14 · Medium · 17,5           |
+ * | .text-body-m-book          | Body/M Book          | 14 · Book   · 17,5           |
+ * | .text-body-s-medium        | Body/S Medium        | 12 · Medium · 15             |
+ * | .text-body-s-book          | Body/S Book          | 12 · Book   · 15             |
+ * | .text-label-section        | Label/Overline       | 12 · Medium · auto · +5%     |
+ * | .text-label-table          | Label/Table Header   | 12 · Medium · auto · +2%     |
  *
- * Uso: class="text-heading-h1-bold"
+ * Todo interlineado es el tamaño × 1,25, salvo los dos Label, que van en auto
+ * a propósito: son textos de una sola línea.
+ *
+ * ESTADO (27/09/2026): este archivo es la REFERENCIA, no se aplica. Los componentes
+ * componen a mano (font-size + font-weight por separado). Se decidió no adoptarlo:
+ * con 617 sitios declarando tipografía, media adopción dejaría dos mecanismos
+ * conviviendo, que es peor que uno solo imperfecto. Sirve para responder
+ * "¿qué es exactamente un Body/M Medium?" sin abrir Figma.
  */
 
 /* ─── Heading ───────────────────────────────────── */
-
-.text-heading-h1-bold {
-  font-family: var(--font-family-primary);
-  font-size: var(--font-size-32);
-  font-weight: var(--font-weight-bold);
-  line-height: normal;
-}
 
 .text-heading-h1-medium {
   font-family: var(--font-family-primary);
   font-size: var(--font-size-32);
   font-weight: var(--font-weight-medium);
-  line-height: normal;
+  line-height: var(--line-height-32);
+}
+
+.text-heading-h1-bold {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-32);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-32);
 }
 
 .text-heading-h2 {
   font-family: var(--font-family-primary);
   font-size: var(--font-size-24);
   font-weight: var(--font-weight-medium);
-  line-height: normal;
+  line-height: var(--line-height-24);
 }
 
 .text-heading-h2-bold {
   font-family: var(--font-family-primary);
   font-size: var(--font-size-24);
   font-weight: var(--font-weight-bold);
-  line-height: normal;
+  line-height: var(--line-height-24);
 }
 
 .text-heading-h3 {
   font-family: var(--font-family-primary);
   font-size: var(--font-size-20);
   font-weight: var(--font-weight-medium);
-  line-height: normal;
+  line-height: var(--line-height-20);
+}
+
+.text-heading-h3-bold {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-20);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-20);
 }
 
 /* ─── Body ──────────────────────────────────────── */
@@ -51,31 +79,47 @@
   font-family: var(--font-family-primary);
   font-size: var(--font-size-16);
   font-weight: var(--font-weight-medium);
-  line-height: normal;
+  line-height: var(--line-height-16);
 }
 
 .text-body-l-book {
   font-family: var(--font-family-primary);
   font-size: var(--font-size-16);
   font-weight: var(--font-weight-book);
-  line-height: normal;
+  line-height: var(--line-height-16);
 }
 
 .text-body-m-medium {
   font-family: var(--font-family-primary);
   font-size: var(--font-size-14);
   font-weight: var(--font-weight-medium);
-  line-height: 16px;
+  line-height: var(--line-height-14);
 }
 
 .text-body-m-book {
   font-family: var(--font-family-primary);
   font-size: var(--font-size-14);
   font-weight: var(--font-weight-book);
-  line-height: 16px;
+  line-height: var(--line-height-14);
+}
+
+.text-body-s-medium {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-12);
+}
+
+.text-body-s-book {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-book);
+  line-height: var(--line-height-12);
 }
 
 /* ─── Label ─────────────────────────────────────── */
+/* Interlineado auto a propósito: son de una sola línea. El espaciado entre letras
+   es el porcentaje de Figma llevado a píxeles: 5% de 12 = 0,6 · 2% de 12 = 0,24 */
 
 .text-label-section {
   font-family: var(--font-family-primary);
@@ -90,7 +134,7 @@
   font-family: var(--font-family-primary);
   font-size: var(--font-size-12);
   font-weight: var(--font-weight-medium);
-  line-height: 16px;
+  line-height: normal;
   letter-spacing: 0.24px;
   text-transform: uppercase;
 }
