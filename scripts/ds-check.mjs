@@ -202,13 +202,13 @@ console.log(`\n  ${C.fuerte('Design System')} ${C.gris('· Figma ↔ código')}`
 
 const edad = dias <= 0 ? C.verde('hoy')
            : dias <= 7 ? C.gris(`hace ${dias} d`)
-           : C.ambar(`⚠ hace ${dias} días`);
+           : C.ambar(`📸 hace ${dias} días`);
 console.log(`  Foto de Figma: ${foto.generado}  ${edad}`);
 
 if (dias > 3) {
   const abierto = await puenteAbierto();
   console.log(abierto
-    ? `  ${C.azul('El Desktop Bridge está abierto')} ${C.gris('→ pídele a Claude que regenere la foto')}`
+    ? `  ${C.azul('El Desktop Bridge está abierto')} ${C.gris('→ pídele a Claude que saque la foto del DS')}`
     : `  ${C.gris('Para regenerarla: abre el Desktop Bridge en Figma y pídesela a Claude')}`);
 }
 
@@ -225,7 +225,11 @@ bloque('SOBRAN EN CÓDIGO', sobraCodigo,
 
 const total = cambiosFigma.length + distinto.length + faltaCodigo.length + sinMapear.length + sobraCodigo.length;
 if (total === 0) {
-  console.log(`\n  ${C.verde('Todo cuadra.')}\n`);
+  // Una foto vieja no da derecho a decir que todo cuadra: la comparación sería
+  // contra un pasado. Es el fallo silencioso más fácil de cometer aquí.
+  console.log(dias > 7
+    ? `\n  ${C.ambar('📸 Nada que reportar')} ${C.gris(`— pero la foto es de hace ${dias} días, así que esto no prueba gran cosa.`)}\n`
+    : `\n  ${C.verde('✅ Todo cuadra.')}\n`);
 } else {
   console.log(info.join('\n'));
   const urgentes = distinto.length + faltaCodigo.length;
