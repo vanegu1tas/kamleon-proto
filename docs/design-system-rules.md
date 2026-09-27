@@ -431,11 +431,21 @@ npm run ds:compare
 ## Qué caza
 
 ```
+CAMBIÓ EN FIGMA     qué tocó alguien desde la última foto guardada en git
+                    incluye variantes nuevas de un componente que ya existía
 NO COINCIDEN        un valor cambió en un lado y no en el otro
 FALTAN EN CÓDIGO    está en Figma y no tiene equivalente programado
 SIN MAPEAR          nuevo en Figma: un color, un estilo o UN COMPONENTE
 SOBRAN EN CÓDIGO    está en el repo y no está en Figma ni justificado
 ```
+
+El primer bloque y el resto responden a preguntas distintas: **qué tocó alguien** contra **qué
+está desalineado**. Un color puede salir en los dos a la vez, y son dos hechos diferentes sobre
+la misma cosa.
+
+Ese primer bloque no necesita que nadie declare nada: se compara la foto de ahora con la última
+guardada en git (`git show HEAD:...`). Por eso caza que el `Button` gane un valor `Ghost` en su
+propiedad `Type`, que es lo que ninguna comparación de nombres puede ver.
 
 Lo de "SIN MAPEAR" es lo que resuelve el encargo original: **si alguien crea un componente en
 Figma, aparece aquí la próxima vez que se saca la foto.** No hace falta que avise.

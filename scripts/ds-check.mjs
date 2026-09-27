@@ -10,6 +10,7 @@
  */
 
 import { readFileSync, existsSync, readdirSync } from 'node:fs';
+import { execSync } from 'node:child_process';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -55,6 +56,44 @@ function norm(v) {
   return s;
 }
 const igual = (a, b) => norm(a) === norm(b);
+
+
+// ── 0 · Qué cambió en Figma desde la última foto guardada en git ───────────
+// Sin declarar nada en ninguna parte: la foto anterior ya dice qué había.
+// Es lo que caza el trabajo de otra persona — variantes nuevas incluidas.
+const cambiosFigma = [];
+let fotoAnterior = null;
+try {
+  fotoAnterior = JSON.parse(execSync(
+    'git show HEAD:design-system/figma-snapshot.json',
+    { cwd: raiz, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }
+  ));
+} catch { /* primera vez, o sin git */ }
+
+function comparar(antes, ahora, ruta = []) {
+  const donde = ruta.join(' › ');
+  if (Array.isArray(antes) || Array.isArray(ahora)) {
+    const a = (antes || []).join(', '), b = (ahora || []).join(', ');
+    if (a !== b) cambiosFigma.push(`${donde}\n      antes  ${a || '—'}\n      ahora  ${b || '—'}`);
+    return;
+  }
+  const objeto = v => v && typeof v === 'object';
+  if (objeto(antes) && objeto(ahora)) {
+    for (const k of new Set([...Object.keys(antes), ...Object.keys(ahora)])) {
+      if (k.startsWith('_')) continue;
+      if (!(k in antes))  { cambiosFigma.push(`${[...ruta, k].join(' › ')}  ← NUEVO`); continue; }
+      if (!(k in ahora))  { cambiosFigma.push(`${[...ruta, k].join(' › ')}  ← YA NO ESTÁ`); continue; }
+      comparar(antes[k], ahora[k], [...ruta, k]);
+    }
+    return;
+  }
+  if (String(antes) !== String(ahora))
+    cambiosFigma.push(`${donde}\n      antes  ${antes}\n      ahora  ${ahora}`);
+}
+if (fotoAnterior) {
+  for (const seccion of ['variables', 'estilosDeTexto', 'estilosDeEfecto', 'componentes'])
+    comparar(fotoAnterior[seccion] || {}, foto[seccion] || {}, [seccion]);
+}
 
 // ── Recolectar hallazgos ───────────────────────────────────────────────────
 const distinto = [], faltaCodigo = [], sinMapear = [], sobraCodigo = [], info = [];
@@ -139,12 +178,14 @@ const bloque = (titulo, items, pista) => {
 console.log(`\n  Design System · Figma ↔ código`);
 console.log(`  Foto de Figma: ${foto.generado}${dias > 7 ? `  ⚠ hace ${dias} días, pídele a Claude que la regenere` : dias > 0 ? `  (hace ${dias} d)` : '  (hoy)'}`);
 
+bloque('CAMBIÓ EN FIGMA desde la última foto guardada', cambiosFigma,
+  'Esto es lo que alguien tocó en Figma. Incluye variantes nuevas.');
 bloque('NO COINCIDEN', distinto, 'Alguien cambió un valor en un lado y no en el otro.');
 bloque('FALTAN EN CÓDIGO', faltaCodigo, 'Están en Figma y no tienen equivalente programado.');
 bloque('SIN MAPEAR', sinMapear, 'Nuevos en Figma. Añádelos a figma-map.json o márcalos como sin equivalente.');
 bloque('SOBRAN EN CÓDIGO', sobraCodigo, 'Existen en el repo y no están en Figma ni justificados.');
 
-const total = distinto.length + faltaCodigo.length + sinMapear.length + sobraCodigo.length;
+const total = cambiosFigma.length + distinto.length + faltaCodigo.length + sinMapear.length + sobraCodigo.length;
 if (total === 0) console.log(`\n  ✓ Todo cuadra.\n`);
 else { console.log(info.join('\n')); console.log(`\n  ${total} cosas que mirar.\n`); }
 
