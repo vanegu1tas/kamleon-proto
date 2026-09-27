@@ -76,7 +76,7 @@ export default function AddOrgAdminDrawer({ org, onClose, onSave }) {
 
         {/* ── Footer ── */}
         <div className={styles.footer}>
-          <Button variant="secondary" size="m" onClick={onClose}>Cancel</Button>
+          <Button variant="tertiary" size="m" onClick={onClose}>Cancel</Button>
           <Button variant="primary" size="m" disabled={!hasValidEmail} onClick={() => { onSave?.(validEmails); onClose(); }}>Save</Button>
         </div>
 

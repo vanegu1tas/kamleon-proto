@@ -58,7 +58,7 @@ export default function CheckInbox({ onNavigate, animPhase = '', email = '' }) {
           <div className={styles.protoHint}>
             <span className={styles.protoLabel}>Prototype only</span>
             <Button
-              variant="secondary"
+              variant="tertiary"
               size="s"
               style={{ width: '100%' }}
               onClick={() => onNavigate('reset-password')}

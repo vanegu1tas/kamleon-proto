@@ -28,8 +28,8 @@
     "Status/Expired": "--color-status-expired",
     "Action/Primary": "--color-action-primary-bg",
     "Action/Primary Hover": "--color-action-primary-hover",
-    "Action/Tertiary": "--color-action-tertiary-bg",
-    "Action/Tertiary Hover": "--color-action-tertiary-hover",
+    "Action/Subtle": "--color-action-subtle-bg",
+    "Action/Subtle Hover": "--color-action-subtle-hover",
     "Action/Disabled": "--color-action-disabled-bg",
     "Action/Danger": "--color-action-danger-bg",
     "Action/Danger Hover": "--color-action-danger-hover"

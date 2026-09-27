@@ -11,7 +11,7 @@ export default {
     disabled: false,
   },
   argTypes: {
-    variant: { control: 'radio', options: ['primary', 'secondary', 'tertiary', 'tertiaryDanger', 'danger'] },
+    variant: { control: 'radio', options: ['primary', 'secondary', 'tertiary', 'subtle', 'subtleDanger', 'danger'] },
     size:    { control: 'radio', options: ['s', 'm'] },
     disabled: { control: 'boolean' },
     children: { control: 'text' },
@@ -36,7 +36,7 @@ export const SecondaryHover = {
   name: 'Secondary (hover)',
   render: () => (
     <Button
-      variant="secondary"
+      variant="tertiary"
       size="m"
       style={{ backgroundColor: 'var(--color-bg-surface-subtle)' }}
     >
@@ -50,7 +50,7 @@ export const FullWidth = {
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '320px' }}>
       <Button variant="primary"   size="m" style={{ width: '100%' }}>Primary full width</Button>
-      <Button variant="secondary" size="m" style={{ width: '100%' }}>Secondary full width</Button>
+      <Button variant="tertiary" size="m" style={{ width: '100%' }}>Secondary full width</Button>
     </div>
   ),
 };
@@ -60,8 +60,8 @@ export const AllVariants = {
     <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
       <Button variant="primary"  size="m">Primary M</Button>
       <Button variant="primary"  size="s">Primary S</Button>
-      <Button variant="secondary" size="m">Secondary M</Button>
-      <Button variant="secondary" size="s">Secondary S</Button>
+      <Button variant="tertiary" size="m">Secondary M</Button>
+      <Button variant="tertiary" size="s">Secondary S</Button>
       <Button variant="primary"  size="m" disabled>Disabled</Button>
     </div>
   ),

@@ -63,8 +63,8 @@
      un CTA o cualquier superficie clicable. Figma: Action/* */
   --color-action-primary-bg:       var(--color-black);      /* #0b0f12 */
   --color-action-primary-hover:    var(--color-grey-25);    /* #32404d — se ACLARA */
-  --color-action-tertiary-bg:      var(--color-grey-96);    /* #f4f5f5 */
-  --color-action-tertiary-hover:   var(--color-grey-91);    /* #e5e7eb — se OSCURECE:
+  --color-action-subtle-bg:      var(--color-grey-96);    /* #f4f5f5 */
+  --color-action-subtle-hover:   var(--color-grey-91);    /* #e5e7eb — se OSCURECE:
                                       su reposo ya es gris, aclararlo parecería apagarlo */
   --color-action-disabled-bg:      var(--color-grey-91);    /* #e5e7eb */
   /* Destructiva. Red/48 y no Red/58 por contraste: blanco sobre Red/58 da 3,9:1 y no

@@ -33,7 +33,7 @@ function Demo({ items, label }) {
   const [open, setOpen] = useState(false);
   return (
     <div style={{ padding: 24, minHeight: '100vh', boxSizing: 'border-box' }}>
-      <Button variant="secondary" size="m" onClick={() => setOpen(true)}>Abrir bottom sheet</Button>
+      <Button variant="tertiary" size="m" onClick={() => setOpen(true)}>Abrir bottom sheet</Button>
       <BottomSheet open={open} items={items} label={label} onClose={() => setOpen(false)} />
     </div>
   );

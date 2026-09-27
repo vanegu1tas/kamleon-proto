@@ -156,7 +156,7 @@ export default function ChangePinDrawer({ hasPIN = false, onClose, onSuccess }) 
 
           {/* ── Footer ── */}
           <div className={shared.footer}>
-            <Button variant="secondary" size="m" onClick={onClose}>Cancel</Button>
+            <Button variant="tertiary" size="m" onClick={onClose}>Cancel</Button>
             <Button
               variant="primary"
               size="m"

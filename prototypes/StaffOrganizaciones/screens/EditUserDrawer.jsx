@@ -356,7 +356,7 @@ export default function EditUserDrawer({ user, team, onClose, role, onRemove, me
 
         {/* ── Footer ── */}
         <div className={styles.footer}>
-          <Button variant="secondary" size="m" onClick={onClose}>Cancel</Button>
+          <Button variant="tertiary" size="m" onClick={onClose}>Cancel</Button>
           <Button variant="primary" size="m" disabled={!hasChanges || !firstName.trim() || !lastName.trim() || yearInvalid} onClick={onClose}>Save</Button>
         </div>
 

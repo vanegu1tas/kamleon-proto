@@ -755,7 +755,7 @@ export default function NewUserDrawer({ center, team: preselectedTeam, teams = [
 
         {/* ── Footer ── */}
         <div className={styles.footer}>
-          <Button variant="secondary" size="m" onClick={onClose}>Cancel</Button>
+          <Button variant="tertiary" size="m" onClick={onClose}>Cancel</Button>
           {mode !== null && (
             <Button variant="primary" size="m" disabled={primaryDisabled} onClick={primaryAction}>
               {primaryLabel}

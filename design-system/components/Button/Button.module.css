@@ -50,16 +50,16 @@
 
 /* ─── Secondary ──────────────────────────────────── */
 
-.secondary {
+.tertiary {
   background-color: transparent;
   color: var(--color-text-strong);
 }
 
-.secondary:hover:not(:disabled) {
+.tertiary:hover:not(:disabled) {
   background-color: var(--color-bg-surface-subtle);
 }
 
-.secondary:disabled {
+.tertiary:disabled {
   background-color: var(--color-action-disabled-bg);
   color: var(--color-text-disabled);
 }
@@ -87,17 +87,17 @@
    competir con la principal: ej. "Manage invitation" al pie de cada card en mobile, donde
    un botón transparente (secondary) no se distingue del texto de la card. */
 
-.tertiary {
-  background-color: var(--color-action-tertiary-bg);
+.subtle {
+  background-color: var(--color-action-subtle-bg);
   color: var(--color-text-strong);
 }
 
-.tertiary:hover:not(:disabled),
-.tertiary:active:not(:disabled) {
-  background-color: var(--color-action-tertiary-hover);
+.subtle:hover:not(:disabled),
+.subtle:active:not(:disabled) {
+  background-color: var(--color-action-subtle-hover);
 }
 
-.tertiary:disabled {
+.subtle:disabled {
   background-color: var(--color-action-disabled-bg);
   color: var(--color-text-disabled);
 }
@@ -107,17 +107,17 @@
    convive con otra tertiary al lado (ej. "Cancel invitation" junto a "Resend invitation"
    en Email history). */
 
-.tertiaryDanger {
+.subtleDanger {
   background-color: var(--color-bg-surface-raised);
   color: var(--color-text-critic);
 }
 
-.tertiaryDanger:hover:not(:disabled),
-.tertiaryDanger:active:not(:disabled) {
-  background-color: var(--color-action-tertiary-hover);
+.subtleDanger:hover:not(:disabled),
+.subtleDanger:active:not(:disabled) {
+  background-color: var(--color-action-subtle-hover);
 }
 
-.tertiaryDanger:disabled {
+.subtleDanger:disabled {
   background-color: var(--color-action-disabled-bg);
   color: var(--color-text-disabled);
 }
@@ -130,4 +130,25 @@
   flex-shrink: 0;
   width: 20px;
   height: 20px;
+}
+
+/* ─── Secondary ───────────────────────────────────────
+   Blanco con borde. La acción que acompaña a la primaria sin competir con
+   ella: guardar/cancelar en un drawer, confirmar en un paso intermedio.
+   Distinta de tertiary, que es transparente y pesa aún menos. */
+
+.secondary {
+  background-color: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  color: var(--color-text-strong);
+}
+
+.secondary:hover:not(:disabled) {
+  background-color: var(--color-bg-surface-subtle);
+}
+
+.secondary:disabled {
+  background-color: var(--color-action-disabled-bg);
+  border-color: transparent;
+  color: var(--color-text-disabled);
 }

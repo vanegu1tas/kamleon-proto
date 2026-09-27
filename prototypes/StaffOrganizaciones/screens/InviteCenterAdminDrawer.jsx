@@ -91,7 +91,7 @@ export default function InviteCenterAdminDrawer({ org, presetCenter = null, onCl
 
         {/* ── Footer ── */}
         <div className={styles.footer}>
-          <Button variant="secondary" size="m" onClick={onClose}>Cancel</Button>
+          <Button variant="tertiary" size="m" onClick={onClose}>Cancel</Button>
           <Button
             variant="primary"
             size="m"

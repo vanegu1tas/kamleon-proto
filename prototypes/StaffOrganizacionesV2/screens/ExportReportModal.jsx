@@ -51,7 +51,7 @@ export default function ExportReportModal({ onClose, onExport, scopeLabel }) {
         </div>
 
         <div className={shellStyles.actions}>
-          <Button variant="secondary" size="m" onClick={onClose}>Cancel</Button>
+          <Button variant="tertiary" size="m" onClick={onClose}>Cancel</Button>
           <Button variant="primary" size="m" onClick={() => { onExport?.({ month, year }); onClose(); }}>Download report</Button>
         </div>
 

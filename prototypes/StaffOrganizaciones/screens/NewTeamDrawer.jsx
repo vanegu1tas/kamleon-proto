@@ -104,7 +104,7 @@ export default function NewTeamDrawer({ center, orgs = [], onClose }) {
 
         {/* ── Footer ── */}
         <div className={styles.footer}>
-          <Button variant="secondary" size="m" onClick={onClose}>Cancel</Button>
+          <Button variant="tertiary" size="m" onClick={onClose}>Cancel</Button>
           <Button variant="primary" size="m" disabled={!canCreate}>Create</Button>
         </div>
 

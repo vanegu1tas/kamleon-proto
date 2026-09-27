@@ -240,7 +240,7 @@ export default function EditCenterDrawer({ center, org, onClose, role }) {
 
         {/* ── Footer ── */}
         <div className={styles.footer}>
-          <Button variant="secondary" size="m" onClick={onClose}>Cancel</Button>
+          <Button variant="tertiary" size="m" onClick={onClose}>Cancel</Button>
           <Button variant="primary" size="m" disabled={readOnly || !name.trim()} onClick={onClose}>Save</Button>
         </div>
 

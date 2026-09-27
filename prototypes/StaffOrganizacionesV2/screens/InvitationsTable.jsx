@@ -378,7 +378,7 @@ export default function InvitationsTable({
                     // Mobile: botón al pie de la fila que abre el bottom sheet. El texto anticipa
                     // qué hay adentro: gestionar una invitación (pendiente) o a un admin (activo).
                     <Button
-                      variant="tertiary"
+                      variant="subtle"
                       size="s"
                       aria-label={`${row.status === 'active' ? 'Manage admin' : 'Manage invitation'}: ${row.email}`}
                       onClick={() => setSheetRow(row)}

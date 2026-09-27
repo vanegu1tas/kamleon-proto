@@ -132,7 +132,7 @@ export default function InviteTeamAdminDrawer({ center, presetTeam = null, onClo
 
         {/* ── Footer ── */}
         <div className={styles.footer}>
-          <Button variant="secondary" size="m" onClick={onClose}>Cancel</Button>
+          <Button variant="tertiary" size="m" onClick={onClose}>Cancel</Button>
           <Button variant="primary" size="m" disabled={!canSave} onClick={handleSend}>Send</Button>
         </div>
 

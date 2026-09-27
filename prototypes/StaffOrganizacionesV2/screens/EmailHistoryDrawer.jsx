@@ -77,7 +77,7 @@ function EmailCard({ email, expanded, onToggle, onResend, onCancel }) {
               {!email.canResend && <p className={styles.footerNote}>{DELAY_RESEND_NOTE}</p>}
               <div className={styles.footerActions}>
                 <Button
-                  variant="tertiary"
+                  variant="subtle"
                   size="s"
                   leftIcon={<IconResend size={16} />}
                   disabled={!email.canResend}
@@ -86,7 +86,7 @@ function EmailCard({ email, expanded, onToggle, onResend, onCancel }) {
                   Resend invitation
                 </Button>
                 <Button
-                  variant="tertiaryDanger"
+                  variant="subtleDanger"
                   size="s"
                   leftIcon={<IconTrash size={16} />}
                   onClick={onCancel}

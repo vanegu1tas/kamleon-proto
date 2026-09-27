@@ -88,7 +88,7 @@ export default function Profile({ onNavigate, animPhase = '' }) {
             </Button>
 
             <Button
-              variant="secondary"
+              variant="tertiary"
               size="s"
               style={{ width: '100%' }}
               onClick={() => onNavigate('success')}

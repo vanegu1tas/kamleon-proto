@@ -42,8 +42,8 @@
       "Data Colors/Usage": "#32404d",
       "Action/Primary": "#0b0f12",
       "Action/Primary Hover": "#32404d",
-      "Action/Tertiary": "#f4f5f5",
-      "Action/Tertiary Hover": "#e5e7eb",
+      "Action/Subtle": "#f4f5f5",
+      "Action/Subtle Hover": "#e5e7eb",
       "Action/Disabled": "#e5e7eb",
       "Action/Danger": "#c43b33",
       "Action/Danger Hover": "#8b0e0a"
@@ -158,8 +158,8 @@
         "Background/Inverse/Selected",
         "Action/Primary",
         "Action/Primary Hover",
-        "Action/Tertiary",
-        "Action/Tertiary Hover",
+        "Action/Subtle",
+        "Action/Subtle Hover",
         "Action/Disabled",
         "Action/Danger",
         "Action/Danger Hover",
@@ -324,8 +324,9 @@
     "Button": {
       "Type": [
         "Primary",
-        "Tertiary",
         "Secondary",
+        "Tertiary",
+        "Subtle",
         "Danger"
       ],
       "State": [

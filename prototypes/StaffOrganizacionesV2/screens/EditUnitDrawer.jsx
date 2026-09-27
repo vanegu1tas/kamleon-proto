@@ -283,7 +283,7 @@ export default function EditUnitDrawer({ unit, center, onClose, onSave, role }) 
 
         {/* ── Footer ── */}
         <div className={`${shellStyles.footer} ${styles.footerNoBorder}`}>
-          <Button variant="secondary" size="m" onClick={onClose}>Cancel</Button>
+          <Button variant="tertiary" size="m" onClick={onClose}>Cancel</Button>
           <Button
             variant="primary"
             size="m"

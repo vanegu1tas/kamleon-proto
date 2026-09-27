@@ -184,7 +184,7 @@ export default function InviteAdminDrawer({ staff = false, onClose, onSave }) {
         </div>
 
         <div className={styles.footer}>
-          <Button variant="secondary" size="m" onClick={onClose}>Cancel</Button>
+          <Button variant="tertiary" size="m" onClick={onClose}>Cancel</Button>
           <Button
             variant="primary"
             size="m"
