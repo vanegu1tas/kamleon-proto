@@ -1,0 +1,129 @@
+{
+  "_nota": "Foto del Design System de Figma. NO se edita a mano: la regenera Claude leyendo el archivo con el Desktop Bridge abierto. El git diff de este archivo es el historial de valores del sistema.",
+  "generado": "2026-09-27",
+  "archivo": "Design system",
+  "fileKey": "ozgwasF3ziQyznQS0z0dM1",
+
+  "variables": {
+    "Global Colors 2": {
+      "Black": "#0b0f12", "White": "#ffffff",
+      "Grey/98": "#fafafa", "Grey/96": "#f4f5f5", "Grey/91": "#e5e7eb",
+      "Grey/70": "#b1b2b4", "Grey/65": "#9ca3af", "Grey/46": "#6b7280",
+      "Grey/25": "#32404d", "Grey/11": "#161d24",
+      "Turquoise/86": "#c7f1ef", "Turquoise/75": "#94e8e3", "Turquoise/63": "#61dfd8",
+      "Turquoise/51": "#2fd5cb", "Turquoise/40": "#22aaa2", "Turquoise/30": "#1a7f79",
+      "Red/91": "#fad6d4", "Red/83": "#fdafab", "Red/75": "#fc8c85",
+      "Red/65": "#fc664e", "Red/58": "#e04f4a", "Red/48": "#c43b33", "Red/29": "#8b0e0a",
+      "Yellow/95": "#fefce7", "Yellow/90": "#faf2d1", "Yellow/82": "#fceba6",
+      "Yellow/74": "#ffe07a", "Yellow/66": "#ffd952", "Yellow/61": "#fac63e",
+      "Yellow/57": "#f5b22d", "Yellow/47": "#ed9005",
+      "Green/88": "#d9edd6", "Green/79": "#b8e3b2", "Green/70": "#96d68f",
+      "Green/62": "#75cc6e", "Green/50": "#5cac55", "Green/41": "#44923e", "Green/30": "#2a7324",
+      "Orange/65": "#fda650", "Blue/50": "#2ba4d4"
+    },
+    "Semantic Colors": {
+      "Content/Strong": "#0b0f12",
+      "Content/Subtle": "#6b7280",
+      "Content/Disabled": "#9ca3af",
+      "Content/Placeholder": "#6b7280",
+      "Content/Inverse/Strong": "#ffffff",
+      "Content/Inverse/Subtle": "#b1b2b4",
+      "Content/Inverse/Muted": "#9ca3af",
+      "Content/Critic": "#e04f4a",
+      "Content/Critic Strong": "#8b0e0a",
+      "Content/Warning": "#ed9005",
+      "Content/Success": "#75cc6e",
+      "Border/Strong": "#32404d",
+      "Border/Default": "#e5e7eb",
+      "Border/Focus": "#2fd5cb",
+      "Border/Critic": "#e04f4a",
+      "Background/Surface Default": "#ffffff",
+      "Background/Page": "#f4f5f5",
+      "Background/Surface Subtle": "#fafafa",
+      "Background/Surface Raised": "#f4f5f5",
+      "Background/Surface Disabled": "#e5e7eb",
+      "Background/Critic Subtle": "#fad6d4",
+      "Background/Inverse/Hover": "#ffffff/0.05",
+      "Background/Inverse/Selected": "#161d24",
+      "Status/Active": "#2fd5cb",
+      "Status/Inactive": "#fc8c85",
+      "Status/Pending": "#e04f4a",
+      "Status/Expired": "#fda650",
+      "Hydration ranges/Over hydrated": "#fda650",
+      "Hydration ranges/Hydrated": "#2fd5cb",
+      "Hydration ranges/Dehydrated": "#ffd952",
+      "Hydration ranges/Severely dehydrated": "#fc664e",
+      "Data Colors/Hydration": "#22aaa2",
+      "Data Colors/Electrolytes": "#9ca3af",
+      "Data Colors/Volume": "#2ba4d4",
+      "Data Colors/Usage": "#32404d"
+    },
+    "Border Radius": {
+      "radius-xs": 8, "radius-s": 12, "radius-m": 24, "radius-l": 40
+    },
+    "Global Typography": {
+      "Font Size/12": 12, "Font Size/14": 14, "Font Size/16": 16,
+      "Font Size/20": 20, "Font Size/24": 24, "Font Size/32": 32,
+      "Line Height/12": 15, "Line Height/14": 17.5, "Line Height/16": 20,
+      "Line Height/20": 25, "Line Height/24": 30, "Line Height/32": 40,
+      "Font Family/Primary": "Circular Pro",
+      "Font Weight/book": "Book", "Font Weight/medium": "Medium", "Font Weight/bold": "Bold"
+    },
+    "Global Numbers": {
+      "radius-xs": 8, "radius-s": 12, "radius-m": 16, "radius-l": 24, "radius-xl": 40
+    },
+    "⚠️ [Deprecated] Global Colors": {
+      "_nota": "Colección vieja, vacía de usos. Pendiente de borrar tras revisar el archivo Web App.",
+      "Black": "#221e1e", "Grey/25": "#414042", "Grey/70": "#b1b2b4"
+    }
+  },
+
+  "estilosDeTexto": {
+    "Headings/H1":        { "peso": "Medium", "tamano": 32, "interlineado": 40 },
+    "Headings/H1 Bold":   { "peso": "Bold",   "tamano": 32, "interlineado": 40 },
+    "Headings/H2":        { "peso": "Medium", "tamano": 24, "interlineado": 30 },
+    "Headings/H2 Bold":   { "peso": "Bold",   "tamano": 24, "interlineado": 30 },
+    "Headings/H3":        { "peso": "Medium", "tamano": 20, "interlineado": 25 },
+    "Headings/H3 Bold":   { "peso": "Bold",   "tamano": 20, "interlineado": 25 },
+    "Body/L Medium":      { "peso": "Medium", "tamano": 16, "interlineado": 20 },
+    "Body/L Book":        { "peso": "Book",   "tamano": 16, "interlineado": 20 },
+    "Body/M Medium":      { "peso": "Medium", "tamano": 14, "interlineado": 17.5 },
+    "Body/M Book":        { "peso": "Book",   "tamano": 14, "interlineado": 17.5 },
+    "Body/S Medium":      { "peso": "Medium", "tamano": 12, "interlineado": 15 },
+    "Body/S Book":        { "peso": "Book",   "tamano": 12, "interlineado": 15 },
+    "Label/Overline":     { "peso": "Medium", "tamano": 12, "interlineado": "auto", "espaciado": "5%", "caja": "UPPER" },
+    "Label/Table Header": { "peso": "Medium", "tamano": 12, "interlineado": "auto", "espaciado": "2%", "caja": "UPPER" }
+  },
+
+  "estilosDeEfecto": {
+    "Elevation/1":          ["0 1 2 #000000/0.05"],
+    "Elevation/2":          ["0 8 24 #000000/0.10", "0 2 6 #000000/0.06"],
+    "Shadow/Drawer":        ["0 1 2 #000000/0.05", "-8 0 32 #000000/0.08"],
+    "Shadow/Sidebar":       ["0 0 2 #000000/0.80", "0 0 16 #000000/0.25"],
+    "Shadow/Control thumb": ["0 2 4 #000000/0.14", "0 0 1 #000000/0.10"]
+  },
+
+  "componentes": {
+    "Accordion":                { "Breakpoint": ["Mobile", "Desktop"], "Opened": ["Yes", "No"] },
+    "Button":                   { "Type": ["Primary", "Tertiary", "Secondary"], "State": ["Default", "Hover", "Disabled"], "Size": ["S", "M"] },
+    "Toolbar Button":           { "State": ["Default", "Selected", "Hover", "Disabled"] },
+    "Icon Button":              { "Mode": ["Danger", "Default", "Critical"], "State": ["Default", "Hover", "Disabled"] },
+    "Calendar":                 { "State": ["Default", "Custom range"] },
+    "Checkbox":                 { "Checked": ["False", "True"] },
+    "Dropdown":                 { "State": ["Active", "Default", "Disabled", "Error", "Focus", "Hover"] },
+    "Text input":               { "State": ["Active", "Default", "Disabled", "Error", "Focus", "Hover"] },
+    "Text area":                { "State": ["Active", "Default", "Disabled", "Error", "Focus", "Hover"] },
+    "Search bar":               { "State": ["Active", "Default", "Disabled", "Error", "Hover", "Focus"] },
+    "Segmented control":        { "Size": ["M", "S"] },
+    "Sidebar-v2":               { "Collapse": ["No", "Yes"], "Role": ["Team admin", "Center admin", "Organization admin", "Kamleon Staff", "End user"] },
+    "TabBar":                   { "Tabs": ["5", "4", "3", "2", "1"], "Size": ["M", "S"] },
+    "Tag status":               { "State": ["Active", "Inactive"] },
+    "Tag status - invitations": { "State": ["Active", "Expired", "Pending"] },
+    "Table Cell":               { "Type": ["Header", "Header Highlighted", "Text", "Text Highlighted", "Status", "Status Highlighted", "Actions", "Name", "Urine color"] },
+    "Toast":                    { "Mode": ["Critic", "Success"] },
+    "Toggle":                   { "State": ["Off", "On"], "Size": ["S", "M"] },
+    "Logo":                     { "Type": ["Vertical", "Horizontal", "Iso", "Logotipo"] },
+    "Radio button":             { "State": ["Default", "Hover", "Selected"] },
+    "Urine color":              { "Level": ["1", "2", "3", "4", "5", "6", "7", "8"] }
+  }
+}

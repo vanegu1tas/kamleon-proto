@@ -1,0 +1,119 @@
+{
+  "_nota": "Correspondencia de nombres entre Figma y el código. Solo lo que NO se deduce por regla: los tamaños, radios e interlineados se emparejan solos (Font Size/14 → --font-size-14). Si añades un token en Figma y no lo pones aquí, `npm run ds` te avisa de que está sin mapear — eso es lo que hace que un componente o un color nuevo no pase desapercibido.",
+
+  "colores": {
+    "Content/Strong":              "--color-text-strong",
+    "Content/Subtle":              "--color-text-subtle",
+    "Content/Disabled":            "--color-text-disabled",
+    "Content/Placeholder":         "--color-text-placeholder",
+    "Content/Inverse/Strong":      "--color-text-inverse-strong",
+    "Content/Inverse/Subtle":      "--color-text-inverse-subtle",
+    "Content/Inverse/Muted":       "--color-text-inverse-muted",
+    "Content/Critic":              "--color-status-error",
+    "Content/Critic Strong":       "--color-text-critic-strong",
+
+    "Border/Strong":               "--color-border-strong",
+    "Border/Default":              "--color-border-default",
+    "Border/Focus":                "--color-border-focus",
+    "Border/Critic":               "--color-border-error",
+
+    "Background/Surface Default":  "--color-bg-surface",
+    "Background/Page":             "--color-bg-page",
+    "Background/Surface Subtle":   "--color-bg-surface-subtle",
+    "Background/Surface Raised":   "--color-bg-surface-raised",
+    "Background/Surface Disabled": "--color-bg-surface-disabled",
+    "Background/Critic Subtle":    "--color-bg-critic-subtle",
+    "Background/Inverse/Hover":    "--color-bg-inverse-hover",
+    "Background/Inverse/Selected": "--color-bg-inverse-selected",
+
+    "Status/Active":               "--color-status-active",
+    "Status/Inactive":             "--color-status-inactive",
+    "Status/Pending":              "--color-status-pending",
+    "Status/Expired":              "--color-status-expired"
+  },
+
+  "sinEquivalenteEnCodigo": {
+    "Content/Warning": "Existe en Figma. En código no hay token de aviso todavía.",
+    "Content/Success": "Existe en Figma. En código no hay token de éxito todavía.",
+    "Data Colors/Hydration": "Colores de gráfico. El código no tiene gráficas aún.",
+    "Data Colors/Electrolytes": "Idem.",
+    "Data Colors/Volume": "Idem.",
+    "Data Colors/Usage": "Idem.",
+    "Hydration ranges/Over hydrated": "Rangos de hidratación, viven en la scrapp.",
+    "Hydration ranges/Hydrated": "Idem.",
+    "Hydration ranges/Dehydrated": "Idem.",
+    "Hydration ranges/Severely dehydrated": "Idem."
+  },
+
+  "sinEquivalenteEnFigma": {
+    "--color-status-delay": "Tag de envío de correo. Falta Tag/Delivery en Figma.",
+    "--color-status-error-subtle": "Duplica el valor de --color-status-inactive. Pendiente de decidir si sobra.",
+    "--color-action-primary-bg": "Tokens de acción heredados, anteriores a la capa semántica actual.",
+    "--color-action-primary-text": "Idem.",
+    "--color-action-disabled-text": "Idem.",
+    "--color-action-ghost-border": "Idem.",
+    "--color-action-ghost-text": "Idem.",
+    "--color-bg-icon-hover": "Idem.",
+    "--color-bg-sidebar": "El fondo del sidebar es un degradado; una variable de color no puede serlo."
+  },
+
+  "efectos": {
+    "Elevation/1":          "--elevation-1",
+    "Elevation/2":          "--elevation-2",
+    "Shadow/Drawer":        "--shadow-drawer",
+    "Shadow/Sidebar":       "--shadow-sidebar",
+    "Shadow/Control thumb": "--shadow-control-thumb"
+  },
+
+  "estilosDeTexto": {
+    "Headings/H1":         "text-heading-h1-medium",
+    "Headings/H1 Bold":    "text-heading-h1-bold",
+    "Headings/H2":         "text-heading-h2",
+    "Headings/H2 Bold":    "text-heading-h2-bold",
+    "Headings/H3":         "text-heading-h3",
+    "Headings/H3 Bold":    "text-heading-h3-bold",
+    "Body/L Medium":       "text-body-l-medium",
+    "Body/L Book":         "text-body-l-book",
+    "Body/M Medium":       "text-body-m-medium",
+    "Body/M Book":         "text-body-m-book",
+    "Body/S Medium":       "text-body-s-medium",
+    "Body/S Book":         "text-body-s-book",
+    "Label/Overline":      "text-label-section",
+    "Label/Table Header":  "text-label-table"
+  },
+
+  "componentes": {
+    "Button":             "Button",
+    "Icon Button":        "IconButton",
+    "Toolbar Button":     "ToolbarButton",
+    "Checkbox":           "Checkbox",
+    "Dropdown":           "Dropdown",
+    "Text input":         "Input",
+    "Text area":          "Textarea",
+    "Search bar":         "SearchBar",
+    "Segmented control":  "SegmentedControl",
+    "TabBar":             "TabBar",
+    "Sidebar-v2":         "Sidebar",
+    "Toast":              "Toast",
+    "Toggle":             "Toggle",
+    "Tag status":         "Tag",
+    "Tag status - invitations": "Tag"
+  },
+
+  "componentesSoloEnFigma": {
+    "Accordion": "Dibujado, sin uso todavía.",
+    "Calendar": "Dibujado, sin programar.",
+    "Table Cell": "Las tablas se montan a mano en cada pantalla. Es la deuda más grande del sistema.",
+    "Radio button": "Dibujado, sin programar.",
+    "Logo": "En código es un icono, LogoKamleon.",
+    "Urine color": "Es de la scrapp, no de la web."
+  },
+
+  "componentesSoloEnCodigo": {
+    "BottomSheet": "Es en lo que se convierte el ContextMenu por debajo de 390px. Falta llevarlo a Figma.",
+    "FilterPanel": "Sin equivalente en Figma.",
+    "ContextMenu": "En Figma se llama 'Contextual menu' y no es un component set, por eso no sale en la foto.",
+    "SidebarItem": "En Figma es '.Sidebar-Item2', un componente interno (empieza por punto).",
+    "BottomSheetItem": "Idem."
+  }
+}

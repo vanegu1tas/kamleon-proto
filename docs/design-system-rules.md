@@ -410,3 +410,82 @@ Dos de los hallazgos del 26/9 lo dejan claro:
 
 Cinco de los diez commits de ese día arreglan cosas que nadie sabía que estaban mal. Ninguna se
 encuentra mirando: solo comparando.
+
+---
+
+# Mantenerlo sincronizado — `npm run ds` (2026-09-27)
+
+Dos cosas que recordar, y una la hace Claude:
+
+```
+"la foto"        Claude lee Figma con el Desktop Bridge abierto y regenera
+                 design-system/figma-snapshot.json
+                 → lo hace al empezar cualquier sesión de design system,
+                   sin que haya que pedirlo
+
+npm run ds       compara esa foto con los tokens y componentes del repo
+                 → no toca nada, solo informa
+```
+
+## Qué caza
+
+```
+NO COINCIDEN        un valor cambió en un lado y no en el otro
+FALTAN EN CÓDIGO    está en Figma y no tiene equivalente programado
+SIN MAPEAR          nuevo en Figma: un color, un estilo o UN COMPONENTE
+SOBRAN EN CÓDIGO    está en el repo y no está en Figma ni justificado
+```
+
+Lo de "SIN MAPEAR" es lo que resuelve el encargo original: **si alguien crea un componente en
+Figma, aparece aquí la próxima vez que se saca la foto.** No hace falta que avise.
+
+## Los tres archivos
+
+| Archivo | Quién lo toca | Para qué |
+|---|---|---|
+| `design-system/figma-snapshot.json` | Claude, generado | La foto de Figma. **No se edita a mano** |
+| `design-system/figma-map.json` | a mano | Qué nombre de Figma corresponde a qué token o carpeta, y qué no tiene pareja **a propósito** |
+| `scripts/ds-check.mjs` | a mano | La comparación |
+
+El mapa es la pieza que hace que esto no sea ruido. Sin él, `Content/Strong` y
+`--color-text-strong` parecen cosas distintas. Y su sección de "sin equivalente" es donde se
+declara que algo **no tiene pareja y está bien**: los colores de gráfico, los rangos de
+hidratación, los tokens de acción heredados. Lo que no esté ni mapeado ni excusado, sale.
+
+## Por qué la foto va al repositorio
+
+Porque `git diff design-system/figma-snapshot.json` es **el historial de valores del design
+system**. Dentro de seis meses se puede ver que el negro cambió el 26 de septiembre, y el commit
+dice por qué. Eso hoy no existe en ningún sitio: Figma guarda versiones del archivo, pero no te
+enseña "qué tokens cambiaron entre el martes y el jueves".
+
+## Lo que NO caza, y hay que saberlo
+
+Compara **tokens y el inventario de componentes**. No compara paddings, alturas ni estructura
+interna: que el `SearchBar` mida 36 o 37,5 px no lo ve. Eso se pilla mirando, y es lo que se hizo
+a mano el 26 y 27 de septiembre.
+
+Se empezó por tokens porque **todo lo que era invisible era de tokens**: dos variables llamadas
+`Black` con distinto valor, el turquesa mal numerado, `Font Family/Primary` valiendo
+`"String value"`, dos tamaños de fuente que no existían. Lo de componente se ve; lo de token no.
+
+## Si la foto está vieja
+
+El comando avisa a partir de una semana. Una foto vieja no da error: compara contra un pasado y
+dice que todo cuadra, que es peor que decir que no cuadra. Por eso la fecha sale siempre arriba.
+
+## Cuando esto se quede corto
+
+Hoy el único que publica en Figma es quien está en la sesión. En cuanto haya **más gente
+publicando**, lo que falta es que la foto se regenere sin depender de que alguien abra una
+sesión. Dos caminos, en orden de coste:
+
+1. **Un plugin propio de Figma** con un botón "Exportar" que descargue el JSON. Un plugin puede
+   leer todas las variables y estilos — es lo que hace el Desktop Bridge. No necesita plan
+   Enterprise ni servidor. Medio día de trabajo.
+2. **Automático al publicar**: webhook `LIBRARY_PUBLISH` → GitHub Action → pull request con la
+   foto nueva. Necesita un sitio público escuchando, un token, y **leer variables por la API REST
+   de Figma requiere plan Enterprise** — comprobar eso antes de contar con este camino.
+
+Y si el equipo crece de verdad, herramientas como Supernova o Tokens Studio hacen esto como
+producto. Construirlo sale más caro que comprarlo a partir de cierto tamaño.
