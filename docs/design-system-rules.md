@@ -435,9 +435,18 @@ CAMBIÓ EN FIGMA     qué tocó alguien desde la última foto guardada en git
                     incluye variantes nuevas de un componente que ya existía
 NO COINCIDEN        un valor cambió en un lado y no en el otro
 FALTAN EN CÓDIGO    está en Figma y no tiene equivalente programado
-SIN MAPEAR          nuevo en Figma: un color, un estilo o UN COMPONENTE
-SOBRAN EN CÓDIGO    está en el repo y no está en Figma ni justificado
+SIN MAPEAR          nuevo en FIGMA: un color, un estilo o un componente
+SOLO EN CÓDIGO      nuevo en CÓDIGO: un componente o un token semántico
 ```
+
+**Funciona en las dos direcciones a propósito.** Prototipar un componente en código primero es
+más rápido para probar, y es un flujo legítimo: lo que no vale es que se quede ahí sin que nadie
+lo lleve a Figma ni escriba por qué no. Por eso el bloque se llama "solo en código" y no "sobran":
+no está de más, está por delante.
+
+De los tokens del código solo se revisa **la capa semántica** (`--color-text-*`, `--bg-*`,
+`--border-*`, `--status-*`) y las sombras. La paleta cruda no se revisa una a una: ahí es normal
+tener más peldaños de los que se usan, igual que en Figma.
 
 El primer bloque y el resto responden a preguntas distintas: **qué tocó alguien** contra **qué
 está desalineado**. Un color puede salir en los dos a la vez, y son dos hechos diferentes sobre

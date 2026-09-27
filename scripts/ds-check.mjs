@@ -103,7 +103,7 @@ if (fotoAnterior) {
 }
 
 // ── Recolectar hallazgos ───────────────────────────────────────────────────
-const distinto = [], faltaCodigo = [], sinMapear = [], sobraCodigo = [], info = [];
+const distinto = [], faltaCodigo = [], sinMapear = [], soloCodigo = [], info = [];
 
 // 1 · Colores semánticos, por el mapa de nombres
 const sem = foto.variables['Semantic Colors'] || {};
@@ -171,7 +171,22 @@ const mapeados = new Set(Object.values(mapa.componentes));
 const excusadosCodigo = new Set(Object.keys(mapa.componentesSoloEnCodigo));
 for (const comp of enCodigo)
   if (!mapeados.has(comp) && !excusadosCodigo.has(comp))
-    sobraCodigo.push(`${comp}/  (en código, sin pareja en Figma ni excusa en el mapa)`);
+    soloCodigo.push(`componente · ${comp}/`);
+
+// 6 · Al revés: tokens que existen en el código y no en Figma
+// Es el caso de prototipar algo en código primero, que es más rápido para probar.
+const mapeadosCss = new Set(Object.values(mapa.colores));
+const excusadosCss = new Set(Object.keys(mapa.sinEquivalenteEnFigma || {}));
+const efectosCss = new Set(Object.values(mapa.efectos || {}));
+for (const nombre of Object.keys(declarados)) {
+  // solo la capa semántica: la paleta cruda (--color-red-58) no tiene por qué
+  // aparecer una a una, y los tamaños se emparejan por regla más arriba
+  const esSemantico = /^--color-(text|bg|border|status|action)-/.test(nombre);
+  const esSombra    = /^--(elevation|shadow)-/.test(nombre);
+  if (!esSemantico && !esSombra) continue;
+  if (mapeadosCss.has(nombre) || excusadosCss.has(nombre) || efectosCss.has(nombre)) continue;
+  soloCodigo.push(`token · ${nombre} = ${tokens[nombre]}`);
+}
 
 // ── ¿Está abierto el puente con Figma? ────────────────────────────────────
 // Solo para poder decirte si puedes hacer algo al respecto. El comando no
@@ -220,10 +235,10 @@ bloque('FALTAN EN CÓDIGO', faltaCodigo,
   'Están en Figma y no tienen equivalente programado.', C.rojo);
 bloque('SIN MAPEAR', sinMapear,
   'Nuevos en Figma. Añádelos a figma-map.json o márcalos como sin equivalente.', C.ambar);
-bloque('SOBRAN EN CÓDIGO', sobraCodigo,
-  'Existen en el repo y no están en Figma ni justificados.', C.ambar);
+bloque('SOLO EN CÓDIGO', soloCodigo,
+  'Programado y sin pareja en Figma. O se lleva a Figma, o se anota en el mapa por qué no.', C.ambar);
 
-const total = cambiosFigma.length + distinto.length + faltaCodigo.length + sinMapear.length + sobraCodigo.length;
+const total = cambiosFigma.length + distinto.length + faltaCodigo.length + sinMapear.length + soloCodigo.length;
 if (total === 0) {
   // Una foto vieja no da derecho a decir que todo cuadra: la comparación sería
   // contra un pasado. Es el fallo silencioso más fácil de cometer aquí.
