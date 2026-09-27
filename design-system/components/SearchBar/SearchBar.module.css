@@ -13,7 +13,7 @@
   border: 1px solid var(--color-border-default);
   background: var(--color-bg-surface-subtle);
   width: 100%;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: border-color 0.15s ease, outline-color 0.15s ease;
 }
 
 /* ─── Hover ───────────────────────────────────────── */
@@ -26,7 +26,8 @@
 
 .wrapper:focus-within:not(.disabled) {
   border-color: var(--color-border-default);
-  box-shadow: var(--focus-ring);
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
 }
 
 /* ─── Error ───────────────────────────────────────── */
@@ -36,7 +37,7 @@
 }
 
 .wrapper.error:focus-within {
-  box-shadow: var(--focus-ring-error);
+  outline-color: var(--color-border-critic);
 }
 
 /* ─── Disabled ────────────────────────────────────── */

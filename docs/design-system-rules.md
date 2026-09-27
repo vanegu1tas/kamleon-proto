@@ -411,6 +411,46 @@ Dos de los hallazgos del 26/9 lo dejan claro:
 Cinco de los diez commits de ese día arreglan cosas que nadie sabía que estaban mal. Ninguna se
 encuentra mirando: solo comparando.
 
+
+## Una sola técnica de foco: `outline` (2026-09-27)
+
+```css
+outline: 2px solid var(--color-border-focus);
+outline-offset: 2px;
+```
+
+Había dos técnicas conviviendo: los cuatro campos de formulario usaban `box-shadow` con dos
+anillos —uno blanco y otro turquesa— y `Checkbox`, `Toggle`, `SegmentedControl` y `BottomSheet`
+usaban `outline`. **Sobre fondo blanco se ven idénticas**, porque el hueco transparente del
+`outline` deja ver el blanco de la página. Por eso convivieron sin que nadie lo notara.
+
+**De dónde venía:** Figma no tiene `outline-offset`, así que el anillo se emuló con un trazo
+blanco. El código copió lo que veía dibujado, y así una limitación de la herramienta acabó
+convertida en técnica.
+
+**Por qué gana `outline`:**
+
+1. **Se adapta al fondo.** El hueco es transparente, así que dentro de una card gris o sobre el
+   sidebar oscuro se ve el fondo real. El anillo blanco pintado canta en cuanto sales del blanco.
+2. **No compite con la elevación.** Una propiedad CSS tiene un solo valor: si un elemento tiene
+   `box-shadow: var(--elevation-2)` y al enfocarlo se le pone `box-shadow: var(--focus-ring)`, el
+   segundo **borra** al primero y el elemento pierde su sombra mientras está enfocado. Un fallo
+   difícil de diagnosticar porque solo ocurre durante el foco. Con `outline` no hay conflicto.
+
+Se jubilaron los tokens `--focus-ring` y `--focus-ring-error`, creados el día anterior.
+
+### En Figma no cambia nada
+
+Lo dibujado sigue siendo la mejor aproximación posible: dos sombras sin desenfoque y con
+extensión (2 y 4), que es un anillo sólido. El hueco transparente **no se puede representar** sin
+añadir una capa suelta a cada componente, y como todo vive sobre blanco se ve igual.
+
+Es la misma regla del `State=Hover`: **Figma dibuja lo que puede, el código ejecuta lo correcto.**
+Un eje o una técnica que existe solo en un lado no es una divergencia, es la naturaleza del medio.
+
+**Pendiente en Figma:** `Checkbox`, `Toggle` y `Segmented control` no tienen estado `Focus`
+dibujado. Existe en código y no está diseñado.
+
 ---
 
 # Mantenerlo sincronizado — `npm run ds:compare` (2026-09-27)

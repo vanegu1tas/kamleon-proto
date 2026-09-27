@@ -67,7 +67,7 @@
   outline: none;
   appearance: none;
   cursor: pointer;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: border-color 0.15s ease, outline-color 0.15s ease;
   box-sizing: border-box;
 }
 
@@ -89,7 +89,8 @@
 /* Focus — teclado */
 .select:focus-visible {
   border-color: var(--color-border-focus);
-  box-shadow: var(--focus-ring);
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
   color: var(--color-text-strong);
 }
 
@@ -125,7 +126,7 @@
 
 .selectError:focus-visible {
   border-color: var(--color-border-critic);
-  box-shadow: var(--focus-ring-error);
+  outline-color: var(--color-border-critic);
 }
 
 /* ─── Disabled state ──────────────────────────────────── */

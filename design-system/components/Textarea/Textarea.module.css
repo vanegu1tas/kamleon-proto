@@ -60,7 +60,7 @@
   outline: none;
   resize: vertical;
   cursor: text;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: border-color 0.15s ease, outline-color 0.15s ease;
   box-sizing: border-box;
 }
 
@@ -79,12 +79,13 @@
 
 /* Focus — teclado */
 .textarea:focus-visible {
-  box-shadow: var(--focus-ring);
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
 }
 
 /* Suprime el ring cuando el foco vino del mouse */
 .textarea[data-mouse-focus]:focus-visible {
-  box-shadow: none;
+  outline: none;
 }
 
 /* Sobre una superficie gris (dentro de una card o un drawer) el campo se pone
@@ -108,11 +109,11 @@
 }
 
 .textareaError:focus-visible {
-  box-shadow: var(--focus-ring-error);
+  outline-color: var(--color-border-critic);
 }
 
 .textareaError[data-mouse-focus]:focus-visible {
-  box-shadow: none;
+  outline: none;
 }
 
 /* ─── Disabled state ──────────────────────────────────── */
