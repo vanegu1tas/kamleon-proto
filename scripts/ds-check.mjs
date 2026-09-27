@@ -103,7 +103,7 @@ if (fotoAnterior) {
 }
 
 // ── Recolectar hallazgos ───────────────────────────────────────────────────
-const distinto = [], faltaCodigo = [], sinMapear = [], soloCodigo = [], info = [];
+const distinto = [], faltaCodigo = [], sinMapear = [], soloCodigo = [], sinDocumentar = [], info = [];
 
 // 1 · Colores semánticos, por el mapa de nombres
 const sem = foto.variables['Semantic Colors'] || {};
@@ -188,6 +188,18 @@ for (const nombre of Object.keys(declarados)) {
   soloCodigo.push(`token · ${nombre} = ${tokens[nombre]}`);
 }
 
+// 7 · La página "-- Colors" del DS, que es la documentación que lee el equipo.
+// Un token que existe pero no está ahí, para tu compañera no existe.
+const docFigma = foto.paginaDeColores;
+if (docFigma) {
+  const documentadas = new Set(docFigma.documentadas || []);
+  for (const nombreFigma of Object.keys(sem))
+    if (!documentadas.has(nombreFigma))
+      sinDocumentar.push(`${nombreFigma} = ${sem[nombreFigma]}`);
+  for (const etiqueta of docFigma.cuadradosSinEnlazar || [])
+    sinDocumentar.push(`${etiqueta} · el cuadrado tiene un hex a mano, no la variable`);
+}
+
 // ── ¿Está abierto el puente con Figma? ────────────────────────────────────
 // Solo para poder decirte si puedes hacer algo al respecto. El comando no
 // habla con él: ese canal es interno de la herramienta y no está documentado.
@@ -237,8 +249,11 @@ bloque('SIN MAPEAR', sinMapear,
   'Nuevos en Figma. Añádelos a figma-map.json o márcalos como sin equivalente.', C.ambar);
 bloque('SOLO EN CÓDIGO', soloCodigo,
   'Programado y sin pareja en Figma. O se lleva a Figma, o se anota en el mapa por qué no.', C.ambar);
+bloque('SIN DOCUMENTAR EN FIGMA', sinDocumentar,
+  'Existen como variable pero no salen en la página "-- Colors" del DS. Quien no lea el código no sabe que están.', C.ambar);
 
-const total = cambiosFigma.length + distinto.length + faltaCodigo.length + sinMapear.length + soloCodigo.length;
+const total = cambiosFigma.length + distinto.length + faltaCodigo.length + sinMapear.length
+            + soloCodigo.length + sinDocumentar.length;
 if (total === 0) {
   // Una foto vieja no da derecho a decir que todo cuadra: la comparación sería
   // contra un pasado. Es el fallo silencioso más fácil de cometer aquí.
