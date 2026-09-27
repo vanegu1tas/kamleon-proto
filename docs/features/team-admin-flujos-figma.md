@@ -34,8 +34,14 @@ cambiar lo mismo.
 | A1 | Tabla de Users | Columnas **Name · PIN · Screen · Status · acciones**, filas de 64px |
 | A2 | Menú "⋯" de una fila | *Edit user · **Turn off PIN** / Turn on PIN · Hide from screen / Show on screen · Remove from team* (roja). Iconos: Edit · Power · Eye closed · Delete |
 | A3 | Drawer **Edit user** | User info completo + **Permissions** (ver más abajo) |
-| A4 | **Bulk actions** abierto | *Turn PIN on for all users · Turn PIN off for all users* |
-| A5 | Confirmación de bulk | **Turn PIN off for all users?** · *This will turn PIN off for all 8 users in First team. They won't be able to log in with a PIN until it's turned back on.* |
+| A4 | **Bulk actions** abierto | *Turn PIN on for all users · Turn PIN off for all users*, **sin iconos**. **Construido** |
+| A5 | Confirmación de bulk | **Turn PIN off for all users?** · *This will turn PIN off for all 8 users in First team. They won't be able to log in with a PIN until it's turned back on.* · Cancel · **Turn off** (negro, no rojo: `danger: false`). **Construido** |
+
+**Tercer botón a medida encontrado (27/9)**: esta confirmación usa `.confirmBtn`, que pinta
+`var(--color-text-strong)` de fondo — un token de *texto* usado como superficie. Mismas medidas
+que `Button M Primary` y el mismo color (`#0b0f12`), pero por la capa equivocada. Con
+`.cancelBtn` y `.deleteBtn` ya van tres botones dibujados a mano en `DeleteOrgModal.module.css`,
+y los tres tienen hoy su variante en el sistema.
 
 **Permissions dentro del drawer** — una tarjeta por pertenencia. La regla completa y los dos
 diagramas están en `center-admin-flujos-figma.md` § 4 bis; no se repiten acá.
