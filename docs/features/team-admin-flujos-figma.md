@@ -68,6 +68,11 @@ debería decirlo y hoy no lo dice.
 *Comprobar en QA*: que quitar desde el drawer y desde el menú llevan al mismo modal, y que al
 confirmar desde el drawer este se cierra.
 
+**Medidas del modal** (`DeleteOrgModal.module.css`, compartido por 4 pantallas): ancho **530**,
+padding **25**, gap 32 (contenido 12, acciones 12), radio `--radius-m`, sombra `--elevation-1`,
+borde 1px `--color-border-default`, velo `rgba(0,0,0,0.25)`. Título 24 Bold (`Headings/H2 Bold`),
+cuerpo 16 Book (`Body/L Book`). Filas de la tabla: **64px**, coinciden con Figma.
+
 **Datos correctos de esta pantalla** (contrastados con `mockData.js` y `rolePersonas.js`):
 organización **Astonia FC** con el avatar = la inicial `A`; usuario logueado **Sam Alcaraz**
 (`Team Admin - 3 teams · 2 centers`); equipo **First team**, Training Ground; la tabla lleva
