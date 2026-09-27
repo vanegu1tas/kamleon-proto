@@ -5,6 +5,41 @@ demás, no por tamaño.
 
 ---
 
+## 0 · REHACER LOS FLUJOS CONSTRUYENDO, NO CALCANDO  · lo primero después del punto 1
+
+Decisión de Daniel al cerrar el 27/9. Lo de hoy **no vale como método**: se clonó una pantalla
+existente y se fue corrigiendo hasta que se pareciera al código, **sin juzgar si lo que había
+estaba bien**. El resultado se ve correcto y no está conectado a nada.
+
+**La medida del problema, en la página de pruebas:**
+
+```
+Textos con estilo aplicado      29
+Textos sin estilo              521      ← el 95%
+Valores de color/radio crudos  833      (unos 30 eran míos, ya corregidos)
+```
+
+Y una prueba de que calcar arrastra errores: el atajo **`⌘K` está a 10px**, un tamaño que no
+existe en la escala del sistema (12·14·16·20·24·32). Venía en la pantalla clonada y se copió sin
+mirarlo.
+
+**El método que quiere Daniel:**
+
+1. Partir de lo que renderiza el **código** —esa es la referencia de contenido y comportamiento—
+   pero **construir la pantalla con los componentes**, no duplicar una existente.
+2. Aplicar **estilos de texto** de verdad (`Headings/*`, `Body/*`, `Label/*`), no valores sueltos
+   que coincidan de casualidad.
+3. Enlazar colores y radios a **variables**, nunca a números o hex.
+4. Cuando lo que hay en código esté mal (un tamaño fuera de escala, un color crudo), **decirlo y
+   decidir**, no replicarlo.
+5. **Solo cuando haya pantallas clave bien construidas** tiene sentido duplicarlas para hacer
+   variantes de un flujo. Duplicar antes de eso propaga la deuda.
+
+Aplica a las 6 pantallas ya montadas (B1–B4, A4–A5) y a todos los flujos que vengan.
+
+**Depende de**: el componente `Table Cell` (punto del trabajo largo) para las filas, que es donde
+está el grueso de los 521 textos sueltos.
+
 ## 1 · Poner nombre a los colores que se usan sin él  · ~30 min
 
 Tres colores se pintan a pelo en los dos lados. Sin nombre, nadie puede usarlos bien.
