@@ -202,7 +202,7 @@ console.log(`\n  ${C.fuerte('Design System')} ${C.gris('· Figma ↔ código')}`
 
 const edad = dias <= 0 ? C.verde('hoy')
            : dias <= 7 ? C.gris(`hace ${dias} d`)
-           : C.ambar(`📸 hace ${dias} días`);
+           : C.ambar(`⚠️  hace ${dias} días`);
 console.log(`  Foto de Figma: ${foto.generado}  ${edad}`);
 
 if (dias > 3) {
@@ -228,7 +228,7 @@ if (total === 0) {
   // Una foto vieja no da derecho a decir que todo cuadra: la comparación sería
   // contra un pasado. Es el fallo silencioso más fácil de cometer aquí.
   console.log(dias > 7
-    ? `\n  ${C.ambar('📸 Nada que reportar')} ${C.gris(`— pero la foto es de hace ${dias} días, así que esto no prueba gran cosa.`)}\n`
+    ? `\n  ${C.ambar('Nada que reportar')} ${C.gris(`— pero la foto es de hace ${dias} días, así que esto no prueba gran cosa.`)}\n`
     : `\n  ${C.verde('✅ Todo cuadra.')}\n`);
 } else {
   console.log(info.join('\n'));
