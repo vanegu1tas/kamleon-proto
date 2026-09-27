@@ -512,5 +512,11 @@
         "8"
       ]
     }
+  },
+  "saludDeComponentes": {
+    "_nota": "Salud de los component sets. Dos fallos que no se ven mirando el componente: un texto que no escucha su propiedad (la cambias y no pasa nada) y un color horneado distinto del valor de la variable a la que está enlazado (Figma pinta el horneado si el enlace no llega). Los dos aparecen al duplicar variantes. Vacío = los 22 juegos revisados están sanos.",
+    "juegosRevisados": 22,
+    "textosSordos": [],
+    "colorDesfasado": []
   }
 }

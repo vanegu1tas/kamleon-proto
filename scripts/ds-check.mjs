@@ -103,7 +103,7 @@ if (fotoAnterior) {
 }
 
 // ── Recolectar hallazgos ───────────────────────────────────────────────────
-const distinto = [], faltaCodigo = [], sinMapear = [], soloCodigo = [], sinDocumentar = [], info = [];
+const distinto = [], faltaCodigo = [], sinMapear = [], soloCodigo = [], sinDocumentar = [], componentesRotos = [], info = [];
 
 // 1 · Colores semánticos, por el mapa de nombres
 const sem = foto.variables['Semantic Colors'] || {};
@@ -206,6 +206,17 @@ if (doc) {
   revisar(doc.radios,         Object.keys(foto.variables['Border Radius'] || {}), 'cuadradosSinEnlazar');
 }
 
+// 8 · Salud de los componentes de Figma. Dos fallos que no se ven mirando el
+// componente y que aparecen al duplicar variantes: un texto que no escucha su
+// propiedad, y un color horneado distinto del valor de su variable.
+const salud = foto.saludDeComponentes;
+if (salud) {
+  for (const linea of salud.textosSordos || [])
+    componentesRotos.push(`${linea}  ← cambiar esa propiedad no hace nada`);
+  for (const linea of salud.colorDesfasado || [])
+    componentesRotos.push(`${linea}  ← Figma pinta el horneado, no la variable`);
+}
+
 // ── ¿Está abierto el puente con Figma? ────────────────────────────────────
 // Solo para poder decirte si puedes hacer algo al respecto. El comando no
 // habla con él: ese canal es interno de la herramienta y no está documentado.
@@ -257,9 +268,11 @@ bloque('SOLO EN CÓDIGO', soloCodigo,
   'Programado y sin pareja en Figma. O se lleva a Figma, o se anota en el mapa por qué no.', C.ambar);
 bloque('SIN DOCUMENTAR EN FIGMA', sinDocumentar,
   'Existen en el sistema pero no salen en Foundations. Quien no lea el código no sabe que están.', C.ambar);
+bloque('COMPONENTES ROTOS EN FIGMA', componentesRotos,
+  'Se ven bien y no funcionan. Casi siempre es una variante duplicada que no arrastró lo suyo.', C.rojo);
 
 const total = cambiosFigma.length + distinto.length + faltaCodigo.length + sinMapear.length
-            + soloCodigo.length + sinDocumentar.length;
+            + soloCodigo.length + sinDocumentar.length + componentesRotos.length;
 if (total === 0) {
   // Una foto vieja no da derecho a decir que todo cuadra: la comparación sería
   // contra un pasado. Es el fallo silencioso más fácil de cometer aquí.

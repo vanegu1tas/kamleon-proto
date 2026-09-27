@@ -627,3 +627,30 @@ Antes de programar el turquesa hay que resolver dos cosas:
    tono. Lo natural es un eje aparte —`Tone = Default | Brand | Critic`— igual que `Size` y
    `State`: el tono no cambia el tipo de botón, solo lo que comunica. Decidir con Daniel antes
    de tocar Figma, porque cambia la estructura del component set.
+
+## Los dos fallos invisibles de los componentes (27/9)
+
+Ambos aparecen al **duplicar una variante**, y ambos dejan el componente con buen aspecto y
+mal funcionamiento. `npm run ds:compare` los vigila desde hoy en los 22 juegos del DS.
+
+**1 · Un texto que no escucha su propiedad.** El panel muestra la propiedad, la cambias, y no
+pasa nada: ningún nodo la tiene en `componentPropertyReferences`. Apareció en las 6 variantes
+`Danger` del Button y en 10 estados de `Text input` y `Text area` — en los dos casos el
+`Default` estaba bien y el resto sordo, que es justo lo que despista.
+
+**2 · Un color horneado distinto del de su variable.** Un relleno guarda dos cosas: el color y
+la variable a la que se enlaza. Si el enlace no llega al pintar, Figma usa el horneado. Se ve
+como un botón negro con texto negro mientras la API jura que está todo bien. Ocho variantes del
+Button lo tenían.
+
+**Cómo se comprueban sin ruido.** Los dos primeros intentos dieron falsos positivos y hubo que
+afinar el criterio:
+
+- Comparar por **nombre de nodo** cruza los límites de los componentes anidados: hay muchos
+  `Label`, `Container` y `List`.
+- Comparar por **posición** falla en juegos con estructura variable (TabBar de 5 vs 1 pestaña,
+  Sidebar por rol).
+- Lo que funciona: **solo nodos de texto, solo la propiedad `characters`, y sin entrar en
+  instancias anidadas.** De 7 juegos "con problemas" se pasó a los 2 reales.
+
+Un check ruidoso es peor que ninguno: se ignora a la semana.
