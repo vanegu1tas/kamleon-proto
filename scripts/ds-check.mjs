@@ -15,6 +15,13 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const raiz = join(dirname(fileURLToPath(import.meta.url)), '..');
+
+// Color solo si la salida va a una terminal de verdad. Si se redirige a un
+// archivo o se pipea, sale limpio. NO_COLOR es la convención para apagarlo.
+const conColor = process.stdout.isTTY && !process.env.NO_COLOR;
+const C = new Proxy({
+  rojo: '31', ambar: '33', verde: '32', azul: '36', gris: '90', fuerte: '1',
+}, { get: (t, k) => (txt) => conColor ? `\x1b[${t[k]}m${txt}\x1b[0m` : String(txt) });
 const leer = p => readFileSync(join(raiz, p), 'utf8');
 
 const foto = JSON.parse(leer('design-system/figma-snapshot.json'));
@@ -166,27 +173,63 @@ for (const comp of enCodigo)
   if (!mapeados.has(comp) && !excusadosCodigo.has(comp))
     sobraCodigo.push(`${comp}/  (en código, sin pareja en Figma ni excusa en el mapa)`);
 
+// ── ¿Está abierto el puente con Figma? ────────────────────────────────────
+// Solo para poder decirte si puedes hacer algo al respecto. El comando no
+// habla con él: ese canal es interno de la herramienta y no está documentado.
+async function puenteAbierto() {
+  for (const puerto of [9225, 9223, 9224, 9226, 9227]) {
+    try {
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), 300);
+      const r = await fetch(`http://localhost:${puerto}/health`, { signal: ctrl.signal });
+      clearTimeout(t);
+      if (r.ok) { const j = await r.json(); return (j.connectedClients ?? j.clients ?? 0) > 0; }
+    } catch { /* ese puerto no */ }
+  }
+  return false;
+}
+
 // ── Informe ────────────────────────────────────────────────────────────────
 const dias = Math.round((Date.now() - new Date(foto.generado)) / 86400000);
-const bloque = (titulo, items, pista) => {
+const bloque = (titulo, items, pista, color) => {
   if (!items.length) return;
-  info.push(`\n  ${titulo}`);
-  if (pista) info.push(`  ${pista}`);
-  items.forEach(i => info.push(`    · ${i}`));
+  info.push(`\n  ${color(titulo)}`);
+  if (pista) info.push(`  ${C.gris(pista)}`);
+  items.forEach(i => info.push(`    ${color('·')} ${i}`));
 };
 
-console.log(`\n  Design System · Figma ↔ código`);
-console.log(`  Foto de Figma: ${foto.generado}${dias > 7 ? `  ⚠ hace ${dias} días, pídele a Claude que la regenere` : dias > 0 ? `  (hace ${dias} d)` : '  (hoy)'}`);
+console.log(`\n  ${C.fuerte('Design System')} ${C.gris('· Figma ↔ código')}`);
 
-bloque('CAMBIÓ EN FIGMA desde la última foto guardada', cambiosFigma,
-  'Esto es lo que alguien tocó en Figma. Incluye variantes nuevas.');
-bloque('NO COINCIDEN', distinto, 'Alguien cambió un valor en un lado y no en el otro.');
-bloque('FALTAN EN CÓDIGO', faltaCodigo, 'Están en Figma y no tienen equivalente programado.');
-bloque('SIN MAPEAR', sinMapear, 'Nuevos en Figma. Añádelos a figma-map.json o márcalos como sin equivalente.');
-bloque('SOBRAN EN CÓDIGO', sobraCodigo, 'Existen en el repo y no están en Figma ni justificados.');
+const edad = dias <= 0 ? C.verde('hoy')
+           : dias <= 7 ? C.gris(`hace ${dias} d`)
+           : C.ambar(`⚠ hace ${dias} días`);
+console.log(`  Foto de Figma: ${foto.generado}  ${edad}`);
+
+if (dias > 3) {
+  const abierto = await puenteAbierto();
+  console.log(abierto
+    ? `  ${C.azul('El Desktop Bridge está abierto')} ${C.gris('→ pídele a Claude que regenere la foto')}`
+    : `  ${C.gris('Para regenerarla: abre el Desktop Bridge en Figma y pídesela a Claude')}`);
+}
+
+bloque('CAMBIÓ EN FIGMA', cambiosFigma,
+  'Lo que alguien tocó desde la última foto guardada. Incluye variantes nuevas.', C.azul);
+bloque('NO COINCIDEN', distinto,
+  'Un valor cambió en un lado y no en el otro.', C.rojo);
+bloque('FALTAN EN CÓDIGO', faltaCodigo,
+  'Están en Figma y no tienen equivalente programado.', C.rojo);
+bloque('SIN MAPEAR', sinMapear,
+  'Nuevos en Figma. Añádelos a figma-map.json o márcalos como sin equivalente.', C.ambar);
+bloque('SOBRAN EN CÓDIGO', sobraCodigo,
+  'Existen en el repo y no están en Figma ni justificados.', C.ambar);
 
 const total = cambiosFigma.length + distinto.length + faltaCodigo.length + sinMapear.length + sobraCodigo.length;
-if (total === 0) console.log(`\n  ✓ Todo cuadra.\n`);
-else { console.log(info.join('\n')); console.log(`\n  ${total} cosas que mirar.\n`); }
+if (total === 0) {
+  console.log(`\n  ${C.verde('Todo cuadra.')}\n`);
+} else {
+  console.log(info.join('\n'));
+  const urgentes = distinto.length + faltaCodigo.length;
+  console.log(`\n  ${C.fuerte(total)} cosa${total === 1 ? '' : 's'} que mirar${urgentes ? C.rojo(`, ${urgentes} desalineada${urgentes === 1 ? '' : 's'}`) : ''}.\n`);
+}
 
 process.exit(0);
