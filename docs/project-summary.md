@@ -333,12 +333,13 @@ Los nombres de variables siguen estos prefijos exactos. **No usar nombres cortos
 Una sola escala, sin variantes por dispositivo: un radio es una propiedad de la forma, no del
 espacio disponible. En Figma, colección `Border Radius`, con los mismos cuatro nombres.
 
-### Elevación y anillo de foco (tokens.css) — 26/09/2026
+### Elevación y anillo de foco (tokens.css) — 26-27/09/2026
 
 | Token | Para qué | Figma |
 |---|---|---|
 | `--elevation-1` | Cards, paneles y tablas | `Elevation/1` |
 | `--elevation-2` | Menús, desplegables y tooltips | `Elevation/2` |
+| `--elevation-3` | Lo que flota sobre el contenido sin taparlo: toast, paleta ⌘K, tooltips del tour | `Elevation/3` |
 | `--shadow-drawer` | Panel anclado al borde derecho | `Shadow/Drawer` |
 | `--shadow-sidebar` | El sidebar sobre el fondo de la página | `Shadow/Sidebar` |
 | `--shadow-control-thumb` | La bolita del Toggle | `Shadow/Control thumb` |

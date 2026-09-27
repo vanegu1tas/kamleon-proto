@@ -13,7 +13,7 @@
   padding: 8px 12px 8px 8px;
   background: #0b0f12;
   border-radius: var(--radius-l);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--elevation-3);
   white-space: nowrap;
   max-width: calc(100vw - 32px);
 

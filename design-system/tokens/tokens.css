@@ -33,6 +33,10 @@ body {
      comporta una sombra real. */
   --elevation-1: 0 1px 2px rgba(0, 0, 0, 0.05);
   --elevation-2: 0 8px 24px rgba(0, 0, 0, 0.10), 0 2px 6px rgba(0, 0, 0, 0.06);
+  /* Lo que flota sobre el contenido sin taparlo: toast, paleta ⌘K, tooltips del
+     tour. Dos capas como el nivel 2: sin la corta, la tarjeta parece recortada y
+     pegada encima en vez de flotar apoyada. */
+  --elevation-3: 0 12px 32px rgba(0, 0, 0, 0.22), 0 4px 10px rgba(0, 0, 0, 0.08);
 
   /* El drawer no es un nivel de elevación: su sombra es direccional porque el
      panel está anclado al borde derecho. Por eso tiene token propio. */

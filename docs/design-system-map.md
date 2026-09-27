@@ -755,6 +755,42 @@ viejos. Primera vez que `ds:compare` atrapa algo en caliente en vez de en una au
 
 ---
 
+### El nivel 3 de elevación — 27/09/2026
+
+Quedaban 13 sombras sueltas, pero **solo 4 eran candidatas a nivel 3**. Las demás eran otra cosa:
+el borde horizontal de un panel, un tooltip pequeño (nivel 2), una ilustración decorativa, el menú
+de la scrapp (pantalla oscura, otro contexto) y cuatro de V1, congelada.
+
+Las cuatro reales —Toast, paleta ⌘K y los dos del tour— se montaron en la página `-- Elevation`
+flotando sobre contenido real, no sobre gris liso.
+
+```
+--elevation-3   0 12px 32px rgba(0,0,0,.22)  +  0 4px 10px rgba(0,0,0,.08)
+```
+
+**Dos decisiones que salieron de mirarlo, no de razonarlo:**
+
+Primero recomendé la opción de dos capas más suave, por coherencia con `elevation-2`. Al ponerla
+en fila con los otros niveles se vio que **no se distinguía del nivel 2**: un nivel que no se
+separa del anterior no es un nivel. Ganó la más marcada.
+
+Después Daniel propuso mantener esa fuerza pero añadirle la capa de contacto. Acertó: sin ella la
+tarjeta **parece recortada y pegada encima** en vez de flotar apoyada. Se bajó la capa principal
+de `.25` a `.22` porque al sumar la corta el conjunto se oscurecía de más.
+
+La escala queda con una construcción única:
+
+```
+elevation-1   una capa    reposa sobre la página, no flota
+elevation-2   dos capas   distancia + contacto
+elevation-3   dos capas   distancia + contacto, un escalón más
+```
+
+El argumento de que "a mucha distancia no existe sombra de contacto" es físico y se descartó: un
+sistema de diseño no es física, y la coherencia de construcción pesa más.
+
+---
+
 ## Cómo mantener esto vivo
 
 Este documento es una foto del 2026-09-26 y **se va a quedar viejo**, que es exactamente lo que

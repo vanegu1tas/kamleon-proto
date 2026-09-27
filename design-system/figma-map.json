@@ -52,6 +52,7 @@
   "efectos": {
     "Elevation/1": "--elevation-1",
     "Elevation/2": "--elevation-2",
+    "Elevation/3": "--elevation-3",
     "Shadow/Drawer": "--shadow-drawer",
     "Shadow/Sidebar": "--shadow-sidebar",
     "Shadow/Control thumb": "--shadow-control-thumb"
