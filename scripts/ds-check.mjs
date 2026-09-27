@@ -188,16 +188,22 @@ for (const nombre of Object.keys(declarados)) {
   soloCodigo.push(`token · ${nombre} = ${tokens[nombre]}`);
 }
 
-// 7 · La página "-- Colors" del DS, que es la documentación que lee el equipo.
-// Un token que existe pero no está ahí, para tu compañera no existe.
-const docFigma = foto.paginaDeColores;
-if (docFigma) {
-  const documentadas = new Set(docFigma.documentadas || []);
-  for (const nombreFigma of Object.keys(sem))
-    if (!documentadas.has(nombreFigma))
-      sinDocumentar.push(`${nombreFigma} = ${sem[nombreFigma]}`);
-  for (const etiqueta of docFigma.cuadradosSinEnlazar || [])
-    sinDocumentar.push(`${etiqueta} · el cuadrado tiene un hex a mano, no la variable`);
+// 7 · Las páginas de Foundations, que son la documentación que lee el equipo.
+// Un token que existe pero no sale ahí, para quien no lee el código no existe.
+const doc = foto.documentacion;
+if (doc) {
+  const revisar = (seccion, existentes, etiquetaVacia) => {
+    if (!seccion) return;
+    const puestas = new Set(seccion.documentadas || []);
+    for (const nombre of existentes)
+      if (!puestas.has(nombre))
+        sinDocumentar.push(`${nombre}  ← falta en ${seccion.pagina}`);
+    for (const suelta of seccion[etiquetaVacia] || [])
+      sinDocumentar.push(`${suelta} · ${seccion.pagina}: la muestra tiene el valor a mano, no el token`);
+  };
+  revisar(doc.colores,        Object.keys(sem),                            'cuadradosSinEnlazar');
+  revisar(doc.estilosDeTexto, Object.keys(foto.estilosDeTexto || {}),      'muestrasSinEstilo');
+  revisar(doc.radios,         Object.keys(foto.variables['Border Radius'] || {}), 'cuadradosSinEnlazar');
 }
 
 // ── ¿Está abierto el puente con Figma? ────────────────────────────────────
@@ -250,7 +256,7 @@ bloque('SIN MAPEAR', sinMapear,
 bloque('SOLO EN CÓDIGO', soloCodigo,
   'Programado y sin pareja en Figma. O se lleva a Figma, o se anota en el mapa por qué no.', C.ambar);
 bloque('SIN DOCUMENTAR EN FIGMA', sinDocumentar,
-  'Existen como variable pero no salen en la página "-- Colors" del DS. Quien no lea el código no sabe que están.', C.ambar);
+  'Existen en el sistema pero no salen en Foundations. Quien no lea el código no sabe que están.', C.ambar);
 
 const total = cambiosFigma.length + distinto.length + faltaCodigo.length + sinMapear.length
             + soloCodigo.length + sinDocumentar.length;
