@@ -13,7 +13,7 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "recommendation": "vite --config vite.config.scrapp.js --open /recommendation.html",
-    "ds": "node scripts/ds-check.mjs"
+    "ds:compare": "node scripts/ds-check.mjs"
   },
   "keywords": [],
   "author": "",

@@ -1,5 +1,5 @@
 {
-  "_nota": "Correspondencia de nombres entre Figma y el código. Solo lo que NO se deduce por regla: los tamaños, radios e interlineados se emparejan solos (Font Size/14 → --font-size-14). Si añades un token en Figma y no lo pones aquí, `npm run ds` te avisa de que está sin mapear — eso es lo que hace que un componente o un color nuevo no pase desapercibido.",
+  "_nota": "Correspondencia de nombres entre Figma y el código. Solo lo que NO se deduce por regla: los tamaños, radios e interlineados se emparejan solos (Font Size/14 → --font-size-14). Si añades un token en Figma y no lo pones aquí, `npm run ds:compare` te avisa de que está sin mapear — eso es lo que hace que un componente o un color nuevo no pase desapercibido.",
 
   "colores": {
     "Content/Strong":              "--color-text-strong",

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * npm run ds — ¿dicen lo mismo Figma y el código?
+ * npm run ds:compare — ¿dicen lo mismo Figma y el código?
  *
  * Compara design-system/figma-snapshot.json (la foto de Figma) con los tokens y
  * componentes del repo. No toca nada: solo informa.

@@ -413,7 +413,7 @@ encuentra mirando: solo comparando.
 
 ---
 
-# Mantenerlo sincronizado — `npm run ds` (2026-09-27)
+# Mantenerlo sincronizado — `npm run ds:compare` (2026-09-27)
 
 Dos cosas que recordar, y una la hace Claude:
 
@@ -423,7 +423,8 @@ Dos cosas que recordar, y una la hace Claude:
                  → lo hace al empezar cualquier sesión de design system,
                    sin que haya que pedirlo
 
-npm run ds       compara esa foto con los tokens y componentes del repo
+npm run ds:compare
+                 compara esa foto con los tokens y componentes del repo
                  → no toca nada, solo informa
 ```
 
