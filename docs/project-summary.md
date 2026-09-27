@@ -445,6 +445,54 @@ Nodos relevantes:
 
 ---
 
+## Cerrado el 2026-09-27 — el primer flujo construido en Figma
+
+Quince commits (`c82bc7c` → `bdb1a9b`). El guion del flujo, con textos y medidas exactas, en
+`docs/features/team-admin-flujos-figma.md`; las reglas nuevas, en `docs/design-system-rules.md`.
+
+**Qué se construyó.** El flujo 2 del Team Admin ("Quitar a alguien del equipo") en la página
+`🧪 Flujos — prueba` de Web App 2.0, con instancias reales de la librería: B1 el menú "⋯" de la
+fila, B2 la entrada desde el drawer *Edit user*, B3 el modal de confirmación y B4 el resultado con
+toast. Más A4/A5, el menú de *Bulk actions* y su confirmación — la primera que no es destructiva.
+
+**Lo valioso fueron los siete fallos que destapó**, ninguno visible mirando el componente:
+
+- **Ocho variantes del Button con el color horneado en negro** pese a tener el enlace a la
+  variable correcto. Un relleno guarda dos cosas —el color y la variable— y Figma pinta el
+  horneado cuando el enlace no llega.
+- **Dieciséis variantes con el texto sordo**: las 6 `Danger` del Button y 10 estados de
+  `Text input` y `Text area`. La propiedad aparece en el panel, la cambias y no pasa nada. Solo
+  el `State=Default` funcionaba en los tres casos.
+- **`Secondary` y `Tertiary` significaban cosas distintas en cada lado.** Resuelto con tres
+  nombres para tres tratamientos: `Secondary` blanco con borde, `Tertiary` transparente (el
+  Cancel, 26 usos), `Subtle` gris (nombre nuevo, 2 usos). Ningún botón cambió de aspecto.
+- **Nueve medidas mal en el modal**: 440 de ancho en vez de 530, radio 12 en vez de 24,
+  `Elevation/3` en vez de la 1, título en H3 en vez de H2 Bold, velo al 40% en vez del 25%.
+- **Datos caducados** en la pantalla base de Figma: "Atlético Nacional" y "Daniel Vanegas", que
+  no existen en el mock. Lo correcto es Astonia FC y Sam Alcaraz.
+- **Una pregunta abierta desde agosto ya estaba contestada en el código**: el modal tiene una
+  segunda frase que el guion no recogía.
+- **Tres botones dibujados a mano** en `DeleteOrgModal.module.css`, compartido por 4 pantallas, y
+  los tres con variante en el sistema.
+
+**`ds:compare` pasó de 6 a 8 pasadas.** Ahora vigila también las tres páginas de Foundations
+(`-- Colors`, `-- Typography`, `-- Border radius`) y la salud interna de los componentes: textos
+que no escuchan su propiedad y colores horneados que no coinciden con su variable. De los siete
+fallos, cinco los habría cazado el comando solo.
+
+**Foundations al día.** Página de colores con las 42 descripciones escritas desde el uso real en
+el código, más `Grey/70` que faltaba. Radios corregidos (documentaban la colección muerta) y
+enlazados a su variable, así que ya no pueden desfasarse. Frame `Text styles` nuevo con los 14
+estilos reales: la página documentaba un vocabulario muerto (`Display 1`, `Title-H1…H5`,
+`Size-160`, `font-weight/regular`).
+
+**Dos lecciones de método**, ambas escritas en las reglas del DS: publicar la librería y
+actualizarla en el archivo que la consume son **dos pasos en archivos distintos**; y al comprobar
+algo hay que recorrer todos los casos y mirar **el valor que se pinta**, no el campo que debería
+controlarlo — tres veces el mismo día un "está todo bien" fue el check mirando donde no era.
+
+**Pendiente → `docs/features/ds-pendientes-28-09.md`**, con tiempos.
+
 ## Cerrado el 2026-09-26 — sincronización Design System ↔ código
 
 Diez commits (`f6df952` → `69cdf27`). El detalle completo, con el razonamiento de cada decisión,
