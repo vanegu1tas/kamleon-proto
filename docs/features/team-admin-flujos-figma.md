@@ -56,9 +56,9 @@ Dos entradas, una sola confirmación.
 
 | # | Frame | Qué muestra |
 |---|---|---|
-| B1 | Entrada A | Menú "⋯" de la fila → *Remove from team* |
+| B1 | Entrada A | Menú "⋯" de la fila → *Remove from team*. **Construido**: pantalla completa del equipo con el menú anclado bajo el "⋯" de Carlos García |
 | B2 | Entrada B | Drawer Edit user → botón **Remove from team** dentro de la tarjeta de permisos |
-| B3 | Modal | **Remove from team** · *Are you sure you want to remove **Carlos García** from First team?* · Cancel · Remove |
+| B3 | Modal | **Remove from team** · *Are you sure you want to remove **Carlos García** from First team?* · Cancel · Remove (`Type=Danger`). **Construido**: sobre la pantalla con velo al 40% |
 | B4 | Resultado | La fila desaparece de la tabla + toast `Mode=Success`, sin Undo: ***Carlos García removed from First team*** |
 
 **Pregunta abierta para el programador** (la misma que en el borrado de equipos): ¿qué le pasa
@@ -67,6 +67,11 @@ debería decirlo y hoy no lo dice.
 
 *Comprobar en QA*: que quitar desde el drawer y desde el menú llevan al mismo modal, y que al
 confirmar desde el drawer este se cierra.
+
+**Detectado al construirlo (27/9)**: la cabecera del equipo lleva el contador de personas
+(*"8 users"*), así que al quitar a alguien tiene que bajar a *"7 users"*. Sale de
+`selectedEntry.team.users.length` (`TeamAdminHome.jsx:688`), o sea que en el prototipo ya
+funciona — pero es fácil olvidarlo al dibujar la pantalla de resultado.
 
 ---
 
