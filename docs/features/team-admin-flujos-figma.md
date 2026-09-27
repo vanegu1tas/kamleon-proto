@@ -57,16 +57,25 @@ Dos entradas, una sola confirmación.
 | # | Frame | Qué muestra |
 |---|---|---|
 | B1 | Entrada A | Menú "⋯" de la fila → *Remove from team*. **Construido**: pantalla completa del equipo con el menú anclado bajo el "⋯" de Carlos García |
-| B2 | Entrada B | Drawer Edit user → botón **Remove from team** dentro de la tarjeta de permisos |
+| B2 | Entrada B | Drawer Edit user → botón **Remove from team** dentro de la tarjeta de permisos. **Construido**: drawer de 520 anclado a la derecha, con scroll hasta Permissions. Una sola tarjeta (Carlos está en un solo equipo) |
 | B3 | Modal | **Remove from team** · *Are you sure you want to remove **Carlos García** from First team?* · Cancel · Remove (`Type=Danger`). **Construido**: sobre la pantalla con velo al 40% |
 | B4 | Resultado | La fila desaparece de la tabla + toast `Mode=Success`, sin Undo: ***Carlos García removed from First team*** |
 
-**Pregunta abierta para el programador** (la misma que en el borrado de equipos): ¿qué le pasa
-a esa persona después? ¿Conserva su cuenta Kamleon y se queda sin equipo? El texto del modal
-debería decirlo y hoy no lo dice.
+~~**Pregunta abierta para el programador**: ¿qué le pasa a esa persona después?~~ **Resuelta**:
+el código ya lo dice, y el guion se había quedado atrás. El modal lleva dos frases, con el
+nombre en negrita:
+
+> Are you sure you want to remove **Carlos García** from First team?
+> They'll keep their Kamleon account — they just won't be part of this team anymore.
+
+Idéntico en `TeamAdminHome.jsx:27` y `OrgDetailV2.jsx:2376`.
 
 *Comprobar en QA*: que quitar desde el drawer y desde el menú llevan al mismo modal, y que al
 confirmar desde el drawer este se cierra.
+
+**Los botones de la tarjeta de permisos** son `Subtle` con dos tonos distintos de texto:
+*Set new PIN* en turquesa oscuro y *Remove from team* en crítico. Es el caso real que motiva
+el eje `Tone` pendiente (ver `design-system-rules.md`).
 
 **Medidas del modal** (`DeleteOrgModal.module.css`, compartido por 4 pantallas): ancho **530**,
 padding **25**, gap 32 (contenido 12, acciones 12), radio `--radius-m`, sombra `--elevation-1`,
