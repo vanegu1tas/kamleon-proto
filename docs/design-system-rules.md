@@ -666,3 +666,31 @@ muestra en vez de todos los casos.**
 
 **La regla:** recorrer todos los casos y dar el recuento (`30 de 30`), comparar contra el valor
 que se pinta, y desconfiar del "todo bien" — dos veces fue el check mirando donde no era.
+
+## Construir en Figma: instancias, no calcos (27/9)
+
+Daniel detectó que las pantallas del flujo se estaban montando **clonando una pantalla vieja y
+corrigiéndola a mano** hasta que se pareciera al código, en vez de ensamblarlas con componentes.
+La diferencia no se ve hoy: se ve el día que cambia un token y esos nodos no se enteran.
+
+Medido en la página de pruebas: **833 valores crudos**. Unos 30 los introdujo el montaje del
+flujo (el avatar de la organización repintado a mano, los velos, el borde y el radio de los
+modales) y ya están enlazados a `Background/Surface Subtle`, `Border/Default`, `Content/Subtle`,
+`Headings/H3` y `radius-m`. Los otros ~800 venían en la pantalla clonada: filas de tabla y
+avatares de iniciales dibujados a mano, deuda anterior del archivo.
+
+**Hueco de tokens encontrado**: el velo de los modales es `rgba(0,0,0,0.25)` a pelo en el CSS y
+un rectángulo crudo en Figma. No tiene nombre en ninguno de los dos lados.
+
+## Tablas: el contrato es la celda, no el andamio
+
+En código las tablas se construyen por **columnas** (sirve para ordenar, redimensionar y ocultar
+columnas en responsive). En Figma están por **filas**, que es como se apilan las instancias y
+como se enseñan los estados de una fila (hover, seleccionada, pendiente).
+
+**No tienen por qué coincidir.** Lo que sí tiene que coincidir es la **celda**: el componente
+`Table Cell` con sus 9 tipos, su alto de 64px, su padding y su alineación. Si las dos partes
+respetan la celda, cada medio puede ensamblarla como le convenga.
+
+Es la misma regla de siempre en este proyecto: *la implementación puede ir por detrás, el nombre
+no*. Aquí, el andamio puede diferir; el contrato no.
