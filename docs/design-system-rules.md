@@ -654,3 +654,15 @@ afinar el criterio:
   instancias anidadas.** De 7 juegos "con problemas" se pasó a los 2 reales.
 
 Un check ruidoso es peor que ninguno: se ignora a la semana.
+
+## Cómo comprobar algo del sistema sin engañarse (27/9)
+
+Tres fallos del mismo día tuvieron la misma causa: **mirar el campo en vez del valor, o una
+muestra en vez de todos los casos.**
+
+- `componentPropertyReferences` vacío es `{}`, y `{}` es truthy: hay que mirar la clave concreta.
+- Un relleno guarda el color **y** la variable. Comprobar solo el enlace no dice qué se pinta.
+- Una instancia correcta no dice nada de sus hermanas: hay que recorrerlas todas.
+
+**La regla:** recorrer todos los casos y dar el recuento (`30 de 30`), comparar contra el valor
+que se pinta, y desconfiar del "todo bien" — dos veces fue el check mirando donde no era.
