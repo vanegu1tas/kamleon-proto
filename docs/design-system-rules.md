@@ -609,3 +609,21 @@ En Figma el componente `.User menu` lleva una **foto**. En el código es un cír
 `.userCardAvatar`, 28px, 14 Bold). Como las iniciales no existen como nodo en el componente, no
 se pueden poner sin romper la instancia. **Pendiente**: añadir el texto de iniciales al
 componente del DS.
+
+## Pendiente: el Subtle necesita un eje de tono (27/9)
+
+Daniel avisa de que en sus diseños el botón `Subtle` aparece con **tres colores de texto**:
+el normal, un **turquesa oscuro**, y el **crítico con icono**. En código hoy solo existen dos
+de los tres (`subtle` y `subtleDanger`).
+
+Antes de programar el turquesa hay que resolver dos cosas:
+
+1. **El turquesa oscuro no tiene nombre semántico.** `--color-turquoise-30` (#1a7f79) se usa
+   crudo en 8 sitios (flechas de ordenación activas, el check del dropdown de equipos en
+   `EditUnitDrawer`). Es el único color que se repite sin pasar por la capa semántica.
+   `--color-turquoise-40` (#22aaa2) existe en la paleta de Figma y **no existe en código**.
+
+2. **Cómo se modela.** Añadir `subtleBrand` junto a `subtleDanger` multiplica nombres por cada
+   tono. Lo natural es un eje aparte —`Tone = Default | Brand | Critic`— igual que `Size` y
+   `State`: el tono no cambia el tipo de botón, solo lo que comunica. Decidir con Daniel antes
+   de tocar Figma, porque cambia la estructura del component set.
