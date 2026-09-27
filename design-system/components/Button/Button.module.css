@@ -40,11 +40,11 @@
 }
 
 .primary:hover:not(:disabled) {
-  background-color: var(--color-grey-25);
+  background-color: var(--color-action-primary-hover);
 }
 
 .primary:disabled {
-  background-color: var(--color-grey-91);
+  background-color: var(--color-action-disabled-bg);
   color: var(--color-text-disabled);
 }
 
@@ -60,7 +60,25 @@
 }
 
 .secondary:disabled {
-  background-color: var(--color-grey-91);
+  background-color: var(--color-action-disabled-bg);
+  color: var(--color-text-disabled);
+}
+
+/* ─── Danger ─────────────────────────────────────────
+   Destructiva con relleno: confirmar un borrado en un modal. Distinta de tertiaryDanger,
+   que es gris con texto rojo para una destructiva secundaria dentro de una lista. */
+
+.danger {
+  background-color: var(--color-action-danger-bg);
+  color: var(--color-action-primary-text);
+}
+
+.danger:hover:not(:disabled) {
+  background-color: var(--color-action-danger-hover);
+}
+
+.danger:disabled {
+  background-color: var(--color-action-disabled-bg);
   color: var(--color-text-disabled);
 }
 
@@ -70,17 +88,17 @@
    un botón transparente (secondary) no se distingue del texto de la card. */
 
 .tertiary {
-  background-color: var(--color-bg-page);
+  background-color: var(--color-action-tertiary-bg);
   color: var(--color-text-strong);
 }
 
 .tertiary:hover:not(:disabled),
 .tertiary:active:not(:disabled) {
-  background-color: var(--color-grey-91);
+  background-color: var(--color-action-tertiary-hover);
 }
 
 .tertiary:disabled {
-  background-color: var(--color-grey-91);
+  background-color: var(--color-action-disabled-bg);
   color: var(--color-text-disabled);
 }
 
@@ -96,11 +114,11 @@
 
 .tertiaryDanger:hover:not(:disabled),
 .tertiaryDanger:active:not(:disabled) {
-  background-color: var(--color-grey-91);
+  background-color: var(--color-action-tertiary-hover);
 }
 
 .tertiaryDanger:disabled {
-  background-color: var(--color-grey-91);
+  background-color: var(--color-action-disabled-bg);
   color: var(--color-text-disabled);
 }
 

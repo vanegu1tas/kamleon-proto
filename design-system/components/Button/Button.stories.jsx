@@ -11,7 +11,7 @@ export default {
     disabled: false,
   },
   argTypes: {
-    variant: { control: 'radio', options: ['primary', 'secondary'] },
+    variant: { control: 'radio', options: ['primary', 'secondary', 'tertiary', 'tertiaryDanger', 'danger'] },
     size:    { control: 'radio', options: ['s', 'm'] },
     disabled: { control: 'boolean' },
     children: { control: 'text' },

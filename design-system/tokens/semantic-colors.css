@@ -58,7 +58,19 @@
 
   /* ─── Actions ───────────────────────────────── */
 
-  --color-action-primary-bg:    var(--color-black);     /* #0b0f12 */
+  /* ─── Superficies de acción ─────────────────────
+     El papel "algo pulsable". No es una capa de componente: vale para un botón,
+     un CTA o cualquier superficie clicable. Figma: Action/* */
+  --color-action-primary-bg:       var(--color-black);      /* #0b0f12 */
+  --color-action-primary-hover:    var(--color-grey-25);    /* #32404d — se ACLARA */
+  --color-action-tertiary-bg:      var(--color-grey-96);    /* #f4f5f5 */
+  --color-action-tertiary-hover:   var(--color-grey-91);    /* #e5e7eb — se OSCURECE:
+                                      su reposo ya es gris, aclararlo parecería apagarlo */
+  --color-action-disabled-bg:      var(--color-grey-91);    /* #e5e7eb */
+  /* Destructiva. Red/48 y no Red/58 por contraste: blanco sobre Red/58 da 3,9:1 y no
+     llega al mínimo AA de 4,5. Sobre Red/48 da 5,2:1, y sobre el hover 9,7:1. */
+  --color-action-danger-bg:        var(--color-red-48);     /* #c43b33 */
+  --color-action-danger-hover:     var(--color-red-29);     /* #8b0e0a */
   --color-action-primary-text:  var(--color-white);     /* #ffffff */
   --color-action-ghost-border:  var(--color-grey-91);   /* #e5e7eb */
   --color-action-ghost-text:    var(--color-black);     /* #0b0f12 */

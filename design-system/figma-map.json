@@ -25,7 +25,14 @@
     "Status/Active": "--color-status-active",
     "Status/Inactive": "--color-status-inactive",
     "Status/Pending": "--color-status-pending",
-    "Status/Expired": "--color-status-expired"
+    "Status/Expired": "--color-status-expired",
+    "Action/Primary": "--color-action-primary-bg",
+    "Action/Primary Hover": "--color-action-primary-hover",
+    "Action/Tertiary": "--color-action-tertiary-bg",
+    "Action/Tertiary Hover": "--color-action-tertiary-hover",
+    "Action/Disabled": "--color-action-disabled-bg",
+    "Action/Danger": "--color-action-danger-bg",
+    "Action/Danger Hover": "--color-action-danger-hover"
   },
   "sinEquivalenteEnCodigo": {
     "Content/Warning": "Existe en Figma. En código no hay token de aviso todavía.",
@@ -41,13 +48,12 @@
   },
   "sinEquivalenteEnFigma": {
     "--color-status-delay": "Tag de envío de correo. Falta Tag/Delivery en Figma.",
-    "--color-action-primary-bg": "Tokens de acción heredados, anteriores a la capa semántica actual.",
-    "--color-action-primary-text": "Idem.",
-    "--color-action-disabled-text": "Idem.",
-    "--color-action-ghost-border": "Idem.",
-    "--color-action-ghost-text": "Idem.",
+    "--color-action-primary-text": "Blanco del texto sobre acción. En Figma se usa Content/Inverse/Strong.",
     "--color-bg-icon-hover": "Idem.",
-    "--color-bg-sidebar": "El fondo del sidebar es un degradado; una variable de color no puede serlo."
+    "--color-bg-sidebar": "El fondo del sidebar es un degradado; una variable de color no puede serlo.",
+    "--color-action-disabled-text": "En Figma se usa Content/Disabled.",
+    "--color-action-ghost-border": "Botón fantasma heredado, anterior a la capa semántica actual. Sin uso conocido.",
+    "--color-action-ghost-text": "Idem."
   },
   "efectos": {
     "Elevation/1": "--elevation-1",
