@@ -281,3 +281,132 @@ Una muestra que apunta a `Grey/46` en vez de a `Content/Subtle` **deja de seguir
 día que el token se repunte, la página sigue enseñando el color viejo y nadie lo nota, porque el
 cuadrado se ve igual de bien. Pasó con el negro: `Content/Strong` cambió de `#221e1e` a `#0b0f12`
 y la documentación no se movió.
+
+---
+
+# Quién manda en cada capa (2026-09-27)
+
+Este sistema no nació antes que el producto: se fue destilando de pantallas que ya existían,
+trabajando unas veces primero en Figma y otras primero en código. Eso es normal y va a seguir
+siendo así, porque poder empezar por donde convenga es más rápido que obligarse a un único
+origen.
+
+Por eso **"quién manda" no se decide de una vez para todo el sistema**. Se decide por capa, y hay
+una cosa que no se decide nunca porque no admite excepción.
+
+## La regla corta
+
+```
+TOKENS Y NOMBRES     se emparejan SIEMPRE, el mismo día, con el mismo nombre
+COMPONENTES          Figma manda en la intención visual
+                     el código manda en el comportamiento
+                     un número les gana a los dos
+PANTALLAS            manda el código: el prototipo es lo que se prueba
+                     Figma documenta los flujos, no los persigue
+VOCABULARIO          manda el significado, no el lado
+```
+
+Y la que resuelve el problema de raíz:
+
+> **La implementación puede ir por detrás. El nombre, no.**
+
+Si se dibuja algo hoy y el código tarda dos semanas, no pasa nada. Pero el nombre tiene que
+existir en los dos sitios desde el primer día, aunque de un lado sea solo un token declarado y
+sin usar todavía. **Un nombre inventado dos veces son dos nombres.**
+
+---
+
+## Por qué esa y no otra
+
+El 26/9 se resolvieron trece divergencias. Seis las ganó Figma, cinco el código, y dos no eran
+conflicto sino errata. Lo revelador es que **el criterio no fue el tipo de propiedad**: hay
+colores y medidas en los dos grupos.
+
+### Figma manda en la intención visual
+
+| Caso | Figma | Código |
+|---|---|---|
+| Color del placeholder | `#6b7280` | `#9ca3af` |
+| Alto del Search bar | 36px | 37,5px |
+| Icono desde el borde | 12px | 14px |
+| Punto y texto del Expired | naranja y negro | gris y gris |
+| Sombra del pulsador del Toggle | dos capas | una |
+| Sombra de los menús | la del FilterPanel | cinco valores distintos |
+| Paddings del Segmented control | 4 y 2 | 5 y 4 |
+
+Qué color, qué tamaño, cuánta sombra: eso se decide mirando, y mirar es lo que se hace en Figma.
+La sombra de los menús se eligió montando la página `-- Elevation` con los cinco candidatos
+aplicados al mismo menú. Ningún argumento escrito habría sustituido a verlos juntos.
+
+### El código manda en el comportamiento
+
+**El hover del ítem de sidebar.** Figma lo tenía como un sólido `#232727`; el código, como blanco
+al 5%. Ganó el código, y no por ser código: el fondo del sidebar es un degradado `#0b0f12` →
+`#161d24`, y un velo translúcido aclara lo que tenga debajo sea lo que sea, mientras que un
+sólido solo encaja a una altura. `#232727` iluminaba de más los ítems de arriba.
+
+Figma solo puede dibujar un fotograma. Cuando la diferencia está en **cómo algo se adapta** —a un
+fondo, a un estado, a un tamaño de pantalla— el código es el único que puede demostrarlo.
+
+Corolario: los ejes que existen solo en un lado **no son divergencias**. `State=Hover` en Figma
+es un `:hover` en CSS; que el código no tenga la propiedad es correcto, no un fallo. El mapa
+distingue los ejes que se corresponden de los que son propios del medio.
+
+### Un número les gana a los dos
+
+**El asterisco de campo obligatorio.** Figma tenía `Red/65` `#fc664e`, el código
+`#e04f4a`. La intención de Figma era legítima —un rojo más claro para no confundirlo con un
+error— pero sobre blanco da 3,4:1 contra 4,0:1. Ganó el número.
+
+Cuando hay una medida objetiva —contraste, tamaño mínimo táctil, un mínimo de accesibilidad— no
+es una discusión de criterio. Se mide y se acata.
+
+Y al revés: cuando el número apunta al mismo sitio que la intención, no hay conflicto. El
+placeholder lo ganó Figma **y** lo ganaba el contraste (2,44:1 → 4,64:1).
+
+### En el vocabulario manda el significado
+
+`Disabled` (Figma) contra `inactive` (código), para el estado de una organización o un equipo.
+Ganó `inactive`, no por venir del código, sino porque **"disabled" ya significa otra cosa** en un
+design system: un control que no se puede pulsar. Dos conceptos distintos no pueden compartir
+nombre.
+
+Lo mismo con `Selected` en vez de `Active` para el ítem del sidebar: "active" suele significar
+*pulsado en este instante*.
+
+---
+
+## De dónde vino de verdad el desorden
+
+Casi ninguna divergencia del 26/9 era "este color está mal". El color solía coincidir. Lo que se
+había separado era **el vocabulario**:
+
+```
+dos variables llamadas Black con distinto valor          #221e1e y #0b0f12
+Content-strong en la página · Content/Strong en la variable
+Background/Nav en Figma · sin equivalente en código
+Turquose con errata, y el 61 sacado del hex en vez de la luminosidad
+--color-status-error sin equivalente en Figma
+Status/Pending Surface describiendo una pieza, no un papel
+```
+
+Ninguna se separó por ir a distinta velocidad. **Se separaron porque cada lado bautizó lo mismo
+por su cuenta.** De ahí la regla del nombre.
+
+---
+
+## Qué hace falta para que esto aguante
+
+La regla del nombre solo funciona si **algo avisa cuando se rompe**, porque nadie se acuerda a
+los seis meses. Por eso la detección automática de diferencias no es un capricho técnico: es lo
+que convierte ordenar la casa en algo que se hace una vez.
+
+Dos de los hallazgos del 26/9 lo dejan claro:
+
+- `#221e1e` y `#0b0f12` son **indistinguibles en pantalla**. El negro equivocado sobrevivió meses
+  en 31 capas de componentes publicados porque no hay forma humana de verlo.
+- La documentación decía `#E04F4A` (rojo) donde el token valía `#75cc6e` (verde). Nadie lo notó
+  porque nadie compara un rótulo con su variable a mano.
+
+Cinco de los diez commits de ese día arreglan cosas que nadie sabía que estaban mal. Ninguna se
+encuentra mirando: solo comparando.
