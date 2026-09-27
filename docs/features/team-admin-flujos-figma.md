@@ -6,7 +6,8 @@ una persona puede hacer QA de un rol completo de una sentada, sin saltar entre r
 Cada flujo trae los frames en orden, los textos exactos del prototipo y **qué hay que
 verificar**. Lo que dice "comprobar" es lo que se mira en QA.
 
-Estado: **4 flujos**, ninguno construido en Figma todavía. Fecha: 2026-09-26.
+Estado: **4 flujos**. El **flujo 2 ya está construido en Figma** (página `🧪 Flujos — prueba` de Web App 2.0,
+frenes B1/B3/B4) con componentes, variables y estilos reales. Fecha: 2026-09-27.
 Complementa a `center-admin-flujos-figma.md`, que no repite lo que ya está allí.
 
 ---
@@ -31,7 +32,7 @@ cambiar lo mismo.
 | # | Frame | Qué muestra |
 |---|---|---|
 | A1 | Tabla de Users | Columnas **Name · PIN · Screen · Status · acciones**, filas de 64px |
-| A2 | Menú "⋯" de una fila | *Edit user · Turn PIN on/off · Hide from screen / Show on screen · Remove from team* (roja) |
+| A2 | Menú "⋯" de una fila | *Edit user · **Turn off PIN** / Turn on PIN · Hide from screen / Show on screen · Remove from team* (roja). Iconos: Edit · Power · Eye closed · Delete |
 | A3 | Drawer **Edit user** | User info completo + **Permissions** (ver más abajo) |
 | A4 | **Bulk actions** abierto | *Turn PIN on for all users · Turn PIN off for all users* |
 | A5 | Confirmación de bulk | **Turn PIN off for all users?** · *This will turn PIN off for all 8 users in First team. They won't be able to log in with a PIN until it's turned back on.* |
@@ -58,7 +59,7 @@ Dos entradas, una sola confirmación.
 | B1 | Entrada A | Menú "⋯" de la fila → *Remove from team* |
 | B2 | Entrada B | Drawer Edit user → botón **Remove from team** dentro de la tarjeta de permisos |
 | B3 | Modal | **Remove from team** · *Are you sure you want to remove **Carlos García** from First team?* · Cancel · Remove |
-| B4 | Resultado | La fila desaparece de la tabla + toast |
+| B4 | Resultado | La fila desaparece de la tabla + toast `Mode=Success`, sin Undo: ***Carlos García removed from First team*** |
 
 **Pregunta abierta para el programador** (la misma que en el borrado de equipos): ¿qué le pasa
 a esa persona después? ¿Conserva su cuenta Kamleon y se queda sin equipo? El texto del modal

@@ -549,3 +549,37 @@ sesión. Dos caminos, en orden de coste:
 
 Y si el equipo crece de verdad, herramientas como Supernova o Tokens Studio hacen esto como
 producto. Construirlo sale más caro que comprarlo a partir de cierto tamaño.
+
+---
+
+## Publicar una librería son dos pasos, no uno (27/9)
+
+`Design system` y `Web App 2.0` son dos archivos de Figma distintos. El segundo consume al
+primero, y **no se actualiza solo a propósito**: si lo hiciera, un cambio en el DS alteraría
+pantallas en mitad de una reunión.
+
+```
+Design system  →  Libraries → Publish   deja la versión nueva disponible
+Web App 2.0    →  Libraries → Update    se la trae
+```
+
+Síntoma de que falta el segundo paso: el componente tiene menos variantes de las que debería
+(`Button` con 18 en vez de 24), y `setProperties` falla con *"Unable to find a variant with
+those property values"*. El código no participa de esto: su sincronización es `npm run ds:compare`.
+
+## Duplicar una variante NO arrastra el enganche a las propiedades (27/9)
+
+Al crear las 6 variantes `Type=Danger` del Button duplicando las existentes, los nodos internos
+quedaron con `componentPropertyReferences` **vacío**. El resultado es un fallo silencioso
+perfecto:
+
+- El componente se ve bien.
+- La propiedad `Text` aparece en el panel y se puede cambiar.
+- El texto no cambia nunca, porque ningún nodo la escucha.
+
+Solo se descubre al usar el componente. Al crear variantes nuevas hay que comprobar que el
+texto apunta a `characters: 'Text#...'` y el icono a `visible: 'Left Icon#...'`, con los mismos
+identificadores que las variantes viejas.
+
+**Cuidado al verificarlo por código**: `componentPropertyReferences` devuelve `{}` cuando está
+vacío, y `{}` es truthy. Hay que mirar la clave concreta, no si el objeto existe.
