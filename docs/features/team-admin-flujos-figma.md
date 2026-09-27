@@ -68,6 +68,12 @@ debería decirlo y hoy no lo dice.
 *Comprobar en QA*: que quitar desde el drawer y desde el menú llevan al mismo modal, y que al
 confirmar desde el drawer este se cierra.
 
+**Datos correctos de esta pantalla** (contrastados con `mockData.js` y `rolePersonas.js`):
+organización **Astonia FC** con el avatar = la inicial `A`; usuario logueado **Sam Alcaraz**
+(`Team Admin - 3 teams · 2 centers`); equipo **First team**, Training Ground; la tabla lleva
+marcus.oyelaran (Pending), Dr. Elena Navarro y Dra. Sarah Mitchell (Staff), y los usuarios
+Carlos García, Tom Whitfield, Jordan Hobbs. El toast es negro (`#0b0f12`), no blanco.
+
 **Detectado al construirlo (27/9)**: la cabecera del equipo lleva el contador de personas
 (*"8 users"*), así que al quitar a alguien tiene que bajar a *"7 users"*. Sale de
 `selectedEntry.team.users.length` (`TeamAdminHome.jsx:688`), o sea que en el prototipo ya

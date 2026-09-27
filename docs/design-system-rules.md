@@ -583,3 +583,29 @@ identificadores que las variantes viejas.
 
 **Cuidado al verificarlo por código**: `componentPropertyReferences` devuelve `{}` cuando está
 vacío, y `{}` es truthy. Hay que mirar la clave concreta, no si el objeto existe.
+
+## No clonar instancias de pantallas viejas (27/9)
+
+Al montar el primer flujo cloné el toast desde una pantalla de `-- Login & Onboarding`. Esa
+instancia tenía el relleno **pisado a mano en blanco**, y el toast salió blanco cuando el
+componente del DS es negro (`#0b0f12`, igual que el código). Cuatro overrides pegados.
+
+Lo mismo con la pantalla base: cloné una de `-- Control Panel` y arrastró datos que el
+prototipo no tiene —"Atlético Nacional" con su escudo, "Daniel Vanegas"— porque esa pantalla
+se dibujó antes de que el mock cambiara a Astonia FC.
+
+**Regla:** las instancias se crean desde el componente (`createInstance`), no clonando una que
+ya está puesta en una pantalla. Y los datos de una pantalla se contrastan con el mock del
+código antes de darlos por buenos, no con otra pantalla de Figma.
+
+Si hay que reutilizar una instancia, `resetOverrides()` primero — pero ojo: eso también
+devuelve `layoutPositioning` a `AUTO`, y si el frame tiene auto-layout el elemento se mete
+como una columna más y rompe el ancho de la pantalla.
+
+## Divergencia abierta: el avatar del usuario en el Sidebar
+
+En Figma el componente `.User menu` lleva una **foto**. En el código es un círculo con degradado
+`linear-gradient(45deg, #00c9a7, #60a5fa)` y las **iniciales** encima (`Sidebar.module.css`
+`.userCardAvatar`, 28px, 14 Bold). Como las iniciales no existen como nodo en el componente, no
+se pueden poner sin romper la instancia. **Pendiente**: añadir el texto de iniciales al
+componente del DS.
