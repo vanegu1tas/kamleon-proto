@@ -218,7 +218,7 @@
 }
 
 .required {
-  color: var(--color-status-error);
+  color: var(--color-text-critic);
 }
 
 .input {
@@ -493,7 +493,7 @@
 }
 
 .bulkInvalid {
-  color: var(--color-status-error);
+  color: var(--color-text-critic);
   font-weight: var(--font-weight-medium);
 }
 
@@ -1165,7 +1165,7 @@
   font-family: var(--font-family-primary);
   font-size: var(--font-size-14);
   font-weight: var(--font-weight-medium);
-  color: var(--color-status-error);
+  color: var(--color-text-critic);
 }
 
 .validationHint {

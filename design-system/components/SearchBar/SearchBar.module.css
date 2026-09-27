@@ -32,7 +32,7 @@
 /* ─── Error ───────────────────────────────────────── */
 
 .wrapper.error {
-  border-color: var(--color-border-error);
+  border-color: var(--color-border-critic);
 }
 
 .wrapper.error:focus-within {

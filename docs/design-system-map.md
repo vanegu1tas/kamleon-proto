@@ -716,6 +716,45 @@ de `Content/Critic Strong` el día anterior: **actuar sobre el nombre sin verifi
 
 ---
 
+### La familia `critic` — 27/09/2026
+
+Tres tokens de código decían `status` o `error` para hablar del mismo rojo con tres papeles
+distintos. Figma ya los tenía bien separados: `Content/Critic`, `Border/Critic` y `Status/Pending`
+son tres nombres para `#e04f4a` **porque son tres papeles**, no una duplicación.
+
+Lo que estaba mal era el vocabulario del código:
+
+```
+--color-status-error         →  --color-text-critic       Figma: Content/Critic
+--color-border-error         →  --color-border-critic     Figma: Border/Critic
+--color-status-error-subtle  →  borrado
+```
+
+59 apariciones en 30 archivos. Ningún color cambió.
+
+**Lo que gana:** `--color-status-*` pasa a significar solo una cosa, el estado de una entidad
+—active, inactive, pending, expired, delay— igual que el `Status/*` de Figma. Los dos intrusos
+decían "status" y hablaban de errores: el prefijo prometía una familia a la que no pertenecían,
+la misma confusión que tenía `Content/Placeholder`.
+
+Y el vocabulario queda igual en los dos lados: `critic` aquí y `critic` allí, en vez de `Critic`
+contra `error`.
+
+**`--color-status-error-subtle` resultó ser código muerto.** Su único uso era `.unitReplaceAlert`,
+el fondo de un aviso de "este K-POD necesita reemplazo" dentro del detalle de una unit — 29 líneas
+de CSS que **ningún JSX renderizaba**. Alguien empezó la pantalla, escribió los estilos y no la
+terminó. Se borró todo.
+
+La primera propuesta fue renombrarlo a `--color-bg-critic` y crear `Background/Critic` en Figma.
+Se descartó al ver que no lo usaba nadie: **habría sido construir un token para una pantalla que
+no existe**, e inventarse una decisión de diseño para un caso hipotético. Si algún día se hace ese
+aviso, ya está `--color-bg-critic-subtle` para probarlo.
+
+**Y el comando cazó el renombrado en el acto**, porque el mapa seguía apuntando a los nombres
+viejos. Primera vez que `ds:compare` atrapa algo en caliente en vez de en una auditoría.
+
+---
+
 ## Cómo mantener esto vivo
 
 Este documento es una foto del 2026-09-26 y **se va a quedar viejo**, que es exactamente lo que

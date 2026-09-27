@@ -201,7 +201,7 @@
   font-family: var(--font-family-primary);
   font-size: var(--font-size-14);
   font-weight: var(--font-weight-medium);
-  color: var(--color-status-error);
+  color: var(--color-text-critic);
   line-height: 17.5px;
   text-align: left;
 }

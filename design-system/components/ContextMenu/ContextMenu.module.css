@@ -41,7 +41,7 @@
 /* ─── Danger variant ─────────────────────────────── */
 
 .danger {
-  color: var(--color-status-error);
+  color: var(--color-text-critic);
 }
 
 /* ─── Disabled ───────────────────────────────────── */

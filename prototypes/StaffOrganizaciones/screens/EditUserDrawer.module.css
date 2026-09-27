@@ -192,7 +192,7 @@
 }
 
 .required {
-  color: var(--color-status-error);
+  color: var(--color-text-critic);
 }
 
 .fieldDesc {
@@ -265,13 +265,13 @@
 
 .dobInputError,
 .dobInputError:focus {
-  border-color: var(--color-border-error);
+  border-color: var(--color-border-critic);
 }
 
 .dobError {
   font-family: var(--font-family-primary);
   font-size: var(--font-size-12);
-  color: var(--color-border-error);
+  color: var(--color-border-critic);
   padding-left: 12px;
 }
 
@@ -422,7 +422,7 @@
 .actionBtn:hover { opacity: 0.75; }
 
 .actionBtnDanger {
-  color: var(--color-status-error);
+  color: var(--color-text-critic);
 }
 
 .statusDot {

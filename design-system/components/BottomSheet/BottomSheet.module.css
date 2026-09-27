@@ -94,7 +94,7 @@
 
 .itemDanger,
 .itemDanger .itemIcon {
-  color: var(--color-status-error);
+  color: var(--color-text-critic);
 }
 
 @keyframes overlayIn {

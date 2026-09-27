@@ -91,7 +91,7 @@
 
 .tertiaryDanger {
   background-color: var(--color-bg-surface-raised);
-  color: var(--color-status-error);
+  color: var(--color-text-critic);
 }
 
 .tertiaryDanger:hover:not(:disabled),

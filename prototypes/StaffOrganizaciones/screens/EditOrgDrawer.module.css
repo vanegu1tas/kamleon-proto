@@ -270,7 +270,7 @@
 }
 
 .required {
-  color: var(--color-status-error);
+  color: var(--color-text-critic);
 }
 
 .input {

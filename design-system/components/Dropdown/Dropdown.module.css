@@ -27,7 +27,7 @@
 .required {
   font-family: var(--font-family-primary);
   font-weight: var(--font-weight-bold);
-  color: var(--color-status-error);
+  color: var(--color-text-critic);
   line-height: 1;
 }
 
@@ -112,19 +112,19 @@
 /* ─── Error state ─────────────────────────────────────── */
 
 .selectError {
-  border-color: var(--color-border-error);
+  border-color: var(--color-border-critic);
 }
 
 .selectError:hover:not(:focus):not(:disabled) {
-  border-color: var(--color-border-error);
+  border-color: var(--color-border-critic);
 }
 
 .selectError:focus:not(:focus-visible) {
-  border-color: var(--color-border-error);
+  border-color: var(--color-border-critic);
 }
 
 .selectError:focus-visible {
-  border-color: var(--color-border-error);
+  border-color: var(--color-border-critic);
   box-shadow: var(--focus-ring-error);
 }
 
@@ -144,7 +144,7 @@
   font-family: var(--font-family-primary);
   font-size: var(--font-size-14);
   font-weight: var(--font-weight-book);
-  color: var(--color-status-error);
+  color: var(--color-text-critic);
   padding-left: 12px;
   line-height: 1.25;
 }

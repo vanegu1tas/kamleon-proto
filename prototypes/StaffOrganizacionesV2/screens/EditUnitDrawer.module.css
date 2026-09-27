@@ -50,7 +50,7 @@
 }
 
 .required {
-  color: var(--color-status-error);
+  color: var(--color-text-critic);
   font-weight: var(--font-weight-medium);
 }
 

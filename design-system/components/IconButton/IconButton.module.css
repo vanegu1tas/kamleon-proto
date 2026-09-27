@@ -37,8 +37,8 @@
 
 .danger:hover {
   background: var(--color-bg-surface-subtle);
-  border-color: var(--color-border-error);
-  color: var(--color-status-error);
+  border-color: var(--color-border-critic);
+  color: var(--color-text-critic);
 }
 
 /* ─── Critical ───────────────────────────────────────────
@@ -47,14 +47,14 @@
    una acción destructiva disponible (eliminar), no un estado. */
 
 .critical {
-  border-color: var(--color-border-error);
-  color: var(--color-status-error);
+  border-color: var(--color-border-critic);
+  color: var(--color-text-critic);
 }
 
 .critical:hover {
   background: var(--color-bg-surface-subtle);
-  border-color: var(--color-status-error);
-  color: var(--color-status-error);
+  border-color: var(--color-text-critic);
+  color: var(--color-text-critic);
 }
 
 /* ─── Tooltip shared ──────────────────────────────────── */
