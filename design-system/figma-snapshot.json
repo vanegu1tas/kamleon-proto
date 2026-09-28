@@ -1,6 +1,6 @@
 {
   "_nota": "Foto del Design System de Figma. NO se edita a mano: la regenera Claude leyendo el archivo con el Desktop Bridge abierto. El git diff de este archivo es el historial de valores del sistema.",
-  "generado": "2026-09-27",
+  "generado": "2026-09-28",
   "archivo": "Design system",
   "fileKey": "ozgwasF3ziQyznQS0z0dM1",
   "variables": {
@@ -46,7 +46,9 @@
       "Action/Subtle Hover": "#e5e7eb",
       "Action/Disabled": "#e5e7eb",
       "Action/Danger": "#c43b33",
-      "Action/Danger Hover": "#8b0e0a"
+      "Action/Danger Hover": "#8b0e0a",
+      "Content/Accent": "#1a7f79",
+      "Background/Overlay": "#000000/0.5"
     },
     "Border Radius": {
       "radius-xs": 8,
@@ -142,6 +144,7 @@
         "Content/Inverse/Muted",
         "Content/Critic",
         "Content/Critic Strong",
+        "Content/Accent",
         "Content/Warning",
         "Content/Success",
         "Border/Strong",
@@ -153,6 +156,7 @@
         "Background/Surface Raised",
         "Background/Surface Subtle",
         "Background/Critic Subtle",
+        "Background/Overlay",
         "Background/Surface Disabled",
         "Background/Inverse/Hover",
         "Background/Inverse/Selected",

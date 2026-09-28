@@ -270,8 +270,8 @@ export default function InvitationsTable({
                     <span className={styles.sortIcon}>
                       <IconSort
                         size={14}
-                        upColor={sortDir === 'asc' ? 'var(--color-turquoise-30)' : 'var(--color-text-disabled)'}
-                        downColor={sortDir === 'desc' ? 'var(--color-turquoise-30)' : 'var(--color-text-disabled)'}
+                        upColor={sortDir === 'asc' ? 'var(--color-text-accent)' : 'var(--color-text-disabled)'}
+                        downColor={sortDir === 'desc' ? 'var(--color-text-accent)' : 'var(--color-text-disabled)'}
                       />
                     </span>
                   </button>

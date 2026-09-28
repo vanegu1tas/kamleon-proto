@@ -1500,8 +1500,8 @@ function UnitsTab({ center, org, role }) {
                 <span className={styles.sortIcon}>
                   <IconSort
                     size={14}
-                    upColor={sortCol === 'id' && sortDir === 'asc' ? 'var(--color-turquoise-30)' : 'var(--color-text-disabled)'}
-                    downColor={sortCol === 'id' && sortDir === 'desc' ? 'var(--color-turquoise-30)' : 'var(--color-text-disabled)'}
+                    upColor={sortCol === 'id' && sortDir === 'asc' ? 'var(--color-text-accent)' : 'var(--color-text-disabled)'}
+                    downColor={sortCol === 'id' && sortDir === 'desc' ? 'var(--color-text-accent)' : 'var(--color-text-disabled)'}
                   />
                 </span>
               </button>
@@ -1516,8 +1516,8 @@ function UnitsTab({ center, org, role }) {
                 <span className={styles.sortIcon}>
                   <IconSort
                     size={14}
-                    upColor={sortCol === 'sensorUsage' && sortDir === 'asc' ? 'var(--color-turquoise-30)' : 'var(--color-text-disabled)'}
-                    downColor={sortCol === 'sensorUsage' && sortDir === 'desc' ? 'var(--color-turquoise-30)' : 'var(--color-text-disabled)'}
+                    upColor={sortCol === 'sensorUsage' && sortDir === 'asc' ? 'var(--color-text-accent)' : 'var(--color-text-disabled)'}
+                    downColor={sortCol === 'sensorUsage' && sortDir === 'desc' ? 'var(--color-text-accent)' : 'var(--color-text-disabled)'}
                   />
                 </span>
               </button>
@@ -1531,8 +1531,8 @@ function UnitsTab({ center, org, role }) {
                 <span className={styles.sortIcon}>
                   <IconSort
                     size={14}
-                    upColor={sortCol === 'totalUse' && sortDir === 'asc' ? 'var(--color-turquoise-30)' : 'var(--color-text-disabled)'}
-                    downColor={sortCol === 'totalUse' && sortDir === 'desc' ? 'var(--color-turquoise-30)' : 'var(--color-text-disabled)'}
+                    upColor={sortCol === 'totalUse' && sortDir === 'asc' ? 'var(--color-text-accent)' : 'var(--color-text-disabled)'}
+                    downColor={sortCol === 'totalUse' && sortDir === 'desc' ? 'var(--color-text-accent)' : 'var(--color-text-disabled)'}
                   />
                 </span>
               </button>

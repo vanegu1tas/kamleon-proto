@@ -467,35 +467,35 @@ export default function UnitsTab({ role, user, org: orgProp, embedded = false })
               <span className={`${styles.colHead} ${styles.colUnit}`}>
                 <button className={`${styles.sortBtn} ${sortCol === 'id' ? styles.sortBtnActive : ''}`} onClick={() => handleSort('id')}>
                   Unit ID <span className={styles.sortIcon}>
-                    <IconSort size={14} upColor={sortCol === 'id' && sortDir === 'asc' ? 'var(--color-turquoise-30)' : 'var(--color-text-disabled)'} downColor={sortCol === 'id' && sortDir === 'desc' ? 'var(--color-turquoise-30)' : 'var(--color-text-disabled)'} />
+                    <IconSort size={14} upColor={sortCol === 'id' && sortDir === 'asc' ? 'var(--color-text-accent)' : 'var(--color-text-disabled)'} downColor={sortCol === 'id' && sortDir === 'desc' ? 'var(--color-text-accent)' : 'var(--color-text-disabled)'} />
                   </span>
                 </button>
               </span>
               <span className={`${styles.colHead} ${styles.colOrg}`}>
                 <button className={`${styles.sortBtn} ${sortCol === 'orgName' ? styles.sortBtnActive : ''}`} onClick={() => handleSort('orgName')}>
                   Organization <span className={styles.sortIcon}>
-                    <IconSort size={14} upColor={sortCol === 'orgName' && sortDir === 'asc' ? 'var(--color-turquoise-30)' : 'var(--color-text-disabled)'} downColor={sortCol === 'orgName' && sortDir === 'desc' ? 'var(--color-turquoise-30)' : 'var(--color-text-disabled)'} />
+                    <IconSort size={14} upColor={sortCol === 'orgName' && sortDir === 'asc' ? 'var(--color-text-accent)' : 'var(--color-text-disabled)'} downColor={sortCol === 'orgName' && sortDir === 'desc' ? 'var(--color-text-accent)' : 'var(--color-text-disabled)'} />
                   </span>
                 </button>
               </span>
               <span className={`${styles.colHead} ${styles.colCenter}`}>
                 <button className={`${styles.sortBtn} ${sortCol === 'centerName' ? styles.sortBtnActive : ''}`} onClick={() => handleSort('centerName')}>
                   Center <span className={styles.sortIcon}>
-                    <IconSort size={14} upColor={sortCol === 'centerName' && sortDir === 'asc' ? 'var(--color-turquoise-30)' : 'var(--color-text-disabled)'} downColor={sortCol === 'centerName' && sortDir === 'desc' ? 'var(--color-turquoise-30)' : 'var(--color-text-disabled)'} />
+                    <IconSort size={14} upColor={sortCol === 'centerName' && sortDir === 'asc' ? 'var(--color-text-accent)' : 'var(--color-text-disabled)'} downColor={sortCol === 'centerName' && sortDir === 'desc' ? 'var(--color-text-accent)' : 'var(--color-text-disabled)'} />
                   </span>
                 </button>
               </span>
               <span className={`${styles.colHead} ${styles.colUse}`}>
                 <button className={`${styles.sortBtn} ${sortCol === 'displayId' ? styles.sortBtnActive : ''}`} onClick={() => handleSort('displayId')}>
                   Display <span className={styles.sortIcon}>
-                    <IconSort size={14} upColor={sortCol === 'displayId' && sortDir === 'asc' ? 'var(--color-turquoise-30)' : 'var(--color-text-disabled)'} downColor={sortCol === 'displayId' && sortDir === 'desc' ? 'var(--color-turquoise-30)' : 'var(--color-text-disabled)'} />
+                    <IconSort size={14} upColor={sortCol === 'displayId' && sortDir === 'asc' ? 'var(--color-text-accent)' : 'var(--color-text-disabled)'} downColor={sortCol === 'displayId' && sortDir === 'desc' ? 'var(--color-text-accent)' : 'var(--color-text-disabled)'} />
                   </span>
                 </button>
               </span>
               <span className={`${styles.colHead} ${styles.colUse}`}>
                 <button className={`${styles.sortBtn} ${sortCol === 'sensorId' ? styles.sortBtnActive : ''}`} onClick={() => handleSort('sensorId')}>
                   Sensor <span className={styles.sortIcon}>
-                    <IconSort size={14} upColor={sortCol === 'sensorId' && sortDir === 'asc' ? 'var(--color-turquoise-30)' : 'var(--color-text-disabled)'} downColor={sortCol === 'sensorId' && sortDir === 'desc' ? 'var(--color-turquoise-30)' : 'var(--color-text-disabled)'} />
+                    <IconSort size={14} upColor={sortCol === 'sensorId' && sortDir === 'asc' ? 'var(--color-text-accent)' : 'var(--color-text-disabled)'} downColor={sortCol === 'sensorId' && sortDir === 'desc' ? 'var(--color-text-accent)' : 'var(--color-text-disabled)'} />
                   </span>
                 </button>
               </span>
@@ -504,8 +504,8 @@ export default function UnitsTab({ role, user, org: orgProp, embedded = false })
                   Daily use <span className={styles.sortIcon}>
                     <IconSort
                       size={14}
-                      upColor={sortCol === 'dailyUse' && sortDir === 'asc' ? 'var(--color-turquoise-30)' : 'var(--color-text-disabled)'}
-                      downColor={sortCol === 'dailyUse' && sortDir === 'desc' ? 'var(--color-turquoise-30)' : 'var(--color-text-disabled)'}
+                      upColor={sortCol === 'dailyUse' && sortDir === 'asc' ? 'var(--color-text-accent)' : 'var(--color-text-disabled)'}
+                      downColor={sortCol === 'dailyUse' && sortDir === 'desc' ? 'var(--color-text-accent)' : 'var(--color-text-disabled)'}
                     />
                   </span>
                 </button>
@@ -515,8 +515,8 @@ export default function UnitsTab({ role, user, org: orgProp, embedded = false })
                   Total use <span className={styles.sortIcon}>
                     <IconSort
                       size={14}
-                      upColor={sortCol === 'totalUse' && sortDir === 'asc' ? 'var(--color-turquoise-30)' : 'var(--color-text-disabled)'}
-                      downColor={sortCol === 'totalUse' && sortDir === 'desc' ? 'var(--color-turquoise-30)' : 'var(--color-text-disabled)'}
+                      upColor={sortCol === 'totalUse' && sortDir === 'asc' ? 'var(--color-text-accent)' : 'var(--color-text-disabled)'}
+                      downColor={sortCol === 'totalUse' && sortDir === 'desc' ? 'var(--color-text-accent)' : 'var(--color-text-disabled)'}
                     />
                   </span>
                 </button>
@@ -524,7 +524,7 @@ export default function UnitsTab({ role, user, org: orgProp, embedded = false })
               <span className={`${styles.colHead} ${styles.colStatus}`}>
                 <button className={`${styles.sortBtn} ${sortCol === 'status' ? styles.sortBtnActive : ''}`} onClick={() => handleSort('status')}>
                   Status <span className={styles.sortIcon}>
-                    <IconSort size={14} upColor={sortCol === 'status' && sortDir === 'asc' ? 'var(--color-turquoise-30)' : 'var(--color-text-disabled)'} downColor={sortCol === 'status' && sortDir === 'desc' ? 'var(--color-turquoise-30)' : 'var(--color-text-disabled)'} />
+                    <IconSort size={14} upColor={sortCol === 'status' && sortDir === 'asc' ? 'var(--color-text-accent)' : 'var(--color-text-disabled)'} downColor={sortCol === 'status' && sortDir === 'desc' ? 'var(--color-text-accent)' : 'var(--color-text-disabled)'} />
                   </span>
                 </button>
               </span>

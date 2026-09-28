@@ -60,6 +60,13 @@ function norm(v) {
     const hex = '#' + [r, g, b].map(n => (+n).toString(16).padStart(2, '0')).join('');
     return a !== undefined && +a < 1 ? `${hex}/${(+a).toFixed(2)}` : hex;
   }
+  // Figma da la transparencia como "#000000/0.5" y el CSS como "rgba(…, 0.50)":
+  // sin igualar los decimales, dos formas del mismo color se leían como distintas.
+  const conAlfa = s.match(/^(#[0-9a-f]{6})\/([\d.]+)$/);
+  if (conAlfa) {
+    const [, hex, a] = conAlfa;
+    return +a < 1 ? `${hex}/${(+a).toFixed(2)}` : hex;
+  }
   return s;
 }
 const igual = (a, b) => norm(a) === norm(b);

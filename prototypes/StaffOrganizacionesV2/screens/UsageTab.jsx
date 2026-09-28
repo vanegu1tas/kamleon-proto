@@ -179,8 +179,8 @@ export default function UsageTab({ role, user }) {
                   Year <span className={styles.sortIcon}>
                     <IconSort
                       size={14}
-                      upColor={sortCol === 'year' && sortDir === 'asc' ? 'var(--color-turquoise-30)' : 'var(--color-text-disabled)'}
-                      downColor={sortCol === 'year' && sortDir === 'desc' ? 'var(--color-turquoise-30)' : 'var(--color-text-disabled)'}
+                      upColor={sortCol === 'year' && sortDir === 'asc' ? 'var(--color-text-accent)' : 'var(--color-text-disabled)'}
+                      downColor={sortCol === 'year' && sortDir === 'desc' ? 'var(--color-text-accent)' : 'var(--color-text-disabled)'}
                     />
                   </span>
                 </button>

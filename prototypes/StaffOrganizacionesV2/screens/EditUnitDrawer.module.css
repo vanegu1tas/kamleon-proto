@@ -374,7 +374,7 @@
 .rosterCheck {
   display: flex;
   flex-shrink: 0;
-  color: var(--color-turquoise-30);
+  color: var(--color-text-accent);
 }
 
 .rosterDropdownUp {

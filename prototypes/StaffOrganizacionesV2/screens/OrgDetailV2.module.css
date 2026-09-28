@@ -1058,11 +1058,11 @@
 }
 
 .statBlockClickable:hover .statNum {
-  color: var(--color-turquoise-30);
+  color: var(--color-text-accent);
 }
 
 .statBlockClickable:active .statNum {
-  color: var(--color-turquoise-30);
+  color: var(--color-text-accent);
   opacity: 0.8;
 }
 
@@ -1279,7 +1279,7 @@
   font-family: var(--font-family-primary);
   font-size: var(--font-size-14);
   font-weight: var(--font-weight-medium);
-  color: var(--color-turquoise-30);
+  color: var(--color-text-accent);
   transition: opacity 0.15s ease;
 }
 
@@ -2664,7 +2664,7 @@
   line-height: 15px;
 }
 
-.profileLink { color: var(--color-turquoise-30); }
+.profileLink { color: var(--color-text-accent); }
 .profileDangerLink { color: var(--color-red-58); }
 
 .profileLink:hover,
@@ -3869,7 +3869,7 @@
 }
 
 .pinBadgeOn {
-  color: var(--color-turquoise-30);
+  color: var(--color-text-accent);
 }
 
 /* ── Bulk actions dropdown (team members toolbar) ── */

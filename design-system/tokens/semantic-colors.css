@@ -16,6 +16,11 @@
   --color-bg-surface-subtle:    var(--color-grey-98);   /* #fafafa */
   --color-bg-surface-disabled: var(--color-grey-91);   /* #e5e7eb */
   /* Fondo rojo palido: hoy lo usa el tag Pending, vale para cualquier aviso. */
+  /* La capa oscura detrás de un modal o un drawer: apaga lo de atrás y recoge
+     el clic para cerrar. Un solo valor para escritorio y móvil — el que tiene
+     el programador en producción. Figma: Background/Overlay */
+  --color-bg-overlay:           rgba(0, 0, 0, 0.5);
+
   --color-bg-critic-subtle:     var(--color-red-91);      /* #fad6d4 */
   --color-bg-icon-hover:        var(--color-grey-91);   /* #e5e7eb — hover de icon buttons */
   --color-bg-sidebar:           var(--color-black);     /* #0b0f12 */
@@ -46,6 +51,11 @@
      distinto de una descripción, se rompe el alias a propósito. Figma: Content/Placeholder. */
   --color-text-placeholder:     var(--color-text-subtle);
   /* Rojo oscuro sobre fondo rojo palido, para que cumpla contraste. */
+  /* La acción destacada dentro de un grupo callado: un enlace, o el botón que
+     quieres que se vea en una tarjeta llena de botones grises. Es jerarquía,
+     no el color de marca para decorar. Figma: Content/Accent */
+  --color-text-accent:          var(--color-turquoise-30); /* #1a7f79 */
+
   --color-text-critic:          var(--color-red-58);      /* #e04f4a */
   --color-text-critic-strong:   var(--color-red-29);      /* #8b0e0a */
   --color-text-inverse-strong:  var(--color-white);         /* #ffffff */
