@@ -1,8 +1,8 @@
-import { useState, useMemo, useRef, useEffect, useLayoutEffect } from 'react';
+import { useState, useMemo, useRef, useEffect, useLayoutEffect, Fragment } from 'react';
 import Tag from '../../../design-system/components/Tag/Tag';
 import TabBar from '../../../design-system/components/TabBar/TabBar';
 import SearchBar from '../../../design-system/components/SearchBar/SearchBar';
-import { IconEdit, IconPlus, IconTrash, IconSettings, IconFilter, IconSort, IconPower, IconEye, IconEyeClosed, IconClose, IconResend, IconInfoCircle, IconMore } from '../../../design-system/icons/outline';
+import { IconEdit, IconPlus, IconTrash, IconSettings, IconFilter, IconSort, IconPower, IconEye, IconEyeClosed, IconClose, IconResend, IconInfoCircle, IconMore, IconChevronMiniRight } from '../../../design-system/icons/outline';
 import Button from '../../../design-system/components/Button/Button';
 import Input from '../../../design-system/components/Input/Input';
 import { IconUserFilled, IconMailFilled, IconPhoneFilled, IconLocationFilled } from '../../../design-system/icons/filled';
@@ -483,20 +483,45 @@ function OrgUsersTab({ org, role }) {
     return () => document.removeEventListener('mousedown', handleClick);
   }, [filterOpen]);
 
+  // Una fila por PERSONA, no por pertenencia: si alguien está en tres equipos
+  // no debe aparecer tres veces. Cada entrada se lleva todas sus pertenencias,
+  // porque el equipo, el centro y el estado son de la pertenencia y no de la
+  // persona — alguien puede estar activo en un equipo y de baja en otro.
   const allUsers = useMemo(() => {
     const map = new Map();
     (org.centers ?? []).forEach(center => {
       (center.teams ?? []).forEach(team => {
-        const userIds = new Set(team.users ?? []);
-        const profIds = new Set(team.professionalIds ?? []);
+        const userIds   = new Set(team.users ?? []);
+        const profIds   = new Set(team.professionalIds ?? []);
+        const inactivos = new Set(team.inactiveUsers ?? []);
         USERS_POOL.forEach(u => {
-          if (!userIds.has(u.id) || map.has(u.id)) return;
-          map.set(u.id, { user: u, center, team, role: profIds.has(u.id) ? 'Team admin' : 'User' });
+          if (!userIds.has(u.id)) return;
+          const entrada = map.get(u.id) ?? { user: u, memberships: [] };
+          entrada.memberships.push({
+            center, team,
+            role:   profIds.has(u.id) ? 'Team admin' : 'User',
+            status: inactivos.has(u.id) ? 'inactive' : u.status,
+          });
+          map.set(u.id, entrada);
         });
       });
     });
     return Array.from(map.values());
   }, [org]);
+
+  // Cuando las pertenencias no coinciden no se puede mostrar una sola: "Mixed"
+  // dice que hay varias sin dar por buena ninguna. Es neutro a propósito —
+  // estar inactivo en un equipo puede ser lo correcto, no un problema.
+  const estadoDe = ms => {
+    const s = new Set(ms.map(m => m.status));
+    return s.size === 1 ? [...s][0] : 'mixed';
+  };
+  const [expandidos, setExpandidos] = useState(() => new Set());
+  const alternar = id => setExpandidos(prev => {
+    const s = new Set(prev);
+    s.has(id) ? s.delete(id) : s.add(id);
+    return s;
+  });
 
   const centerOptions = useMemo(
     () => (org.centers ?? []).map(c => ({ v: String(c.id), label: c.name })),
@@ -505,10 +530,13 @@ function OrgUsersTab({ org, role }) {
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    return allUsers.filter(({ user, center, role }) => {
-      if (filters.role.size   > 0 && !filters.role.has(role))                return false;
-      if (filters.status.size > 0 && !filters.status.has(user.status))       return false;
-      if (filters.center.size > 0 && !filters.center.has(String(center.id))) return false;
+    return allUsers.filter(({ user, memberships }) => {
+      const roles    = new Set(memberships.map(m => m.role));
+      const estados  = new Set(memberships.map(m => m.status));
+      const centros  = new Set(memberships.map(m => m.center.id));
+      if (filters.role.size   > 0 && ![...filters.role].some(r => roles.has(r)))       return false;
+      if (filters.status.size > 0 && ![...filters.status].some(e => estados.has(e)))   return false;
+      if (filters.center.size > 0 && ![...centros].some(c => filters.center.has(String(c)))) return false;
       if (q && !user.name.toLowerCase().includes(q) && !user.email.toLowerCase().includes(q)) return false;
       return true;
     });
@@ -640,42 +668,106 @@ function OrgUsersTab({ org, role }) {
             <span className={`${styles.teamCol} ${styles.teamColSpacer}`} />
             <span className={`${styles.teamCol} ${styles.teamColActions}`} />
           </div>
-          {pageItems.map(({ user, center, team }) => (
-            <div
-              key={user.id}
-              className={styles.teamTableRow}
-              role="button"
-              tabIndex={0}
-              onClick={() => { setSelectedUser(user); setSelectedUserMeta({ center, team }); }}
-              onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { setSelectedUser(user); setSelectedUserMeta({ center, team }); } }}
-            >
-              <div className={`${styles.teamCol} ${styles.teamColName}`}>
-                <div className={styles.memberAvatar}>{user.name.charAt(0)}</div>
-                <div className={styles.memberMeta}>
-                  <span className={styles.memberName}>{user.name}</span>
-                  <span className={styles.memberSub}>{user.email}</span>
+          {pageItems.map(({ user, memberships }) => {
+            const varias   = memberships.length > 1;
+            const abierta  = expandidos.has(user.id);
+            const centros  = new Set(memberships.map(m => m.center.id));
+            const primera  = memberships[0];
+            return (
+              <Fragment key={user.id}>
+                <div
+                  className={`${styles.teamTableRow} ${abierta ? styles.rowExpanded : ''}`}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => {
+                    // Con varias pertenencias el clic despliega: entrar al perfil
+                    // sin saber cuál se eligió sería adivinar por el usuario.
+                    if (varias) { alternar(user.id); return; }
+                    setSelectedUser(user);
+                    setSelectedUserMeta({ center: primera.center, team: primera.team });
+                  }}
+                  onKeyDown={e => {
+                    if (e.key !== 'Enter' && e.key !== ' ') return;
+                    if (varias) { alternar(user.id); return; }
+                    setSelectedUser(user);
+                    setSelectedUserMeta({ center: primera.center, team: primera.team });
+                  }}
+                >
+                  <div className={`${styles.teamCol} ${styles.teamColName}`}>
+                    {varias ? (
+                      <button
+                        type="button"
+                        className={`${styles.rowChevron} ${abierta ? styles.rowChevronOpen : ''}`}
+                        onClick={e => { e.stopPropagation(); alternar(user.id); }}
+                        aria-label={abierta ? 'Colapsar' : 'Expandir'}
+                        aria-expanded={abierta}
+                      >
+                        <IconChevronMiniRight size={24} />
+                      </button>
+                    ) : <span className={styles.rowChevronSpacer} />}
+                    <div className={styles.memberAvatar}>{user.name.charAt(0)}</div>
+                    <div className={styles.memberMeta}>
+                      <span className={styles.memberName}>{user.name}</span>
+                      <span className={styles.memberSub}>{user.email}</span>
+                    </div>
+                  </div>
+                  <div className={`${styles.teamCol} ${styles.orgColCenter}`}>
+                    {varias
+                      ? <span className={styles.groupSummary}>{centros.size} {centros.size === 1 ? 'center' : 'centers'}</span>
+                      : <span className={styles.teamNamePill}>{primera.center.name}</span>}
+                  </div>
+                  <div className={`${styles.teamCol} ${styles.teamColTeam}`}>
+                    {varias
+                      ? <span className={styles.groupSummary}>{memberships.length} teams</span>
+                      : <span className={styles.teamNamePill}>{primera.team.name}</span>}
+                  </div>
+                  <div className={`${styles.teamCol} ${styles.teamColStatus}`}>
+                    <Tag status={estadoDe(memberships)} />
+                  </div>
+                  <div className={`${styles.teamCol} ${styles.teamColSpacer}`} />
+                  <div className={`${styles.teamCol} ${styles.teamColActions}`} onClick={e => e.stopPropagation()}>
+                    <IconButton aria-label="More options" tooltip="More">
+                      <IconMore size={16} />
+                    </IconButton>
+                  </div>
                 </div>
-              </div>
-              <div className={`${styles.teamCol} ${styles.orgColCenter}`}>
-                <span className={styles.teamNamePill}>{center.name}</span>
-              </div>
-              <div className={`${styles.teamCol} ${styles.teamColTeam}`}>
-                <span className={styles.teamNamePill}>{team.name}</span>
-              </div>
-              <div className={`${styles.teamCol} ${styles.teamColStatus}`}>
-                <Tag status={user.status} />
-              </div>
-              <div className={`${styles.teamCol} ${styles.teamColSpacer}`} />
-              <div
-                className={`${styles.teamCol} ${styles.teamColActions}`}
-                onClick={e => e.stopPropagation()}
-              >
-                <IconButton aria-label="More options" tooltip="More">
-                  <IconMore size={16} />
-                </IconButton>
-              </div>
-            </div>
-          ))}
+
+                {varias && abierta && (
+                  <div className={styles.membershipRows}>
+                  {memberships.map(m => (
+                  <div
+                    key={`${user.id}-${m.team.id}`}
+                    className={`${styles.teamTableRow} ${styles.membershipRow}`}
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => { setSelectedUser(user); setSelectedUserMeta({ center: m.center, team: m.team }); }}
+                    onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { setSelectedUser(user); setSelectedUserMeta({ center: m.center, team: m.team }); } }}
+                  >
+                    <div className={`${styles.teamCol} ${styles.teamColName}`}>
+                      <span className={styles.membershipGuide} aria-hidden="true" />
+                    </div>
+                    <div className={`${styles.teamCol} ${styles.orgColCenter}`}>
+                      <span className={styles.teamNamePill}>{m.center.name}</span>
+                    </div>
+                    <div className={`${styles.teamCol} ${styles.teamColTeam}`}>
+                      <span className={styles.teamNamePill}>{m.team.name}</span>
+                    </div>
+                    <div className={`${styles.teamCol} ${styles.teamColStatus}`}>
+                      <Tag status={m.status} />
+                    </div>
+                    <div className={`${styles.teamCol} ${styles.teamColSpacer}`} />
+                    <div className={`${styles.teamCol} ${styles.teamColActions}`} onClick={e => e.stopPropagation()}>
+                      <IconButton aria-label="More options" tooltip="More">
+                        <IconMore size={16} />
+                      </IconButton>
+                    </div>
+                  </div>
+                  ))}
+                  </div>
+                )}
+              </Fragment>
+            );
+          })}
         </div>
       ) : (
         <InnerEmptyState

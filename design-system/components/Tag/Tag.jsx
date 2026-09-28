@@ -7,6 +7,7 @@ const LABELS = {
   expired:   'Expired',
   delay:     'Delay',
   delivered: 'Delivered',
+  mixed: 'Mixed',
 };
 
 /**
@@ -17,7 +18,7 @@ const LABELS = {
  * La familia de rol (user / professional) se elimino el 26/9: solo la usaba V1,
  * que esta congelada. En V2 el rol se muestra como texto plano.
  *
- * @param {('active'|'inactive'|'pending'|'expired'|'delay'|'delivered')} status
+ * @param {('active'|'inactive'|'mixed'|'pending'|'expired'|'delay'|'delivered')} status
  * @param {string} [label] - Override the default label text
  */
 export default function Tag({ status = 'active', label }) {

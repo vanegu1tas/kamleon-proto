@@ -98,3 +98,16 @@
 .delivered .label {
   color: var(--color-text-strong);
 }
+
+/* ─── Mixed ───────────────────────────────────────────
+   Una persona con varias pertenencias que no coinciden: activa en un equipo
+   e inactiva en otro. No lleva punto a propósito — la ausencia de color es la
+   señal de que aquí no hay UN estado. Ver Figma: Tag status / State=Mixed. */
+
+.mixed .dot {
+  display: none;
+}
+
+.mixed .label {
+  color: var(--color-text-strong);
+}

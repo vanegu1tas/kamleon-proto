@@ -3929,3 +3929,101 @@
     animation: subFadeOnly 0.15s ease-out backwards;
   }
 }
+
+/* ─── Filas agrupadas por persona ──────────────────────
+   Una persona en varios equipos ocupa una sola fila; sus pertenencias se
+   despliegan debajo. Se copian las medidas del desplegable de la lista de
+   organizaciones, que ya resuelve este mismo patrón: la fila hija es más baja
+   que la padre y no cambia de color. Lo que no se copia es su sangría — aquí
+   las columnas tienen que seguir alineadas con la cabecera de la tabla, así
+   que lo que ata las hijas a su padre es la línea vertical.
+
+   El carril del chevron reserva solo 12px y el icono sobresale por la
+   izquierda: la mayoría de la gente está en un equipo, y reservarle 24px a
+   todas las filas dejaba un hueco muerto antes del avatar. No se usa hover
+   para mostrarlo porque en tablet no existe. */
+
+.rowChevron {
+  background: none;
+  border: none;
+  padding: 0;
+  width: 12px;
+  margin-left: -6px;
+  overflow: visible;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-subtle);
+  transition: transform 0.15s ease, background 0.15s ease, color 0.15s ease;
+  flex-shrink: 0;
+}
+
+.rowChevron:hover {
+  background: var(--color-bg-icon-hover);
+  color: var(--color-text-strong);
+}
+
+.rowChevronOpen {
+  transform: rotate(90deg);
+}
+
+.rowChevronSpacer {
+  width: 12px;
+  flex-shrink: 0;
+}
+
+/* "3 teams" es pulsable —toda la fila despliega—, así que al pasar el ratón
+   se oscurece para que se note que lleva a algún lado. */
+.groupSummary {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+  transition: color 0.15s ease;
+}
+
+.teamTableRow:hover .groupSummary {
+  color: var(--color-text-strong);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .groupSummary { transition: none; }
+}
+
+/* La celda CRECE, no aparecen filas nuevas: al abrirse, la fila padre pierde
+   su borde inferior y el borde pasa al final del grupo. Así el conjunto se lee
+   como una sola celda que se ha estirado, no como filas que salen de la nada.
+   Mismo mecanismo que .orgRowExpanded en la lista de organizaciones. */
+
+.rowExpanded {
+  border-bottom-color: transparent;
+}
+
+.membershipRows {
+  border-bottom: 1px solid var(--color-border-default);
+}
+
+.membershipRow {
+  height: 44px;
+  border-bottom: none;
+}
+
+.membershipRows .membershipRow:last-child {
+  padding-bottom: 4px;
+  height: 48px;
+}
+
+.membershipGuide {
+  display: block;
+  width: 2px;
+  align-self: stretch;
+  margin: 8px 0 8px 30px;
+  background: var(--color-border-default);
+  border-radius: 1px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rowChevron { transition: none; }
+}

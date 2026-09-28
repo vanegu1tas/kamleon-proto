@@ -248,7 +248,7 @@ export const ORGS = [
         contact: 'Sarah Connelly',
         email: 'campus@astoniafc.com', phone: '+44 121 554 2000', address: '45 Broad St, Birmingham B1 2HP',
         teams: [
-          { id: 3021, name: 'Women\'s Team', status: 'active', professionalIds: [18], email: 'womens@astoniafc.com', phone: '+44 121 554 2001', address: '45 Broad St, Birmingham', users: [9, 10, 11, 12] },
+          { id: 3021, name: 'Women\'s Team', status: 'active', professionalIds: [18], email: 'womens@astoniafc.com', phone: '+44 121 554 2001', address: '45 Broad St, Birmingham', users: [9, 10, 11, 12, 95], /* Estado POR PERTENENCIA: alguien puede estar activo en un equipo e inactivo en otro. Xavi Olmo (95) juega en First Team y Academy y está de baja en este. */ inactiveUsers: [95] },
         ],
         units: [
           { id: 3021, description: 'Urinal 1 — Gym Floor',    status: 'active', type: 'Stand', model: 'Embeded', dateAdded: '15 Jul 2026', dailyUse: 18, totalUse: 3640, sensorUsage: 17, display: { id: 767501, status: 'active' }, kpod: { id: 2951, status: 'active' } },
