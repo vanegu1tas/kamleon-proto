@@ -108,7 +108,7 @@
    en Email history). */
 
 .subtleDanger {
-  background-color: var(--color-bg-surface-raised);
+  background-color: var(--color-action-subtle-bg);
   color: var(--color-text-critic);
 }
 
@@ -150,5 +150,25 @@
 .secondary:disabled {
   background-color: var(--color-action-disabled-bg);
   border-color: transparent;
+  color: var(--color-text-disabled);
+}
+
+/* ─── Subtle Accent ───────────────────────────────────
+   Igual que subtle, con el texto en el turquesa de acento: la acción
+   principal dentro de una tarjeta llena de botones callados. Su pareja es
+   subtleDanger, la destructiva del mismo sitio. */
+
+.subtleAccent {
+  background-color: var(--color-action-subtle-bg);
+  color: var(--color-text-accent);
+}
+
+.subtleAccent:hover:not(:disabled),
+.subtleAccent:active:not(:disabled) {
+  background-color: var(--color-action-subtle-hover);
+}
+
+.subtleAccent:disabled {
+  background-color: var(--color-action-disabled-bg);
   color: var(--color-text-disabled);
 }

@@ -3,12 +3,14 @@ import styles from './Button.module.css';
 /**
  * Button
  *
- * @param {('primary'|'secondary'|'tertiary'|'subtle'|'subtleDanger'|'danger')} variant
+ * @param {('primary'|'secondary'|'tertiary'|'subtle'|'subtleAccent'|'subtleDanger'|'danger')} variant
  *   primary:  negro, la acción que la pantalla pide.
  *   secondary: blanco con borde, la acompaña sin competir.
  *   tertiary: transparente, el "Cancel" que acompaña a una destructiva.
  *   subtle:   relleno gris suave, sin borde — para una acción secundaria
  *             dentro de una tarjeta o el pie de un drawer.
+ *   subtleAccent: igual que subtle, con el texto en el turquesa de acento —
+ *             la acción principal dentro de una tarjeta.
  *   subtleDanger: igual que subtle, con el texto en rojo.
  *   danger:   relleno rojo, confirmar un borrado.
  * @param {('s'|'m')}               size    - Tamaño del botón

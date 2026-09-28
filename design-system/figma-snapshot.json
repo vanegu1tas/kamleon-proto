@@ -331,6 +331,8 @@
         "Secondary",
         "Tertiary",
         "Subtle",
+        "Subtle Accent",
+        "Subtle Danger",
         "Danger"
       ],
       "State": [
