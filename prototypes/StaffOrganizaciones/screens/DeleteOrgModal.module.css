@@ -90,7 +90,7 @@
 .cancelBtn:hover { background-color: var(--color-bg-surface-subtle); }
 
 .deleteBtn {
-  background: var(--color-red-48);
+  background: var(--color-action-danger-bg);
   border: none;
   border-radius: var(--radius-l);
   padding: 12px 24px;
@@ -149,7 +149,7 @@
 .confirmInput:focus        { border-color: var(--color-border-focus); }
 
 .confirmBtn {
-  background: var(--color-text-strong);
+  background: var(--color-action-primary-bg);
   border: none;
   border-radius: var(--radius-l);
   padding: 12px 24px;
