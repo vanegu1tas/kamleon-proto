@@ -228,7 +228,7 @@
   width: 20px;
   height: 20px;
   border-radius: var(--radius-l);
-  background: var(--color-red-48);
+  background: var(--color-action-danger-bg);
   font-family: var(--font-family-primary);
   font-size: var(--font-size-14);
   font-weight: var(--font-weight-medium);
