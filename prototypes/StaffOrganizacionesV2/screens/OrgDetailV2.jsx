@@ -680,31 +680,19 @@ function OrgUsersTab({ org, role }) {
                   role="button"
                   tabIndex={0}
                   onClick={() => {
-                    // Con varias pertenencias el clic despliega: entrar al perfil
-                    // sin saber cuál se eligió sería adivinar por el usuario.
-                    if (varias) { alternar(user.id); return; }
+                    // La fila lleva al perfil, tenga uno o varios equipos. Desplegar
+                    // es cosa del botón "N teams": mezclarlo con el perfil haría que
+                    // el mismo clic hiciera dos cosas según dónde caiga.
                     setSelectedUser(user);
                     setSelectedUserMeta({ center: primera.center, team: primera.team });
                   }}
                   onKeyDown={e => {
                     if (e.key !== 'Enter' && e.key !== ' ') return;
-                    if (varias) { alternar(user.id); return; }
                     setSelectedUser(user);
                     setSelectedUserMeta({ center: primera.center, team: primera.team });
                   }}
                 >
                   <div className={`${styles.teamCol} ${styles.teamColName}`}>
-                    {varias ? (
-                      <button
-                        type="button"
-                        className={`${styles.rowChevron} ${abierta ? styles.rowChevronOpen : ''}`}
-                        onClick={e => { e.stopPropagation(); alternar(user.id); }}
-                        aria-label={abierta ? 'Colapsar' : 'Expandir'}
-                        aria-expanded={abierta}
-                      >
-                        <IconChevronMiniRight size={24} />
-                      </button>
-                    ) : <span className={styles.rowChevronSpacer} />}
                     <div className={styles.memberAvatar}>{user.name.charAt(0)}</div>
                     <div className={styles.memberMeta}>
                       <span className={styles.memberName}>{user.name}</span>
@@ -718,7 +706,19 @@ function OrgUsersTab({ org, role }) {
                   </div>
                   <div className={`${styles.teamCol} ${styles.teamColTeam}`}>
                     {varias
-                      ? <span className={styles.groupSummary}>{memberships.length} teams</span>
+                      ? (
+                        <button
+                          type="button"
+                          className={styles.groupToggle}
+                          onClick={e => { e.stopPropagation(); alternar(user.id); }}
+                          aria-expanded={abierta}
+                        >
+                          <span className={styles.groupSummary}>{memberships.length} teams</span>
+                          <span className={`${styles.rowChevron} ${abierta ? styles.rowChevronOpen : ''}`} aria-hidden="true">
+                            <IconChevronMiniRight size={24} />
+                          </span>
+                        </button>
+                      )
                       : <span className={styles.teamNamePill}>{primera.team.name}</span>}
                   </div>
                   <div className={`${styles.teamCol} ${styles.teamColStatus}`}>

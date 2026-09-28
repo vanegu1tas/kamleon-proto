@@ -3943,35 +3943,37 @@
    todas las filas dejaba un hueco muerto antes del avatar. No se usa hover
    para mostrarlo porque en tablet no existe. */
 
-.rowChevron {
+/* El chevron va junto a "3 teams", que es lo que despliega. En la columna de
+   nombre dejaba un hueco muerto en la mayoría de las filas —la gente suele
+   estar en un equipo— y el control quedaba lejos de lo que controla. */
+
+.groupToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   background: none;
   border: none;
-  padding: 0;
-  width: 12px;
-  margin-left: -6px;
-  overflow: visible;
-  border-radius: 50%;
+  padding: 4px 8px;
+  margin: -4px -8px;
+  border-radius: var(--radius-s);
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--color-text-subtle);
-  transition: transform 0.15s ease, background 0.15s ease, color 0.15s ease;
-  flex-shrink: 0;
+  transition: background 0.15s ease;
 }
 
-.rowChevron:hover {
-  background: var(--color-bg-icon-hover);
-  color: var(--color-text-strong);
+.groupToggle:hover {
+  background: var(--color-bg-surface-subtle);
+}
+
+.rowChevron {
+  display: flex;
+  align-items: center;
+  color: var(--color-text-subtle);
+  transition: transform 0.15s ease;
+  flex-shrink: 0;
 }
 
 .rowChevronOpen {
   transform: rotate(90deg);
-}
-
-.rowChevronSpacer {
-  width: 12px;
-  flex-shrink: 0;
 }
 
 /* "3 teams" es pulsable —toda la fila despliega—, así que al pasar el ratón
@@ -3984,7 +3986,7 @@
   transition: color 0.15s ease;
 }
 
-.teamTableRow:hover .groupSummary {
+.groupToggle:hover .groupSummary {
   color: var(--color-text-strong);
 }
 
@@ -4025,5 +4027,5 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .rowChevron { transition: none; }
+  .rowChevron, .groupToggle { transition: none; }
 }
