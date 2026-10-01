@@ -1,6 +1,30 @@
 # Project Summary — Kamleon Design System
 
-Estado del proyecto al 2026-04-02 (lista de pendientes en "Próximos pasos" revisada al cierre del 2026-09-16). Referencia rápida para retomar el trabajo.
+**Este documento es el estado del proyecto.** `MEMORY.md` es solo el índice —se carga en cada
+sesión, así que se mantiene corto y sin nada que caduque— y apunta aquí para el detalle. Si algo
+está en los dos sitios, manda este.
+
+Última revisión: 2026-10-01.
+
+---
+
+## Lo primero al retomar (acordado el 1/10)
+
+1. **Limpiar `MEMORY.md`** — hoy tiene 232 líneas y el sistema lo está **cortando**: las últimas 32
+   no llegan a cargarse. Baja a ~60 líneas de índice (qué es el proyecto, convenciones críticas,
+   punteros). Todo lo que caduca —listas de pendientes, tareas con `[x]`— se consolida aquí o en
+   los `memory/*.md` temáticos. **Este summary no se toca ni se acorta**: es la memoria del
+   proyecto y leerlo cuando hace falta no cuesta; lo caro es solo lo que se carga siempre.
+   El problema real no es la longitud, es que la misma lista vive en tres sitios con distinto
+   estado de frescura.
+
+2. **Montar el repo aparte de la scrapp** para la compañera de Daniel — detalle y medidas en
+   `docs/features/pendientes-01-10.md`.
+
+3. Seguir por prioridad: Recommendation Engine (el único con fecha externa) o poner el prototipo
+   al día con Figma (meta: lunes).
+
+**Lista completa de pendientes abiertos → `docs/features/pendientes-01-10.md`.**
 
 ---
 
