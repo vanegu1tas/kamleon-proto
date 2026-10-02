@@ -135,3 +135,21 @@ propia (un script en el navegador que recorre la página): +½ día.
 **Ventaja además de la velocidad**: se captura del **código**, que es donde vive la verdad. Lo
 que falló el 27/9 —el Atlético Nacional, el Filters que no existía— vino de clonar pantallas
 viejas de Figma.
+
+## 8 · Team Admin: quitar a otro Team Admin del equipo  · apuntado 2/10
+
+La matriz no lo cubre: `teams.users.remove` está ✓ para Team Admin, pero no distingue el rol de
+la persona que se quita (no hay `teams.admins.remove`). Lo único confirmado es que puede
+*invitar* a otro Team Admin al mismo equipo.
+
+```
+Regla de Daniel (2/10)   si eres el único Team Admin, no puedes quitarte del equipo
+                         → evita que un equipo se quede sin admin
+Sin decidir              ¿un Team Admin puede quitar a otro Team Admin?
+Preguntar al programador ¿el backend mira el rol de la persona que se quita?
+```
+
+**Choque matriz / prototipo**: `canManageUser` en `OrgDetailV2.jsx` (UserCard) solo deja a
+Owner, Admin y Center Admin. El Team Admin hoy no puede quitar a nadie, aunque la matriz le da
+`teams.users.remove`. Decidir si se alinea con la matriz o se documenta como desviación en
+`permissions-deviations.md`. (Los flujos del Team Admin están parqueados, ver punto 5.)
