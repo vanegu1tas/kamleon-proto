@@ -115,14 +115,21 @@ solo referencia y hay que reconstruir con componentes encima.
 1  Capturar del navegador            0 h     generate_figma_design ya existe
 2  Pasada de estilos y colores       ~1 h    escrita el 28/9 en la conversación; guardarla
                                              como script en el repo (scripts/figma/)
-3  Marcar componentes en el código   ~1 h    data-ds="Button" data-variant="tertiary"
-                                             en ~15 componentes del DS
+3  Nombre del componente en la clase 5 min   una línea en vite.config: generateScopedName
+                                             '[name]__[local]' → la clase pasa de
+                                             _tertiary_8izfe_53 a Button__tertiary
 4  Pasada de componentes             2-3 h   lo marcado → instancia real con su variante,
                                              usando figma-map.json
 ```
 
-**Antes de nada, una prueba de 1 h**: marcar un botón, capturar, y ver si `data-ds` llega a
-Figma como nombre de capa. Si llega, el plan vale tal cual. Si no, hay que escribir una captura
+**Por qué no hace falta marcar los componentes (2/10)**: Daniel preguntó si `data-ds` era
+necesario si los componentes ya se llaman igual en los dos lados. Al renderizar, React borra el
+nombre y deja HTML; la clase de CSS Modules conserva la variante (`_tertiary_8izfe_53`) pero no
+el componente. Cambiando cómo se generan las clases, el nombre del componente va dentro y la
+correspondencia con Figma sale sola, sin tocar ningún componente.
+
+**Antes de nada, una prueba de 1 h**: cambiar la línea, capturar una pantalla, y ver si la clase
+llega a Figma como nombre de capa. Si llega, el plan vale tal cual. Si no, hay que escribir una captura
 propia (un script en el navegador que recorre la página): +½ día.
 
 **Ventaja además de la velocidad**: se captura del **código**, que es donde vive la verdad. Lo
