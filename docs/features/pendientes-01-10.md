@@ -100,3 +100,31 @@ Figma de "My data" · "Hydration" · "Set new PIN"
 Campos mínimos del formulario de crear unit
 Dónde va el acceso a "Editar equipo"
 ```
+
+## 7 · Llevar pantallas del código a Figma de una pasada  · ~1 – 1,5 días
+
+Hoy pasar una pantalla a Figma cuesta ~6 llamadas y correcciones a mano. Los plugins tipo
+html.to.design lo hacen en segundos porque **leen del navegador**, que ya calculó posiciones,
+tamaños y colores. Pero traen geometría cruda: hex sueltos, textos sin estilo, rectángulos en vez
+de componentes. La propia herramienta de Figma (`generate_figma_design`) dice que su captura es
+solo referencia y hay que reconstruir con componentes encima.
+
+**El plan: su primera mitad + la nuestra.**
+
+```
+1  Capturar del navegador            0 h     generate_figma_design ya existe
+2  Pasada de estilos y colores       ~1 h    escrita el 28/9 en la conversación; guardarla
+                                             como script en el repo (scripts/figma/)
+3  Marcar componentes en el código   ~1 h    data-ds="Button" data-variant="tertiary"
+                                             en ~15 componentes del DS
+4  Pasada de componentes             2-3 h   lo marcado → instancia real con su variante,
+                                             usando figma-map.json
+```
+
+**Antes de nada, una prueba de 1 h**: marcar un botón, capturar, y ver si `data-ds` llega a
+Figma como nombre de capa. Si llega, el plan vale tal cual. Si no, hay que escribir una captura
+propia (un script en el navegador que recorre la página): +½ día.
+
+**Ventaja además de la velocidad**: se captura del **código**, que es donde vive la verdad. Lo
+que falló el 27/9 —el Atlético Nacional, el Filters que no existía— vino de clonar pantallas
+viejas de Figma.
