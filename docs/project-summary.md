@@ -15,8 +15,8 @@ está en los dos sitios, manda este.
    Recommendation Engine en `memory/recommendation-engine.md`, los roles en `memory/roles.md`.
    Regla para mantenerlo: **en `MEMORY.md` no entra nada que caduque.**
 
-2. **Montar el repo aparte de la scrapp** para la compañera de Daniel — detalle y medidas en
-   `docs/features/pendientes-01-10.md`.
+2. **Ajustar la scrapp**, y **después** montar el repo aparte para la compañera de Daniel —
+   en ese orden, para no hacer los ajustes dos veces. Detalle en `docs/features/pendientes-01-10.md`.
 
 3. Seguir por prioridad: Recommendation Engine (el único con fecha externa) o poner el prototipo
    al día con Figma (meta: lunes).

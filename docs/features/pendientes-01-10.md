@@ -4,7 +4,14 @@ Tres frentes abiertos. Solo el primero tiene fecha externa.
 
 ---
 
-## 1 · Repo aparte para la scrapp  · lo primero
+## 1 · Repo aparte para la scrapp  · después de ajustar la scrapp
+
+**Orden decidido el 2/10**: primero se le hacen unos ajustes a la scrapp, y luego se separa.
+Separar antes obligaría a hacer los ajustes dos veces o a sincronizar repos.
+
+Preguntas abiertas para cuando se haga:
+- **Nombre del repo**: `scrapp-dallas`, `kamleon-scrapp` u otro.
+- **Qué entra**: solo la demo del Recommendation Engine, o también las *Score Explorations* (1–5).
 
 La compañera de Daniel va a **diseñar**, pero quiere probar directamente en el prototipo.
 Git no esconde carpetas: quien clona el repo lo clona entero, con todo el historial. Así que
