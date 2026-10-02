@@ -10,13 +10,10 @@ está en los dos sitios, manda este.
 
 ## Lo primero al retomar (acordado el 1/10)
 
-1. **Limpiar `MEMORY.md`** — hoy tiene 232 líneas y el sistema lo está **cortando**: las últimas 32
-   no llegan a cargarse. Baja a ~60 líneas de índice (qué es el proyecto, convenciones críticas,
-   punteros). Todo lo que caduca —listas de pendientes, tareas con `[x]`— se consolida aquí o en
-   los `memory/*.md` temáticos. **Este summary no se toca ni se acorta**: es la memoria del
-   proyecto y leerlo cuando hace falta no cuesta; lo caro es solo lo que se carga siempre.
-   El problema real no es la longitud, es que la misma lista vive en tres sitios con distinto
-   estado de frescura.
+1. ~~**Limpiar `MEMORY.md`**~~ — **hecho el 2/10**: de 245 a 67 líneas, todo lo que cargaba se
+   carga. Nada se borró: los pendientes y "hechos" están al final de este documento, el
+   Recommendation Engine en `memory/recommendation-engine.md`, los roles en `memory/roles.md`.
+   Regla para mantenerlo: **en `MEMORY.md` no entra nada que caduque.**
 
 2. **Montar el repo aparte de la scrapp** para la compañera de Daniel — detalle y medidas en
    `docs/features/pendientes-01-10.md`.
@@ -1046,3 +1043,105 @@ Todo lo que toca el design system, en Figma y en código. Relacionado: **Tabs de
 - **Panel Admin de Centro como prototipo separado**: el modelo v2 es una sola app con navegación por rol (`docs/navigation.md`).
 - **Permisos del Admin de Centro restringido** y **qué campos edita sobre su centro**: resueltos en `docs/permissions.md` (matriz de 94 keys) y en el backlog (solo la imagen es editable).
 - **Dashboard/home o entrada directa**: definido por rol en `docs/navigation.md`.
+
+---
+
+## Pendientes heredados de MEMORY.md (movidos el 2/10, sin depurar)
+
+> Copiados tal cual al vaciar MEMORY.md. Varios están cerrados o caducados; se depuran al poner el prototipo al día. La lista viva es `docs/features/pendientes-01-10.md`.
+
+Misma lista (con descripciones largas) en `docs/project-summary.md` → "Próximos pasos". Mostrarla siempre en texto plano en la terminal.
+
+**Próximo (2/10):** 1) **limpiar este archivo** — 232 líneas y el sistema lo está cortando; baja a ~60 de índice y el estado se consolida en `docs/project-summary.md`, que es el que manda · 2) montar el repo aparte de la scrapp · 3) Recommendation Engine o poner el proto al día. Lista completa → `docs/features/pendientes-01-10.md`
+
+### ▶️ Plan para mañana (22/9) — **meta: dejar la lista en cero esta semana**
+1. **Repaso completo del rol Team Admin**, igual que el de Center Admin del 21/9: pantalla por pantalla contra Figma, permisos y caminos sin salida (sidebar → tabs → filas → menús → drawers)
+2. **Implementar My data** (Daniel pasa el Figma)
+3. **Implementar Hydration** (Daniel pasa el Figma)
+
+### ✅ Hecho el 21/9 (commits `bac7a90`, `b000180`, `3bd1681`, `f0c75bb`)
+Repaso completo de **Center Admin** + pasada al Sidebar. Detalle largo en `docs/project-summary.md` → "Cerrado el 2026-09-21". Lo esencial:
+- **Perfil agnóstico** implementado (Figma 12579:275097) y abierto desde equipo, Users y filas de admins activos. Decisión: una invitación pendiente NO abre perfil
+- **Units del centro** y **Edit unit** alineados con Figma; campos técnicos solo los edita Owner/Admin
+- **Borrar** org/centro/equipo/cuenta pide escribir DELETE (Figma 13073:137156); borrar equipo no existía
+- **Center Admin ya no ve "Units" en el sidebar** (como Org Admin): eso resolvió también las columnas Display/Sensor que no le tocaban
+- **Animaciones**: paneles con entrada direccional (180ms ida / 120ms vuelta) y sidebar con ancho animado al colapsar
+- **Sidebar** al detalle del Figma (incluido carril colapsado) e **invitaciones pendientes unificadas**: `PENDING_INVITES` en `rolePersonas.js` alimenta el badge y el drawer de notificaciones
+- **Storybook**: BottomSheet (nuevo), Tag (8 estados) y Sidebar actualizado
+
+### 🔴 Esperando algo de Daniel
+- [ ] **Dropdown "Role" (User/Professional) en NewUserDrawer** *(paso 2)* — sigue en By invite/By hand; ya no tiene sentido (Team Admin se invita desde `InviteTeamAdminDrawer`). Decidir si se quita o hay Figma nuevo. Detalle → `memory/prototypes.md` (26/8)
+- [ ] **Sección "Hydration" del sidebar** — el ítem no hace nada al pulsarlo (sin pantalla ni handler), lo ven todos los roles. Diseños ya hechos en Figma, Daniel pasa el link
+- [ ] **Sección "My data"** — hoy un cartel provisional en español ("Diseño pendiente"). Diseños ya hechos en Figma, Daniel pasa el link
+- [ ] **Conectar el flujo de "Set new PIN" hecho por staff** — el flujo YA existe en Figma (Daniel pasa el link); hoy el enlace del perfil solo lanza un toast. `ChangePinDrawer` no sirve: pide el PIN actual (cuenta propia)
+- [ ] **Formulario crear unit** — Daniel pasa los campos mínimos
+- [ ] **Ilustración modal de bienvenida del tour** — Daniel pasa el Figma final
+- [ ] **Acceso para editar un equipo** — `EditTeamDrawer` sin punto de entrada en el diseño nuevo; decidir dónde va
+- [ ] **Sección de administradores de equipo** — no va en el panel del equipo; decidir dónde
+- [ ] **Perfil agnóstico de usuario** — elegir layout D/E/F en Figma (ver `memory/account-details.md`)
+- [ ] **Language selector** — Daniel hace Figma primero · menú del avatar · "Language EN ›" → English/Español/Français · default `navigator.language`
+
+### 🟡 Decidido 2026-09-15
+- [x] Documentar decisión de tabs en dos niveles → `docs/features/tabs-dos-niveles.md`
+- [ ] **Tabs del centro con estilo secundario** *(paso 3)* — variante secundaria del TabBar + título con contexto ("Users in Madrid Centro (48)"), ver `memory/patterns.md` TabBar
+- [ ] **Breadcrumb vs back** — propuesta: desktop solo breadcrumb completo, mobile solo back. Falta confirmar con el manager
+
+- [ ] **Flujos clave en Figma, un doc por rol** (para poder hacer QA rol por rol): `docs/features/center-admin-flujos-figma.md` (5 flujos) y `docs/features/team-admin-flujos-figma.md` (4 + estados vacíos). Traen frames, textos exactos y qué verificar
+- [ ] ~~5 flujos clave del Center Admin en Figma~~ — guion con frames y textos exactos en `docs/features/center-admin-flujos-figma.md` (añadir personas · invitación · crear/borrar equipo · editar unit · vacíos y errores). Con pantallas reales: sustituyen a la lista de arreglos sueltos
+### 🟢 Listo para hacer
+- [x] **Vista mobile tabla Admins** — decidido 17/9 con el programador: **compact** por defecto en 390 (Recipient con Tag de estado en 2ª línea + incidencia/⋯; sin Role/Center/Team/Status). Tablet/desktop tabla completa. Easter egg SE QUEDA a propósito (3 toques en el título: alterna compact ↔ cards, localStorage `kamleon-invitations-mobile-layout-v2`), para recordar la propuesta de cards. Vista scroll eliminada
+- [x] **Filas activas de Admins abren el perfil agnóstico** — hecho 21/9: solo las filas activas (cursor/teclado solo ahí), los botones internos no navegan, el perfil se abre dentro del tab con "Back to Admins". **Una invitación pendiente NO abre perfil**: la fila es la invitación, no la persona. Sigue abierto el tooltip en touch (28px arriba vs "encima")
+- [ ] **Tabla de Admins del centro** — igualar con la de la org: placeholder "Search..." y pasar `canEditUsers` (Center Admin tiene `users.editData`), hoy no muestra "Edit user"
+- [x] **Animación de entrada de los paneles (desktop)** — hecho 21/9: bajar de nivel = fade + 10px desde la derecha 180ms; back = desde la izquierda 120ms; cambiar de centro = solo fade 150ms; tabs sin animación; reduced-motion deja solo el fade (`.subFadeIn`/`.subFadeBack`/`.subFade`)
+- [ ] **Pasarle los specs de animación al programador** — sus menús contextuales se animan distinto. La tabla completa (qué se anima, DÓNDE aplica y con qué valores: paneles al bajar de nivel, menú +/⋯, BottomSheet, filtros, drawers, Toast, TabBar, tooltips, checkbox, ⌘K) está en `docs/project-summary.md` → Próximos pasos. Incluye las dos reglas transversales: `prefers-reduced-motion` en el componente, y `backwards` y no `both` con transform
+- [ ] **Tabs en mobile de centro / unit / Team Admin** — ahora heredan la regla touch del TabBar, pero sus wrappers tienen padding/max-width (`innerTabBarInner` 320/420) y probablemente muestren franjas blancas como pasaba en la org; ajustar al llegar a esas pantallas
+- [ ] **Tarjetas de "By hand" (Add users)** — todavía piden Role y Team por tarjeta; el rol sobra (por esa rama solo entran usuarios) y hay que decidir si el equipo lo fija el bloque de destino o sigue por tarjeta
+- [ ] **"From file": corregir errores tocando la celda** + modal de fotos post-import (acordado 26/8, sin implementar)
+- [ ] **Permisos Kamleon Editor (#10)** + pasada mobile 768/390
+- [x] **Units para Center Admin** — resuelto 21/9: el fallo estaba en la vista global del sidebar (columnas Display/Sensor). Se le quita el ítem "Units" del sidebar, como a Org Admin; ve las units en el tab de su centro
+- [ ] **Bug `<button>` anidado** en menús "⋯" (Users; revisar Teams/Units)
+- [ ] **Menú "⋯" de Users en el equipo** — conectar acciones (Team Admin sí puede eliminar)
+- [ ] **Pulir tabs Users y Details de la org** (ver `docs/design-polish-backlog.md`)
+- [ ] **SearchPalette ⌘K** — free users, subtítulo → email, nav → `user-profile` · depende del perfil agnóstico
+
+### ✅ Hecho el 27/9 — primer flujo construido en Figma (15 commits, `c82bc7c`→`bdb1a9b`)
+Flujo 2 del Team Admin montado con componentes reales (6 pantallas en `🧪 Flujos — prueba` de Web
+App 2.0). Lo valioso fueron los 7 fallos que destapó: 8 variantes del Button con el color horneado
+en negro pese al enlace correcto, 16 variantes con el texto sordo (Button Danger, Text input, Text
+area), `Secondary`/`Tertiary` con significados cruzados entre Figma y código, 9 medidas mal en el
+modal y datos caducados en la pantalla base. `ds:compare` pasó de 6 a 8 pasadas y ahora vigila las
+tres páginas de Foundations y la salud interna de los componentes. Detalle → `memory/design-system-sync.md`
+
+### ✅ Hecho el 26/9 — sincronización del Design System (10 commits, `f6df952`→`69cdf27`)
+Fusionadas las dos colecciones de color de Figma en una · 35 de 35 variables documentadas y
+enganchadas al token en la página `-- Colors` · escala de elevación (33 sombras a mano → 5 tokens
+con los mismos nombres en los dos lados) · familias `Content/Inverse` y `Background/Inverse` para
+la superficie oscura del sidebar · el Tag pierde la familia de rol y gana `Status/*` · anillo de
+foco unificado · radios sin variantes por dispositivo · 7 variantes sin nombre resueltas.
+Detalle, decisiones y pendientes → `memory/design-system-sync.md`
+
+### 🎨 Design System
+- [x] **IconButton `Mode=Critical` en Figma** — hecho por Daniel 16/9 (rojo en reposo = problema existente; Danger = destructiva, rojo solo en hover). En código: `variant="critical"`
+- [ ] **Documentar en Figma la regla del ContextMenu en teléfono** — ≤390 se muestra como BottomSheet (lo aplica el componente, 21 menús). Solo descripción del componente, no variantes. Regla → `docs/design-system-rules.md`
+- [ ] **Documentar en Figma la regla del TabBar en touch** — frame de especificación + línea en la descripción del componente (regla, no componente/variante). Código ya aplicado. Wireframe ASCII y medidas → `docs/features/tabbar-touch-spec.md`
+- [ ] **Grosor de trazo compartido para los iconos** — hoy cada icono tiene `strokeWidth="1.5"` a mano; centralizar en un único valor. Origen: `IconMailWarning` llegó con trazos convertidos a relleno y se cambió a la versión con trazo (16/9). En código conviene trazo; en Figma pueden seguir como vector para escalar
+- [ ] **Unificar el componente Tag en el DS (Figma)** — absorber "Tag status - invitations" dentro del `Tag`: Pending/Expired como valores de Status, texto de Pending a Red/29, cambiar instancias y borrar el suelto. Código ya hecho (Expired con colores provisorios). Regla → `docs/design-system-rules.md`
+- [x] ~~**Variante `tertiary` del Button en Figma**~~ — 26/9: ya existía como variante real — gris suave (`Background/Page`), sin borde, píldora; en código desde 16/9 para "Manage invitation/admin" de las cards mobile. En Figma (12852:129168) es un frame suelto, no instancia
+- [ ] **Tag `delay`/`delivered` y Button `tertiaryDanger` en Figma** — creados en código 17/9 para Email history
+- [ ] **Llevar el BottomSheet al DS de Figma** — diseño de referencia en Web App 2.0 nodo `12847:128367`; código reescrito según ese nodo (16/9): manija 48×4 placeholder, ítems 56px, icono 24, texto 16 Medium, separador entre todos, destructiva roja, sin título. Falta publicarlo como componente del DS
+- [ ] **Detectar diferencias Figma ↔ código** *(26/9: hecho a mano, ver `memory/design-system-sync.md`; falta automatizarlo)* — probar MCP **figma-console** (`figma_check_design_parity`, `figma_audit_design_system`, `figma_get_design_changes`, `figma_diff_versions`, `figma_export_tokens`) + script/comando de comparación, idealmente disparado en cada publish de la librería (webhook `LIBRARY_PUBLISH`). Origen: TabBar M 56 vs 48 y color del Tag, detectados a mano. Distinto de Code Connect y de la sync de tokens
+- [ ] Design System: Radio (existe en Figma, sin programar), story FilterPanel, Storybook Foundations
+- [ ] Code Connect — BLOQUEADO: Daniel necesita rol Admin en workspace del cliente
+
+### 📦 Guardar el trabajo
+- [x] **Commit de todo lo acumulado** — hecho 16/9, `c091caf` (109 archivos)
+- [x] **Commit de lo del 16/9** — hecho 17/9, `6bead45` (24 archivos)
+- [ ] **Deploy a GitHub Pages** — después del commit
+
+### ⚪ Más adelante
+- [ ] Pantalla My data (#14) + ítem con sidebar colapsado · pantalla End User
+- [ ] Tour para Owner/Admin/Editor/End User (definir si corresponde)
+- [ ] Configure API modal — lo hace el programador, NO tocar (ver `memory/pending-configure-api-modal.md`)
+- [ ] Animación morph del botón Create (ver `memory/animation-improvements.md`)
+- [ ] Pruebas de usuario con participantes reales (guiones listos en `docs/features/`)
+- [ ] Flujos sin definir: onboarding org nueva · activación admin de centro · pantalla "sin acceso"
