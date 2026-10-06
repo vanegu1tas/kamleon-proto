@@ -153,3 +153,29 @@ Preguntar al programador ¿el backend mira el rol de la persona que se quita?
 Owner, Admin y Center Admin. El Team Admin hoy no puede quitar a nadie, aunque la matriz le da
 `teams.users.remove`. Decidir si se alinea con la matriz o se documenta como desviación en
 `permissions-deviations.md`. (Los flujos del Team Admin están parqueados, ver punto 5.)
+
+## 9 · Organización inactiva (deja de pagar) · decidido 6/10, sin construir
+
+Lo inactivo es la **organización**, no la cuenta: la persona entra y ve su My data. Por eso el
+texto dice "access paused", nunca "account". "Paused" porque al reactivar vuelve todo como estaba.
+Nunca se menciona el pago.
+
+Regla: **el aviso va donde vive el acceso que se perdió.**
+
+```
+1 rol, o todos los roles pausados   banner superior fijo, sin X, tono informativo
+                                    sidebar solo con My data
+                                    plural: "Your access to 2 organizations is paused: A and B."
+Varios roles, mezcla                sin banner global; en el cambiador de rol el rol pausado
+                                    sale gris, no clicable, con "Access paused"
+                                    si el último rol usado era el pausado: entra al primer rol
+                                    activo + aviso una sola vez ("Showing X instead")
+```
+
+Texto, igual para todos los roles (Org Admin incluido, decidido 6/10):
+`Your access to Dallas Cowboys is paused. You can still see your own data. To restore access, contact your organization.`
+
+**My data**: los datos llegan hasta la última medición → mostrar `Last measurement: Sep 12`.
+
+**Pantalla del urinal (scrapp)**: la unit ya no identifica al jugador, así que la pantalla de
+login se sustituye por una sin acciones: `Hydration analysis is not available on this unit.`
