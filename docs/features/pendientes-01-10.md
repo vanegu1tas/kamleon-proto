@@ -143,8 +143,13 @@ la persona que se quita (no hay `teams.admins.remove`). Lo único confirmado es 
 *invitar* a otro Team Admin al mismo equipo.
 
 ```
-Regla de Daniel (2/10)   si eres el único Team Admin, no puedes quitarte del equipo
-                         → evita que un equipo se quede sin admin
+Regla (decidida 6/10)    nadie puede quitarse a sí mismo como admin, en ningún nivel
+                         (lo dice el excel en organizations.admins.remove). Con eso
+                         ningún equipo ni center se queda sin admin por esa vía, y la
+                         regla del "último Team Admin" (2/10) deja de hacer falta
+Mensaje (toast al tocar) You can't remove yourself. Ask another admin.
+                         siempre hay alguien por encima que puede quitarlo; el botón
+                         se ve deshabilitado pero responde al toque (aria-disabled)
 Sin decidir              ¿un Team Admin puede quitar a otro Team Admin?
 Preguntar al programador ¿el backend mira el rol de la persona que se quita?
 ```

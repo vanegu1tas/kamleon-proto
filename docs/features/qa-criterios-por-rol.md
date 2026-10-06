@@ -248,12 +248,12 @@ Usuarios
 - [ ] Columna Status = membresía en el equipo (Pending/Active), de solo lectura
 - [ ] NO ve ni cambia el estado de la CUENTA de nadie [desv. 6]. El excel sí se lo da
 - [ ] En el tab Users no hay team admins (están en Admins) ni filtro de rol
-- [ ] "Remove from team" deshabilitado sobre uno mismo, tooltip "You can't remove yourself"
+- [ ] "Remove from team" se ve deshabilitado sobre uno mismo; al tocarlo, toast "You can't remove
+      yourself. Ask another admin."
 - [ ] ⚠ CHOQUE: el excel le da "Settings", "Delete User", editar datos, "Reset PIN" y "Visible on
       screen"; el prototipo hoy no le deja editar ni quitar (`canManageUser` en
       `OrgDetailV2.jsx`). Decidir: alinear o documentar como desviación (pendiente 8)
-- [ ] ⚠ SIN DECIDIR: ¿puede quitar a otro Team Admin? Regla propuesta: el último Team Admin no
-      puede quitarse (pendiente 8)
+- [ ] ⚠ SIN DECIDIR: ¿puede quitar a otro Team Admin? (pendiente 8)
 
 Analítica
 - [ ] Hydration: el selector de equipo muestra solo sus equipos; los datos no cargan hasta
