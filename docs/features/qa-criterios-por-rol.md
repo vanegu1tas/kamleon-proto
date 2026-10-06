@@ -163,47 +163,63 @@ Analítica
 
 ## Center Admin
 
-Uno o varios centros.
+Uno o varios centros. **Versión cruzada con la lista del programador (6/10)**: donde decían lo
+mismo manda su texto; lo nuestro que él no tenía se añadió; lo que choca con el excel va con
+"⚠ A confirmar con el dev".
 
-Entrada
-- [ ] Con 1 centro entra al detalle del centro; con varios, master-detail con SUS centros [desv. 1]
-- [ ] En el cambiador de rol, UNA sola entrada "Center Admin" [desv. 1]
-- [ ] Header compacto sin back; sidebar Orgs · Units · Hydration · Usage
-- [ ] Puede entrar al detalle de su organización, pero sin engranaje (no abre el panel de la org)
-
-Su centro
-- [ ] Cambia la imagen; datos bloqueados; contacto y "Link units" no aparecen
-- [ ] Sin "Delete" del centro
-- [ ] ⚠ Estado del centro: el excel avisa que el desplegable nunca se bloquea y, sin permiso, el
-      cambio se descarta al guardar sin avisar. Comprobar que en el prototipo NO aparece
-      editable (oculto, o bloqueado) [desv. 3, a futuro]
-- [ ] Invita y quita Center Admins (no a sí mismo); reenvía y cancela invitaciones
-
-Equipos
-- [ ] Botón de crear equipo (también en la pantalla vacía)
-- [ ] "Edit Team" y "Delete Team" en el menú de la fila y en la cabecera del detalle
-- [ ] Desplegable de Estado del equipo, editable
-- [ ] En cada miembro: "Settings", "Delete User", "Turn on/off PIN", "Regenerate PIN" (las dos de
-      PIN, solo en usuarios, no en admins)
-- [ ] En cada invitación pendiente: "Resend invite" y "Cancel invitation"
-
-Usuarios
-- [ ] "New user" ofrece Center admin, Team admin y User; nunca Kamleon staff ni Org admin
-- [ ] Tiene la pestaña "Manually" (incluida la importación por CSV/Excel)
-- [ ] Filtro de equipo solo si el centro tiene más de un equipo
-- [ ] Ve el nombre del centro en las tarjetas de rol; NO el encabezado de organización
-- [ ] NO ve los consentimientos de otros
-- [ ] Panel de edición: datos editables, interruptor de Estado, "Reset PIN", interruptor de PIN,
-      "Visible on screen"
-- [ ] "Delete User" en el menú "⋯"
+Control Panel
+- [ ] Debe entrar directamente a su center y no ver ninguna otra sede.
+- [ ] Si administra varios centers: ve la lista de SUS centers (master-detail) y una sola entrada
+      "Center Admin" en el cambiador de rol. [desv. 1]
+- [ ] Header compacto, sin botón de volver.
+- [ ] Debe poder cambiar la imagen del center y gestionar sus contactos. ⚠ A confirmar con el dev:
+      el Excel decía que editar contactos del center era solo para super roles.
+- [ ] Debe poder invitar y quitar administradores del center, y reenviar/cancelar sus invitaciones.
+- [ ] No puede quitarse a sí mismo como administrador.
+- [ ] Debe poder crear, editar y eliminar equipos de su center.
+- [ ] Ve el botón de crear equipo también en la pantalla vacía (sin equipos).
+- [ ] Puede cambiar el estado del equipo (desplegable de Estado editable).
+- [ ] En cada miembro del equipo: "Settings", "Delete User", "Turn on/off PIN" y "Regenerate PIN"
+      (las de PIN solo en usuarios, no en admins).
+- [ ] En cada invitación pendiente del equipo: "Resend invite" y "Cancel invitation".
+- [ ] Debe poder ver la lista de usuarios, sus roles y permisos, con el encabezado de organización
+      y center de cada rol; filtrar por equipo. ⚠ A confirmar con el dev: en el Excel Center Admin
+      no ve ninguno de los dos encabezados.
+- [ ] El filtro de equipo solo aparece si el center tiene más de un equipo.
+- [ ] Debe poder cambiar el estado de un usuario y editar sus datos, PIN y visibilidad en pantalla.
+- [ ] Puede eliminar usuarios ("Delete User" en el menú "⋯").
+- [ ] No debe poder editar los datos del center (nombre, dirección, email, teléfono) ni eliminarlo.
+- [ ] ⚠ Estado del center: no debe aparecer editable. El Excel avisa que el desplegable nunca se
+      bloquea y, sin permiso, el cambio se descarta al guardar sin avisar.
+- [ ] No debe ver nada a nivel de organización. ⚠ A confirmar con el dev: el Excel decía que sí
+      entra al detalle de su organización, sin engranaje.
+- [ ] No debe poder ver consentimientos ni identificadores externos de los usuarios.
+- [ ] No debe poder filtrar los usuarios por organización o center (ya está acotado a su center).
 
 Units
-- [ ] Ve la lista; sin filtros por org/centro ni columnas Display/Sensor
-- [ ] Panel de unit: mismos campos que Org Admin
-- [ ] No crea ni borra units; no ve Devices
+- [ ] Debe poder ver las unidades dentro del panel de su center, con columnas de tipo, fecha de
+      alta y uso; editar idioma, descripción, modo de login y roster de pantalla.
+- [ ] En el panel de la unidad, Unit ID, modelo y Estado aparecen bloqueados.
+- [ ] No debe poder crear ni eliminar unidades, ni ver campos técnicos ni dispositivos.
+- [ ] No debe ver "Units" como ítem propio del menú lateral. ⚠ A confirmar con el dev: el Excel
+      decía que sí aparecía en su sidebar.
 
-Analítica
-- [ ] Usage y Hydration sin filtro de org ni de centro
+Analytics
+- [ ] Debe poder ver las analíticas de uso e hidratación de su center, sin selector de
+      organización ni center (ya acotado).
+- [ ] No debe poder usar la pestaña de pruebas de API.
+
+My Data
+- [ ] No aplica como pantalla de inicio de este rol.
+
+Profile
+- [ ] Debe poder abrir "Account details" y editar sus propios datos.
+
+Mails and invitations
+- [ ] Debe poder invitar administradores de center, profesionales de equipo y usuarios.
+- [ ] Nunca ve "Kamleon staff" ni "Organization admin" como opción al invitar.
+- [ ] Debe poder crear usuarios manualmente uno a uno siempre, y por archivo solo si el center
+      tiene activado el auto-registro.
 
 ---
 
