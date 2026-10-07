@@ -4,7 +4,42 @@
 sesión, así que se mantiene corto y sin nada que caduque— y apunta aquí para el detalle. Si algo
 está en los dos sitios, manda este.
 
-Última revisión: 2026-10-01.
+Última revisión: 2026-10-07.
+
+---
+
+## En curso al 7/10 — QA final
+
+Daniel está haciendo el **QA final** del producto, rol por rol, con la PM pidiendo la revisión.
+Va de a pocos y con mucha presión: responder sus dudas (y las del programador) **buscando primero
+en la fuente** —excel, `permissions.md`, desviaciones— antes de decidir nada nuevo.
+
+- **Criterios por rol** → `docs/features/qa-criterios-por-rol.md`. Cruzados con el excel del
+  programador (`~/Downloads/permissions-matrix.xlsx`, 14/7): las 94 keys coinciden con
+  `permissions.md`. **Center Admin** ya cruzado además con la lista que el programador le pasó a
+  Daniel el 6/10 (manda su texto; 4 puntos "⚠ A confirmar con el dev"). Los demás roles solo se
+  tocan si Daniel trae la lista del programador para ellos.
+- Formato para que los pegue en Figma: bloque de código, `════` por rol, `[ ]` por criterio.
+
+Decidido entre el 5 y el 7/10 (sin construir salvo que se diga):
+- **Nadie puede quitarse a sí mismo como admin**, en ningún nivel (excel,
+  `organizations.admins.remove`). Toast al tocar: *"You can't remove yourself. Ask another admin."*
+  El botón se ve deshabilitado pero responde (`aria-disabled`). Sustituye la regla del "último
+  Team Admin". → pendiente 8
+- **Organización inactiva** (deja de pagar): banner "access paused", nunca "account". → pendiente 9
+- **Componente `Banner`** (no "TopBanner": la posición no va en el nombre). Persistente;
+  `Toast` para lo pasajero. Variante `info` y `dismissible`.
+- **Modal de cancelar invitación** (hoy el programador la cancela sin preguntar): título
+  *"Cancel invitation?"*, cuerpo *"{email} won't be able to join {team} with this invitation. You
+  can invite them again anytime."*, botones **Keep invitation** / **Cancel invitation** (danger).
+  Regla: en una confirmación, el botón de salir nunca se llama "Cancel" si la acción también lo es.
+- **Hover**: se quita por tipo de entrada (`@media (hover: hover) and (pointer: fine)`), no por
+  breakpoint; nada esencial puede vivir solo en hover (tooltips, "⋯" de fila).
+- **Texto para "Add users"** con org/centro/equipo: *"Choose where to add the users"*.
+- **PRD con logo**: `~/Documents/Kamleon_PRD_Template.docx` (el original sin tocar).
+
+Ofrecido y sin respuesta: barrer el prototipo buscando acciones bloqueadas u ocultas **sin mensaje
+que explique por qué** (el tipo de hueco del tooltip).
 
 ---
 
