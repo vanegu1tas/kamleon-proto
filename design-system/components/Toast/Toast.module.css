@@ -36,6 +36,26 @@
   to   { opacity: 1; transform: translateX(-50%) translateY(0)     scale(1); }
 }
 
+/* Salida: más rápida que la entrada y sin rebote — sube un poco y se desvanece.
+   La duración es EXIT_MS en Toast.jsx. */
+.leaving {
+  animation: toastOut 0.18s ease-in both;
+}
+
+@keyframes toastOut {
+  from { opacity: 1; transform: translateX(-50%) translateY(0)    scale(1); }
+  to   { opacity: 0; transform: translateX(-50%) translateY(-8px) scale(0.97); }
+}
+
+/* "Reducir movimiento" del sistema: solo fundido, sin desplazamiento ni escala. */
+@media (prefers-reduced-motion: reduce) {
+  .toast   { animation-name: toastFadeIn; }
+  .leaving { animation-name: toastFadeOut; }
+}
+
+@keyframes toastFadeIn  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes toastFadeOut { from { opacity: 1; } to { opacity: 0; } }
+
 /* ─── Icon container ─────────────────────────────────────── */
 
 .iconWrap {
