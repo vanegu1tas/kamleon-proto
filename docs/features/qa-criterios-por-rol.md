@@ -150,7 +150,8 @@ Equipos
 Usuarios
 - [ ] Ver la lista de usuarios, sus roles y permisos, y el center de cada rol
 - [ ] Filtrar por center (si la org tiene más de uno) y por equipo (si hay más de uno)
-- [ ] ⚠ A confirmar con el dev: ve el encabezado de organización en las tarjetas de rol
+- [ ] NO ve el nombre de la organización encima de las tarjetas de rol (solo Kamleon staff,
+      como dice el excel; confirmado por Daniel 11/10)
 - [ ] En Configure API: ve y edita los External IDs de los usuarios (confirmado por Daniel 11/10)
 - [ ] Los External IDs NO aparecen en el perfil ni en el panel de edición del usuario
 - [ ] "New user" existe y solo ofrece **Organization admin** y **Center admin**
@@ -199,9 +200,9 @@ Control Panel
 - [ ] En cada miembro del equipo: "Settings", "Delete User", "Turn on/off PIN" y "Regenerate PIN"
       (las de PIN solo en usuarios, no en admins).
 - [ ] En cada invitación pendiente del equipo: "Resend invite" y "Cancel invitation".
-- [ ] Debe poder ver la lista de usuarios, sus roles y permisos, con el encabezado de organización
-      y center de cada rol; filtrar por equipo. ⚠ A confirmar con el dev: en el Excel Center Admin
-      no ve ninguno de los dos encabezados.
+- [ ] Debe poder ver la lista de usuarios, sus roles y permisos; filtrar por equipo.
+- [ ] En las tarjetas de rol NO ve el nombre de la organización ni el del center (como dice el
+      excel; confirmado por Daniel 11/10).
 - [ ] El filtro de equipo solo aparece si el center tiene más de un equipo.
 - [ ] Debe poder cambiar el estado de un usuario y editar sus datos, PIN y visibilidad en pantalla.
 - [ ] Puede eliminar usuarios ("Delete User" en el menú "⋯").
