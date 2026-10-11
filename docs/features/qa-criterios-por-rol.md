@@ -142,7 +142,7 @@ Centros
 - [ ] También quita Center Admins (no a sí mismo) y cancela invitaciones
 - [ ] Datos del centro bloqueados; "Link units" no aparece
 - [ ] Sin "Delete" del centro; ve el nombre real, nunca el alias
-- [ ] ⚠ A confirmar con el dev: gestionar los contactos del center (el excel no se lo da)
+- [ ] NO gestiona los contactos del center (como dice el excel; confirmado por Daniel 11/10)
 
 Equipos
 - [ ] Solo lectura: las filas de equipo NO tienen menú "⋯" y no hay "New team" [desv. 5]
@@ -189,8 +189,8 @@ Control Panel
 - [ ] Si administra varios centers: ve la lista de SUS centers (master-detail) y una sola entrada
       "Center Admin" en el cambiador de rol. [desv. 1]
 - [ ] Header compacto, sin botón de volver.
-- [ ] Debe poder cambiar la imagen del center y gestionar sus contactos. ⚠ A confirmar con el dev:
-      el Excel decía que editar contactos del center era solo para super roles.
+- [ ] Debe poder cambiar la imagen del center.
+- [ ] NO gestiona los contactos del center (como dice el excel; confirmado por Daniel 11/10).
 - [ ] Debe poder invitar y quitar administradores del center, y reenviar/cancelar sus invitaciones.
 - [ ] No puede quitarse a sí mismo como administrador.
 - [ ] Debe poder crear, editar y eliminar equipos de su center.
