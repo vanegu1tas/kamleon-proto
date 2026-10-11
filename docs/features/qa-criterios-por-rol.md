@@ -149,8 +149,9 @@ Usuarios
 - [ ] Ver la lista de usuarios, sus roles y permisos, y el center de cada rol
 - [ ] Filtrar por center (si la org tiene más de uno) y por equipo (si hay más de uno)
 - [ ] ⚠ A confirmar con el dev: ve el encabezado de organización en las tarjetas de rol
-- [ ] ⚠ A confirmar con el dev: ver y editar los identificadores externos de los usuarios
-      (el excel se lo da, pero lo marca "sin efecto visible")
+- [ ] Ver y editar los External IDs de los usuarios (solo Kamleon staff y Org Admin, confirmado
+      por Daniel 11/10). ⚠ A confirmar con el dev: dónde se ven (¿solo Configure API o también
+      el perfil del usuario?)
 - [ ] "New user" existe y solo ofrece **Organization admin** y **Center admin**
 - [ ] NO ofrece Team admin ni User; sin pestaña "Manually"
 - [ ] NO ve los consentimientos de otros (los suyos sí, en su perfil)
