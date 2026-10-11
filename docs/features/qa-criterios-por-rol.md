@@ -36,6 +36,7 @@ Organizaciones y centros
 Integraciones y API
 - [ ] Activa y desactiva integraciones
 - [ ] Ve y edita "Max tokens per month"; ve la tabla de consumo
+- [ ] En Configure API: ve y edita los External IDs de los usuarios
 
 Equipos y usuarios
 - [ ] Todas las acciones de equipos y miembros
@@ -69,6 +70,7 @@ Organizaciones
 - [ ] Ve el token y el botón de copiarlo; ve la tabla de consumo
 - [ ] NO ve la sección "Max tokens per month"
 - [ ] El botón "Run test" de Integrations está disponible
+- [ ] En Configure API: ve los External IDs, pero NO los edita
 
 Centros
 - [ ] Nombre, alias, email, teléfono y dirección bloqueados en gris
@@ -149,9 +151,8 @@ Usuarios
 - [ ] Ver la lista de usuarios, sus roles y permisos, y el center de cada rol
 - [ ] Filtrar por center (si la org tiene más de uno) y por equipo (si hay más de uno)
 - [ ] ⚠ A confirmar con el dev: ve el encabezado de organización en las tarjetas de rol
-- [ ] Ver y editar los External IDs de los usuarios (solo Kamleon staff y Org Admin, confirmado
-      por Daniel 11/10). ⚠ A confirmar con el dev: dónde se ven (¿solo Configure API o también
-      el perfil del usuario?)
+- [ ] En Configure API: ve y edita los External IDs de los usuarios (confirmado por Daniel 11/10)
+- [ ] Los External IDs NO aparecen en el perfil ni en el panel de edición del usuario
 - [ ] "New user" existe y solo ofrece **Organization admin** y **Center admin**
 - [ ] NO ofrece Team admin ni User; sin pestaña "Manually"
 - [ ] NO ve los consentimientos de otros (los suyos sí, en su perfil)
