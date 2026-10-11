@@ -107,57 +107,72 @@ Analítica
 
 ## Org Admin
 
-Toda su organización.
+Toda su organización. **Versión cruzada con la lista del programador (11/10)**: donde decían lo
+mismo manda su texto; lo nuestro que él no tenía se añadió; lo que choca con el excel va con
+"⚠ A confirmar con el dev".
 
 Entrada
-- [ ] Entra directo al detalle de SU organización, header compacto sin back
-- [ ] Sidebar: Orgs · Units · Hydration · Usage · API Test
+- [ ] Entrar directamente a su organización y no ver ninguna otra
+- [ ] Header compacto sin back
+- [ ] Sidebar: Orgs · Hydration · Usage · API Test (sin Units; van en tabs, ver abajo)
 
 Su organización
-- [ ] Abre el panel (engranaje): solo puede cambiar la IMAGEN; los demás campos van bloqueados
+- [ ] Cambiar la imagen de su organización
+- [ ] Los demás campos del panel (engranaje) van bloqueados
 - [ ] El campo Estado NO aparece en el formulario; sí el badge del header [desv. 3]
 - [ ] No puede borrar la organización ni crear centros
 
 Admins
+- [ ] Invitar y quitar administradores de su organización, y reenviar o cancelar sus invitaciones
+- [ ] Nunca puede quitarse a sí mismo (sin papelera en su propia fila)
 - [ ] El tab Admins lista los 3 niveles: Organization, Center y Team admin [desv. 7]
-- [ ] Papelera en Org Admins y Center Admins; nunca en su propia fila
 - [ ] En las filas de Team admin la papelera NO está (oculta, no deshabilitada) [desv. 7]
-- [ ] Invita Org Admins; reenvía y cancela invitaciones de la org
 
 Integraciones y API
-- [ ] Ve Integrations; edita los ajustes de Teamworks
+- [ ] Ver las integraciones y editar los ajustes de las que ya están activas
 - [ ] Ve el interruptor de la API, pero bloqueado: no enciende ni apaga
-- [ ] Ve el token y lo copia; NO ve la tabla de consumo ni "Max tokens per month"
+- [ ] Ver y copiar el token de API
+- [ ] NO ve la tabla de consumo ni "Max tokens per month"
 - [ ] La pantalla "API Test" del sidebar funciona
 
 Centros
-- [ ] Cambia la imagen del centro; datos bloqueados; contacto y "Link units" no aparecen
+- [ ] En sus centers: cambiar la imagen, invitar administradores y reenviar invitaciones
+- [ ] También quita Center Admins (no a sí mismo) y cancela invitaciones
+- [ ] Datos del centro bloqueados; "Link units" no aparece
 - [ ] Sin "Delete" del centro; ve el nombre real, nunca el alias
-- [ ] Invita y quita Center Admins (no a sí mismo); reenvía y cancela invitaciones
+- [ ] ⚠ A confirmar con el dev: gestionar los contactos del center (el excel no se lo da)
 
 Equipos
 - [ ] Solo lectura: las filas de equipo NO tienen menú "⋯" y no hay "New team" [desv. 5]
 
 Usuarios
+- [ ] Ver la lista de usuarios, sus roles y permisos, y el center de cada rol
+- [ ] Filtrar por center (si la org tiene más de uno) y por equipo (si hay más de uno)
+- [ ] ⚠ A confirmar con el dev: ve el encabezado de organización en las tarjetas de rol
+- [ ] ⚠ A confirmar con el dev: ver y editar los identificadores externos de los usuarios
+      (el excel se lo da, pero lo marca "sin efecto visible")
 - [ ] "New user" existe y solo ofrece **Organization admin** y **Center admin**
 - [ ] NO ofrece Team admin ni User; sin pestaña "Manually"
-- [ ] Filtro de centro solo si la org tiene más de un centro
-- [ ] Ve el nombre del centro en las tarjetas de rol; NO el encabezado de organización
 - [ ] NO ve los consentimientos de otros (los suyos sí, en su perfil)
 - [ ] Fila de usuario: menú "⋯" con "Edit User"; sin "Delete User"
 - [ ] Panel de edición: datos personales bloqueados; el interruptor de Estado SÍ funciona
 - [ ] NO ve "Reset PIN", el interruptor de PIN ni "Visible on screen"
 
 Units
-- [ ] Lista con filtro por centro; sin columnas Display/Sensor ni filtros avanzados
+- [ ] Las ve en un tab de su organización (todas, de forma general) y en un tab dentro de cada
+      centro (solo las de ese centro). Nunca en el sidebar (confirmado por Daniel, 11/10)
+- [ ] Ver las unidades, filtrar por center y editar idioma, descripción, modo de login y roster
+      de pantalla
+- [ ] Sin columnas Display/Sensor ni filtros avanzados
 - [ ] No crea ni borra units; no ve la pestaña Devices
-- [ ] Panel — editable: Org/Center, Idioma, Descripción, Modo de login, Screen Roster
+- [ ] Panel — también editable: Org/Center
 - [ ] Panel — bloqueado: Unit ID, Urinal model, Estado
 - [ ] Panel — NO aparecen: Display/Sensor, Apariencia, Mensajes, Score Screen/Waterflush,
       Conductividad, Estadísticas
 
 Analítica
-- [ ] Usage y Hydration con filtro por centro, sin filtro por organización
+- [ ] Ver las analíticas de uso e hidratación y filtrar por center
+- [ ] Sin filtro por organización
 
 ---
 
@@ -201,8 +216,8 @@ Units
       alta y uso; editar idioma, descripción, modo de login y roster de pantalla.
 - [ ] En el panel de la unidad, Unit ID, modelo y Estado aparecen bloqueados.
 - [ ] No debe poder crear ni eliminar unidades, ni ver campos técnicos ni dispositivos.
-- [ ] No debe ver "Units" como ítem propio del menú lateral. ⚠ A confirmar con el dev: el Excel
-      decía que sí aparecía en su sidebar.
+- [ ] No debe ver "Units" como ítem propio del menú lateral: van en un tab de su centro
+      (confirmado por Daniel, 11/10).
 
 Analytics
 - [ ] Debe poder ver las analíticas de uso e hidratación de su center, sin selector de

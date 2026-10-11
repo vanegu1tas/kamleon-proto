@@ -13,8 +13,8 @@ Qué puede hacer cada rol sobre cada entidad de la plataforma.
 | Rol | Entry point | Header | Sidebar |
 |---|---|---|---|
 | Kamleon Owner / Admin / Editor | Lista de organizaciones | Normal, con back | Orgs, Units, Hydration, Usage |
-| Org Admin | Detalle de su organización | Compacto, sin back | Orgs, Units, Hydration, Usage |
-| Center Admin | Detalle de su centro (o selector si tiene varios — ver más abajo) | Compacto, sin back | Orgs, Units, Hydration, Usage |
+| Org Admin | Detalle de su organización | Compacto, sin back | Orgs, Hydration, Usage, API Test *(Units va en tabs: general en la org y por centro)* |
+| Center Admin | Detalle de su centro (o selector si tiene varios — ver más abajo) | Compacto, sin back | Orgs, Hydration, Usage *(Units va en un tab de su centro)* |
 | Team Admin | Detalle de su equipo | Compacto, sin back | Orgs, Hydration *(sin Units ni Usage)* |
 | End User | `/my-data` | — | — |
 
