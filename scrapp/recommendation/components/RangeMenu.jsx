@@ -4,7 +4,7 @@ import styles from './RangeMenu.module.css';
 
 // Mismo patrón que el menú de las exploraciones, pero reducido a lo único que hace falta
 // enseñar en la demo: en qué rango cae el score. Vive fuera de la pantalla de la unidad.
-export default function RangeMenu({ value, onChange, onRestart }) {
+export default function RangeMenu({ value, onChange, onRestart, top }) {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
 
@@ -20,7 +20,7 @@ export default function RangeMenu({ value, onChange, onRestart }) {
   const current = ZONES.find(z => z.key === value);
 
   return (
-    <div className={styles.wrap} ref={ref}>
+    <div className={styles.wrap} ref={ref} style={top != null ? { top } : undefined}>
       <button className={styles.trigger} onClick={() => setOpen(o => !o)}>
         <span className={styles.dot} style={{ background: current?.color }} />
         {current?.short ?? 'Range'}

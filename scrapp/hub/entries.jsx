@@ -65,7 +65,7 @@ export const SECTIONS = [
         title: 'Recommendation Engine',
         status: 'future',
         description: 'Piloto Dallas Cowboys. Bocetos rápidos: portada, score y recomendación.',
-        href: 'recommendation.html',
+        href: 'recommendation.html?from=tasks',
       },
       {
         id: 'audit',

@@ -13,3 +13,29 @@
   opacity: 0.6;
   color: #ffffff;
 }
+
+.back {
+  position: fixed;
+  top: 20px;
+  left: 24px;
+  z-index: 100;
+  padding: 8px 12px;
+  border: 1px solid #1c2b38;
+  border-radius: 999px;
+  background: rgba(12, 16, 22, 0.6);
+  font-family: var(--font-family-primary);
+  font-size: 13px;
+  font-weight: var(--font-weight-medium);
+  color: #5a7d96;
+  text-decoration: none;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.back:focus-visible {
+  outline: 2px solid #2fd5cb;
+  outline-offset: 2px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .back:hover { color: #dce6ee; border-color: #2a4152; }
+}

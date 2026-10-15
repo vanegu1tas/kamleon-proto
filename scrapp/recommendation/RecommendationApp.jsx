@@ -27,6 +27,11 @@ const SWITCH_AT     = 7;    // segundos restantes cuando el score se va y entra 
 const EXIT_MS       = 750;  // lo que tarda el número en llegar a la esquina (igual que en su CSS;
                             // el arco se apaga antes, en 600 ms)
 
+// El botón de volver solo aparece si se llega desde el microsite de la scrapp (la card de Tareas
+// añade ?from=tasks). El link que tiene business no lo lleva, así que ellos no ven nada nuestro.
+const FROM = new URLSearchParams(window.location.search).get('from');
+const BACK = FROM === 'tasks' ? { href: './#/tasks', label: 'Tareas' } : null;
+
 export default function RecommendationApp() {
   const [screen, setScreen]   = useState('start');
   const [zoneKey, setZoneKey] = useState(DEFAULT_ZONE);
@@ -74,9 +79,13 @@ export default function RecommendationApp() {
         </div>
       </DeviceFrame>
 
-      {/* Control de la demo: no se ve en la pantalla de la unidad, es para quien presenta. */}
+      {/* Mismo botón y mismo sitio que el "‹ Scrapp" del microsite (hub/Hub.module.css .back) */}
+      {BACK && <a className={styles.back} href={BACK.href}>‹ {BACK.label}</a>}
+
+      {/* Control de la demo: no se ve en la pantalla de la unidad, es para quien presenta.
+          Con el botón de volver arriba, baja para no taparlo (igual que el menú del visor). */}
       {screen !== 'start' && (
-        <RangeMenu value={zoneKey} onChange={startRun} onRestart={() => setScreen('start')} />
+        <RangeMenu value={zoneKey} onChange={startRun} onRestart={() => setScreen('start')} top={BACK ? 72 : undefined} />
       )}
     </>
   );
