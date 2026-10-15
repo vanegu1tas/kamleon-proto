@@ -123,24 +123,25 @@ function Viewer({ section, entry, item }) {
       {item.render()}
       <ItemArrows entry={entry} item={item} />
 
-      {/* Arriba a la izquierda: volver a la sección (fuera del menú, siempre a la vista) y el menú
-          para cambiar de item */}
-      <div style={{ position: 'fixed', top: 20, left: 20, zIndex: 100, display: 'flex', gap: 8 }}>
-        <a
-          href={`#/${section.id}`}
-          style={{
-            height: 40, padding: '0 14px', boxSizing: 'border-box',
-            display: 'flex', alignItems: 'center',
-            background: 'rgba(255,255,255,0.06)',
-            border: '1px solid rgba(255,255,255,0.10)',
-            borderRadius: 10,
-            fontFamily: 'var(--font-family-primary)', fontSize: 13, fontWeight: 500,
-            color: 'rgba(255,255,255,0.7)', textDecoration: 'none',
-          }}
-        >
-          ‹ {section.title}
-        </a>
+      {/* Arriba a la izquierda: volver a la sección (fuera del menú, siempre a la vista) y, debajo,
+          el menú para cambiar de item */}
+      {/* Mismo botón y mismo sitio que el "‹ Scrapp" de las páginas del índice (Hub.module.css .back) */}
+      <a
+        href={`#/${section.id}`}
+        style={{
+          position: 'fixed', top: 20, left: 24, zIndex: 100,
+          padding: '8px 12px',
+          border: '1px solid #1c2b38',
+          borderRadius: 999,
+          background: 'rgba(12,16,22,0.6)',
+          fontFamily: 'var(--font-family-primary)', fontSize: 13, fontWeight: 500,
+          color: '#5a7d96', textDecoration: 'none',
+        }}
+      >
+        ‹ {section.title}
+      </a>
 
+      <div style={{ position: 'fixed', top: 72, left: 20, zIndex: 100 }}>
         <div ref={menuRef} style={{ position: 'relative' }}>
           <button
             onClick={() => setMenuOpen(o => !o)}
