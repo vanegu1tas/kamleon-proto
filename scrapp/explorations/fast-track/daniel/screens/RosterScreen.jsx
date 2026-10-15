@@ -10,13 +10,14 @@ import { initialsFor, paginate } from '../data/rosters';
  *   'corner' → el QR fijo arriba a la derecha (lo que pide la propuesta, algo más grande)
  *   'tab'    → "Staff" es una pestaña más: al tocarla, el QR grande ocupa el sitio de la cuadrícula
  *
- * Con más de 20 jugadores, pestañas por rango de dorsales. Con 20 o menos no hay rangos; en modo
+ * pageSize: 20 (5 × 4) o 30 (6 × 5, fotos más pequeñas). Si la plantilla no cabe en una página,
+ * pestañas por rango de dorsales; si cabe, no hay rangos y en modo
  * 'tab' la barra queda en "Players · Staff".
  *
  * En el prototipo, tocar el QR cuenta como haberlo escaneado (onScanQr).
  */
-export default function RosterScreen({ players, qrMode, onSelect, onScanQr }) {
-  const pages = paginate(players);
+export default function RosterScreen({ players, pageSize = 20, qrMode, onSelect, onScanQr }) {
+  const pages = paginate(players, pageSize);
   const [tab, setTab] = useState(0);          // índice de página, o 'staff'
   const showStaff = qrMode === 'tab' && tab === 'staff';
   const page = pages[typeof tab === 'number' ? tab : 0];
@@ -76,7 +77,7 @@ export default function RosterScreen({ players, qrMode, onSelect, onScanQr }) {
             <p className={styles.staffText}>Scan with your phone to sign in</p>
           </div>
         ) : (
-          <div className={styles.grid}>
+          <div className={`${styles.grid} ${pageSize > 20 ? styles.dense : ''}`}>
             {page.players.map(p => (
               <button key={p.id} className={styles.player} onClick={() => onSelect(p)}>
                 {p.photo

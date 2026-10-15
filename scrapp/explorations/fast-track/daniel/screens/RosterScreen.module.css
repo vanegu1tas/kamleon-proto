@@ -186,6 +186,32 @@
   font-weight: var(--font-weight-medium);
 }
 
+/* 30 por página: 6 × 5, todo un poco más pequeño */
+.dense {
+  grid-template-columns: repeat(6, 176px);
+  grid-auto-rows: 100px;
+  gap: 10px 12px;
+}
+
+.dense .player {
+  gap: 6px;
+}
+
+.dense .photo {
+  width: 68px;
+  height: 68px;
+}
+
+.dense .initials {
+  font-size: var(--font-size-20);
+}
+
+.dense .label {
+  max-width: 168px;
+  gap: 6px;
+  font-size: 18px;
+}
+
 /* ─── Staff: el QR grande en el sitio de la cuadrícula ─── */
 
 .staffPanel {

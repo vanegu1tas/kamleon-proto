@@ -5,7 +5,7 @@ import ReadyScreen from './screens/ReadyScreen';
 import TrackingScreen from './screens/TrackingScreen';
 import FlushScreen from './screens/FlushScreen';
 import Exploration5, { scoreToAngle5, getZoneIndex5, GAUGE_START } from '../../../screens/Exploration5';
-import { ROSTERS, STAFF_MEMBER } from './data/rosters';
+import { ROSTERS, STAFF_MEMBER, PAGE_SIZES } from './data/rosters';
 
 const TRACKING_DURATION = 3000; // demo: análisis simulado
 const FLUSH_DURATION    = 4000; // demo: "a minute" real acortado para probar
@@ -18,8 +18,20 @@ const FLUSH_DURATION    = 4000; // demo: "a minute" real acortado para probar
 // RFID e invitado no se simulan aquí: en esta exploración solo importa la plantilla.
 //
 // qrMode: 'corner' (QR fijo en la esquina) | 'tab' (Staff como pestaña). Ver RosterScreen.
+const panelLabel = { fontSize: 12, color: 'rgba(255,255,255,0.45)', marginBottom: 4 };
+
+function optionStyle(active) {
+  return {
+    padding: '7px 12px', border: 'none', borderRadius: 8, cursor: 'pointer', textAlign: 'left',
+    fontFamily: 'inherit', fontSize: 13, fontWeight: 500,
+    background: active ? 'rgba(255,255,255,0.12)' : 'transparent',
+    color: active ? 'white' : 'rgba(255,255,255,0.55)',
+  };
+}
+
 export default function FastTrackFlow({ qrMode = 'corner' }) {
   const [rosterKey, setRosterKey] = useState('nfl');
+  const [pageSize, setPageSize]   = useState(20);
   const players = ROSTERS[rosterKey].players;
 
   const [step, setStep]     = useState('roster');
@@ -112,8 +124,9 @@ export default function FastTrackFlow({ qrMode = 'corner' }) {
     case 'roster':
       screen = (
         <RosterScreen
-          key={rosterKey}
+          key={`${rosterKey}-${pageSize}`}
           players={players}
+          pageSize={pageSize}
           qrMode={qrMode}
           onSelect={ready}
           onScanQr={() => ready(STAFF_MEMBER)}
@@ -148,28 +161,28 @@ export default function FastTrackFlow({ qrMode = 'corner' }) {
     <>
       <DeviceFrame>{screen}</DeviceFrame>
 
-      {/* Control de la demo (fuera de la pantalla): qué plantilla se prueba */}
+      {/* Control de la demo (fuera de la pantalla): qué plantilla y cuántos por página */}
       <div style={{
         position: 'fixed', top: 20, right: 20, zIndex: 100,
-        display: 'flex', flexDirection: 'column', gap: 8, padding: '12px 14px',
+        display: 'flex', flexDirection: 'column', gap: 4, padding: '12px 14px',
         background: 'rgba(18,22,28,0.92)', border: '1px solid rgba(255,255,255,0.10)', borderRadius: 12,
         fontFamily: 'var(--font-family-primary)',
       }}>
-        <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)' }}>Plantilla de prueba</span>
+        <span style={panelLabel}>Plantilla de prueba</span>
         {Object.entries(ROSTERS).map(([key, r]) => (
-          <button
-            key={key}
-            onClick={() => { setRosterKey(key); reset(); }}
-            style={{
-              padding: '7px 12px', border: 'none', borderRadius: 8, cursor: 'pointer', textAlign: 'left',
-              fontFamily: 'inherit', fontSize: 13, fontWeight: 500,
-              background: rosterKey === key ? 'rgba(255,255,255,0.12)' : 'transparent',
-              color: rosterKey === key ? 'white' : 'rgba(255,255,255,0.55)',
-            }}
-          >
+          <button key={key} onClick={() => { setRosterKey(key); reset(); }} style={optionStyle(rosterKey === key)}>
             {r.label}
           </button>
         ))}
+
+        <span style={{ ...panelLabel, marginTop: 10 }}>Por página</span>
+        <div style={{ display: 'flex', gap: 4 }}>
+          {PAGE_SIZES.map(n => (
+            <button key={n} onClick={() => { setPageSize(n); reset(); }} style={{ ...optionStyle(pageSize === n), flex: 1, textAlign: 'center' }}>
+              {n}
+            </button>
+          ))}
+        </div>
       </div>
     </>
   );

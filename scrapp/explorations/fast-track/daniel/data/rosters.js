@@ -52,16 +52,16 @@ export const ROSTERS = {
 // Quien entra por QR: staff que no está en la plantilla
 export const STAFF_MEMBER = { id: 'staff', name: 'Alex Rivera', short: 'Alex Rivera', number: null, photo: null };
 
-// Páginas de máximo 20, por dorsal. Un mismo dorsal nunca se parte entre dos páginas: si un
+// Páginas de máximo 20 (o 30, según el selector de la demo), por dorsal. Un mismo dorsal nunca se parte entre dos páginas: si un
 // repetido cae justo en el corte, el grupo entero pasa a la siguiente (la página queda con menos
 // de 20, nunca con más). La etiqueta es el rango real de dorsales de la página.
-export const PAGE_SIZE = 20;
+export const PAGE_SIZES = [20, 30];
 
-export function paginate(players) {
+export function paginate(players, size = 20) {
   const pages = [];
   let current = [];
   for (const p of players) {
-    if (current.length >= PAGE_SIZE) {
+    if (current.length >= size) {
       const carry = [];
       while (current.length && current[current.length - 1].number === p.number) carry.unshift(current.pop());
       pages.push(current);
