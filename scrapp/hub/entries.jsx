@@ -1,6 +1,7 @@
 import ExplorationsApp from '../ExplorationsApp';
 import FlowRunner from '../flow/FlowRunner';
 import FlowRunnerV2 from '../flow/FlowRunnerV2';
+import FastTrackDaniel from '../explorations/fast-track/daniel/FlowRunner';
 
 /**
  * Índice del microsite de la scrapp.
@@ -8,6 +9,9 @@ import FlowRunnerV2 from '../flow/FlowRunnerV2';
  * Cada entrada es una sección del índice. Sus `items` son lo que se puede abrir dentro
  * (un flujo, una exploración). Para añadir una exploración nueva a una tarea, se añade un
  * item aquí con su `author`, y aparece sola en el índice y en el menú del visor.
+ *
+ * El código de cada exploración vive en explorations/<tarea>/<persona>/ (p. ej.
+ * explorations/fast-track/daniel/), así dos personas pueden explorar la misma tarea sin pisarse.
  *
  * Una entrada con `href` abre otra página (la demo del Recommendation Engine tiene la suya,
  * porque se comparte con business por su propio link).
@@ -58,7 +62,9 @@ export const SECTIONS = [
         title: 'Fast Track',
         status: 'progress',
         description: 'Todos los jugadores en la pantalla de inicio.',
-        items: [],
+        items: [
+          { id: 'daniel', label: 'Fast Track', author: 'Daniel', render: () => <FastTrackDaniel /> },
+        ],
       },
       {
         id: 'recommendation',

@@ -1,0 +1,26 @@
+.screen {
+  width: 1280px;
+  height: 800px;
+  background: #000000;
+  position: relative;
+  overflow: hidden;
+  font-family: var(--font-family-primary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.heading {
+  color: var(--color-turquoise-51);
+  font-size: var(--font-size-48);
+  font-weight: var(--font-weight-medium);
+  margin: 40px 0 12px;
+}
+
+.subtitle {
+  color: #d0d0d0;
+  font-size: var(--font-size-24);
+  font-weight: var(--font-weight-book);
+  margin: 0;
+}
