@@ -10,7 +10,7 @@ import { initialsFor, paginate } from '../data/rosters';
  *   'corner' → el QR fijo arriba a la derecha (lo que pide la propuesta, algo más grande)
  *   'tab'    → "Staff" es una pestaña más: al tocarla, el QR grande ocupa el sitio de la cuadrícula
  *
- * pageSize: 20 (5 × 4) o 30 (6 × 5, fotos más pequeñas). Si la plantilla no cabe en una página,
+ * pageSize: 20 (5 × 4) o 30 (denseCols: 6 × 5 u 8 × 4). Si la plantilla no cabe en una página,
  * pestañas por rango de dorsales; si cabe, no hay rangos y en modo
  * 'tab' la barra queda en "Players · Staff".
  *
@@ -19,7 +19,7 @@ import { initialsFor, paginate } from '../data/rosters';
  *
  * En el prototipo, tocar el QR cuenta como haberlo escaneado (onScanQr).
  */
-export default function RosterScreen({ players, pageSize = 20, qrMode, onSelect, onScanQr }) {
+export default function RosterScreen({ players, pageSize = 20, denseCols = 8, qrMode, onSelect, onScanQr }) {
   const pages = paginate(players, pageSize);
   const [tab, setTab] = useState(0);          // índice de página, o 'staff'
   const showStaff = qrMode === 'tab' && tab === 'staff';
@@ -31,18 +31,19 @@ export default function RosterScreen({ players, pageSize = 20, qrMode, onSelect,
   // Con menos jugadores que el máximo de la página (equipo pequeño, o la última página), la
   // cuadrícula se reparte: columnas equilibradas (16 → 4 × 4, no 5-5-5-1) y más aire entre filas.
   const dense   = pageSize > 20;
-  const maxCols = dense ? 8 : 5;   // prueba 16/10: 8 columnas con 30 (antes 6 × 5)
-  const maxRows = 4;
+  const wide    = dense && denseCols === 8;
+  const maxCols = dense ? denseCols : 5;
+  const maxRows = dense && !wide ? 5 : 4;
   const count   = page?.players.length ?? 0;
   const rows    = Math.max(1, Math.ceil(count / maxCols));
   const cols    = Math.ceil(count / rows);
   // Alto libre para la cuadrícula: pantalla − cabecera (88) − barra (64, si la hay) − margen (24).
   // El sobrante se reparte entre filas, entre el mínimo de siempre y 56 px.
-  const rowH    = dense ? 128 : 136;
+  const rowH    = !dense ? 136 : wide ? 128 : 112;
   const free    = 800 - 88 - (showBar ? 64 : 0) - 24 - rows * rowH;
   const rowGap  = Math.round(Math.min(56, Math.max(dense ? 12 : 16, free / rows)));
   const gridStyle = {
-    gridTemplateColumns: `repeat(${cols}, ${dense ? 140 : 200}px)`,
+    gridTemplateColumns: `repeat(${cols}, ${!dense ? 200 : wide ? 140 : 176}px)`,
     rowGap,
   };
 
@@ -98,7 +99,7 @@ export default function RosterScreen({ players, pageSize = 20, qrMode, onSelect,
             <p className={styles.staffText}>Scan with your phone to sign in</p>
           </div>
         ) : (
-          <div className={`${styles.grid} ${dense ? styles.dense : ''}`} style={gridStyle}>
+          <div className={`${styles.grid} ${dense ? styles.dense : ''} ${wide ? styles.wide : ''}`} style={gridStyle}>
             {page.players.map(p => (
               <button key={p.id} className={styles.player} onClick={() => onSelect(p)}>
                 {p.photo

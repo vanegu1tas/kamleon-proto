@@ -32,6 +32,7 @@ function optionStyle(active) {
 export default function FastTrackFlow({ qrMode = 'corner' }) {
   const [rosterKey, setRosterKey] = useState('nfl');
   const [pageSize, setPageSize]   = useState(20);
+  const [denseCols, setDenseCols] = useState(8);
   const players = ROSTERS[rosterKey].players;
 
   const [step, setStep]     = useState('roster');
@@ -127,6 +128,7 @@ export default function FastTrackFlow({ qrMode = 'corner' }) {
           key={`${rosterKey}-${pageSize}`}
           players={players}
           pageSize={pageSize}
+          denseCols={denseCols}
           qrMode={qrMode}
           onSelect={ready}
           onScanQr={() => ready(STAFF_MEMBER)}
@@ -183,6 +185,20 @@ export default function FastTrackFlow({ qrMode = 'corner' }) {
             </button>
           ))}
         </div>
+
+        {/* Solo con 30: cómo se reparten */}
+        {pageSize === 30 && (
+          <>
+            <span style={{ ...panelLabel, marginTop: 10 }}>Columnas</span>
+            <div style={{ display: 'flex', gap: 4 }}>
+              {[6, 8].map(n => (
+                <button key={n} onClick={() => setDenseCols(n)} style={{ ...optionStyle(denseCols === n), flex: 1, textAlign: 'center' }}>
+                  {n}
+                </button>
+              ))}
+            </div>
+          </>
+        )}
       </div>
     </>
   );
