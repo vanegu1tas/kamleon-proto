@@ -51,34 +51,54 @@ function entryHref(entry) {
 }
 
 function entryMeta(entry) {
-  if (entry.href) return 'Abre en otra página ↗';
+  if (entry.href) return null;
   const n = entry.items.length;
-  if (n === 0) return 'Todavía sin exploraciones';
-  if (n === 1) return null;
-  return `${n} exploraciones`;
+  if (n === 0) return 'Sin exploraciones';
+  const authors = [...new Set(entry.items.map(i => i.author).filter(Boolean))];
+  const count = n === 1 ? '1 flujo' : `${n} exploraciones`;
+  return authors.length ? `${count} · ${authors.join(', ')}` : count;
+}
+
+function entryCta(entry) {
+  if (entry.href) return 'Abrir la demo ↗';
+  if (!entry.items.length) return null;
+  return 'Ver ›';
+}
+
+function sectionSummary(section) {
+  const n = section.entries.length;
+  const inProgress = section.entries.filter(e => e.status === 'progress').length;
+  const noun = section.id === 'tasks' ? (n === 1 ? 'tarea' : 'tareas') : (n === 1 ? 'entrada' : 'entradas');
+  return inProgress ? `${n} ${noun} · ${inProgress} en curso` : `${n} ${noun}`;
 }
 
 export function Section({ section }) {
   return (
     <Shell wide>
-      <a className={styles.back} href="#/">← Scrapp</a>
-      <h1 className={styles.sectionHeading}>{section.title}</h1>
-      <p className={styles.tagline}>{section.description}</p>
+      <a className={styles.back} href="#/">‹ Scrapp</a>
+
+      <header className={styles.sectionHeader}>
+        <h1 className={styles.sectionHeading}>{section.title}</h1>
+        <p className={styles.sectionLede}>{section.description}</p>
+        <p className={styles.sectionMeta}>{sectionSummary(section)}</p>
+      </header>
 
       <ul className={styles.grid}>
         {section.entries.map((entry, i) => {
           const href = entryHref(entry);
           const meta = entryMeta(entry);
+          const cta = entryCta(entry);
           const content = (
             <>
-              <div className={styles.cardTop}>
-                <span className={styles.cardTitle}>{entry.title}</span>
-                <span className={`${styles.status} ${styles[entry.status]}`}>
-                  {STATUS_LABEL[entry.status]}
-                </span>
-              </div>
+              <span className={`${styles.eyebrow} ${styles[entry.status]}`}>
+                {STATUS_LABEL[entry.status]}
+              </span>
+              <span className={styles.cardTitle}>{entry.title}</span>
               <p className={styles.cardDesc}>{entry.description}</p>
-              {meta && <span className={styles.cardMeta}>{meta}</span>}
+              <div className={styles.cardFoot}>
+                {meta && <span className={styles.cardMeta}>{meta}</span>}
+                {cta && <span className={styles.cardCta}>{cta}</span>}
+              </div>
             </>
           );
           return (

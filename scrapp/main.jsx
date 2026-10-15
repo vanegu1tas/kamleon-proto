@@ -46,6 +46,60 @@ function App() {
   return <Viewer key={`${found.entry.id}/${item.id}`} section={found.section} entry={found.entry} item={item} />;
 }
 
+// Flechas para pasar de una exploración a la siguiente dentro de la misma tarea. Van abajo, en el
+// borde del dispositivo (no es pantalla): a los lados chocarían con el panel de control de Score.
+function ItemArrows({ entry, item }) {
+  const index = entry.items.findIndex(i => i.id === item.id);
+  const prev  = entry.items[index - 1];
+  const next  = entry.items[index + 1];
+
+  useEffect(() => {
+    function onKey(e) {
+      // sin robar las flechas a un campo o a un slider de la exploración
+      if (e.target.closest('input, select, textarea, [contenteditable]')) return;
+      if (e.key === 'ArrowLeft'  && prev) window.location.hash = `#/${entry.id}/${prev.id}`;
+      if (e.key === 'ArrowRight' && next) window.location.hash = `#/${entry.id}/${next.id}`;
+    }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [entry.id, prev, next]);
+
+  if (entry.items.length < 2) return null;
+
+  const arrow = (target, label, glyph) => {
+    const style = {
+      width: 32, height: 32, borderRadius: '50%',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      border: '1px solid rgba(255,255,255,0.12)',
+      color: target ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.2)',
+      textDecoration: 'none', fontSize: 16, lineHeight: 1,
+      pointerEvents: target ? 'auto' : 'none',
+    };
+    return target
+      ? <a href={`#/${entry.id}/${target.id}`} aria-label={`${label}: ${target.label}`} title={`${target.label} (${glyph === '‹' ? '←' : '→'})`} style={style}>{glyph}</a>
+      : <span aria-hidden="true" style={style}>{glyph}</span>;
+  };
+
+  return (
+    <nav aria-label="Exploraciones" style={{
+      position: 'fixed', bottom: 16, left: '50%', transform: 'translateX(-50%)', zIndex: 100,
+      display: 'flex', alignItems: 'center', gap: 12, padding: 4,
+      background: 'rgba(18,22,28,0.85)', border: '1px solid rgba(255,255,255,0.10)',
+      borderRadius: 999, backdropFilter: 'blur(12px)',
+    }}>
+      {arrow(prev, 'Anterior', '‹')}
+      <span style={{
+        minWidth: 40, textAlign: 'center',
+        fontFamily: 'var(--font-family-primary)', fontSize: 12, fontVariantNumeric: 'tabular-nums',
+        color: 'rgba(255,255,255,0.55)',
+      }}>
+        {index + 1} / {entry.items.length}
+      </span>
+      {arrow(next, 'Siguiente', '›')}
+    </nav>
+  );
+}
+
 function Viewer({ section, entry, item }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
@@ -63,6 +117,7 @@ function Viewer({ section, entry, item }) {
   return (
     <>
       {item.render()}
+      <ItemArrows entry={entry} item={item} />
 
       {/* Menú del visor — arriba a la izquierda: volver al índice y cambiar de item */}
       <div ref={menuRef} style={{ position: 'fixed', top: 20, left: 20, zIndex: 100 }}>
