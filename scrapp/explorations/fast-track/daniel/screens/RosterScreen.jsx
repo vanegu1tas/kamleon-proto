@@ -28,6 +28,24 @@ export default function RosterScreen({ players, pageSize = 20, qrMode, onSelect,
   const hasRanges = pages.length > 1;
   const showBar = hasRanges || qrMode === 'tab';
 
+  // Con menos jugadores que el máximo de la página (equipo pequeño, o la última página), la
+  // cuadrícula se reparte: columnas equilibradas (16 → 4 × 4, no 5-5-5-1) y más aire entre filas.
+  const dense   = pageSize > 20;
+  const maxCols = dense ? 6 : 5;
+  const maxRows = dense ? 5 : 4;
+  const count   = page?.players.length ?? 0;
+  const rows    = Math.max(1, Math.ceil(count / maxCols));
+  const cols    = Math.ceil(count / rows);
+  // Alto libre para la cuadrícula: pantalla − cabecera (88) − barra (64, si la hay) − margen (24).
+  // El sobrante se reparte entre filas, entre el mínimo de siempre y 56 px.
+  const rowH    = dense ? 112 : 136;
+  const free    = 800 - 88 - (showBar ? 64 : 0) - 24 - rows * rowH;
+  const rowGap  = Math.round(Math.min(56, Math.max(dense ? 12 : 16, free / rows)));
+  const gridStyle = {
+    gridTemplateColumns: `repeat(${cols}, ${dense ? 176 : 200}px)`,
+    rowGap,
+  };
+
   return (
     <div className={styles.screen}>
       <header className={styles.header}>
@@ -80,7 +98,7 @@ export default function RosterScreen({ players, pageSize = 20, qrMode, onSelect,
             <p className={styles.staffText}>Scan with your phone to sign in</p>
           </div>
         ) : (
-          <div className={`${styles.grid} ${pageSize > 20 ? styles.dense : ''}`}>
+          <div className={`${styles.grid} ${dense ? styles.dense : ''}`} style={gridStyle}>
             {page.players.map(p => (
               <button key={p.id} className={styles.player} onClick={() => onSelect(p)}>
                 {p.photo
