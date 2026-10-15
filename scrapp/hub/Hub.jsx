@@ -66,13 +66,6 @@ function entryCta(entry) {
   return 'Ver ›';
 }
 
-function sectionSummary(section) {
-  const n = section.entries.length;
-  const inProgress = section.entries.filter(e => e.status === 'progress').length;
-  const noun = section.id === 'tasks' ? (n === 1 ? 'tarea' : 'tareas') : (n === 1 ? 'entrada' : 'entradas');
-  return inProgress ? `${n} ${noun} · ${inProgress} en curso` : `${n} ${noun}`;
-}
-
 export function Section({ section }) {
   return (
     <Shell wide>
@@ -81,7 +74,6 @@ export function Section({ section }) {
       <header className={styles.sectionHeader}>
         <h1 className={styles.sectionHeading}>{section.title}</h1>
         <p className={styles.sectionLede}>{section.description}</p>
-        <p className={styles.sectionMeta}>{sectionSummary(section)}</p>
       </header>
 
       <ul className={styles.grid}>

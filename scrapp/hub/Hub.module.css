@@ -158,14 +158,6 @@
   animation: fadeUp 0.5s 0.06s ease-out both;
 }
 
-.sectionMeta {
-  margin: 0;
-  font-size: 13px;
-  color: var(--hub-text-muted);
-  opacity: 0.75;
-  animation: fadeUp 0.5s 0.09s ease-out both;
-}
-
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -286,7 +278,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .shader { display: none; }
-  .brand, .tagline, .navLink, .back, .sectionHeading, .sectionLede, .sectionMeta, .cardItem { animation: none; }
+  .brand, .tagline, .navLink, .back, .sectionHeading, .sectionLede, .cardItem { animation: none; }
   .navLink, .navTitle, .navArrow, .card, .back { transition-duration: 0ms; }
   a.card:hover { transform: none; }
 }
