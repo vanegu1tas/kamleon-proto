@@ -1,24 +1,29 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import DeviceFrame from '../../../components/DeviceFrame';
-import HomeScreen from './screens/HomeScreen';
-import ChooseTeamScreen from './screens/ChooseTeamScreen';
-import ChooseAvatarScreen from './screens/ChooseAvatarScreen';
-import PinEntryScreen from './screens/PinEntryScreen';
-import StartScreen from './screens/StartScreen';
+import RosterScreen from './screens/RosterScreen';
+import ReadyScreen from './screens/ReadyScreen';
 import TrackingScreen from './screens/TrackingScreen';
 import FlushScreen from './screens/FlushScreen';
 import Exploration5, { scoreToAngle5, getZoneIndex5, GAUGE_START } from '../../../screens/Exploration5';
+import { ROSTERS, STAFF_MEMBER } from './data/rosters';
 
 const TRACKING_DURATION = 3000; // demo: análisis simulado
 const FLUSH_DURATION    = 4000; // demo: "a minute" real acortado para probar
 
-// Fast Track · exploración de Daniel. Arrancó el 15/10 como copia exacta del flujo actual
-// (flow/FlowRunner.jsx + screens/flow/), para iterar aquí sin tocar el original. Lo que cambie en
-// esta carpeta no afecta a "Flujo actual" ni a otras exploraciones.
-export default function FastTrackFlow() {
-  const [step, setStep]             = useState('home');
-  const [selectedTeam, setSelectedTeam]     = useState(null);
-  const [selectedAvatar, setSelectedAvatar] = useState(null);
+// Fast Track · exploración de Daniel. Arrancó el 15/10 como copia del flujo actual
+// (flow/FlowRunner.jsx + screens/flow/); lo que cambie en esta carpeta no afecta a "Flujo actual".
+//
+// Flujo: Plantilla → Ready → análisis → score → flush → Plantilla. Sin elegir equipo ni PIN
+// (los equipos pro no lo usan). RFID lleva a Ready con quien sea la tarjeta; QR, con un staff;
+// orinar sin elegir perfil arranca como invitado, directo al análisis.
+//
+// qrMode: 'corner' (QR fijo en la esquina) | 'tab' (Staff como pestaña). Ver RosterScreen.
+export default function FastTrackFlow({ qrMode = 'corner' }) {
+  const [rosterKey, setRosterKey] = useState('nfl');
+  const players = ROSTERS[rosterKey].players;
+
+  const [step, setStep]     = useState('roster');
+  const [person, setPerson] = useState(null);
 
   const [displayScore, setDisplayScore] = useState(0);
   const [animAngle, setAnimAngle]       = useState(null);
@@ -30,14 +35,18 @@ export default function FastTrackFlow() {
 
   const reset = useCallback(() => {
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    setStep('home');
-    setSelectedTeam(null);
-    setSelectedAvatar(null);
+    setStep('roster');
+    setPerson(null);
     setDisplayScore(0);
     setAnimAngle(null);
     setGlowZoneIdx(null);
     setTextStage(null);
   }, []);
+
+  function ready(p) {
+    setPerson(p);
+    setStep('ready');
+  }
 
   function playScore() {
     const targetScore = Math.floor(Math.random() * 101);
@@ -88,7 +97,7 @@ export default function FastTrackFlow() {
     }
   }, [step]);
 
-  // Flush → Home (auto)
+  // Flush → Plantilla (auto)
   useEffect(() => {
     if (step === 'flush') {
       const t = setTimeout(reset, FLUSH_DURATION);
@@ -100,44 +109,21 @@ export default function FastTrackFlow() {
 
   let screen;
   switch (step) {
-    case 'home':
+    case 'roster':
       screen = (
-        <HomeScreen
-          onLogin={() => setStep('team')}
-          onSimulateQr={() => setStep('start')}
-          onSimulateRfid={() => setStep('start')}
-          onGuest={() => setStep('start')}
+        <RosterScreen
+          key={rosterKey}
+          players={players}
+          qrMode={qrMode}
+          onSelect={ready}
+          onSimulateRfid={() => ready(players[Math.floor(Math.random() * players.length)])}
+          onSimulateQr={() => ready(STAFF_MEMBER)}
+          onSimulateGuest={() => setStep('tracking')}
         />
       );
       break;
-    case 'team':
-      screen = (
-        <ChooseTeamScreen
-          onSelect={(team) => { setSelectedTeam(team); setStep('avatar'); }}
-          onClose={reset}
-        />
-      );
-      break;
-    case 'avatar':
-      screen = (
-        <ChooseAvatarScreen
-          onSelect={(avatar) => { setSelectedAvatar(avatar); setStep('pin'); }}
-          onClose={reset}
-        />
-      );
-      break;
-    case 'pin':
-      screen = (
-        <PinEntryScreen
-          avatar={selectedAvatar}
-          onComplete={() => setStep('start')}
-          onBack={() => setStep('avatar')}
-          onClose={reset}
-        />
-      );
-      break;
-    case 'start':
-      screen = <StartScreen onSimulateFlow={() => setStep('tracking')} onClose={reset} />;
+    case 'ready':
+      screen = <ReadyScreen person={person} onNotYou={reset} onSimulateFlow={() => setStep('tracking')} />;
       break;
     case 'tracking':
       screen = <TrackingScreen />;
@@ -160,5 +146,33 @@ export default function FastTrackFlow() {
       screen = null;
   }
 
-  return <DeviceFrame>{screen}</DeviceFrame>;
+  return (
+    <>
+      <DeviceFrame>{screen}</DeviceFrame>
+
+      {/* Control de la demo (fuera de la pantalla): qué plantilla se prueba */}
+      <div style={{
+        position: 'fixed', top: 20, right: 20, zIndex: 100,
+        display: 'flex', flexDirection: 'column', gap: 8, padding: '12px 14px',
+        background: 'rgba(18,22,28,0.92)', border: '1px solid rgba(255,255,255,0.10)', borderRadius: 12,
+        fontFamily: 'var(--font-family-primary)',
+      }}>
+        <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)' }}>Plantilla de prueba</span>
+        {Object.entries(ROSTERS).map(([key, r]) => (
+          <button
+            key={key}
+            onClick={() => { setRosterKey(key); reset(); }}
+            style={{
+              padding: '7px 12px', border: 'none', borderRadius: 8, cursor: 'pointer', textAlign: 'left',
+              fontFamily: 'inherit', fontSize: 13, fontWeight: 500,
+              background: rosterKey === key ? 'rgba(255,255,255,0.12)' : 'transparent',
+              color: rosterKey === key ? 'white' : 'rgba(255,255,255,0.55)',
+            }}
+          >
+            {r.label}
+          </button>
+        ))}
+      </div>
+    </>
+  );
 }

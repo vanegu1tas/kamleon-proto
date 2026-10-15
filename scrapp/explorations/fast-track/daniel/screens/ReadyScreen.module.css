@@ -1,0 +1,93 @@
+.screen {
+  width: 1280px;
+  height: 800px;
+  background: #000000;
+  position: relative;
+  overflow: hidden;
+  font-family: var(--font-family-primary);
+  color: #ffffff;
+}
+
+.logo {
+  position: absolute;
+  left: 48px;
+  top: 36px;
+  font-size: var(--font-size-20);
+  font-weight: var(--font-weight-bold);
+}
+
+.content {
+  position: absolute;
+  inset: 96px 0 96px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.photo {
+  width: 168px;
+  height: 168px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 0 4px var(--color-turquoise-51);
+}
+
+.initials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #4a4a4a;
+  font-size: var(--font-size-48);
+  font-weight: var(--font-weight-medium);
+}
+
+.greeting {
+  margin: 28px 0 0;
+  font-size: var(--font-size-48);
+  font-weight: var(--font-weight-bold);
+}
+
+.number {
+  margin-top: 4px;
+  font-size: var(--font-size-32);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-turquoise-51);
+}
+
+.instruction {
+  margin: 28px 0 16px;
+  font-size: var(--font-size-24);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.notYou {
+  margin-top: 28px;
+  min-width: 240px;
+  min-height: 64px;
+  padding: 0 40px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 999px;
+  background: transparent;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: var(--font-size-24);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+}
+
+.notYou:active {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.timeout {
+  position: absolute;
+  bottom: 44px;
+  left: 0;
+  right: 0;
+  margin: 0;
+  text-align: center;
+  font-size: var(--font-size-16);
+  color: rgba(255, 255, 255, 0.5);
+}

@@ -63,7 +63,8 @@ export const SECTIONS = [
         status: 'progress',
         description: 'Todos los jugadores en la pantalla de inicio.',
         items: [
-          { id: 'daniel', label: 'Fast Track', author: 'Daniel', render: () => <FastTrackDaniel /> },
+          { id: 'qr-esquina',     label: 'QR en la esquina',   author: 'Daniel', render: () => <FastTrackDaniel qrMode="corner" /> },
+          { id: 'staff-pestana',  label: 'Staff como pestaña', author: 'Daniel', render: () => <FastTrackDaniel qrMode="tab" /> },
         ],
       },
       {

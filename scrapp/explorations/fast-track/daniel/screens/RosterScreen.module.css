@@ -1,0 +1,230 @@
+.screen {
+  width: 1280px;
+  height: 800px;
+  background: #000000;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-family-primary);
+  color: #ffffff;
+}
+
+/* ─── Cabecera: logo · título · (QR en la esquina) ─── */
+
+.header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 88px;
+  flex-shrink: 0;
+}
+
+.logo {
+  position: absolute;
+  left: 48px;
+  top: 32px;
+  font-size: var(--font-size-20);
+  font-weight: var(--font-weight-bold);
+}
+
+.title {
+  margin: 0;
+  padding-top: 8px;
+  font-size: var(--font-size-32);
+  font-weight: var(--font-weight-bold);
+}
+
+.cornerQr {
+  position: absolute;
+  top: 20px;
+  right: 40px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.cornerQrText {
+  font-size: var(--font-size-16);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* ─── Pestañas: rangos de dorsales (y Staff) ─── */
+
+.tabs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  height: 64px;
+  flex-shrink: 0;
+}
+
+.tabGroup {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.tab {
+  min-width: 112px;
+  height: 52px;
+  padding: 0 24px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.75);
+  font-family: inherit;
+  font-size: var(--font-size-20);
+  font-weight: var(--font-weight-medium);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+
+.tabActive {
+  background: var(--color-turquoise-51);
+  color: #000000;
+}
+
+/* Staff va aparte: no es un rango de dorsales */
+.staffTab {
+  height: 60px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.staffTab.tabActive {
+  border-color: var(--color-turquoise-51);
+}
+
+/* ─── Cuadrícula 5 × 4 ─── */
+
+.body {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+}
+
+.bodyNoBar {
+  padding-top: 8px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(5, 200px);
+  grid-auto-rows: 120px;
+  gap: 14px 16px;
+}
+
+.player {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 4px;
+  border: none;
+  background: none;
+  color: inherit;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.photo {
+  width: 84px;
+  height: 84px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #1c1c1c;
+  transition: transform 0.1s ease-out;
+}
+
+.player:active .photo {
+  transform: scale(0.94);
+}
+
+.initials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #4a4a4a;
+  font-size: var(--font-size-24);
+  font-weight: var(--font-weight-medium);
+}
+
+/* "3  Espigares": el dorsal destaca, el nombre se recorta si es largo */
+.label {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  max-width: 192px;
+  font-size: var(--font-size-20);
+}
+
+.number {
+  flex-shrink: 0;
+  color: var(--color-turquoise-51);
+  font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
+}
+
+.name {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-weight: var(--font-weight-medium);
+}
+
+/* ─── Staff: el QR grande en el sitio de la cuadrícula ─── */
+
+.staffPanel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.staffQr {
+  padding: 20px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.staffText {
+  margin: 0;
+  font-size: var(--font-size-24);
+}
+
+/* ─── Pie: RFID e invitado ─── */
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  height: 92px;
+  flex-shrink: 0;
+}
+
+.footerText {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: var(--font-size-20);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.chevron {
+  color: var(--color-turquoise-51);
+}
+
+.sims {
+  display: flex;
+  gap: 12px;
+}
