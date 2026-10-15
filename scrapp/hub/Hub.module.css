@@ -197,7 +197,7 @@
   text-transform: uppercase;
 }
 
-.reference   { color: var(--hub-text-muted); }
+.reference   { color: var(--hub-accent); }
 .progress    { color: var(--hub-accent); }
 .exploration { color: #e2b94a; }
 .future      { color: var(--hub-text-muted); opacity: 0.7; }
