@@ -94,12 +94,9 @@ export default function RosterScreen({ players, pageSize = 20, qrMode, onSelect,
       </main>
 
       <footer className={styles.footer}>
-        <span className={styles.footerText}>
-          <svg className={styles.chevron} width="20" height="12" viewBox="0 0 24 14" fill="none" aria-hidden="true">
-            <path d="M2 2L12 12L22 2" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-          Tap your card below the screen · or just start to pee as a guest
-        </span>
+        {/* Sin línea de RFID por ahora (15/10): si el cliente compra las manillas, se le explica
+            en la instalación; si no, cada uno se elige en la pantalla. */}
+        <span className={styles.footerText}>Not on the list? Just start to pee as a guest</span>
       </footer>
     </div>
   );
