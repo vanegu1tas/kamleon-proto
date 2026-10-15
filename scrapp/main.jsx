@@ -123,104 +123,111 @@ function Viewer({ section, entry, item }) {
       {item.render()}
       <ItemArrows entry={entry} item={item} />
 
-      {/* Menú del visor — arriba a la izquierda: volver al índice y cambiar de item */}
-      <div ref={menuRef} style={{ position: 'fixed', top: 20, left: 20, zIndex: 100 }}>
-        <button
-          onClick={() => setMenuOpen(o => !o)}
-          aria-label="Menu"
-          aria-expanded={menuOpen}
+      {/* Arriba a la izquierda: volver a la sección (fuera del menú, siempre a la vista) y el menú
+          para cambiar de item */}
+      <div style={{ position: 'fixed', top: 20, left: 20, zIndex: 100, display: 'flex', gap: 8 }}>
+        <a
+          href={`#/${section.id}`}
           style={{
-            width: 40, height: 40,
-            background: menuOpen ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.06)',
+            height: 40, padding: '0 14px', boxSizing: 'border-box',
+            display: 'flex', alignItems: 'center',
+            background: 'rgba(255,255,255,0.06)',
             border: '1px solid rgba(255,255,255,0.10)',
             borderRadius: 10,
-            cursor: 'pointer',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            transition: 'background 0.15s',
+            fontFamily: 'var(--font-family-primary)', fontSize: 13, fontWeight: 500,
+            color: 'rgba(255,255,255,0.7)', textDecoration: 'none',
           }}
         >
-          <svg width="18" height="14" viewBox="0 0 18 14" fill="none">
-            <rect y="0"  width="18" height="2" rx="1" fill="rgba(255,255,255,0.7)" />
-            <rect y="6"  width="18" height="2" rx="1" fill="rgba(255,255,255,0.7)" />
-            <rect y="12" width="18" height="2" rx="1" fill="rgba(255,255,255,0.7)" />
-          </svg>
-        </button>
+          ‹ {section.title}
+        </a>
 
-        {menuOpen && (
-          <div style={{
-            position: 'absolute', top: 48, left: 0,
-            background: 'rgba(18,22,28,0.92)',
-            border: '1px solid rgba(255,255,255,0.10)',
-            borderRadius: 12,
-            padding: '8px',
-            minWidth: 220,
-            backdropFilter: 'blur(12px)',
-          }}>
-            <a
-              href={`#/${section.id}`}
-              style={{
-                display: 'block', padding: '8px 12px',
-                fontFamily: 'var(--font-family-primary)', fontSize: 13, fontWeight: 500,
-                color: 'rgba(255,255,255,0.6)', textDecoration: 'none',
-              }}
-            >
-              ← {section.title}
-            </a>
+        <div ref={menuRef} style={{ position: 'relative' }}>
+          <button
+            onClick={() => setMenuOpen(o => !o)}
+            aria-label="Menu"
+            aria-expanded={menuOpen}
+            style={{
+              width: 40, height: 40,
+              background: menuOpen ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.06)',
+              border: '1px solid rgba(255,255,255,0.10)',
+              borderRadius: 10,
+              cursor: 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              transition: 'background 0.15s',
+            }}
+          >
+            <svg width="18" height="14" viewBox="0 0 18 14" fill="none">
+              <rect y="0"  width="18" height="2" rx="1" fill="rgba(255,255,255,0.7)" />
+              <rect y="6"  width="18" height="2" rx="1" fill="rgba(255,255,255,0.7)" />
+              <rect y="12" width="18" height="2" rx="1" fill="rgba(255,255,255,0.7)" />
+            </svg>
+          </button>
 
+          {menuOpen && (
             <div style={{
-              padding: '8px 12px 4px',
-              fontFamily: 'var(--font-family-primary)', fontSize: 12, fontWeight: 600,
-              letterSpacing: '0.06em', textTransform: 'uppercase',
-              color: 'rgba(255,255,255,0.4)',
+              position: 'absolute', top: 48, left: 0,
+              background: 'rgba(18,22,28,0.92)',
+              border: '1px solid rgba(255,255,255,0.10)',
+              borderRadius: 12,
+              padding: '8px',
+              minWidth: 220,
+              backdropFilter: 'blur(12px)',
             }}>
-              {entry.title}
-            </div>
+              <div style={{
+                padding: '8px 12px 4px',
+                fontFamily: 'var(--font-family-primary)', fontSize: 12, fontWeight: 600,
+                letterSpacing: '0.06em', textTransform: 'uppercase',
+                color: 'rgba(255,255,255,0.4)',
+              }}>
+                {entry.title}
+              </div>
 
-            {entry.items.map(i => {
-              const active = i.id === item.id;
-              return (
-                <a
-                  key={i.id}
-                  href={`#/${entry.id}/${i.id}`}
-                  onClick={() => setMenuOpen(false)}
-                  style={{
-                    width: '100%', padding: '10px 12px', boxSizing: 'border-box',
-                    display: 'flex', alignItems: 'center', gap: 12,
-                    textDecoration: 'none',
-                  }}
-                >
-                  <span style={{
-                    width: 16, height: 16, borderRadius: '50%', flexShrink: 0,
-                    border: `2px solid ${active ? '#00D8CC' : 'rgba(255,255,255,0.25)'}`,
-                    background: active ? '#00D8CC' : 'transparent',
-                    boxSizing: 'border-box',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  }}>
-                    {active && (
-                      <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#0b0f12' }} />
-                    )}
-                  </span>
-                  <span style={{
-                    fontFamily: 'var(--font-family-primary)', fontSize: 14,
-                    color: active ? 'white' : 'rgba(255,255,255,0.5)',
-                    fontWeight: active ? 500 : 400,
-                  }}>
-                    {i.label}
-                  </span>
-                  {i.author && (
+              {entry.items.map(i => {
+                const active = i.id === item.id;
+                return (
+                  <a
+                    key={i.id}
+                    href={`#/${entry.id}/${i.id}`}
+                    onClick={() => setMenuOpen(false)}
+                    style={{
+                      width: '100%', padding: '10px 12px', boxSizing: 'border-box',
+                      display: 'flex', alignItems: 'center', gap: 12,
+                      textDecoration: 'none',
+                    }}
+                  >
                     <span style={{
-                      marginLeft: 'auto',
-                      fontFamily: 'var(--font-family-primary)', fontSize: 12,
-                      color: 'rgba(255,255,255,0.35)',
+                      width: 16, height: 16, borderRadius: '50%', flexShrink: 0,
+                      border: `2px solid ${active ? '#00D8CC' : 'rgba(255,255,255,0.25)'}`,
+                      background: active ? '#00D8CC' : 'transparent',
+                      boxSizing: 'border-box',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
                     }}>
-                      {i.author}
+                      {active && (
+                        <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#0b0f12' }} />
+                      )}
                     </span>
-                  )}
-                </a>
-              );
-            })}
-          </div>
-        )}
+                    <span style={{
+                      fontFamily: 'var(--font-family-primary)', fontSize: 14,
+                      color: active ? 'white' : 'rgba(255,255,255,0.5)',
+                      fontWeight: active ? 500 : 400,
+                    }}>
+                      {i.label}
+                    </span>
+                    {i.author && (
+                      <span style={{
+                        marginLeft: 'auto',
+                        fontFamily: 'var(--font-family-primary)', fontSize: 12,
+                        color: 'rgba(255,255,255,0.35)',
+                      }}>
+                        {i.author}
+                      </span>
+                    )}
+                  </a>
+                );
+              })}
+            </div>
+          )}
+        </div>
       </div>
     </>
   );
