@@ -10,27 +10,39 @@ import '../design-system/tokens/tokens.css';
 // Scrapp-specific tokens (overrides web typography scale)
 import './tokens/typography.css';
 
-import ExplorationsApp from './ExplorationsApp';
-import FlowRunner from './flow/FlowRunner';
-import FlowRunnerV2 from './flow/FlowRunnerV2';
+import Hub from './hub/Hub';
+import { findEntry } from './hub/entries';
 
-const EXPLORATIONS = [
-  { id: 1, label: 'Exploration 1' },
-  { id: 2, label: 'Exploration 2' },
-  { id: 4, label: 'Exploration 4' },
-  { id: 5, label: 'Exploration 5' },
-];
+// Rutas por hash para que funcione igual en local y en GitHub Pages:
+//   #/                      → índice del microsite
+//   #/<entrada>/<item>      → un flujo o una exploración (ver hub/entries.jsx)
+function parseHash() {
+  const [entryId, itemId] = window.location.hash.replace(/^#\/?/, '').split('/');
+  return { entryId: entryId || null, itemId: itemId || null };
+}
 
-const FLOWS = [
-  { id: 'end-user',    label: 'End user' },
-  { id: 'end-user-v2', label: 'End user (v2)' },
-];
+function useHashRoute() {
+  const [route, setRoute] = useState(parseHash);
+  useEffect(() => {
+    const onChange = () => setRoute(parseHash());
+    window.addEventListener('hashchange', onChange);
+    return () => window.removeEventListener('hashchange', onChange);
+  }, []);
+  return route;
+}
 
 function App() {
-  const [mode, setMode]               = useState('explorations'); // 'explorations' | 'flows'
-  const [exploration, setExploration] = useState(1);
-  const [flowId, setFlowId]           = useState('end-user');
-  const [menuOpen, setMenuOpen]       = useState(false);
+  const { entryId, itemId } = useHashRoute();
+  const entry = entryId ? findEntry(entryId) : null;
+  const item  = entry?.items?.find(i => i.id === itemId) ?? entry?.items?.[0];
+
+  if (!entry || !item) return <Hub />;
+  // key: al cambiar de item el flujo arranca de cero, no hereda el estado del anterior
+  return <Viewer key={`${entry.id}/${item.id}`} entry={entry} item={item} />;
+}
+
+function Viewer({ entry, item }) {
+  const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
 
   useEffect(() => {
@@ -43,25 +55,16 @@ function App() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [menuOpen]);
 
-  const items    = mode === 'explorations' ? EXPLORATIONS : FLOWS;
-  const activeId = mode === 'explorations' ? exploration : flowId;
-
-  function selectItem(id) {
-    if (mode === 'explorations') setExploration(id);
-    else setFlowId(id);
-    setMenuOpen(false);
-  }
-
   return (
     <>
-      {mode === 'explorations'
-        ? <ExplorationsApp exploration={exploration} />
-        : flowId === 'end-user-v2' ? <FlowRunnerV2 /> : <FlowRunner />}
+      {item.render()}
 
-      {/* Mode + item switcher — top left */}
+      {/* Menú del visor — arriba a la izquierda: volver al índice y cambiar de item */}
       <div ref={menuRef} style={{ position: 'fixed', top: 20, left: 20, zIndex: 100 }}>
         <button
           onClick={() => setMenuOpen(o => !o)}
+          aria-label="Menu"
+          aria-expanded={menuOpen}
           style={{
             width: 40, height: 40,
             background: menuOpen ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.06)',
@@ -86,61 +89,72 @@ function App() {
             border: '1px solid rgba(255,255,255,0.10)',
             borderRadius: 12,
             padding: '8px',
-            minWidth: 200,
+            minWidth: 220,
             backdropFilter: 'blur(12px)',
           }}>
-            {/* Tabs: Explorations | Flows */}
-            <div style={{ display: 'flex', gap: 4, padding: 4, marginBottom: 4 }}>
-              {[['explorations', 'Explorations'], ['flows', 'Flows']].map(([m, label]) => (
-                <button
-                  key={m}
-                  onClick={() => setMode(m)}
-                  style={{
-                    flex: 1, padding: '7px 0',
-                    background: mode === m ? 'rgba(255,255,255,0.10)' : 'transparent',
-                    color: mode === m ? 'white' : 'rgba(255,255,255,0.45)',
-                    border: 'none', borderRadius: 7, cursor: 'pointer',
-                    fontFamily: 'var(--font-family-primary)', fontSize: 12, fontWeight: 600,
-                  }}
-                >
-                  {label}
-                </button>
-              ))}
+            <a
+              href="#/"
+              style={{
+                display: 'block', padding: '8px 12px',
+                fontFamily: 'var(--font-family-primary)', fontSize: 13, fontWeight: 500,
+                color: 'rgba(255,255,255,0.6)', textDecoration: 'none',
+              }}
+            >
+              ← Índice
+            </a>
+
+            <div style={{
+              padding: '8px 12px 4px',
+              fontFamily: 'var(--font-family-primary)', fontSize: 12, fontWeight: 600,
+              letterSpacing: '0.06em', textTransform: 'uppercase',
+              color: 'rgba(255,255,255,0.4)',
+            }}>
+              {entry.title}
             </div>
 
-            <div style={{ height: 1, background: 'rgba(255,255,255,0.08)', margin: '0 4px 4px' }} />
-
-            {items.map(item => (
-              <button
-                key={item.id}
-                onClick={() => selectItem(item.id)}
-                style={{
-                  width: '100%', padding: '10px 12px',
-                  display: 'flex', alignItems: 'center', gap: 12,
-                  background: 'none', border: 'none', cursor: 'pointer',
-                  textAlign: 'left',
-                }}
-              >
-                <span style={{
-                  width: 16, height: 16, borderRadius: '50%', flexShrink: 0,
-                  border: `2px solid ${activeId === item.id ? '#00D8CC' : 'rgba(255,255,255,0.25)'}`,
-                  background: activeId === item.id ? '#00D8CC' : 'transparent',
-                  boxSizing: 'border-box',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                }}>
-                  {activeId === item.id && (
-                    <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#0b0f12' }} />
+            {entry.items.map(i => {
+              const active = i.id === item.id;
+              return (
+                <a
+                  key={i.id}
+                  href={`#/${entry.id}/${i.id}`}
+                  onClick={() => setMenuOpen(false)}
+                  style={{
+                    width: '100%', padding: '10px 12px', boxSizing: 'border-box',
+                    display: 'flex', alignItems: 'center', gap: 12,
+                    textDecoration: 'none',
+                  }}
+                >
+                  <span style={{
+                    width: 16, height: 16, borderRadius: '50%', flexShrink: 0,
+                    border: `2px solid ${active ? '#00D8CC' : 'rgba(255,255,255,0.25)'}`,
+                    background: active ? '#00D8CC' : 'transparent',
+                    boxSizing: 'border-box',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  }}>
+                    {active && (
+                      <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#0b0f12' }} />
+                    )}
+                  </span>
+                  <span style={{
+                    fontFamily: 'var(--font-family-primary)', fontSize: 14,
+                    color: active ? 'white' : 'rgba(255,255,255,0.5)',
+                    fontWeight: active ? 500 : 400,
+                  }}>
+                    {i.label}
+                  </span>
+                  {i.author && (
+                    <span style={{
+                      marginLeft: 'auto',
+                      fontFamily: 'var(--font-family-primary)', fontSize: 12,
+                      color: 'rgba(255,255,255,0.35)',
+                    }}>
+                      {i.author}
+                    </span>
                   )}
-                </span>
-                <span style={{
-                  fontFamily: 'var(--font-family-primary)', fontSize: 14,
-                  color: activeId === item.id ? 'white' : 'rgba(255,255,255,0.5)',
-                  fontWeight: activeId === item.id ? 500 : 400,
-                }}>
-                  {item.label}
-                </span>
-              </button>
-            ))}
+                </a>
+              );
+            })}
           </div>
         )}
       </div>

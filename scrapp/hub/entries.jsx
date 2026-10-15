@@ -1,0 +1,99 @@
+import ExplorationsApp from '../ExplorationsApp';
+import FlowRunner from '../flow/FlowRunner';
+import FlowRunnerV2 from '../flow/FlowRunnerV2';
+
+/**
+ * Índice del microsite de la scrapp.
+ *
+ * Cada entrada es una sección del índice. Sus `items` son lo que se puede abrir dentro
+ * (un flujo, una exploración). Para añadir una exploración nueva a una tarea, se añade un
+ * item aquí con su `author`, y aparece sola en el índice y en el menú del visor.
+ *
+ * Una entrada con `href` abre otra página (la demo del Recommendation Engine tiene la suya,
+ * porque se comparte con business por su propio link).
+ *
+ * Estados: 'reference' | 'progress' | 'exploration' | 'future'
+ */
+
+export const STATUS_LABEL = {
+  reference:   'Referencia',
+  progress:    'En curso',
+  exploration: 'Exploración',
+  future:      'Futuro',
+};
+
+export const SECTIONS = [
+  {
+    id: 'production',
+    title: 'Producción',
+    entries: [
+      {
+        id: 'actual',
+        title: 'Flujo actual',
+        status: 'reference',
+        description: 'Cómo funciona hoy la pantalla, reconstruido de capturas de producción. No se toca en ninguna tarea.',
+        items: [
+          { id: 'end-user', label: 'End user', render: () => <FlowRunner /> },
+        ],
+      },
+      {
+        id: 'nueva',
+        title: 'Scrapp nueva',
+        status: 'progress',
+        description: 'El flujo actual más lo que ya se ha aprobado en cada tarea. Hoy es igual al actual: todavía no hay nada aprobado.',
+        items: [
+          { id: 'end-user', label: 'End user', render: () => <FlowRunner /> },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'tasks',
+    title: 'Tareas',
+    entries: [
+      {
+        id: 'fast-track',
+        title: 'Fast Track',
+        status: 'progress',
+        description: 'Todos los jugadores en la pantalla de inicio.',
+        items: [],
+      },
+      {
+        id: 'recommendation',
+        title: 'Recommendation Engine',
+        status: 'future',
+        description: 'Piloto Dallas Cowboys. Bocetos rápidos: portada, score y recomendación.',
+        href: 'recommendation.html',
+      },
+      {
+        id: 'audit',
+        title: 'Mejoras del flujo end user',
+        status: 'exploration',
+        description: 'Cambios del audit de UX aplicados sobre una copia del flujo actual, para comparar.',
+        items: [
+          { id: 'v2', label: 'End user (v2)', author: 'Daniel', render: () => <FlowRunnerV2 /> },
+        ],
+      },
+      {
+        id: 'score',
+        title: 'Score',
+        status: 'exploration',
+        description: 'Exploraciones de la pantalla de score. La 5 es la que usa el flujo.',
+        items: [1, 2, 4, 5].map(n => ({
+          id: String(n),
+          label: `Exploration ${n}`,
+          author: 'Daniel',
+          render: () => <ExplorationsApp exploration={n} />,
+        })),
+      },
+    ],
+  },
+];
+
+export function findEntry(entryId) {
+  for (const section of SECTIONS) {
+    const entry = section.entries.find(e => e.id === entryId);
+    if (entry) return entry;
+  }
+  return null;
+}
