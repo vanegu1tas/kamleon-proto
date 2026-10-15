@@ -67,11 +67,11 @@ export const SECTIONS = [
       },
       {
         id: 'audit',
-        title: 'Mejoras del flujo end user',
+        title: 'Audit UX del flujo (julio)',
         status: 'exploration',
-        description: 'Cambios del audit de UX aplicados sobre una copia del flujo actual, para comparar.',
+        description: 'Copia del flujo actual para probar los 19 hallazgos del audit. Hoy solo cambia la pantalla de inicio. Detalle en docs/features/scrapp-end-user-audit.md.',
         items: [
-          { id: 'v2', label: 'End user (v2)', author: 'Daniel', render: () => <FlowRunnerV2 /> },
+          { id: 'v2', label: 'Flujo con cambios', author: 'Daniel', render: () => <FlowRunnerV2 /> },
         ],
       },
       {

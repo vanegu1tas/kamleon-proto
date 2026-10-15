@@ -58,7 +58,7 @@ Para no perder el original como referencia, las mejoras se están probando en un
 - `scrapp/screens/flow/` + `scrapp/flow/FlowRunner.jsx` — original, tal cual las capturas de producción (hallazgo #2 = pendiente aquí).
 - `scrapp/screens/flow-v2/` + `scrapp/flow/FlowRunnerV2.jsx` — copia donde se van aplicando los cambios en discusión.
 
-Ambas están seleccionables desde el mismo menú hamburguesa → tab **Flows** → "End user" vs "End user (v2)", para comparar en vivo.
+En el microsite de la scrapp: "Flujo actual" (original) y "Audit UX del flujo (julio)" (copia), para comparar en vivo.
 
 **Cambio aplicado en v2 hasta ahora:** botón "Log in" de Home pasó de outline teal a fill sólido teal con texto oscuro — concentra el color de marca en la acción principal en vez de repetirlo como línea decorativa (relacionado a hallazgo #2).
 
