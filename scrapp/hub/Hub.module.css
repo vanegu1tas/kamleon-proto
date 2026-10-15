@@ -1,4 +1,4 @@
-/* Valores copiados de landing.html para que las dos páginas se vean iguales. */
+/* Valores copiados de landing.html para que las páginas se vean iguales. */
 .page {
   --hub-bg:          #0c1016;
   --hub-bg-hover:    #111924;
@@ -30,8 +30,14 @@
   position: relative;
   z-index: 1;
   width: 100%;
-  max-width: 520px;
+  max-width: 480px;
 }
+
+.wide {
+  max-width: 960px;
+}
+
+/* ─── Índice (igual que la landing) ─────────────── */
 
 .brand {
   margin-bottom: 10px;
@@ -47,20 +53,6 @@
   font-size: 14px;
   color: var(--hub-text-muted);
   animation: fadeUp 0.5s 0.06s ease-out both;
-}
-
-.section + .section {
-  margin-top: 32px;
-}
-
-.sectionTitle {
-  margin: 0 0 10px;
-  font-size: 11px;
-  font-weight: var(--font-weight-medium);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--hub-text-muted);
-  animation: fadeUp 0.5s 0.1s ease-out both;
 }
 
 .navList {
@@ -87,11 +79,6 @@
   animation: fadeUp 0.5s calc(0.08s + var(--i) * 0.06s) ease-out both;
 }
 
-.navLink:focus-visible {
-  outline: 2px solid var(--hub-accent);
-  outline-offset: 2px;
-}
-
 .navIndex {
   min-width: 18px;
   font-size: 11px;
@@ -105,12 +92,6 @@
   min-width: 0;
 }
 
-.navTitleRow {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-}
-
 .navTitle {
   font-size: 15px;
   font-weight: var(--font-weight-medium);
@@ -121,7 +102,6 @@
 .navDesc {
   margin-top: 2px;
   font-size: 12px;
-  line-height: 1.45;
   color: var(--hub-text-muted);
 }
 
@@ -132,31 +112,131 @@
   transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), color 0.15s;
 }
 
-@media (hover: hover) and (pointer: fine) {
-  a.navLink:hover { background: var(--hub-bg-hover); }
-  a.navLink:hover .navTitle { color: var(--hub-accent); }
-  a.navLink:hover .navArrow {
-    transform: translateX(4px);
-    color: var(--hub-accent);
-  }
+/* ─── Página de sección (cards) ─────────────────── */
+
+.back {
+  display: inline-block;
+  margin: 0 0 24px;
+  padding: 6px 0;
+  font-size: 13px;
+  color: var(--hub-text-muted);
+  text-decoration: none;
+  transition: color 0.15s;
+  animation: fadeUp 0.5s ease-out both;
 }
 
-.disabled .navTitle {
+.sectionHeading {
+  margin: 0 0 8px;
+  font-size: 32px;
+  font-weight: var(--font-weight-medium);
+  color: var(--hub-text-strong);
+  animation: fadeUp 0.5s 0.03s ease-out both;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cardItem {
+  animation: fadeUp 0.5s calc(0.08s + var(--i) * 0.06s) ease-out both;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 24px;
+  border: 1px solid var(--hub-border);
+  border-radius: 16px;
+  background: rgba(12, 16, 22, 0.6);
+  color: inherit;
+  text-decoration: none;
+  transition: background 0.15s ease-out, border-color 0.15s ease-out;
+}
+
+.empty {
+  border-style: dashed;
+  background: transparent;
+}
+
+.cardTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.cardTitle {
+  font-size: 20px;
+  font-weight: var(--font-weight-medium);
+  color: var(--hub-text-strong);
+  transition: color 0.15s;
+}
+
+.empty .cardTitle {
   color: var(--hub-text-muted);
 }
 
-/* Estado: texto pequeño junto al título, sin caja, para no competir con él */
 .status {
-  font-size: 11px;
+  flex-shrink: 0;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
   font-weight: var(--font-weight-medium);
-  letter-spacing: 0.04em;
   white-space: nowrap;
 }
 
-.reference   { color: var(--hub-text-muted); }
-.progress    { color: var(--hub-accent); }
-.exploration { color: #e2b94a; }
-.future      { color: var(--hub-text-muted); opacity: 0.7; }
+.reference   { background: rgba(220, 230, 238, 0.08); color: var(--hub-text-strong); }
+.progress    { background: rgba(47, 213, 203, 0.14);  color: var(--hub-accent); }
+.exploration { background: rgba(226, 185, 74, 0.14);  color: #e2b94a; }
+.future      { background: transparent; box-shadow: inset 0 0 0 1px var(--hub-border); color: var(--hub-text-muted); }
+
+.cardDesc {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--hub-text-muted);
+}
+
+.cardMeta {
+  margin-top: auto;
+  font-size: 12px;
+  color: var(--hub-text-muted);
+  opacity: 0.8;
+}
+
+/* ─── Interacción ───────────────────────────────── */
+
+.navLink:focus-visible,
+.card:focus-visible,
+.back:focus-visible {
+  outline: 2px solid var(--hub-accent);
+  outline-offset: 2px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .navLink:hover { background: var(--hub-bg-hover); }
+  .navLink:hover .navTitle { color: var(--hub-accent); }
+  .navLink:hover .navArrow {
+    transform: translateX(4px);
+    color: var(--hub-accent);
+  }
+
+  .back:hover { color: var(--hub-text-strong); }
+
+  a.card:hover {
+    background: var(--hub-bg-hover);
+    border-color: #2a4152;
+  }
+  a.card:hover .cardTitle { color: var(--hub-accent); }
+}
 
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(10px); }
@@ -165,6 +245,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .shader { display: none; }
-  .brand, .tagline, .sectionTitle, .navLink { animation: none; }
-  .navLink, .navTitle, .navArrow { transition-duration: 0ms; }
+  .brand, .tagline, .navLink, .back, .sectionHeading, .cardItem { animation: none; }
+  .navLink, .navTitle, .navArrow, .card, .cardTitle, .back { transition-duration: 0ms; }
 }

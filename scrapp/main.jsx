@@ -10,11 +10,12 @@ import '../design-system/tokens/tokens.css';
 // Scrapp-specific tokens (overrides web typography scale)
 import './tokens/typography.css';
 
-import Hub from './hub/Hub';
-import { findEntry } from './hub/entries';
+import Hub, { Section } from './hub/Hub';
+import { findEntry, findSection } from './hub/entries';
 
 // Rutas por hash para que funcione igual en local y en GitHub Pages:
 //   #/                      → índice del microsite
+//   #/<sección>             → cards de esa sección (production | tasks)
 //   #/<entrada>/<item>      → un flujo o una exploración (ver hub/entries.jsx)
 function parseHash() {
   const [entryId, itemId] = window.location.hash.replace(/^#\/?/, '').split('/');
@@ -33,15 +34,19 @@ function useHashRoute() {
 
 function App() {
   const { entryId, itemId } = useHashRoute();
-  const entry = entryId ? findEntry(entryId) : null;
-  const item  = entry?.items?.find(i => i.id === itemId) ?? entry?.items?.[0];
 
-  if (!entry || !item) return <Hub />;
+  const section = entryId ? findSection(entryId) : null;
+  if (section) return <Section section={section} />;
+
+  const found = entryId ? findEntry(entryId) : null;
+  const item  = found?.entry.items?.find(i => i.id === itemId) ?? found?.entry.items?.[0];
+  if (!found || !item) return <Hub />;
+
   // key: al cambiar de item el flujo arranca de cero, no hereda el estado del anterior
-  return <Viewer key={`${entry.id}/${item.id}`} entry={entry} item={item} />;
+  return <Viewer key={`${found.entry.id}/${item.id}`} section={found.section} entry={found.entry} item={item} />;
 }
 
-function Viewer({ entry, item }) {
+function Viewer({ section, entry, item }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
 
@@ -93,14 +98,14 @@ function Viewer({ entry, item }) {
             backdropFilter: 'blur(12px)',
           }}>
             <a
-              href="#/"
+              href={`#/${section.id}`}
               style={{
                 display: 'block', padding: '8px 12px',
                 fontFamily: 'var(--font-family-primary)', fontSize: 13, fontWeight: 500,
                 color: 'rgba(255,255,255,0.6)', textDecoration: 'none',
               }}
             >
-              ← Índice
+              ← {section.title}
             </a>
 
             <div style={{

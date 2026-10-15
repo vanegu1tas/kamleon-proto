@@ -26,6 +26,7 @@ export const SECTIONS = [
   {
     id: 'production',
     title: 'Producción',
+    description: 'Cómo es la pantalla hoy y cómo va quedando con lo aprobado',
     entries: [
       {
         id: 'actual',
@@ -50,6 +51,7 @@ export const SECTIONS = [
   {
     id: 'tasks',
     title: 'Tareas',
+    description: 'Exploraciones de cada tarea, de una o varias personas',
     entries: [
       {
         id: 'fast-track',
@@ -90,10 +92,14 @@ export const SECTIONS = [
   },
 ];
 
+export function findSection(sectionId) {
+  return SECTIONS.find(s => s.id === sectionId) ?? null;
+}
+
 export function findEntry(entryId) {
   for (const section of SECTIONS) {
     const entry = section.entries.find(e => e.id === entryId);
-    if (entry) return entry;
+    if (entry) return { section, entry };
   }
   return null;
 }
