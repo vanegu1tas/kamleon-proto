@@ -14,8 +14,8 @@ const FLUSH_DURATION    = 4000; // demo: "a minute" real acortado para probar
 // (flow/FlowRunner.jsx + screens/flow/); lo que cambie en esta carpeta no afecta a "Flujo actual".
 //
 // Flujo: Plantilla → Ready → análisis → score → flush → Plantilla. Sin elegir equipo ni PIN
-// (los equipos pro no lo usan). RFID lleva a Ready con quien sea la tarjeta; QR, con un staff;
-// orinar sin elegir perfil arranca como invitado, directo al análisis.
+// (los equipos pro no lo usan). Tocar el QR cuenta como escanearlo y lleva a Ready con un staff.
+// RFID e invitado no se simulan aquí: en esta exploración solo importa la plantilla.
 //
 // qrMode: 'corner' (QR fijo en la esquina) | 'tab' (Staff como pestaña). Ver RosterScreen.
 export default function FastTrackFlow({ qrMode = 'corner' }) {
@@ -116,9 +116,7 @@ export default function FastTrackFlow({ qrMode = 'corner' }) {
           players={players}
           qrMode={qrMode}
           onSelect={ready}
-          onSimulateRfid={() => ready(players[Math.floor(Math.random() * players.length)])}
-          onSimulateQr={() => ready(STAFF_MEMBER)}
-          onSimulateGuest={() => setStep('tracking')}
+          onScanQr={() => ready(STAFF_MEMBER)}
         />
       );
       break;

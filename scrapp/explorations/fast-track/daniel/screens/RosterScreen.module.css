@@ -45,6 +45,11 @@
   flex-direction: column;
   align-items: center;
   gap: 6px;
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: inherit;
+  cursor: pointer;
 }
 
 .cornerQrText {
@@ -191,9 +196,12 @@
 }
 
 .staffQr {
+  display: block;
   padding: 20px;
+  border: none;
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.06);
+  cursor: pointer;
 }
 
 .staffText {
@@ -207,8 +215,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  height: 92px;
+  height: 72px;
   flex-shrink: 0;
 }
 
@@ -224,7 +231,3 @@
   color: var(--color-turquoise-51);
 }
 
-.sims {
-  display: flex;
-  gap: 12px;
-}

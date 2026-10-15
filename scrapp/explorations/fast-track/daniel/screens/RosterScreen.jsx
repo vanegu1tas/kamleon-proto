@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import styles from './RosterScreen.module.css';
 import QrPlaceholder from '../../../../components/QrPlaceholder';
-import SimulateButton from '../../../../components/SimulateButton';
 import { initialsFor, paginate } from '../data/rosters';
 
 /**
@@ -13,8 +12,10 @@ import { initialsFor, paginate } from '../data/rosters';
  *
  * Con más de 20 jugadores, pestañas por rango de dorsales. Con 20 o menos no hay rangos; en modo
  * 'tab' la barra queda en "Players · Staff".
+ *
+ * En el prototipo, tocar el QR cuenta como haberlo escaneado (onScanQr).
  */
-export default function RosterScreen({ players, qrMode, onSelect, onSimulateQr, onSimulateRfid, onSimulateGuest }) {
+export default function RosterScreen({ players, qrMode, onSelect, onScanQr }) {
   const pages = paginate(players);
   const [tab, setTab] = useState(0);          // índice de página, o 'staff'
   const showStaff = qrMode === 'tab' && tab === 'staff';
@@ -29,10 +30,10 @@ export default function RosterScreen({ players, qrMode, onSelect, onSimulateQr, 
         <span className={styles.logo}>KAMLEON®</span>
         <h1 className={styles.title}>Choose your profile</h1>
         {qrMode === 'corner' && (
-          <div className={styles.cornerQr}>
+          <button className={styles.cornerQr} onClick={onScanQr} aria-label="Staff: scan QR">
             <QrPlaceholder size={96} color="#ffffff" />
             <span className={styles.cornerQrText}>Staff</span>
-          </div>
+          </button>
         )}
       </header>
 
@@ -69,9 +70,10 @@ export default function RosterScreen({ players, qrMode, onSelect, onSimulateQr, 
       <main className={`${styles.body} ${showBar ? '' : styles.bodyNoBar}`}>
         {showStaff ? (
           <div className={styles.staffPanel}>
-            <div className={styles.staffQr}><QrPlaceholder size={260} color="#ffffff" /></div>
+            <button className={styles.staffQr} onClick={onScanQr} aria-label="Scan QR">
+              <QrPlaceholder size={260} color="#ffffff" />
+            </button>
             <p className={styles.staffText}>Scan with your phone to sign in</p>
-            <SimulateButton label="Simulate QR scan" onClick={onSimulateQr} />
           </div>
         ) : (
           <div className={styles.grid}>
@@ -96,11 +98,6 @@ export default function RosterScreen({ players, qrMode, onSelect, onSimulateQr, 
             <path d="M2 2L12 12L22 2" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
           Tap your card below the screen · or just start to pee as a guest
-        </span>
-        <span className={styles.sims}>
-          <SimulateButton label="Simulate RFID tap" onClick={onSimulateRfid} />
-          {qrMode === 'corner' && <SimulateButton label="Simulate QR scan" onClick={onSimulateQr} />}
-          <SimulateButton label="Simulate urination (guest)" onClick={onSimulateGuest} />
         </span>
       </footer>
     </div>
