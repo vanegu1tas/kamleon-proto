@@ -14,6 +14,9 @@ import { initialsFor, paginate } from '../data/rosters';
  * pestañas por rango de dorsales; si cabe, no hay rangos y en modo
  * 'tab' la barra queda en "Players · Staff".
  *
+ * Sin pie (15/10): ni RFID ni invitado se anuncian. Orinar sin elegir perfil arranca como
+ * invitado; ese espacio se lo lleva la cuadrícula.
+ *
  * En el prototipo, tocar el QR cuenta como haberlo escaneado (onScanQr).
  */
 export default function RosterScreen({ players, pageSize = 20, qrMode, onSelect, onScanQr }) {
@@ -93,11 +96,6 @@ export default function RosterScreen({ players, pageSize = 20, qrMode, onSelect,
         )}
       </main>
 
-      <footer className={styles.footer}>
-        {/* Sin línea de RFID por ahora (15/10): si el cliente compra las manillas, se le explica
-            en la instalación; si no, cada uno se elige en la pantalla. */}
-        <span className={styles.footerText}>Not on the list? Just start to pee as a guest</span>
-      </footer>
     </div>
   );
 }
