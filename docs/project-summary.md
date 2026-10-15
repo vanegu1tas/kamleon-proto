@@ -4,7 +4,9 @@
 sesión, así que se mantiene corto y sin nada que caduque— y apunta aquí para el detalle. Si algo
 está en los dos sitios, manda este.
 
-Última revisión: 2026-10-07.
+Última revisión: 2026-10-16.
+
+**La scrapp tiene su propio summary → `docs/scrapp/summary.md`.**
 
 ---
 
@@ -41,6 +43,29 @@ Decidido entre el 5 y el 7/10 (sin construir salvo que se diga):
 Ofrecido y sin respuesta: barrer el prototipo buscando acciones bloqueadas u ocultas **sin mensaje
 que explique por qué** (el tipo de hueco del tooltip).
 
+### Avance del 9 al 16/10
+
+- **Org Admin cruzado** con la lista del programador (11/10) y **sin dudas abiertas**. Decidido
+  por Daniel: no gestiona contactos del centro (excel) · el nombre de la org encima de las tarjetas
+  de rol **solo lo ve Kamleon staff** (Org Admin ve el del centro; Center Admin ninguno) · **External
+  IDs solo en Configure API** (Owner/Admin y Org Admin los editan, Editor los ve) · **Units no van
+  en el sidebar** de Org Admin ni Center Admin: tab general en la org y tab en cada centro
+  (`permissions.md` corregido).
+- Center Admin: queda una duda con el programador (si entra al detalle de su org sin engranaje).
+- Por resolver si se adopta: en criterios, "Panel —" de units → "Drawer "Edit unit" —" en todos los
+  roles. Filtro de equipo dependiente del de centro (propuesto, no decidido).
+- **Textos decididos**:
+  - Quitar de equipo: *"Remove from team?"* · *"Daniel Cabrera will be removed from Team."* ·
+    *"Their account and data stay. To add them back, send a new invitation."*
+  - Toasts: *"<Nombre> is now visible on screen"* / *"…hidden from screen"* · *"PIN turned on/off
+    for <Nombre>"* · *"New PIN generated for <Nombre>"* (sin Undo; el resto sí admite Undo).
+  - External IDs: *"Generate missing external IDs?"* · *"1 item will get an ID based on its name
+    and type. You can't undo this."*
+  - Invitar admins: *"Choose the type of admin to invite. They'll get an invitation by email."*
+    (un solo verbo, Select o Choose, en todo el flujo).
+- **Toast (DS)**: repite la entrada con cada mensaje, anima la salida, respeta reducir movimiento
+  (3670e51). La entrada conserva la curva con rebote (sin decidir).
+
 ---
 
 ## Lo primero al retomar (acordado el 1/10)
@@ -50,8 +75,8 @@ que explique por qué** (el tipo de hueco del tooltip).
    Recommendation Engine en `memory/recommendation-engine.md`, los roles en `memory/roles.md`.
    Regla para mantenerlo: **en `MEMORY.md` no entra nada que caduque.**
 
-2. **Ajustar la scrapp**, y **después** montar el repo aparte para la compañera de Daniel —
-   en ese orden, para no hacer los ajustes dos veces. Detalle en `docs/features/pendientes-01-10.md`.
+2. ~~Repo aparte de la scrapp~~ — **cambiado el 15/10**: la scrapp sigue aquí hasta que la
+   compañera empiece a explorar; entonces se muda (no se mantienen dos repos). → `docs/scrapp/summary.md`
 
 3. Seguir por prioridad: Recommendation Engine (el único con fecha externa) o poner el prototipo
    al día con Figma (meta: lunes).

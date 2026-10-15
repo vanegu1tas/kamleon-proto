@@ -12,10 +12,18 @@
 ## Decidido con Daniel (15/10)
 - **Sin PIN**: estos equipos no lo usan. Riesgo aceptado: cualquiera puede registrarse a nombre de otro; "Ready" evita el error, no la suplantación.
 - **Sin elegir equipo**: caso de un solo equipo.
-- **Páginas de 20 con pestañas por rango de dorsales** (calculadas solas; un dorsal repetido nunca se parte entre páginas). Con ≤20 no hay rangos. Motivo: Dallas tiene hasta 90 → 5 páginas; con flecha sola, el 80 necesita 4 toques.
+- **Páginas con pestañas por rango de dorsales** (calculadas solas; un dorsal repetido nunca se parte entre páginas). Con ≤20 no hay rangos. Motivo: Dallas tiene hasta 90 → 5 páginas; con flecha sola, el 80 necesita 4 toques.
 - **RFID: sin indicación en pantalla** (cambio del 15/10). Si el cliente compra las manillas, se le explica en la instalación; si no, cada uno se elige en la pantalla. **Invitado: tampoco se anuncia** (15/10): si alguien orina sin elegir perfil, arranca como invitado. El pie desaparece y ese espacio va a la cuadrícula (fotos 96px con 20, 78px con 30). Pendiente de confirmar con CS.
 - **Ready**: foto, "Hi, <apellido>", dorsal, "Not you?" grande; vuelve sola a la plantilla a los 15 s.
 - **QR, dos exploraciones**: (1) QR en la esquina, como la propuesta pero más grande · (3) "Staff" como pestaña aparte de los rangos: el QR grande sustituye a la cuadrícula; con ≤20 la barra queda "Players · Staff". La opción 2 (botón que abre otra pantalla) se descartó: la 3 es su versión mejorada.
+
+## Cambios del 15–16/10
+- **Sin pie**: ni RFID ni invitado se anuncian (si orinan sin elegir perfil, arranca como invitado). El espacio va a la cuadrícula.
+- **Tocar el QR = escanearlo** (en las dos exploraciones). Sin simuladores de RFID ni invitado en esta exploración; queda "Simulate flow detected" en Ready.
+- **20 o 30 por página** (selector en el panel de la demo). Con 30: fútbol (28) cabe en una página; NFL (90) pasa a 3 pestañas.
+- **Con 30: 6 u 8 columnas** (selector). 8 × 4 es el defecto: Daniel lo ve más equilibrado en la pantalla apaisada. Riesgo: columnas de 140px, los nombres largos se recortan.
+- **Equipo pequeño o última página**: columnas equilibradas (16 → 4 × 4) y el alto sobrante se reparte entre filas.
+- Fotos: 96px (20) · 78px (30, 6 col) · 84px (30, 8 col).
 
 ## Abierto
 - Confirmar con CS el comportamiento del invitado.
