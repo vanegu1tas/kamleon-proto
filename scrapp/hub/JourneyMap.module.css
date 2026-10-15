@@ -1,0 +1,214 @@
+.controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin: -16px 0 32px;
+}
+
+.select,
+.journeyName {
+  padding: 10px 16px;
+  border: 1px solid var(--hub-border);
+  border-radius: 999px;
+  background: rgba(12, 16, 22, 0.7);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: var(--font-weight-medium);
+  color: var(--hub-text-strong);
+}
+
+.select { cursor: pointer; }
+
+.select:focus-visible {
+  outline: 2px solid var(--hub-accent);
+  outline-offset: 2px;
+}
+
+.sourceNote {
+  margin: 0;
+  font-size: 12px;
+}
+
+.example    { color: #e2b94a; }
+.hypothesis { color: #e2b94a; }
+.research   { color: var(--hub-text-muted); }
+
+/* La tabla es más ancha que la página y se desplaza de lado; las etiquetas de fila se quedan fijas */
+.scroller {
+  overflow-x: auto;
+  margin: 0 -24px;
+  padding: 0 24px 24px;
+}
+
+.table {
+  --label-col: 150px;
+  display: grid;
+  width: max-content;
+  margin: 0 auto;
+  border-top: 1px solid var(--hub-border);
+}
+
+.label {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 20px 16px 20px 0;
+  border-bottom: 1px solid var(--hub-border);
+  background: var(--hub-bg);
+  font-size: 12px;
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--hub-text-muted);
+}
+
+.headLabel { padding: 0; }
+
+.stageHead {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 20px 16px;
+  border-bottom: 1px solid var(--hub-border);
+  border-left: 1px solid var(--hub-border);
+}
+
+.stageNum {
+  font-size: 11px;
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.06em;
+  color: var(--hub-text-muted);
+}
+
+.stageTitle {
+  font-size: 16px;
+  font-weight: var(--font-weight-medium);
+  color: var(--hub-text-strong);
+}
+
+.cell {
+  padding: 20px 16px;
+  border-bottom: 1px solid var(--hub-border);
+  border-left: 1px solid var(--hub-border);
+}
+
+.what {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--hub-text-strong);
+}
+
+.good { color: #3ecf8e; }
+.bad  { color: #ef6461; }
+
+/* ─── Cómo se siente ─── */
+
+.moodRow {
+  position: relative;
+  border-bottom: 1px solid var(--hub-border);
+  /* las líneas verticales de las columnas, sin partir la fila en celdas */
+  background-image: linear-gradient(to right, var(--hub-border) 1px, transparent 1px);
+  background-size: 220px 100%;
+}
+
+.moodSvg {
+  display: block;
+}
+
+.moodPoint {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translate(-50%, calc(-100% - 10px));
+  pointer-events: none;
+}
+
+.emoji {
+  font-size: 26px;
+  line-height: 1;
+}
+
+.feel {
+  margin-top: 2px;
+  font-size: 11px;
+  font-weight: var(--font-weight-medium);
+}
+
+.quotes {
+  display: grid;
+}
+
+.quoteCell {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0 16px 20px;
+}
+
+.quote {
+  margin: 0;
+  font-size: 14px;
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--hub-text-muted);
+}
+
+.stageLink {
+  align-self: flex-start;
+  font-size: 12px;
+  font-weight: var(--font-weight-medium);
+  color: var(--hub-accent);
+  text-decoration: none;
+}
+
+/* ─── Evidencia ─── */
+
+.evidence {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding-left: 16px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--hub-text-muted);
+}
+
+.evidence strong {
+  font-weight: var(--font-weight-medium);
+  color: var(--hub-text-strong);
+}
+
+.source {
+  opacity: 0.7;
+}
+
+.foldBtn {
+  padding: 8px 14px;
+  border: 1px solid var(--hub-border);
+  border-radius: 999px;
+  background: transparent;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: var(--font-weight-medium);
+  color: var(--hub-text-muted);
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.foldBtn:focus-visible,
+.stageLink:focus-visible {
+  outline: 2px solid var(--hub-accent);
+  outline-offset: 2px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .foldBtn:hover { color: var(--hub-text-strong); border-color: #2a4152; }
+  .stageLink:hover { text-decoration: underline; }
+}

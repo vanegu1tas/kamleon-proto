@@ -1,17 +1,18 @@
 import LogoKamleon from '../../design-system/icons/LogoKamleon';
 import ShaderBackground from '../recommendation/ShaderBackground';
 import { SECTIONS, STATUS_LABEL } from './entries';
+import { JOURNEY_ROW } from './journeys';
 import styles from './Hub.module.css';
 
 // Dos niveles:
 //   Hub      → mismo lenguaje que la landing del proyecto (landing.html): una fila por sección.
 //   Section  → las entradas de esa sección en cards, con su estado.
 
-function Shell({ children, wide = false }) {
+export function Shell({ children, wide = false, full = false }) {
   return (
     <div className={styles.page}>
       <ShaderBackground className={styles.shader} />
-      <main className={`${styles.container} ${wide ? styles.wide : ''}`}>{children}</main>
+      <main className={`${styles.container} ${wide ? styles.wide : ''} ${full ? styles.full : ''}`}>{children}</main>
     </div>
   );
 }
@@ -26,7 +27,7 @@ export default function Hub() {
 
       <nav aria-label="Secciones">
         <ul className={styles.navList}>
-          {SECTIONS.map((section, i) => (
+          {[...SECTIONS, JOURNEY_ROW].map((section, i) => (
             <li key={section.id} className={styles.navItem} style={{ '--i': i + 1 }}>
               <a className={styles.navLink} href={`#/${section.id}`}>
                 <span className={styles.navIndex}>{String(i + 1).padStart(2, '0')}</span>

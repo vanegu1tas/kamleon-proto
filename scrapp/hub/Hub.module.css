@@ -37,6 +37,11 @@
   max-width: 960px;
 }
 
+/* el journey map: la tabla decide su ancho y se desplaza de lado si no cabe */
+.full {
+  max-width: none;
+}
+
 /* ─── Índice (igual que la landing) ─────────────── */
 
 .brand {

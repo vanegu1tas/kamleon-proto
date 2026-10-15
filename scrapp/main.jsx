@@ -12,10 +12,12 @@ import './tokens/typography.css';
 
 import Hub, { Section } from './hub/Hub';
 import { findEntry, findSection } from './hub/entries';
+import JourneyMap from './hub/JourneyMap';
 
 // Rutas por hash para que funcione igual en local y en GitHub Pages:
 //   #/                      → índice del microsite
 //   #/<sección>             → cards de esa sección (production | tasks)
+//   #/journey/<id>          → journey map (ver hub/journeys.js)
 //   #/<entrada>/<item>      → un flujo o una exploración (ver hub/entries.jsx)
 function parseHash() {
   const [entryId, itemId] = window.location.hash.replace(/^#\/?/, '').split('/');
@@ -34,6 +36,8 @@ function useHashRoute() {
 
 function App() {
   const { entryId, itemId } = useHashRoute();
+
+  if (entryId === 'journey') return <JourneyMap journeyId={itemId} />;
 
   const section = entryId ? findSection(entryId) : null;
   if (section) return <Section section={section} />;
