@@ -140,11 +140,18 @@
 
 /* ─── Navegación con flechas (nav="arrows") ─── */
 
-/* Staff suelto arriba a la derecha, mismo aspecto que en la barra */
+/* Staff suelto arriba a la derecha. Más bajo que en la barra (48 px visibles, responde en 80) para
+   que no quede pegado al borde: centrado con el logo y a 48 px del borde, como el logo por la izquierda. */
 .staffButton {
   position: absolute;
-  top: 12px;
-  right: 40px;
+  top: 20px;
+  right: 48px;
+  height: 48px;
+  min-width: 112px;
+}
+
+.staffButton::before {
+  inset: -16px 0;
 }
 
 
