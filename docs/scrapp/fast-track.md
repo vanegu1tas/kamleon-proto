@@ -50,6 +50,20 @@
 - **Dorsales repetidos: no aplica** (Daniel, 16/10): la webapp no los permite. La plantilla de prueba NFL ya no los tiene; el código igual nunca parte un dorsal entre páginas.
 - **Jugadores sin dorsal: no aplica** (Daniel, 16/10): el dorsal es obligatorio y se configura antes de usar Fast Track. Dato para la webapp: en orgs con Fast Track, el dorsal debe ser requerido al dar de alta un jugador.
 
+## Versión pulida (16/10) — `explorations/fast-track/daniel/pulida/`
+Parte de la exploración 4 (pestañas + Staff arriba). Las otras tres se quedan como estaban, de referencia.
+
+**Tema del equipo** (`pulida/theme.js`): el equipo solo da su color principal.
+- Fondo = color del equipo × 0,32 (el resto negro) → siempre oscuro. Contraste del blanco: 13–19:1; del turquesa: 7–10:1 (Dallas, Arsenal, Aston Villa, Gil Vicente).
+- Superficies, bordes y textos secundarios en blanco translúcido; anillo fino en las fotos.
+- Fondo vivo con shader ligero (3 capas de ruido, media resolución, lento); sin WebGL o con reducir movimiento, color plano (= la reserva si Qt no da).
+- El Score **no** lleva el color del equipo.
+- Acento sin decidir: turquesa (Kamleon) o blanco; selector en el panel. Con blanco, el dorsal deja de destacar sobre el apellido.
+
+**Transiciones** (solo posición, escala y opacidad; ≤ 400 ms; desaceleración sin rebote; con reducir movimiento, solo fundidos):
+- T1 entrar a la plantilla: cascada de caras · T2 cambiar de rango: el resaltado se desliza y la cuadrícula entra por el lado del cambio · T3 tocar una cara: la foto vuela al centro y crece, el resto se apaga, después los textos · T4 "Not you?"/timeout: la foto vuelve a su sitio · T5 Staff: el QR entra creciendo · T6 Ready → análisis: el flujo entra fundiéndose y el fondo del equipo se apaga · al tocar: se hunde a 0,96.
+- Pendiente de Qt (programador): Qt Quick o Widgets, versión, hardware. Si no da, se recorta (primero el shader).
+
 ## Abierto
 - Confirmar con CS el comportamiento del invitado.
 - Distancia de lectura de la pantalla (no hay dato): fotos de 84px y texto de 20px son un supuesto.

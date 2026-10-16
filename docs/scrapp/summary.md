@@ -3,14 +3,15 @@
 **Estado de la scrapp** (la pantalla de 1280×800 sobre el urinal). El de la webapp está en
 `docs/project-summary.md`. Si algo de la scrapp aparece en los dos, manda este.
 
-Última revisión: 2026-10-16.
+Última revisión: 2026-10-16 (tarde).
 
 ---
 
 ## Lo primero al retomar
 
-1. **Fast Track**: seguir iterando en las dos exploraciones (QR en la esquina / Staff como pestaña).
-   Decisiones, motivos y pendientes → `docs/scrapp/fast-track.md`.
+1. **Fast Track**: hay 5 exploraciones; se pule solo la última, **"Pulida: equipo + transiciones"**
+   (16/10), que parte de "Pestañas + Staff arriba". Decisiones, motivos y pendientes →
+   `docs/scrapp/fast-track.md`. Preguntas al programador sobre Qt (Quick o Widgets, versión, hardware).
 2. **Nada está publicado.** Hay ~100 commits sin push (microsite, journey map, Fast Track, y también
    el QA de la webapp). Al hacer push se publica todo en GitHub Pages: antes, que Daniel lo revise
    con `npm run scrapp`.
