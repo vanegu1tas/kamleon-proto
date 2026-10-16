@@ -12,8 +12,8 @@ import { initialsFor, paginate } from '../data/rosters';
  *
  * nav
  *   'tabs'   → pestañas por rango de dorsales (y Staff, según qrMode)
- *   'arrows' → sin pestañas: flechas ‹ › a los lados para pasar de rango, el rango actual bajo
- *              el título (sin puntos: el rango y las flechas ya dicen dónde estás), y "Staff" como botón suelto arriba a la derecha que abre
+ *   'arrows' → sin pestañas: flechas ‹ › a los lados para pasar de rango, el rango como
+ *              subtítulo pegado al título ("Numbers 0–20"; sin puntos), y "Staff" como botón suelto arriba a la derecha que abre
  *              el QR grande (qrMode no aplica)
  *
  * pageSize: 20 (5 × 4) o 30 (denseCols: 6 × 5 u 8 × 4). Si la plantilla no cabe en una página,
@@ -39,7 +39,7 @@ export default function RosterScreen({ players, pageSize = 20, denseCols = 8, qr
   const hasRanges = pages.length > 1;
   const showBar = !arrows && (hasRanges || qrMode === 'tab');
   const showIndicator = arrows && hasRanges && !showStaff;
-  const barH = showBar ? 80 : arrows && hasRanges ? 36 : 0;
+  const barH = showBar ? 80 : showIndicator ? 24 : 0;   // con flechas, el subtítulo alarga la cabecera
 
   // Con menos jugadores que el máximo de la página (equipo pequeño, o la última página), la
   // cuadrícula se reparte: columnas equilibradas (16 → 4 × 4, no 5-5-5-1) y más aire entre filas.
@@ -63,9 +63,13 @@ export default function RosterScreen({ players, pageSize = 20, denseCols = 8, qr
 
   return (
     <div className={styles.screen}>
-      <header className={styles.header}>
+      <header className={`${styles.header} ${showIndicator ? styles.headerWithRange : ''}`}>
         <span className={styles.logo}>KAMLEON®</span>
-        <h1 className={styles.title}>Choose your profile</h1>
+        <div className={styles.titleBlock}>
+          <h1 className={styles.title}>Choose your profile</h1>
+          {/* El rango, pegado al título como subtítulo: así no queda flotando (16/10) */}
+          {showIndicator && <p className={styles.subtitle} aria-live="polite">Numbers {page.label}</p>}
+        </div>
         {arrows && (
           <button
             className={`${styles.tab} ${styles.staffTab} ${styles.staffButton} ${showStaff ? styles.tabActive : ''}`}
@@ -110,12 +114,6 @@ export default function RosterScreen({ players, pageSize = 20, denseCols = 8, qr
             </button>
           )}
         </nav>
-      )}
-
-      {showIndicator && (
-        <div className={styles.indicator} aria-live="polite">
-          <span className={styles.indicatorLabel}>{page.label}</span>
-        </div>
       )}
 
       <main className={`${styles.body} ${showBar || showIndicator ? '' : styles.bodyNoBar}`}>

@@ -36,6 +36,24 @@
   font-weight: var(--font-weight-bold);
 }
 
+.headerWithRange {
+  height: 112px;
+}
+
+.titleBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.subtitle {
+  margin: 2px 0 0;
+  font-size: var(--font-size-20);
+  font-weight: var(--font-weight-medium);
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.6);
+}
+
 .cornerQr {
   position: absolute;
   top: 20px;
@@ -129,21 +147,6 @@
   right: 40px;
 }
 
-.indicator {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 36px;
-  flex-shrink: 0;
-}
-
-.indicatorLabel {
-  font-size: var(--font-size-20);
-  font-weight: var(--font-weight-medium);
-  font-variant-numeric: tabular-nums;
-  color: rgba(255, 255, 255, 0.75);
-}
 
 
 /* Se ven de 56 px; responden en 80 (13,6 mm), igual que las pestañas */
