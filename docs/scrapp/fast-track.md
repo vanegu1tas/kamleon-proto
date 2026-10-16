@@ -64,7 +64,13 @@ Parte de la exploración 4 (pestañas + Staff arriba). Las otras tres se quedan 
 - T1 entrar a la plantilla: cascada de caras · T2 cambiar de rango: el resaltado se desliza y la cuadrícula entra por el lado del cambio · T3 tocar una cara: la foto vuela al centro y crece, el resto se apaga, después los textos · T4 "Not you?"/timeout: la foto vuelve a su sitio · T5 Staff: el QR entra creciendo · T6 Ready → análisis: el flujo entra fundiéndose y el fondo del equipo se apaga · al tocar: se hunde a 0,96.
 - Pendiente de Qt (programador): Qt Quick o Widgets, versión, hardware. Si no da, se recorta (primero el shader).
 
+**Logo fijo** (16/10): hay un solo logo, en el escenario (`pulida/FlowRunner.jsx`), compartido por plantilla y Ready. Antes cada pantalla tenía el suyo y brincaba en T3/T4, porque la cabecera se encoge al apagarse. Lo que deba quedarse quieto entre pantallas va fuera de ellas.
+
 ## Abierto
 - Confirmar con CS el comportamiento del invitado.
 - Distancia de lectura de la pantalla (no hay dato): fotos de 84px y texto de 20px son un supuesto.
-- **Figma** (`Scrapp explorations`, nodo 2024:5): capturado NFL · 30 · 8 col con estilos H1 Bold / H3 Bold / H3 asignados; los dorsales y apellidos (18 px) y los colores siguen sin estilo ni variable.
+- **Acento**: turquesa o blanco (si es blanco, bajar el apellido para que el dorsal destaque).
+- ¿El vuelo de la foto (T3) debería sentirse más uniforme? Pendiente de que Daniel lo pruebe.
+- Unicidad del dorsal: ¿por equipo o por organización? (programador; anotarlo en `data-model.md`).
+- Probar la pulida con los comandos nuevos de impeccable (Daniel lo actualizó el 16/10; hace falta reiniciar Claude Code para tenerlos).
+- **Figma** (`Scrapp explorations`, nodo 2024:5) está desactualizado: es de antes de las pestañas de 56 px, el Staff arriba y el tema; recapturar cuando la pulida se cierre: capturado NFL · 30 · 8 col con estilos H1 Bold / H3 Bold / H3 asignados; los dorsales y apellidos (18 px) y los colores siguen sin estilo ni variable.

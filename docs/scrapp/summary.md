@@ -3,7 +3,7 @@
 **Estado de la scrapp** (la pantalla de 1280×800 sobre el urinal). El de la webapp está en
 `docs/project-summary.md`. Si algo de la scrapp aparece en los dos, manda este.
 
-Última revisión: 2026-10-16 (tarde).
+Última revisión: 2026-10-16 (cierre del día).
 
 ---
 
@@ -12,7 +12,11 @@
 1. **Fast Track**: hay 5 exploraciones; se pule solo la última, **"Pulida: equipo + transiciones"**
    (16/10), que parte de "Pestañas + Staff arriba". Decisiones, motivos y pendientes →
    `docs/scrapp/fast-track.md`. Preguntas al programador sobre Qt (Quick o Widgets, versión, hardware).
-2. **Nada está publicado.** Hay ~100 commits sin push (microsite, journey map, Fast Track, y también
+   Hecho en la pulida: tema por equipo (fondo = color × 0,32 con shader ligero), transiciones T1–T6 y
+   un solo logo fijo (ya no brinca). Sin decidir: acento turquesa o blanco.
+   **impeccable** se actualizó el 16/10: tras reiniciar Claude Code, revisar la pulida con sus comandos
+   nuevos (comprobar antes cuáles existen, no suponerlos).
+2. **Nada está publicado.** Hay 114 commits sin push (al 16/10) (microsite, journey map, Fast Track, y también
    el QA de la webapp). Al hacer push se publica todo en GitHub Pages: antes, que Daniel lo revise
    con `npm run scrapp`.
 3. Pendiente de su ok: el **panel de control de Score** queda medio tapado por el marco del
