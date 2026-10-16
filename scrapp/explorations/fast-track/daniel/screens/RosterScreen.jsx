@@ -26,7 +26,10 @@ import { initialsFor, paginate } from '../data/rosters';
  * En el prototipo, tocar el QR cuenta como haberlo escaneado (onScanQr).
  */
 export default function RosterScreen({ players, pageSize = 20, denseCols = 8, qrMode, nav = 'tabs', onSelect, onScanQr }) {
-  const pages = paginate(players, pageSize);
+  // Con flechas y 30 × 8 columnas, la página se llena entera (8 × 4 = 32) en vez de dejar 2 huecos
+  // al final: la que queda corta es la última página. Solo en esta exploración (nav="arrows").
+  const fillGrid = nav === 'arrows' && pageSize > 20 && denseCols === 8;
+  const pages = paginate(players, fillGrid ? 32 : pageSize);
   const [tab, setTab] = useState(0);          // índice de página, o 'staff'
   const arrows = nav === 'arrows';
   const showStaff = (arrows || qrMode === 'tab') && tab === 'staff';
