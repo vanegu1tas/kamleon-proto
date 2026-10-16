@@ -31,6 +31,13 @@
 - Con 30 × 6 columnas, filas de 112 → 108 px para que quepan las 5 filas.
 - Jugadores ya estaban bien: el bloque entero mide 20–23 mm; fotos 13–16 mm.
 
+## Exploración 3 · Flechas entre rangos (16/10)
+- Sin pestañas: flechas ‹ › a los lados (se ven de 56 px, responden en 80). Solo aparece la que tiene destino.
+- Bajo el título, el rango actual ("21–42") y un punto por página.
+- "Staff" como botón suelto arriba a la derecha: abre el QR grande; al tocarlo otra vez vuelve a la plantilla.
+- Con 30 × 8, columnas de 132 px (antes 140) para dejar sitio a las flechas.
+- Contra: para llegar al rango 5 hacen falta 4 toques (con pestañas, 1). Es lo que se compara.
+
 ## Abierto
 - Confirmar con CS el comportamiento del invitado.
 - Distancia de lectura de la pantalla (no hay dato): fotos de 84px y texto de 20px son un supuesto.

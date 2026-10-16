@@ -10,6 +10,12 @@ import { initialsFor, paginate } from '../data/rosters';
  *   'corner' → el QR fijo arriba a la derecha (lo que pide la propuesta, algo más grande)
  *   'tab'    → "Staff" es una pestaña más: al tocarla, el QR grande ocupa el sitio de la cuadrícula
  *
+ * nav
+ *   'tabs'   → pestañas por rango de dorsales (y Staff, según qrMode)
+ *   'arrows' → sin pestañas: flechas ‹ › a los lados para pasar de rango, el rango actual con
+ *              puntos bajo el título, y "Staff" como botón suelto arriba a la derecha que abre
+ *              el QR grande (qrMode no aplica)
+ *
  * pageSize: 20 (5 × 4) o 30 (denseCols: 6 × 5 u 8 × 4). Si la plantilla no cabe en una página,
  * pestañas por rango de dorsales; si cabe, no hay rangos y en modo
  * 'tab' la barra queda en "Players · Staff".
@@ -19,14 +25,18 @@ import { initialsFor, paginate } from '../data/rosters';
  *
  * En el prototipo, tocar el QR cuenta como haberlo escaneado (onScanQr).
  */
-export default function RosterScreen({ players, pageSize = 20, denseCols = 8, qrMode, onSelect, onScanQr }) {
+export default function RosterScreen({ players, pageSize = 20, denseCols = 8, qrMode, nav = 'tabs', onSelect, onScanQr }) {
   const pages = paginate(players, pageSize);
   const [tab, setTab] = useState(0);          // índice de página, o 'staff'
-  const showStaff = qrMode === 'tab' && tab === 'staff';
-  const page = pages[typeof tab === 'number' ? tab : 0];
+  const arrows = nav === 'arrows';
+  const showStaff = (arrows || qrMode === 'tab') && tab === 'staff';
+  const pageIndex = typeof tab === 'number' ? tab : 0;
+  const page = pages[pageIndex];
 
   const hasRanges = pages.length > 1;
-  const showBar = hasRanges || qrMode === 'tab';
+  const showBar = !arrows && (hasRanges || qrMode === 'tab');
+  const showIndicator = arrows && hasRanges && !showStaff;
+  const barH = showBar ? 80 : arrows && hasRanges ? 48 : 0;
 
   // Con menos jugadores que el máximo de la página (equipo pequeño, o la última página), la
   // cuadrícula se reparte: columnas equilibradas (16 → 4 × 4, no 5-5-5-1) y más aire entre filas.
@@ -40,10 +50,11 @@ export default function RosterScreen({ players, pageSize = 20, denseCols = 8, qr
   // Alto libre para la cuadrícula: pantalla − cabecera (88) − barra (80, si la hay) − margen (24).
   // El sobrante se reparte entre filas, entre el mínimo de siempre y 56 px.
   const rowH    = !dense ? 136 : wide ? 128 : 108;
-  const free    = 800 - 88 - (showBar ? 80 : 0) - 24 - rows * rowH;
+  const free    = 800 - 88 - barH - 24 - rows * rowH;
   const rowGap  = Math.round(Math.min(56, Math.max(dense ? 12 : 16, free / rows)));
   const gridStyle = {
-    gridTemplateColumns: `repeat(${cols}, ${!dense ? 200 : wide ? 140 : 176}px)`,
+    // con flechas, las 8 columnas se estrechan (140 → 132) para dejarles sitio a los lados
+    gridTemplateColumns: `repeat(${cols}, ${!dense ? 200 : wide ? (arrows ? 132 : 140) : 176}px)`,
     rowGap,
   };
 
@@ -52,7 +63,15 @@ export default function RosterScreen({ players, pageSize = 20, denseCols = 8, qr
       <header className={styles.header}>
         <span className={styles.logo}>KAMLEON®</span>
         <h1 className={styles.title}>Choose your profile</h1>
-        {qrMode === 'corner' && (
+        {arrows && (
+          <button
+            className={`${styles.tab} ${styles.staffTab} ${styles.staffButton} ${showStaff ? styles.tabActive : ''}`}
+            onClick={() => setTab(showStaff ? pageIndex : 'staff')}
+          >
+            Staff
+          </button>
+        )}
+        {!arrows && qrMode === 'corner' && (
           <button className={styles.cornerQr} onClick={onScanQr} aria-label="Staff: scan QR">
             <QrPlaceholder size={96} color="#ffffff" />
             <span className={styles.cornerQrText}>Staff</span>
@@ -90,7 +109,26 @@ export default function RosterScreen({ players, pageSize = 20, denseCols = 8, qr
         </nav>
       )}
 
-      <main className={`${styles.body} ${showBar ? '' : styles.bodyNoBar}`}>
+      {showIndicator && (
+        <div className={styles.indicator} aria-live="polite">
+          <span className={styles.indicatorLabel}>{page.label}</span>
+          <span className={styles.dots} aria-hidden="true">
+            {pages.map((p, i) => <span key={p.label} className={`${styles.dot} ${i === pageIndex ? styles.dotActive : ''}`} />)}
+          </span>
+        </div>
+      )}
+
+      <main className={`${styles.body} ${showBar || showIndicator ? '' : styles.bodyNoBar}`}>
+        {showIndicator && pageIndex > 0 && (
+          <button className={`${styles.arrow} ${styles.arrowPrev}`} onClick={() => setTab(pageIndex - 1)} aria-label={`Previous: ${pages[pageIndex - 1].label}`}>
+            <svg width="16" height="28" viewBox="0 0 14 24" fill="none" aria-hidden="true"><path d="M12 2L2 12L12 22" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+          </button>
+        )}
+        {showIndicator && pageIndex < pages.length - 1 && (
+          <button className={`${styles.arrow} ${styles.arrowNext}`} onClick={() => setTab(pageIndex + 1)} aria-label={`Next: ${pages[pageIndex + 1].label}`}>
+            <svg width="16" height="28" viewBox="0 0 14 24" fill="none" aria-hidden="true"><path d="M2 2L12 12L2 22" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+          </button>
+        )}
         {showStaff ? (
           <div className={styles.staffPanel}>
             <button className={styles.staffQr} onClick={onScanQr} aria-label="Scan QR">

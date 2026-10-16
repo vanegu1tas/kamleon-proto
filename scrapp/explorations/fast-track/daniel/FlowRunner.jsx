@@ -32,7 +32,7 @@ function optionStyle(active) {
   };
 }
 
-export default function FastTrackFlow({ qrMode = 'corner' }) {
+export default function FastTrackFlow({ qrMode = 'corner', nav = 'tabs' }) {
   // La URL puede fijar la configuración de arranque (?roster=nfl&page=30&cols=8); con ?capture se
   // dibuja solo la pantalla de 1280×800, sin marco ni panel, para pasarla a Figma.
   const [rosterKey, setRosterKey] = useState(ROSTERS[QUERY.get('roster')] ? QUERY.get('roster') : 'nfl');
@@ -135,6 +135,7 @@ export default function FastTrackFlow({ qrMode = 'corner' }) {
           pageSize={pageSize}
           denseCols={denseCols}
           qrMode={qrMode}
+          nav={nav}
           onSelect={ready}
           onScanQr={() => ready(STAFF_MEMBER)}
         />

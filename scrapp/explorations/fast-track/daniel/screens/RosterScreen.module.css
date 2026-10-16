@@ -120,9 +120,83 @@
   inset: -8px 0;
 }
 
+/* ─── Navegación con flechas (nav="arrows") ─── */
+
+/* Staff suelto arriba a la derecha, mismo aspecto que en la barra */
+.staffButton {
+  position: absolute;
+  top: 12px;
+  right: 40px;
+}
+
+.indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 48px;
+  flex-shrink: 0;
+}
+
+.indicatorLabel {
+  font-size: var(--font-size-20);
+  font-weight: var(--font-weight-medium);
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.dots {
+  display: flex;
+  gap: 8px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.dotActive {
+  background: var(--color-turquoise-51);
+}
+
+/* Se ven de 56 px; responden en 80 (13,6 mm), igual que las pestañas */
+.arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  width: 56px;
+  height: 56px;
+  margin-top: -40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.arrow::before {
+  content: '';
+  position: absolute;
+  inset: -12px;
+}
+
+.arrow:active {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.arrowPrev { left: 16px; }
+.arrowNext { right: 16px; }
+
 /* ─── Cuadrícula 5 × 4 ─── */
 
 .body {
+  position: relative;
   flex: 1;
   display: flex;
   align-items: center;
