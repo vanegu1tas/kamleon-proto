@@ -26,7 +26,7 @@
 - Fotos: 96px (20) · 78px (30, 6 col) · 84px (30, 8 col).
 
 ## Con la medida de la pantalla (16/10: 10,1", 149 ppi)
-- Pestañas de rangos 52 → **80 px (13,6 mm)**; Staff 60 → **88 px**, alineado con el grupo de pestañas.
+- Pestañas: **se ven de 56 px pero responden en 80 px (13,6 mm)** — área táctil extendida e invisible (80 px visibles pesaban demasiado). Staff se ve de 64 px, responde en 80.
 - Dorsal y apellido con 30 por página 18 → **20 px** (H3 Bold / H3 del DS; 18 no era token).
 - Con 30 × 6 columnas, filas de 112 → 108 px para que quepan las 5 filas.
 - Jugadores ya estaban bien: el bloque entero mide 20–23 mm; fotos 13–16 mm.

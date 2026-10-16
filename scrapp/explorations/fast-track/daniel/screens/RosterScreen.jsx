@@ -37,10 +37,10 @@ export default function RosterScreen({ players, pageSize = 20, denseCols = 8, qr
   const count   = page?.players.length ?? 0;
   const rows    = Math.max(1, Math.ceil(count / maxCols));
   const cols    = Math.ceil(count / rows);
-  // Alto libre para la cuadrícula: pantalla − cabecera (88) − barra (96, si la hay) − margen (24).
+  // Alto libre para la cuadrícula: pantalla − cabecera (88) − barra (80, si la hay) − margen (24).
   // El sobrante se reparte entre filas, entre el mínimo de siempre y 56 px.
   const rowH    = !dense ? 136 : wide ? 128 : 108;
-  const free    = 800 - 88 - (showBar ? 96 : 0) - 24 - rows * rowH;
+  const free    = 800 - 88 - (showBar ? 80 : 0) - 24 - rows * rowH;
   const rowGap  = Math.round(Math.min(56, Math.max(dense ? 12 : 16, free / rows)));
   const gridStyle = {
     gridTemplateColumns: `repeat(${cols}, ${!dense ? 200 : wide ? 140 : 176}px)`,

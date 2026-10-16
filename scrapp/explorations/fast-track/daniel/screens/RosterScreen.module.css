@@ -64,7 +64,7 @@
   align-items: center;
   justify-content: center;
   gap: 24px;
-  height: 96px;
+  height: 80px;
   flex-shrink: 0;
 }
 
@@ -77,9 +77,11 @@
 }
 
 .tab {
-  /* 80 px = 13,6 mm en la pantalla real (10,1", 149 ppi) */
-  min-width: 120px;
-  height: 80px;
+  /* Se ve de 56 px, pero responde en 80 px (13,6 mm en la pantalla real, 10,1" a 149 ppi):
+     el ::before extiende el área táctil arriba y abajo sin que se vea. */
+  position: relative;
+  min-width: 104px;
+  height: 56px;
   padding: 0 24px;
   border: none;
   border-radius: 999px;
@@ -92,6 +94,12 @@
   cursor: pointer;
 }
 
+.tab::before {
+  content: '';
+  position: absolute;
+  inset: -12px 0;
+}
+
 .tabActive {
   background: var(--color-turquoise-51);
   color: #000000;
@@ -99,12 +107,17 @@
 
 /* Staff va aparte: no es un rango de dorsales */
 .staffTab {
-  height: 88px;
+  height: 64px;
   border: 2px solid rgba(255, 255, 255, 0.2);
 }
 
 .staffTab.tabActive {
   border-color: var(--color-turquoise-51);
+}
+
+/* Staff se ve de 64 px (alineado con el grupo de pestañas); responde también en 80 */
+.staffTab::before {
+  inset: -8px 0;
 }
 
 /* ─── Cuadrícula 5 × 4 ─── */
