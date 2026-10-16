@@ -12,8 +12,8 @@ import { initialsFor, paginate } from '../data/rosters';
  *
  * nav
  *   'tabs'   → pestañas por rango de dorsales (y Staff, según qrMode)
- *   'arrows' → sin pestañas: flechas ‹ › a los lados para pasar de rango, el rango actual con
- *              puntos bajo el título, y "Staff" como botón suelto arriba a la derecha que abre
+ *   'arrows' → sin pestañas: flechas ‹ › a los lados para pasar de rango, el rango actual bajo
+ *              el título (sin puntos: el rango y las flechas ya dicen dónde estás), y "Staff" como botón suelto arriba a la derecha que abre
  *              el QR grande (qrMode no aplica)
  *
  * pageSize: 20 (5 × 4) o 30 (denseCols: 6 × 5 u 8 × 4). Si la plantilla no cabe en una página,
@@ -39,7 +39,7 @@ export default function RosterScreen({ players, pageSize = 20, denseCols = 8, qr
   const hasRanges = pages.length > 1;
   const showBar = !arrows && (hasRanges || qrMode === 'tab');
   const showIndicator = arrows && hasRanges && !showStaff;
-  const barH = showBar ? 80 : arrows && hasRanges ? 48 : 0;
+  const barH = showBar ? 80 : arrows && hasRanges ? 36 : 0;
 
   // Con menos jugadores que el máximo de la página (equipo pequeño, o la última página), la
   // cuadrícula se reparte: columnas equilibradas (16 → 4 × 4, no 5-5-5-1) y más aire entre filas.
@@ -115,9 +115,6 @@ export default function RosterScreen({ players, pageSize = 20, denseCols = 8, qr
       {showIndicator && (
         <div className={styles.indicator} aria-live="polite">
           <span className={styles.indicatorLabel}>{page.label}</span>
-          <span className={styles.dots} aria-hidden="true">
-            {pages.map((p, i) => <span key={p.label} className={`${styles.dot} ${i === pageIndex ? styles.dotActive : ''}`} />)}
-          </span>
         </div>
       )}
 

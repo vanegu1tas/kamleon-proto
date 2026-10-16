@@ -33,7 +33,7 @@
 
 ## Exploración 3 · Flechas entre rangos (16/10)
 - Sin pestañas: flechas ‹ › a los lados (se ven de 56 px, responden en 80). Solo aparece la que tiene destino.
-- Bajo el título, el rango actual ("21–42") y un punto por página.
+- Bajo el título, el rango actual ("21–42"). Sin puntos (quitados el 16/10): el rango y las flechas ya dicen dónde estás; los puntos medían 1,4 mm e invitaban a tocarlos.
 - "Staff" como botón suelto arriba a la derecha: abre el QR grande; al tocarlo otra vez vuelve a la plantilla.
 - Con 30 × 8, columnas de 132 px (antes 140) para dejar sitio a las flechas.
 - Con 30 × 8, la página se llena entera: **32 por página** (8 × 4), y la que queda corta es la última. Solo en esta exploración.
