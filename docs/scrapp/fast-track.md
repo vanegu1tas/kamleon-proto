@@ -47,6 +47,7 @@
 - **No son rangos fijos** (0–19, 20–39…): los jugadores se ordenan por dorsal y se reparten de N en N (20, 30 o 32). La etiqueta es el primer y el último dorsal de la página. Así los saltos en la numeración nunca dejan páginas medio vacías.
 - Consecuencias aceptadas: los rangos no son redondos (21–42), cambian si cambia la plantilla, y el último puede ser muy ancho (64–99).
 - **La última página puede quedar casi vacía** (82 → 20-20-20-20-2): decidido dejarlo así (Daniel, 16/10), no se reparte por igual.
+- **Dorsales repetidos: no aplica** (Daniel, 16/10): la webapp no los permite. La plantilla de prueba NFL ya no los tiene; el código igual nunca parte un dorsal entre páginas.
 - **Jugadores sin dorsal: no aplica** (Daniel, 16/10): el dorsal es obligatorio y se configura antes de usar Fast Track. Dato para la webapp: en orgs con Fast Track, el dorsal debe ser requerido al dar de alta un jugador.
 
 ## Abierto

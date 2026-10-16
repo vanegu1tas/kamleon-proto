@@ -3,7 +3,7 @@ export { initialsFor } from '../../../../data/mockFlowData';
 // Plantillas de prueba para Fast Track. Nombres inventados (no son jugadores reales).
 // Tres casos para ver cómo se comporta la pantalla:
 //   football  → 28 jugadores: 2 pestañas de rangos
-//   nfl       → 90 jugadores, con dorsales repetidos como en la pretemporada de la NFL: 5 pestañas
+//   nfl       → 90 jugadores con saltos en la numeración (sin repetidos: la webapp no los permite)
 //   small     → 16 jugadores: sin rangos, cabe en una sola página
 
 const FIRST = ['Álex', 'Bruno', 'Carlos', 'Dani', 'Elías', 'Fede', 'Gabi', 'Hugo', 'Iker', 'Javi',
@@ -35,10 +35,9 @@ function build(numbers) {
 const FOOTBALL = build([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
   21, 22, 23, 24, 25, 27, 30, 33]);
 
-// NFL: 90 jugadores sobre 0–99, con 8 dorsales repetidos (pretemporada)
+// NFL: 90 jugadores sobre 0–99, todos distintos, con 10 huecos en la numeración
 const NFL_NUMBERS = [];
-for (let n = 0; n <= 99 && NFL_NUMBERS.length < 82; n++) if (n % 6 !== 5) NFL_NUMBERS.push(n);
-[7, 13, 21, 34, 48, 55, 72, 88].forEach(n => NFL_NUMBERS.push(n));
+for (let n = 0; n <= 99; n++) if (n % 10 !== 9) NFL_NUMBERS.push(n);
 const NFL = build(NFL_NUMBERS);
 
 const SMALL = build([1, 3, 4, 5, 7, 8, 9, 10, 11, 12, 14, 17, 19, 21, 23, 30]);
@@ -52,7 +51,8 @@ export const ROSTERS = {
 // Quien entra por QR: staff que no está en la plantilla
 export const STAFF_MEMBER = { id: 'staff', name: 'Alex Rivera', short: 'Alex Rivera', number: null, photo: null };
 
-// Páginas de máximo 20 (o 30, según el selector de la demo), por dorsal. Un mismo dorsal nunca se parte entre dos páginas: si un
+// Páginas de máximo 20 (o 30, según el selector de la demo), por dorsal. La webapp no deja repetir
+// dorsales (Daniel, 16/10), pero por si acaso: un mismo dorsal nunca se parte entre dos páginas: si un
 // repetido cae justo en el corte, el grupo entero pasa a la siguiente (la página queda con menos
 // de 20, nunca con más). La etiqueta es el rango real de dorsales de la página.
 export const PAGE_SIZES = [20, 30];
