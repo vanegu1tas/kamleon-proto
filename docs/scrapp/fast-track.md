@@ -46,7 +46,8 @@
 ## Regla de los rangos (confirmada por Daniel, 16/10)
 - **No son rangos fijos** (0–19, 20–39…): los jugadores se ordenan por dorsal y se reparten de N en N (20, 30 o 32). La etiqueta es el primer y el último dorsal de la página. Así los saltos en la numeración nunca dejan páginas medio vacías.
 - Consecuencias aceptadas: los rangos no son redondos (21–42), cambian si cambia la plantilla, y el último puede ser muy ancho (64–99).
-- Sin decidir: repartir por igual para que la última página no quede casi vacía (82 → 17-17-16-16-16 en vez de 20-20-20-20-2) · qué hacer con jugadores sin dorsal.
+- Sin decidir: repartir por igual para que la última página no quede casi vacía (82 → 17-17-16-16-16 en vez de 20-20-20-20-2).
+- **Jugadores sin dorsal: no aplica** (Daniel, 16/10): el dorsal es obligatorio y se configura antes de usar Fast Track. Dato para la webapp: en orgs con Fast Track, el dorsal debe ser requerido al dar de alta un jugador.
 
 ## Abierto
 - Confirmar con CS el comportamiento del invitado.
