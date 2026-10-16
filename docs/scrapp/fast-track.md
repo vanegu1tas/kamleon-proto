@@ -43,6 +43,11 @@
 - Como "Staff como pestaña", pero Staff sale de la barra y va como botón suelto arriba a la derecha (igual que en la de flechas). La barra solo lleva los rangos.
 - Con ≤20 jugadores no hay barra: queda la cuadrícula sola y Staff arriba.
 
+## Regla de los rangos (confirmada por Daniel, 16/10)
+- **No son rangos fijos** (0–19, 20–39…): los jugadores se ordenan por dorsal y se reparten de N en N (20, 30 o 32). La etiqueta es el primer y el último dorsal de la página. Así los saltos en la numeración nunca dejan páginas medio vacías.
+- Consecuencias aceptadas: los rangos no son redondos (21–42), cambian si cambia la plantilla, y el último puede ser muy ancho (64–99).
+- Sin decidir: repartir por igual para que la última página no quede casi vacía (82 → 17-17-16-16-16 en vez de 20-20-20-20-2) · qué hacer con jugadores sin dorsal.
+
 ## Abierto
 - Confirmar con CS el comportamiento del invitado.
 - Distancia de lectura de la pantalla (no hay dato): fotos de 84px y texto de 20px son un supuesto.
