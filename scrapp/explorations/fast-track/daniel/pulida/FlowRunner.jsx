@@ -157,6 +157,9 @@ export default function FastTrackPolished() {
       <TeamBackground color={TEAMS[teamKey].color} className={`${styles.bg} ${onTeam ? '' : styles.bgHidden}`} />
 
       {(step === 'roster' || showRosterBehind) && roster}
+      {/* Un solo logo para plantilla y Ready, fuera de las dos: no se mueve en ninguna transición */}
+      {onTeam && <span className={styles.logo}>KAMLEON®</span>}
+
       {step === 'ready' && (
         <ReadyScreen ref={readyRef} person={person} from={from} onNotYou={notYou} onSimulateFlow={() => setStep('tracking')} />
       )}

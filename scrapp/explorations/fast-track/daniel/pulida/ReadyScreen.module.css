@@ -6,14 +6,6 @@
   color: #ffffff;
 }
 
-.logo {
-  position: absolute;
-  left: 48px;
-  top: 32px;
-  font-size: var(--font-size-20);
-  font-weight: var(--font-weight-bold);
-}
-
 .content {
   position: absolute;
   inset: 96px 0 96px;
@@ -105,8 +97,7 @@
 
 /* T4: al irse, los textos se apagan rápido mientras la foto vuelve a su sitio */
 .leaving .texts,
-.leaving .timeout,
-.leaving .logo {
+.leaving .timeout {
   animation: textsOut 0.15s var(--ease-out) both;
 }
 

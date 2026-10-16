@@ -35,14 +35,6 @@
   flex-shrink: 0;
 }
 
-.logo {
-  position: absolute;
-  left: 48px;
-  top: 32px;
-  font-size: var(--font-size-20);
-  font-weight: var(--font-weight-bold);
-}
-
 .title {
   margin: 0;
   padding-top: 8px;

@@ -15,6 +15,18 @@
   transition: opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.4s ease;
 }
 
+.logo {
+  position: absolute;
+  left: 48px;
+  top: 32px;
+  z-index: 3;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-20);
+  font-weight: var(--font-weight-bold);
+  color: #ffffff;
+  pointer-events: none;
+}
+
 /* Fuera de plantilla y Ready (análisis, score, flush) el fondo del equipo se apaga */
 .bgHidden {
   opacity: 0;

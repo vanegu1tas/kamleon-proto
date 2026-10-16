@@ -69,7 +69,6 @@ export default function RosterScreen({
   return (
     <div ref={rootRef} className={`${styles.screen} ${styles[phase] ?? ''}`}>
       <header className={styles.header}>
-        <span className={styles.logo}>KAMLEON®</span>
         <h1 className={styles.title}>Choose your profile</h1>
         <button
           className={`${styles.pressable} ${styles.staffButton} ${showStaff ? styles.staffActive : ''}`}

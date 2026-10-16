@@ -62,8 +62,6 @@ const ReadyScreen = forwardRef(function ReadyScreen({ person, from, onNotYou, on
 
   return (
     <div className={`${styles.screen} ${leaving ? styles.leaving : ''}`}>
-      <span className={styles.logo}>KAMLEON®</span>
-
       <div className={styles.content}>
         {person.photo
           ? <img ref={photoRef} className={styles.photo} src={person.photo} alt="" />
