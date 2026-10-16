@@ -19,8 +19,21 @@ import JourneyMap from './hub/JourneyMap';
 //   #/<sección>             → cards de esa sección (production | tasks)
 //   #/journey/<id>          → journey map (ver hub/journeys.js)
 //   #/<entrada>/<item>      → un flujo o una exploración (ver hub/entries.jsx)
+// ?capture → modo para pasar una pantalla a Figma (generate_figma_design): sin márgenes, con el
+// script de captura de Figma, y la ruta en ?route=… porque la captura usa el # de la URL.
+const QUERY   = new URLSearchParams(window.location.search);
+const CAPTURE = QUERY.has('capture');
+if (CAPTURE) {
+  Object.assign(document.body.style, { margin: '0', background: '#000' });
+  const script = document.createElement('script');
+  script.src = 'https://mcp.figma.com/mcp/html-to-design/capture.js';
+  script.async = true;
+  document.head.appendChild(script);
+}
+
 function parseHash() {
-  const [entryId, itemId] = window.location.hash.replace(/^#\/?/, '').split('/');
+  const route = CAPTURE && QUERY.get('route') ? QUERY.get('route') : window.location.hash.replace(/^#\/?/, '');
+  const [entryId, itemId] = route.split('/');
   return { entryId: entryId || null, itemId: itemId || null };
 }
 
@@ -45,6 +58,9 @@ function App() {
   const found = entryId ? findEntry(entryId) : null;
   const item  = found?.entry.items?.find(i => i.id === itemId) ?? found?.entry.items?.[0];
   if (!found || !item) return <Hub />;
+
+  // ?capture → solo la pantalla, sin menú ni flechas: para pasarla a Figma (generate_figma_design)
+  if (CAPTURE) return item.render();
 
   // key: al cambiar de item el flujo arranca de cero, no hereda el estado del anterior
   return <Viewer key={`${found.entry.id}/${item.id}`} section={found.section} entry={found.entry} item={item} />;

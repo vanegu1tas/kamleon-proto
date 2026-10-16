@@ -18,6 +18,9 @@ const FLUSH_DURATION    = 4000; // demo: "a minute" real acortado para probar
 // RFID e invitado no se simulan aquí: en esta exploración solo importa la plantilla.
 //
 // qrMode: 'corner' (QR fijo en la esquina) | 'tab' (Staff como pestaña). Ver RosterScreen.
+const QUERY   = new URLSearchParams(window.location.search);
+const CAPTURE = QUERY.has('capture');
+
 const panelLabel = { fontSize: 12, color: 'rgba(255,255,255,0.45)', marginBottom: 4 };
 
 function optionStyle(active) {
@@ -30,9 +33,11 @@ function optionStyle(active) {
 }
 
 export default function FastTrackFlow({ qrMode = 'corner' }) {
-  const [rosterKey, setRosterKey] = useState('nfl');
-  const [pageSize, setPageSize]   = useState(20);
-  const [denseCols, setDenseCols] = useState(8);
+  // La URL puede fijar la configuración de arranque (?roster=nfl&page=30&cols=8); con ?capture se
+  // dibuja solo la pantalla de 1280×800, sin marco ni panel, para pasarla a Figma.
+  const [rosterKey, setRosterKey] = useState(ROSTERS[QUERY.get('roster')] ? QUERY.get('roster') : 'nfl');
+  const [pageSize, setPageSize]   = useState(QUERY.get('page') === '30' ? 30 : 20);
+  const [denseCols, setDenseCols] = useState(QUERY.get('cols') === '6' ? 6 : 8);
   const players = ROSTERS[rosterKey].players;
 
   const [step, setStep]     = useState('roster');
@@ -158,6 +163,8 @@ export default function FastTrackFlow({ qrMode = 'corner' }) {
     default:
       screen = null;
   }
+
+  if (CAPTURE) return screen;
 
   return (
     <>
