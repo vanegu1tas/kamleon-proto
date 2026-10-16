@@ -28,3 +28,6 @@
 ## Abierto
 - Confirmar con CS el comportamiento del invitado.
 - Distancia de lectura de la pantalla (no hay dato): fotos de 84px y texto de 20px son un supuesto.
+- **Tamaño físico de la pantalla** (llega pronto): con él se revisan los tamaños táctiles (pestañas 52 px, Staff 60 px).
+- **Texto de 18 px con 30 por página**: no es token ni estilo del DS (salta de 16 a 20). Propuesto subir a 20 (H3 / H3 Bold); sin decidir.
+- **Figma** (`Scrapp explorations`, nodo 2024:5): capturado NFL · 30 · 8 col con estilos H1 Bold / H3 Bold / H3 asignados; los dorsales y apellidos (18 px) y los colores siguen sin estilo ni variable.

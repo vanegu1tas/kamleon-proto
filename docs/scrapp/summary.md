@@ -75,3 +75,8 @@ Hasta entonces, todo en este repo y en el mismo sitio publicado.
 
 Distancia de lectura, tiempo frente a la pantalla, luz, quién la usa. Los tamaños de Fast Track
 son un supuesto.
+
+**Tamaño físico de la pantalla: pendiente (16/10, se lo van a pasar a Daniel).** Hace falta el
+ancho de la zona iluminada en cm → `ppi = 1280 ÷ (cm ÷ 2,54)` · `mm = px ÷ ppi × 25,4`. Objetivo
+para pantalla pública: ~15 mm por zona táctil. Hoy: pestañas 52 px, Staff 60 px, fotos 84–96 px
+(≈ 9 / 10 / 14–16 mm si fuera de 10,1"). Si no llega el dato: pestañas y Staff a 72 px.
