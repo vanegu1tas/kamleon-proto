@@ -17,7 +17,8 @@ const FLUSH_DURATION    = 4000; // demo: "a minute" real acortado para probar
 // (los equipos pro no lo usan). Tocar el QR cuenta como escanearlo y lleva a Ready con un staff.
 // RFID e invitado no se simulan aquí: en esta exploración solo importa la plantilla.
 //
-// qrMode: 'corner' (QR fijo en la esquina) | 'tab' (Staff como pestaña). Ver RosterScreen.
+// qrMode: 'corner' (QR fijo en la esquina) | 'tab' (Staff como pestaña) | 'button' (Staff arriba a
+// la derecha). nav: 'tabs' | 'arrows'. Ver RosterScreen.
 const QUERY   = new URLSearchParams(window.location.search);
 const CAPTURE = QUERY.has('capture');
 

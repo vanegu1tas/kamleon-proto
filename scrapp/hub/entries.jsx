@@ -66,6 +66,7 @@ export const SECTIONS = [
           { id: 'qr-esquina',     label: 'QR en la esquina',   author: 'Daniel', render: () => <FastTrackDaniel qrMode="corner" /> },
           { id: 'staff-pestana',  label: 'Staff como pestaña', author: 'Daniel', render: () => <FastTrackDaniel qrMode="tab" /> },
           { id: 'flechas',        label: 'Flechas entre rangos', author: 'Daniel', render: () => <FastTrackDaniel nav="arrows" /> },
+          { id: 'staff-boton',    label: 'Pestañas + Staff arriba', author: 'Daniel', render: () => <FastTrackDaniel qrMode="button" /> },
         ],
       },
       {

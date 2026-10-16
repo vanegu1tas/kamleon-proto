@@ -9,6 +9,8 @@ import { initialsFor, paginate } from '../data/rosters';
  * qrMode
  *   'corner' → el QR fijo arriba a la derecha (lo que pide la propuesta, algo más grande)
  *   'tab'    → "Staff" es una pestaña más: al tocarla, el QR grande ocupa el sitio de la cuadrícula
+ *   'button' → igual que 'tab', pero "Staff" es un botón suelto arriba a la derecha (como con
+ *              flechas) y la barra solo lleva los rangos
  *
  * nav
  *   'tabs'   → pestañas por rango de dorsales (y Staff, según qrMode)
@@ -32,7 +34,8 @@ export default function RosterScreen({ players, pageSize = 20, denseCols = 8, qr
   const pages = paginate(players, fillGrid ? 32 : pageSize);
   const [tab, setTab] = useState(0);          // índice de página, o 'staff'
   const arrows = nav === 'arrows';
-  const showStaff = (arrows || qrMode === 'tab') && tab === 'staff';
+  const staffButton = arrows || qrMode === 'button';
+  const showStaff = (staffButton || qrMode === 'tab') && tab === 'staff';
   const pageIndex = typeof tab === 'number' ? tab : 0;
   const page = pages[pageIndex];
 
@@ -70,7 +73,7 @@ export default function RosterScreen({ players, pageSize = 20, denseCols = 8, qr
           {/* El rango, pegado al título como subtítulo: así no queda flotando (16/10) */}
           {showIndicator && <p className={styles.subtitle} aria-live="polite">Numbers {page.label}</p>}
         </div>
-        {arrows && (
+        {staffButton && (
           <button
             className={`${styles.tab} ${styles.staffTab} ${styles.staffButton} ${showStaff ? styles.tabActive : ''}`}
             onClick={() => setTab(showStaff ? pageIndex : 'staff')}
@@ -78,7 +81,7 @@ export default function RosterScreen({ players, pageSize = 20, denseCols = 8, qr
             Staff
           </button>
         )}
-        {!arrows && qrMode === 'corner' && (
+        {!staffButton && qrMode === 'corner' && (
           <button className={styles.cornerQr} onClick={onScanQr} aria-label="Staff: scan QR">
             <QrPlaceholder size={96} color="#ffffff" />
             <span className={styles.cornerQrText}>Staff</span>

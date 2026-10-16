@@ -39,6 +39,10 @@
 - Con 30 × 8, la página se llena entera: **32 por página** (8 × 4), y la que queda corta es la última. Solo en esta exploración.
 - Contra: para llegar al rango 5 hacen falta 4 toques (con pestañas, 1). Es lo que se compara.
 
+## Exploración 4 · Pestañas + Staff arriba (16/10)
+- Como "Staff como pestaña", pero Staff sale de la barra y va como botón suelto arriba a la derecha (igual que en la de flechas). La barra solo lleva los rangos.
+- Con ≤20 jugadores no hay barra: queda la cuadrícula sola y Staff arriba.
+
 ## Abierto
 - Confirmar con CS el comportamiento del invitado.
 - Distancia de lectura de la pantalla (no hay dato): fotos de 84px y texto de 20px son un supuesto.
