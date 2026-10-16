@@ -64,7 +64,7 @@
   align-items: center;
   justify-content: center;
   gap: 24px;
-  height: 64px;
+  height: 96px;
   flex-shrink: 0;
 }
 
@@ -77,8 +77,9 @@
 }
 
 .tab {
-  min-width: 112px;
-  height: 52px;
+  /* 80 px = 13,6 mm en la pantalla real (10,1", 149 ppi) */
+  min-width: 120px;
+  height: 80px;
   padding: 0 24px;
   border: none;
   border-radius: 999px;
@@ -98,7 +99,7 @@
 
 /* Staff va aparte: no es un rango de dorsales */
 .staffTab {
-  height: 60px;
+  height: 88px;
   border: 2px solid rgba(255, 255, 255, 0.2);
 }
 
@@ -189,7 +190,7 @@
 
 /* 30 por página: 6 × 5 */
 .dense {
-  grid-auto-rows: 112px;
+  grid-auto-rows: 108px;
   column-gap: 12px;
 }
 
@@ -209,7 +210,6 @@
 .dense .label {
   max-width: 168px;
   gap: 6px;
-  font-size: 18px;
 }
 
 /* 30 por página en 8 × 4: columnas más estrechas, una fila menos, fotos algo más grandes */
