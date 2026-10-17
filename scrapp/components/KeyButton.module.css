@@ -1,0 +1,162 @@
+/* Tecla tipo OP-1: base cuadrada mate, ranura fina alrededor, círculo en relieve con el icono.
+   Grises oscuros del DS; el único color es el LED turquesa cuando está encendida. */
+
+.key {
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: none;
+  border-radius: 7px;
+  /* base plana y mate, apenas más clara arriba */
+  background: linear-gradient(180deg, #1e262e 0%, #192027 100%);
+  /* ranura fina que la separa del cuerpo + filo de luz arriba */
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 2px 4px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+}
+
+/* Círculo (Figma 2040:8, 17/10): 36 px, moldeado en la tecla. Sombra exterior suave abajo, una
+   penumbra y un brillo muy leves por arriba, y un filo de luz difuminado en la parte alta. */
+.cap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  overflow: hidden;
+  border-radius: 50%;
+  background: radial-gradient(82% 82% at 49% 34%, #232c35 0%, #1e262e 70%, #1c242b 100%);
+  box-shadow:
+    0 4px 6px rgba(0, 0, 0, 0.4),
+    0 -3px 4px rgba(255, 255, 255, 0.05),
+    0 -2px 3px rgba(0, 0, 0, 0.2),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.24),
+    inset 0 1px 1px rgba(255, 255, 255, 0.02);
+  color: rgba(255, 255, 255, 0.78);
+  transition: transform 0.08s var(--ease), box-shadow 0.12s var(--ease), color 0.12s var(--ease);
+}
+
+/* icono como tinta serigrafiada sobre el círculo: la luz viene de arriba, así que la parte de
+   arriba del icono brilla más (máscara en degradado sobre el color al 78 %) y la tinta tiene un
+   grosor mínimo (sombra oscura de 1 px por debajo) */
+.cap svg {
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.72) 100%);
+  mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.72) 100%);
+  filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.35));
+}
+
+/* filo de luz en la parte alta del círculo (en Figma: elipse 34 × 13, trazo blanco 30 % de 0,2 px
+   con desenfoque 2; aquí el mismo brillo con 1 px a menos opacidad) */
+.cap::after {
+  content: '';
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  right: 1px;
+  height: 13px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 50%;
+  filter: blur(2px);
+  pointer-events: none;
+}
+
+.key:active .cap {
+  box-shadow:
+    inset 0 1px 2px rgba(0, 0, 0, 0.3),
+    0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+/* encendida: el círculo queda levemente cóncavo (en las momentáneas no: ahí lo dice solo el LED) */
+.on:not(.momentary) .cap {
+  background: radial-gradient(circle at 50% 65%, #1f272f 0%, #1a2128 100%);
+  box-shadow:
+    inset 0 1px 2px rgba(0, 0, 0, 0.3),
+    0 1px 0 rgba(255, 255, 255, 0.03);
+  color: #ffffff;
+}
+
+.led {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.7);
+  transition: background 0.12s var(--ease), box-shadow 0.12s var(--ease);
+}
+
+.on .led {
+  background: var(--led-color, var(--color-turquoise-51));
+  box-shadow: 0 0 5px var(--led-color, var(--color-turquoise-51));
+}
+
+/* rectangular (wide): la base ocupa el ancho que le den y el círculo se alarga en píldora,
+   con el mismo margen de 6 px alrededor */
+.wide {
+  width: 100%;
+}
+
+.wide .cap {
+  width: calc(100% - 12px);
+  border-radius: 18px;
+}
+
+/* en la píldora el filo de luz sigue solo su contorno de arriba (una elipse entera se veía como
+   un aro completo dentro de la tecla) */
+.wide .cap::after {
+  top: 1px;
+  left: 2px;
+  right: 2px;
+  height: 18px;
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 17px 17px 0 0;
+}
+
+/* momentánea (las del panel): se hunde la tecla entera al presionarla y vuelve sola: baja 1 px,
+   pierde la sombra que la despegaba y la base queda en penumbra por dentro. Cuál está elegida lo
+   dice el LED. */
+.momentary {
+  transition: transform 0.08s var(--ease), box-shadow 0.12s var(--ease), background 0.12s var(--ease);
+}
+
+.momentary:active {
+  transform: translateY(1px);
+  background: linear-gradient(180deg, #161c22 0%, #1a2128 100%);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.75),
+    inset 0 2px 3px rgba(0, 0, 0, 0.45),
+    0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+/* lisa: la base sola, sin relieve en el centro */
+.flat .cap,
+.flat:active .cap,
+.flat.on .cap {
+  background: none;
+  box-shadow: none;
+}
+
+.flat .cap {
+  height: auto;
+}
+
+.flat .cap::after {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cap, .led, .momentary { transition: none; }
+  .momentary:active { transform: none; }
+}

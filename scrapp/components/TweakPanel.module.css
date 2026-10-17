@@ -1,0 +1,336 @@
+/* Panel de ajustes · neo-skeuomórfico con referencias de Teenage Engineering.
+   Superficie en los grises oscuros del DS; teclas en relieve dentro de pozos hundidos; el único
+   color es el LED turquesa de lo activo (y las muestras de los equipos).
+   Tamaños de texto fijos (11–13 px): es andamiaje de escritorio, no la pantalla de 1280 × 800. */
+
+.dock {
+  position: fixed;
+  top: 72px;
+  right: 20px;
+  z-index: 100;
+}
+
+/* el contenido del panel (la tecla y la superficie las pone Morph) */
+.panel {
+  --well: #0e1318;
+  --key-top: #232c35;
+  --key-bottom: #1a2128;
+  --text: rgba(255, 255, 255, 0.86);
+  --text-muted: rgba(255, 255, 255, 0.42);
+  --led: var(--color-turquoise-51);
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* ocupa el hueco a la derecha de la pantalla del dispositivo (1026 px centrada): puede pisar el
+     borde gris del marco. Mínimo 256 px para que Apellidos quepa siempre en la fila de Plantilla
+     (en ventanas más pequeñas pisa un poco la pantalla; Daniel, 17/10). Máximo 280. */
+  width: clamp(256px, calc((100vw - 1026px) / 2 - 36px), 280px);
+  max-height: calc(100vh - 92px);
+  overflow-y: auto;
+  color: var(--text);
+  font-size: 13px;
+}
+
+.title {
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+}
+
+/* ─── Carpetas ─── */
+
+.folder {
+  padding: 2px 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.45);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
+}
+
+.folderHead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 9px 12px;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.caret {
+  width: 10px;
+  color: var(--text-muted);
+  font-size: 10px;
+  transition: transform 0.2s var(--ease);
+}
+
+.caretOpen {
+  transform: rotate(90deg);
+}
+
+/* como serigrafía: mayúsculas pequeñas con espaciado */
+.folderLabel {
+  flex: 1;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.08em;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.folderValue {
+  color: var(--text);
+  font-size: 12px;
+}
+
+/* pozo hundido que agrupa los controles */
+.well {
+  margin: 0 6px 8px;
+  padding: 6px;
+  border-radius: 12px;
+  background: var(--well);
+  box-shadow:
+    inset 0 2px 4px rgba(0, 0, 0, 0.6),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.5),
+    0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* ─── Teclas ─── */
+
+.keys {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.key {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 8px 22px 8px 10px;
+  border: none;
+  border-radius: 9px;
+  background: linear-gradient(180deg, var(--key-top), var(--key-bottom));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 0 0 1px rgba(0, 0, 0, 0.55),
+    0 2px 3px rgba(0, 0, 0, 0.5);
+  color: var(--text);
+  font: inherit;
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.08s var(--ease), box-shadow 0.12s var(--ease);
+}
+
+.key:active {
+  transform: translateY(1px);
+}
+
+/* activa: se queda hundida */
+.keyActive {
+  background: linear-gradient(180deg, #161c22, #1b2229);
+  box-shadow:
+    inset 0 2px 3px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(0, 0, 0, 0.6),
+    0 1px 0 rgba(255, 255, 255, 0.05);
+  transform: translateY(1px);
+}
+
+.keyLabel {
+  line-height: 1.25;
+}
+
+.keyLed {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  width: 5px;
+  height: 5px;
+  margin-top: -2.5px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.6);
+}
+
+.keyLedOn {
+  background: var(--led);
+  box-shadow: 0 0 6px var(--led);
+}
+
+.swatch {
+  width: 10px;
+  height: 10px;
+  flex-shrink: 0;
+  border-radius: 3px;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* ─── Teclas OP-1 sueltas (control: 'keycaps') ─── */
+
+/* sin pozo: las teclas salen directamente de la superficie del panel */
+.keycaps {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 4px 8px 14px;
+}
+
+.keycap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+}
+
+/* sueltas arriba y debajo el hueco con el resto (Equipo: Neutro + los 4 equipos) */
+.keycapsColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 4px 8px 14px;
+}
+
+/* cuadradas seguidas en un mismo hueco; al lado, aparte, las rectangulares (wide) llenan el resto */
+.keycapsStack {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 4px 8px 14px;
+}
+
+/* siempre al lado del banco, en la misma fila, llenando lo que quede */
+.keycapsStack > .keycap {
+  flex: 1;
+  min-width: 0;
+}
+
+.bank {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+}
+
+/* el hueco: un solo borde negro para las tres; dentro, las teclas pegadas sin su borde propio,
+   separadas solo por una costura fina */
+.slot {
+  display: grid;
+  grid-template-columns: repeat(var(--keys), 48px);
+  border-radius: 7px;
+  /* fondo de la ranura: se ve en las esquinas de las teclas */
+  background: #0b0f13;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.7),
+    0 2px 4px rgba(0, 0, 0, 0.35);
+}
+
+.slot > button {
+  /* cada tecla con sus esquinas redondeadas, también la del medio (prueba 17/10) */
+  border-radius: 7px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.slot > button + button {
+  box-shadow:
+    inset 1px 0 0 rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+
+/* mismas columnas que el hueco para que cada nombre quede bajo su tecla */
+.bankLabels {
+  display: grid;
+  grid-template-columns: repeat(var(--keys), 48px);
+  justify-items: center;
+}
+
+.capText {
+  font-size: 13px;
+  font-weight: var(--font-weight-medium);
+  font-variant-numeric: tabular-nums;
+}
+
+.keycapWide {
+  grid-column: 1 / -1;
+}
+
+/* nombre en la tecla (labelInCap): punto + nombre en la píldora */
+.capText + .capText,
+.dot + .capText {
+  margin-left: 8px;
+}
+
+/* punto de color embutido en el círculo */
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35), inset 0 -1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.dotOutline {
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.35);
+}
+
+.keycapLabel {
+  color: var(--text-muted);
+  font-size: 9px;
+  font-weight: var(--font-weight-book);
+  letter-spacing: 0.1em;
+  text-align: center;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: color 0.15s var(--ease);
+}
+
+.keycapLabelOn {
+  color: var(--text);
+}
+
+/* ─── Interruptor segmentado (2 opciones) ─── */
+
+.segmented {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 3px;
+}
+
+.thumb {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  left: 3px;
+  width: calc(50% - 3px);
+  border-radius: 9px;
+  background: linear-gradient(180deg, var(--key-top), var(--key-bottom));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 0 0 1px rgba(0, 0, 0, 0.55),
+    0 2px 3px rgba(0, 0, 0, 0.5);
+  transition: transform 0.22s var(--ease);
+}
+
+.segment {
+  position: relative;
+  min-height: 34px;
+  padding: 0 22px 0 10px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  transition: color 0.15s var(--ease);
+}
+
+.segmentActive {
+  color: var(--text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .caret, .thumb, .key, .segment { transition: none; }
+}

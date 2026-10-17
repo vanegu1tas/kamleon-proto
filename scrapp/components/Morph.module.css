@@ -1,0 +1,124 @@
+/* Cerrada: el material de KeyButton. Abierta: el de los paneles, con las mismas esquinas de 7 px
+   de la tecla (Daniel, 17/10: solo cambia de tamaño) (mismas sombras en el mismo orden
+   para que se interpolen). */
+
+.root {
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  position: relative;
+  width: 48px;
+  height: 48px;
+  font-family: var(--font-family-primary);
+}
+
+.surface,
+.content,
+.root .key {
+  position: absolute;
+  top: 0;
+}
+
+.left .surface, .left .content, .left .key { left: 0; }
+.right .surface, .right .content, .right .key { right: 0; }
+
+/* ─── La superficie que se transforma ─── */
+
+.surface {
+  width: 48px;
+  height: 48px;
+  border-radius: 7px;
+  background: linear-gradient(180deg, #1e262e 0%, #192027 100%);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 2px 4px rgba(0, 0, 0, 0.35);
+  /* al cerrar: espera a que el contenido se vaya y encoge */
+  transition:
+    width 0.26s var(--ease) 0.06s,
+    height 0.26s var(--ease) 0.06s,
+    box-shadow 0.26s var(--ease) 0.06s;
+}
+
+.open .surface {
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    0 12px 32px rgba(0, 0, 0, 0.45);
+  transition:
+    width 0.34s var(--ease),
+    height 0.34s var(--ease),
+    box-shadow 0.34s var(--ease);
+}
+
+/* la tecla sin base propia, encima de todo, siempre en su esquina */
+.root .key {
+  z-index: 1;
+  background: none;
+  box-shadow: none;
+}
+
+/* ─── Cambio de icono: el que se va se desenfoca y encoge, el que llega se enfoca ─── */
+
+.iconSwap {
+  display: grid;
+  place-items: center;
+}
+
+.iconClosed,
+.iconOpen {
+  grid-area: 1 / 1;
+  display: flex;
+  transition:
+    opacity 0.2s var(--ease),
+    filter 0.2s var(--ease),
+    transform 0.2s var(--ease);
+}
+
+.iconOpen,
+.open .iconClosed {
+  opacity: 0;
+  filter: blur(4px);
+  transform: scale(0.6);
+}
+
+.open .iconOpen {
+  opacity: 1;
+  filter: blur(0);
+  transform: none;
+}
+
+/* ─── Contenido ─── */
+
+.content {
+  padding: 0 6px 6px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  /* al cerrar: se va primero, rápido */
+  transition: opacity 0.1s ease-out, transform 0.1s ease-out, visibility 0s linear 0.1s;
+}
+
+.open .content {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  /* al abrir: entra cuando la superficie ya ha recorrido casi todo */
+  transition: opacity 0.18s ease-out 0.16s, transform 0.22s var(--ease) 0.16s, visibility 0s;
+}
+
+/* la fila de la tecla: el título al lado del icono */
+.head {
+  display: flex;
+  align-items: center;
+  height: 48px;
+}
+
+.left .head  { padding-left: 54px; }
+.right .head { padding: 0 54px 0 12px; }
+
+/* Reducir movimiento: sin crecer; la superficie cambia de golpe y el contenido solo funde */
+@media (prefers-reduced-motion: reduce) {
+  .surface, .open .surface { transition: none; }
+  .content, .open .content { transform: none; }
+  .iconClosed, .iconOpen { transform: none !important; filter: none !important; }
+}

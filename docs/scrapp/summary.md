@@ -9,8 +9,9 @@
 
 ## Lo primero al retomar
 
-1. **Fast Track**: hay 5 exploraciones; se pule solo la última, **"Pulida: equipo + transiciones"**
-   (16/10), que parte de "Pestañas + Staff arriba". Decisiones, motivos y pendientes →
+1. **Fast Track**: hay 6 exploraciones. La de referencia es **"Pulida: equipo + transiciones"**
+   (16/10, con selector de Celda: Actual · A Parche · B Camiseta); la nueva es **"Dorsal grande
+   (7 columnas)"** (17/10, la celda que Daniel exploró en Figma). Decisiones, motivos y pendientes →
    `docs/scrapp/fast-track.md`. Preguntas al programador sobre Qt (Quick o Widgets, versión, hardware).
    Hecho en la pulida: tema por equipo (fondo = color × 0,32 con shader ligero), transiciones T1–T6 y
    un solo logo fijo (ya no brinca). Sin decidir: acento turquesa o blanco.
@@ -55,6 +56,26 @@ Estilo: cards y textos a la escala de la landing (títulos de 15px, descripcione
 estado va como eyebrow de color: En curso y Referencia en turquesa, Exploración en amarillo,
 Futuro en gris.
 
+**Controles del microsite (17/10)** — andamiaje, no producto. Estética neo-skeuomórfica con
+referencias de Teenage Engineering; mecánicas de DialKit. Más adelante saldrá un proyecto aparte
+con nuestro propio sistema de "dialkits".
+- `components/KeyButton`: tecla tipo OP-1 (base + círculo en relieve + icono). Valores del frame de
+  Daniel *Tecla menú / apagada* (Figma `Ae9SVr0hiDSbQSSqAU5AsT` 2040:8); el trazo de luz de 0,2 px
+  al 30 % va como 1 px al 7 %. Opciones: `wide` (rectangular, píldora; la luz sigue solo el borde
+  de arriba), `momentary` (se hunde entera y vuelve; lo elegido lo dice el LED), `flat` (lisa),
+  `ledColor`. Iconos como tinta: degradado de luz de arriba + sombra de 1 px.
+- `components/Morph`: la tecla se convierte en panel (misma superficie, esquinas de 7 px siempre).
+  La usan el ☰ (izquierda, `ItemMenu`: lista de exploraciones con LED como radio button) y el
+  engranaje (derecha, `TweakPanel`; cambia a X con fundido y desenfoque). Probado y descartado:
+  hundir la tecla entera al presionar el ☰/engranaje, y una pantallita LCD con el nombre.
+- `components/TweakPanel`: grupos por configuración. `control: 'keycaps'` con `columns` (2 =
+  rectangulares sueltas; 3+ = cuadradas en un mismo hueco oscuro), `wide`, `labelInCap`, `flat`,
+  `keyHeight`, `led`. Ancho 256–280 px (puede pisar un poco la pantalla del dispositivo). Hoy solo
+  en *Dorsal grande*: Equipo (Neutro arriba, 2 y 2, lisas de 36 px, LED del color del equipo),
+  Acento (punto turquesa / blanco), Plantilla (16 · 28 · 90 = Small · Medium · Big + Apellidos).
+- Pendiente: LED de Dallas y Aston Villa casi no se ve (aclarar solo el LED); flechas ‹ n/m › de
+  abajo con las teclas nuevas; título del panel (blanco) vs. del ☰ (gris en mayúsculas).
+
 ## Cómo se trabaja
 
 - **Exploraciones por persona**: `scrapp/explorations/<tarea>/<persona>/`. Cada una arranca como
@@ -76,10 +97,36 @@ día). Cuando entre:
 
 Hasta entonces, todo en este repo y en el mismo sitio publicado.
 
-## Restricciones que no tenemos
+## Contexto de uso (lo que sabemos nosotros)
 
-Distancia de lectura, tiempo frente a la pantalla, luz, quién la usa. Los tamaños de Fast Track
-son un supuesto.
+Contexto para cualquier revisión de diseño (impeccable incluido): **no hay `PRODUCT.md` ni
+`DESIGN.md` a propósito** (16/10): el contexto vive aquí y en las fichas, sin duplicarlo.
+
+- **Qué es**: una pantalla táctil sobre el urinal que analiza la orina y le enseña a la persona su
+  resultado (score, hidratación). Kamleon es una marca de hidratación y salud.
+- **Clientes**: equipos profesionales (Dallas Cowboys, Gil Vicente, Aston Villa, Arsenal). Un
+  equipo por instalación en el caso de Fast Track.
+- **Quién la usa**: jugadores de la plantilla (eligen su perfil o entran por RFID si el club compra
+  las manillas), staff que no está en la plantilla (entra por QR) e invitados (si orinan sin elegir
+  perfil, cuenta como invitado).
+- **Dónde** (Daniel, 16/10): en el vestuario del equipo, en centros de entrenamiento o en estadios.
+- **En qué momento**: de pie, frente al urinal, antes de orinar. Cada pantalla antes de orinar es
+  fricción: hoy solo se registra ~20 % de los usos y el objetivo de Fast Track es llegar al 30–35 %.
+- **Tiempo frente a la pantalla** (Daniel, 16/10): lo único que no controlamos es lo que dura
+  orinando; todos los demás tiempos (Ready, score, vuelta a la plantilla) los marcamos nosotros.
+- **Distancia de lectura** (Daniel, 16/10): **20–30 cm**. Muy cerca: a esa distancia los tamaños
+  de Fast Track (texto de 20 px ≈ 3,4 mm, fotos de 84 px ≈ 14 mm) van holgados; lo que manda es el
+  dedo (zonas táctiles de ~80 px), no la lectura.
+- **Lo que el equipo no quiere**: PIN (no lo usan). Se acepta que alguien se registre a nombre de
+  otro; "Ready" evita el error, no la suplantación.
+- **Idioma**: todo en inglés, sin selector.
+- **Tono** (Daniel, 16/10): deportivo por defecto, pero depende de cómo se haya cerrado el negocio
+  con cada cliente; puede tener que ser neutro. El diseño tiene que aguantar los dos.
+- **Identidad visual**: Circular Pro, fondo oscuro, teal como acento. El audit de julio
+  (`docs/features/scrapp-end-user-audit.md`) señaló que el teal sobre negro se lee genérico y que el
+  color decora más de lo que comunica; en Fast Track el fondo ya toma el color del equipo.
+
+**Sin dato**: la luz del vestuario y si suele haber cola.
 
 **Pantalla real (confirmado 16/10): 10,1", zona activa 218 × 136,5 mm, 1280 × 800 → 149 ppi,
 1 px = 0,17 mm.** `mm = px × 0,17`. Objetivo para zona táctil en pantalla pública: ~15 mm (~88 px);

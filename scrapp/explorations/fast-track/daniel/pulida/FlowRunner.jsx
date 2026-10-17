@@ -18,6 +18,13 @@ const LEAVE_MS          = 420;   // T3: cuánto sigue la plantilla debajo mientr
 // suma el tema del equipo y las transiciones T1–T6 (lista en docs/scrapp/fast-track.md).
 // Las otras exploraciones se quedan como estaban, de referencia.
 
+// Celda del jugador (16/10, tras la critique): dónde va el dorsal sin quitarle peso a la cara
+const CELLS = {
+  actual:   'Actual',
+  parche:   'A · Parche',
+  camiseta: 'B · Camiseta',
+};
+
 const QUERY   = new URLSearchParams(window.location.search);
 const CAPTURE = QUERY.has('capture');
 
@@ -27,6 +34,7 @@ export default function FastTrackPolished() {
   const [denseCols, setDenseCols] = useState(QUERY.get('cols') === '6' ? 6 : 8);
   const [teamKey, setTeamKey]     = useState(TEAMS[QUERY.get('team')] ? QUERY.get('team') : 'dallas');
   const [accentKey, setAccentKey] = useState(QUERY.get('accent') === 'white' ? 'white' : 'kamleon');
+  const [cellKey, setCellKey]     = useState(CELLS[QUERY.get('cell')] ? QUERY.get('cell') : 'actual');
   const players = ROSTERS[rosterKey].players;
 
   // step: dónde estamos · rosterPhase: qué transición hace la plantilla
@@ -46,8 +54,11 @@ export default function FastTrackPolished() {
 
   // T1 dura ~0,6 s con la cascada; después la plantilla queda quieta
   useEffect(() => {
-    if (rosterPhase !== 'enter' && rosterPhase !== 'returning') return;
-    const t = setTimeout(() => setRosterPhase('idle'), rosterPhase === 'enter' ? 650 : 320);
+    // 'returning' no se cierra con reloj: lo cierra notYou cuando la foto termina de volver. (Con
+    // reloj, a los 320 ms la foto aún volaba —tarda 350— y la plantilla pasaba un instante a
+    // 'leaving': se apagaba y volvía a salir, el parpadeo del 17/10.)
+    if (rosterPhase !== 'enter') return;
+    const t = setTimeout(() => setRosterPhase('idle'), 650);
     return () => clearTimeout(t);
   }, [rosterPhase]);
 
@@ -81,6 +92,7 @@ export default function FastTrackPolished() {
     setShowRosterBehind(true);
     const done = () => {
       setStep('roster');
+      setRosterPhase('idle');
       setShowRosterBehind(false);
       setPerson(null);
       setFrom(null);
@@ -142,6 +154,7 @@ export default function FastTrackPolished() {
       players={players}
       pageSize={pageSize}
       denseCols={denseCols}
+      cell={cellKey}
       tab={tab}
       onTab={setTab}
       phase={step === 'roster' ? rosterPhase : rosterPhase === 'returning' ? 'returning' : 'leaving'}
@@ -192,6 +205,11 @@ export default function FastTrackPolished() {
         <Group label="Acento" row>
           {Object.entries(ACCENTS).map(([k, a]) => (
             <Option key={k} active={accentKey === k} onClick={() => setAccentKey(k)}>{a.label}</Option>
+          ))}
+        </Group>
+        <Group label="Celda">
+          {Object.entries(CELLS).map(([k, label]) => (
+            <Option key={k} active={cellKey === k} onClick={() => setCellKey(k)}>{label}</Option>
           ))}
         </Group>
         <Group label="Plantilla de prueba">

@@ -1,0 +1,116 @@
+.screen {
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  position: absolute;
+  inset: 0;
+  font-family: var(--font-family-primary);
+  color: #ffffff;
+}
+
+.content {
+  position: absolute;
+  inset: 96px 0 96px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.photo {
+  width: 168px;
+  height: 168px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 0 4px var(--accent);
+  transform-origin: 0 0;   /* el vuelo se calcula desde la esquina superior izquierda */
+}
+
+.initials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.14);
+  font-size: var(--font-size-48);
+  font-weight: var(--font-weight-medium);
+}
+
+/* T3: los textos aparecen cuando la foto ya casi llegó */
+.texts {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: textsIn 0.3s var(--ease-out) 0.22s both;
+}
+
+.greeting {
+  margin: 28px 0 0;
+  font-size: var(--font-size-48);
+  font-weight: var(--font-weight-bold);
+}
+
+.number {
+  margin-top: 4px;
+  font-size: var(--font-size-32);
+  font-weight: var(--font-weight-bold);
+  color: var(--accent);
+}
+
+.instruction {
+  margin: 28px 0 16px;
+  font-size: var(--font-size-24);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.notYou {
+  margin-top: 28px;
+  min-width: 240px;
+  min-height: 64px;
+  padding: 0 40px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 999px;
+  background: transparent;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: var(--font-size-24);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: transform 0.1s var(--ease-out);
+}
+
+.notYou:active {
+  transform: scale(0.96);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.timeout {
+  position: absolute;
+  bottom: 44px;
+  left: 0;
+  right: 0;
+  margin: 0;
+  text-align: center;
+  font-size: var(--font-size-16);
+  color: rgba(255, 255, 255, 0.5);
+  animation: textsIn 0.3s var(--ease-out) 0.3s both;
+}
+
+/* T4: al irse, los textos se apagan rápido mientras la foto vuelve a su sitio */
+.leaving .texts,
+.leaving .timeout {
+  animation: textsOut 0.15s var(--ease-out) both;
+}
+
+@keyframes textsIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes textsOut {
+  to { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .screen { animation: textsIn 0.2s linear both; }
+  @keyframes textsIn { from { opacity: 0; } to { opacity: 1; } }
+}

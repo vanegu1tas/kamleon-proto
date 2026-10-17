@@ -1,7 +1,8 @@
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import styles from './RosterScreen.module.css';
 import QrPlaceholder from '../../../../components/QrPlaceholder';
-import { initialsFor, paginate } from '../data/rosters';
+import { paginate } from '../data/rosters';
+import Avatar from './Avatar';
 
 /**
  * Fast Track pulida · plantilla con pestañas de rangos + "Staff" arriba a la derecha.
@@ -13,10 +14,18 @@ import { initialsFor, paginate } from '../data/rosters';
  *   T2  al cambiar de rango, el resaltado se desliza y la cuadrícula entra de lado
  *   T3  al tocar una cara, todo se apaga menos ella (el vuelo lo hace Ready) (phase="leaving")
  *   T4  al volver de Ready, la plantilla reaparece                        (phase="returning")
- *   T5  Staff: el QR entra creciendo
+ *   T5  Staff: el QR entra creciendo; las pestañas se apagan y "Staff" pasa a "‹ Players"
+ *
+ * Celda (`cell`, para comparar; 16/10):
+ *   actual    dorsal + apellido debajo de la foto
+ *   parche    A · el dorsal en un parche pegado a la foto; debajo solo el apellido
+ *   camiseta  B · el dorsal enorme y translúcido detrás de la foto; debajo solo el apellido
  */
+// Staff (17/10, tras la critique): si nadie escanea, la plantilla vuelve sola para el siguiente
+const STAFF_IDLE_MS = 20000;
+
 export default function RosterScreen({
-  players, pageSize = 20, denseCols = 8, tab, onTab, phase = 'idle', selectedId,
+  players, pageSize = 20, denseCols = 8, cell = 'actual', tab, onTab, phase = 'idle', selectedId,
   onSelect, onScanQr,
 }) {
   const pages = paginate(players, pageSize);
@@ -29,9 +38,21 @@ export default function RosterScreen({
   // transiciones no la deslizan.
   const [slide, setSlide] = useState(null);
   function goTo(next) {
-    if (typeof next === 'number' && next !== pageIndex) setSlide(next > pageIndex ? 'fromRight' : 'fromLeft');
+    if (typeof next === 'number' && !showStaff && next !== pageIndex) setSlide(next > pageIndex ? 'fromRight' : 'fromLeft');
+    else if (showStaff) setSlide(null);
     onTab(next);
   }
+
+  // Al salir de Staff se vuelve al rango en el que estaba, no al primero
+  const lastPage = useRef(pageIndex);
+  if (!showStaff) lastPage.current = pageIndex;
+  const backToPlayers = () => goTo(lastPage.current);
+
+  useEffect(() => {
+    if (!showStaff) return;
+    const t = setTimeout(backToPlayers, STAFF_IDLE_MS);
+    return () => clearTimeout(t);
+  }, [showStaff]);
 
   // T2: el resaltado de la pestaña activa es una sola pieza que se desliza
   const tabRefs = useRef([]);
@@ -71,15 +92,15 @@ export default function RosterScreen({
       <header className={styles.header}>
         <h1 className={styles.title}>Choose your profile</h1>
         <button
-          className={`${styles.pressable} ${styles.staffButton} ${showStaff ? styles.staffActive : ''}`}
-          onClick={() => goTo(showStaff ? pageIndex : 'staff')}
+          className={`${styles.pressable} ${styles.staffButton}`}
+          onClick={() => (showStaff ? backToPlayers() : goTo('staff'))}
         >
-          Staff
+          {showStaff ? '‹ Players' : 'Staff'}
         </button>
       </header>
 
       {hasRanges && (
-        <nav className={styles.tabs} aria-label="Roster">
+        <nav className={`${styles.tabs} ${showStaff ? styles.tabsHidden : ''}`} aria-label="Roster" aria-hidden={showStaff}>
           <div className={styles.tabGroup}>
             {pill && <span className={styles.pill} style={{ transform: `translateX(${pill.x}px)`, width: pill.w }} />}
             {pages.map((p, i) => (
@@ -107,7 +128,7 @@ export default function RosterScreen({
         ) : (
           <div
             key={pageIndex}
-            className={`${styles.grid} ${dense ? styles.dense : ''} ${wide ? styles.wide : ''} ${slide ? styles[slide] : ''}`}
+            className={`${styles.grid} ${dense ? styles.dense : ''} ${wide ? styles.wide : ''} ${styles[cell] ?? ''} ${slide ? styles[slide] : ''}`}
             style={gridStyle}
           >
             {page.players.map((p, i) => (
@@ -115,13 +136,15 @@ export default function RosterScreen({
                 key={p.id}
                 className={`${styles.player} ${p.id === selectedId ? styles.selected : ''}`}
                 style={{ '--i': i }}
-                onClick={e => select(p, e.currentTarget.firstChild)}
+                onClick={e => select(p, e.currentTarget.querySelector('[data-photo]'))}
               >
-                {p.photo
-                  ? <img className={styles.photo} src={p.photo} alt="" />
-                  : <span className={`${styles.photo} ${styles.initials}`}>{initialsFor(p.name)}</span>}
+                <span className={styles.face}>
+                  {cell === 'camiseta' && <span className={styles.jersey} aria-hidden="true">{p.number}</span>}
+                  <Avatar data-photo person={p} className={styles.photo} initialsClassName={styles.initials} />
+                  {cell === 'parche' && <span className={styles.badge}>{p.number}</span>}
+                </span>
                 <span className={styles.label}>
-                  <span className={styles.number}>{p.number}</span>
+                  {cell === 'actual' && <span className={styles.number}>{p.number}</span>}
                   <span className={styles.name}>{p.short}</span>
                 </span>
               </button>
@@ -132,3 +155,4 @@ export default function RosterScreen({
     </div>
   );
 }
+

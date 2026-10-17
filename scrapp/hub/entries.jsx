@@ -3,6 +3,7 @@ import FlowRunner from '../flow/FlowRunner';
 import FlowRunnerV2 from '../flow/FlowRunnerV2';
 import FastTrackDaniel from '../explorations/fast-track/daniel/FlowRunner';
 import FastTrackPolished from '../explorations/fast-track/daniel/pulida/FlowRunner';
+import FastTrackDorsal from '../explorations/fast-track/daniel/dorsal/FlowRunner';
 
 /**
  * Índice del microsite de la scrapp.
@@ -69,6 +70,7 @@ export const SECTIONS = [
           { id: 'flechas',        label: 'Flechas entre rangos', author: 'Daniel', render: () => <FastTrackDaniel nav="arrows" /> },
           { id: 'staff-boton',    label: 'Pestañas + Staff arriba', author: 'Daniel', render: () => <FastTrackDaniel qrMode="button" /> },
           { id: 'pulida',         label: 'Pulida: equipo + transiciones', author: 'Daniel', render: () => <FastTrackPolished /> },
+          { id: 'dorsal',         label: 'Dorsal grande (7 columnas)', author: 'Daniel', render: () => <FastTrackDorsal /> },
         ],
       },
       {

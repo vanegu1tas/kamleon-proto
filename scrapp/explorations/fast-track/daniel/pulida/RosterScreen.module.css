@@ -66,10 +66,10 @@
   inset: -16px 0;
 }
 
-.staffActive {
-  border-color: var(--accent);
-  background: var(--accent);
-  color: var(--on-accent);
+/* En Staff las pestañas se apagan (siguen ocupando su sitio para que el QR no salte) */
+.tabsHidden {
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* ─── Pestañas: un solo resaltado que se desliza (T2) ─── */
@@ -80,6 +80,7 @@
   justify-content: center;
   height: 80px;
   flex-shrink: 0;
+  transition: opacity 0.2s var(--ease-out);
 }
 
 .tabGroup {
@@ -118,6 +119,8 @@
   font-weight: var(--font-weight-medium);
   font-variant-numeric: tabular-nums;
   cursor: pointer;
+  /* la pestaña que pierde la pastilla se aclara enseguida (queda sobre fondo oscuro) */
+  transition: transform 0.1s var(--ease-out), color 0.12s var(--ease-out);
 }
 
 .tab::before {
@@ -128,7 +131,9 @@
 
 .tabActive {
   color: var(--on-accent);
-  transition: color 0.2s var(--ease-out);
+  /* La que la recibe se oscurece en la segunda mitad del viaje de la pastilla (0,25 s): a los
+     0,13 s ya ha recorrido ~85 % del camino, así el texto no se pone oscuro sobre el fondo. */
+  transition: transform 0.1s var(--ease-out), color 0.12s var(--ease-out) 0.13s;
 }
 
 /* ─── Cuadrícula ─── */
@@ -219,6 +224,70 @@
 .wide .photo { width: 84px; height: 84px; }
 .wide .label { max-width: 136px; gap: 5px; }
 
+/* ─── Celda: dónde va el dorsal (comparación, 16/10) ─── */
+
+.face {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Sin el dorsal delante, el apellido tiene todo el ancho de la celda */
+.parche .label,
+.camiseta .label {
+  max-width: 100%;
+}
+
+/* A · Parche: el dorsal pegado a la foto, abajo a la derecha, con el acento */
+.badge {
+  position: absolute;
+  right: -8px;
+  bottom: -4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  height: 40px;
+  padding: 0 8px;
+  border-radius: 20px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: var(--font-size-20);
+  font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  /* anillo oscuro: separa el parche de la foto */
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.45);
+}
+
+.dense .badge {
+  min-width: 36px;
+  height: 36px;
+  padding: 0 6px;
+  border-radius: 18px;
+}
+
+/* B · Camiseta: el dorsal grande y translúcido a la izquierda, por detrás; la foto solo le tapa el
+   borde. Más metido detrás, la foto se come la segunda cifra (27 se leía "2") y entera las de una. */
+.jersey {
+  margin-right: -0.26em;
+  color: rgba(255, 255, 255, 0.32);
+  font-size: var(--font-size-80);
+  font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.04em;
+  line-height: 0.75;
+}
+
+.dense .jersey {
+  font-size: var(--font-size-64);
+}
+
+.camiseta .photo {
+  position: relative;
+}
+
 /* ─── Staff: el QR entra creciendo (T5) ─── */
 
 .staffPanel {
@@ -308,7 +377,9 @@
   visibility: hidden;
 }
 
-.leaving .selected .label {
+.leaving .selected .label,
+.leaving .selected .badge,
+.leaving .selected .jersey {
   animation: fadeAway 0.15s var(--ease-out) both;
 }
 

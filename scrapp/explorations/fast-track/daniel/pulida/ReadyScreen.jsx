@@ -1,7 +1,7 @@
 import { forwardRef, useEffect, useImperativeHandle, useLayoutEffect, useRef, useState } from 'react';
 import styles from './ReadyScreen.module.css';
 import SimulateButton from '../../../../components/SimulateButton';
-import { initialsFor } from '../data/rosters';
+import Avatar from './Avatar';
 
 const TIMEOUT_S = 15;
 const FLY_MS = 400;
@@ -63,9 +63,7 @@ const ReadyScreen = forwardRef(function ReadyScreen({ person, from, onNotYou, on
   return (
     <div className={`${styles.screen} ${leaving ? styles.leaving : ''}`}>
       <div className={styles.content}>
-        {person.photo
-          ? <img ref={photoRef} className={styles.photo} src={person.photo} alt="" />
-          : <span ref={photoRef} className={`${styles.photo} ${styles.initials}`}>{initialsFor(person.name)}</span>}
+        <Avatar ref={photoRef} person={person} className={styles.photo} initialsClassName={styles.initials} />
         <div className={styles.texts}>
           <h1 className={styles.greeting}>Hi, {person.short}</h1>
           {person.number != null && <span className={styles.number}>#{person.number}</span>}
