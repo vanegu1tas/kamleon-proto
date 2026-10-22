@@ -10,12 +10,14 @@
 // forma, como máscara; el tratamiento es siempre el mismo (FlowRunner.module.css → .teamLogo).
 
 import dallasLogo from './logos/dallas.svg';
+import arsenalLogo from './logos/arsenal.svg';
+import astonVillaLogo from './logos/aston-villa.svg';
 
 export const TEAMS = {
   kamleon:    { label: 'Kamleon (neutro)', color: '#0b0f12' },
   dallas:     { label: 'Dallas Cowboys',   color: '#003594', logo: dallasLogo },
-  arsenal:    { label: 'Arsenal',          color: '#EF0107' },
-  astonVilla: { label: 'Aston Villa',      color: '#670E36' },
+  arsenal:    { label: 'Arsenal',          color: '#EF0107', logo: arsenalLogo },
+  astonVilla: { label: 'Aston Villa',      color: '#670E36', logo: astonVillaLogo },
   gilVicente: { label: 'Gil Vicente',      color: '#C8102E' },
 };
 
