@@ -74,8 +74,8 @@ const ReadyScreen = forwardRef(function ReadyScreen({ person, from, listening = 
       const cy = (r.top - root.top + r.height / 2) / k;
       const now = getComputedStyle(el).transform;   // donde iba de su respiración
       el.style.animation = 'none';
-      // Tracking arranca latiendo a 0,96: el logo llega a ese tamaño para que no brinque
-      const s = (TRACKING_LOGO.size / parseFloat(getComputedStyle(el).width)) * 0.96;   // un <svg> no tiene offsetWidth
+      // Tracking arranca cerrado y a tamaño 1: el logo llega así para que no brinque
+      const s = TRACKING_LOGO.size / parseFloat(getComputedStyle(el).width);   // un <svg> no tiene offsetWidth
       el.animate(
         [
           { transform: now === 'none' ? 'none' : now, opacity: 1 },

@@ -1,0 +1,121 @@
+/* Mismo layout que PulseStatusScreen (para que el símbolo quede en el mismo sitio). Fondo negro, como
+   la compartida; donde va encima del fondo del equipo (07, 08) el FlowRunner lo quita con .overBg */
+.screen {
+  width: 1280px;
+  height: 800px;
+  position: relative;
+  background: #000000;
+  overflow: hidden;
+  font-family: var(--font-family-primary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.heading {
+  color: var(--color-turquoise-51);
+  font-size: var(--font-size-48);
+  font-weight: var(--font-weight-medium);
+  margin: 40px 0 12px;
+}
+
+.subtitle {
+  color: #d0d0d0;
+  font-size: var(--font-size-24);
+  font-weight: var(--font-weight-book);
+  margin: 0;
+}
+
+/* ─── El mandala que se abre ─── */
+
+/* --open va de 0 (cerrado, como llega desde Ready) a 1 (abierto) */
+@property --open {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+.bloom {
+  overflow: visible;
+  fill: var(--color-turquoise-51);
+}
+
+/* Cada punto lleva su propia onda, con su retraso (--phase): así el movimiento recorre el mandala.
+   Se aleja del centro en línea recta; --mx, --my es cuánto se mueve con --open = 1 (lo calcula el JSX) */
+.bloom path {
+  transform: translate(calc(var(--open) * var(--mx) * 1px), calc(var(--open) * var(--my) * 1px));
+  animation: wave 2.23s linear var(--phase) infinite both;
+}
+
+/* 22/10: curva medida en el vídeo de la máquina (Scrapp.MOV, 1:03–1:05, 30 fps), un valor por
+   frame, media de arriba y abajo, suavizada. Nada de tramos con su propio easing: un tramo con
+   ease-in-out se para en cada extremo y se ve a golpes; aquí el punto no se para hasta que vuelve.
+     · se abre deprisa (75 % en 0,17 s) y se acerca despacio al máximo         0 – 0,53 s
+     · se cierra y se pasa hacia dentro casi la mitad de lo que se abrió       0,53 – 1,2 s
+     · vuelve a su sitio sin prisa                                              1,2 – 1,87 s
+     · quieto hasta la siguiente ola                                            1,87 – 2,23 s */
+@keyframes wave {
+  0% { --open: 0.000; }
+  1.5% { --open: 0.243; }
+  3% { --open: 0.384; }
+  4.5% { --open: 0.531; }
+  6% { --open: 0.656; }
+  7.5% { --open: 0.742; }
+  9% { --open: 0.801; }
+  10.4% { --open: 0.841; }
+  11.9% { --open: 0.876; }
+  13.4% { --open: 0.903; }
+  14.9% { --open: 0.928; }
+  16.4% { --open: 0.948; }
+  17.9% { --open: 0.965; }
+  19.4% { --open: 0.978; }
+  20.9% { --open: 0.987; }
+  22.4% { --open: 0.995; }
+  23.9% { --open: 1.000; }
+  25.4% { --open: 1.000; }
+  26.9% { --open: 0.993; }
+  28.4% { --open: 0.980; }
+  29.9% { --open: 0.965; }
+  31.3% { --open: 0.945; }
+  32.8% { --open: 0.915; }
+  34.3% { --open: 0.869; }
+  35.8% { --open: 0.814; }
+  37.3% { --open: 0.749; }
+  38.8% { --open: 0.669; }
+  40.3% { --open: 0.572; }
+  41.8% { --open: 0.459; }
+  43.3% { --open: 0.336; }
+  44.8% { --open: 0.197; }
+  46.3% { --open: 0.037; }
+  47.8% { --open: -0.125; }
+  49.3% { --open: -0.270; }
+  50.7% { --open: -0.376; }
+  52.2% { --open: -0.439; }
+  53.7% { --open: -0.462; }
+  55.2% { --open: -0.462; }
+  56.7% { --open: -0.457; }
+  58.2% { --open: -0.452; }
+  59.7% { --open: -0.440; }
+  61.2% { --open: -0.415; }
+  62.7% { --open: -0.379; }
+  64.2% { --open: -0.342; }
+  65.7% { --open: -0.299; }
+  67.2% { --open: -0.256; }
+  68.7% { --open: -0.213; }
+  70.1% { --open: -0.183; }
+  71.6% { --open: -0.155; }
+  73.1% { --open: -0.132; }
+  74.6% { --open: -0.108; }
+  76.1% { --open: -0.088; }
+  77.6% { --open: -0.070; }
+  79.1% { --open: -0.055; }
+  80.6% { --open: -0.037; }
+  82.1% { --open: -0.019; }
+  83.6% { --open: 0.000; }
+  100% { --open: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bloom path { animation: none; }
+}

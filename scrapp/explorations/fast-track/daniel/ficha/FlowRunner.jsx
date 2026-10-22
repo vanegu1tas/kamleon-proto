@@ -11,7 +11,7 @@ import { ROSTERS as BASE_ROSTERS, STAFF_MEMBER, teamRoster } from '../data/roste
 import { TEAMS } from './theme';
 import styles from './FlowRunner.module.css';
 
-const TRACKING_DURATION = 3000;
+const TRACKING_DURATION = 9200;   // 22/10: para ver la animación del mandala 4 veces (ciclo de 2,23 s; antes 3000)
 const FLUSH_DURATION    = 4000;
 const LEAVE_MS          = 420;   // T3: cuánto sigue la plantilla debajo mientras la foto vuela
 
