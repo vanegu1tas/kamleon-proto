@@ -7,7 +7,7 @@ import TweakPanel from '../../../../components/TweakPanel';
 import TrackingScreen from '../screens/TrackingScreen';
 import FlushScreen from '../screens/FlushScreen';
 import Exploration5, { scoreToAngle5, getZoneIndex5, GAUGE_START } from '../../../../screens/Exploration5';
-import { ROSTERS, STAFF_MEMBER, PAGE_SIZES } from '../data/rosters';
+import { ROSTERS, STAFF_MEMBER, PAGE_SIZES, teamRoster } from '../data/rosters';
 import { TEAMS, ACCENTS } from './theme';
 import styles from './FlowRunner.module.css';
 
@@ -36,7 +36,7 @@ export default function FastTrackPolished() {
   const [teamKey, setTeamKey]     = useState(TEAMS[QUERY.get('team')] ? QUERY.get('team') : 'dallas');
   const [accentKey, setAccentKey] = useState(QUERY.get('accent') === 'white' ? 'white' : 'kamleon');
   const [cellKey, setCellKey]     = useState(CELLS[QUERY.get('cell')] ? QUERY.get('cell') : 'actual');
-  const players = ROSTERS[rosterKey].players;
+  const players = teamRoster(ROSTERS[rosterKey].players, teamKey);   // fotos según el equipo (22/10)
 
   // step: dónde estamos · rosterPhase: qué transición hace la plantilla
   const [step, setStep]               = useState('roster');

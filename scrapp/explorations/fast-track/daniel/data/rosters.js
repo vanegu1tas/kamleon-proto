@@ -48,6 +48,152 @@ export const ROSTERS = {
   small:    { label: 'Pequeña · 16', players: SMALL },
 };
 
+// ─── Fotos por equipo (22/10) ───
+// Las de pravatar se veían "muy random" (cliente). Según el equipo elegido en el panel:
+//   dallas   los jugadores reales con su nombre, su dorsal y su foto (dallascowboys.com). Lo que falte
+//            hasta el tamaño de la plantilla se rellena con inventados con los 16 retratos de IA
+//            (Figma, "Scrapp · Fotos IA (Fast Track)"): caras ficticias, camiseta blanca sin logos
+//   arsenal  los jugadores reales, con su nombre, su dorsal y su foto (las de Daniel). Lo que falte
+//            hasta el tamaño de la plantilla se rellena con inventados sin foto
+//   resto    como antes, hasta que haya fotos de fútbol
+const PHOTOS = import.meta.glob('./photos/*/*.jpg', { eager: true, import: 'default' });
+const photo = (team, file) => PHOTOS[`./photos/${team}/${file}.jpg`];
+const DALLAS_PHOTOS = Array.from({ length: 16 }, (_, i) => photo('dallas', String(i + 1).padStart(2, '0')));
+
+// Dallas Cowboys 2026: los jugadores reales con su dorsal y su foto, de dallascowboys.com (22/10).
+// Kyle Trask no tiene dorsal en la web y no va; el 25 lo tienen dos (Abanikanda y Porter Jr.) y la
+// webapp no deja repetir, así que solo va Porter Jr.
+const DALLAS = [
+  [0, 'DeMarvion Overshown', 'Overshown', 'demarvion-overshown'],
+  [1, 'P.J. Locke', 'Locke', 'p-j-locke'],
+  [2, 'Cobie Durant', 'Durant', 'cobie-durant'],
+  [3, 'George Pickens', 'Pickens', 'george-pickens'],
+  [4, 'Dak Prescott', 'Prescott', 'dak-prescott'],
+  [5, 'Bryan Anger', 'Anger', 'bryan-anger'],
+  [6, 'Donovan Ezeiruaku', 'Ezeiruaku', 'donovan-ezeiruaku'],
+  [7, 'Rashan Gary', 'Gary', 'rashan-gary'],
+  [9, 'KaVontae Turpin', 'Turpin', 'kavontae-turpin'],
+  [11, 'Alijah Clark', 'Clark', 'alijah-clark'],
+  [13, 'Caleb Downs', 'Downs', 'caleb-downs'],
+  [14, 'Markquese Bell', 'Bell', 'markquese-bell'],
+  [15, 'Derion Kendrick', 'Kendrick', 'derion-kendrick'],
+  [16, 'Sam Howell', 'Howell', 'sam-howell'],
+  [17, 'Brandon Aubrey', 'Aubrey', 'brandon-aubrey'],
+  [18, 'Jonathan Mingo', 'Mingo', 'jonathan-mingo'],
+  [19, 'Ryan Flournoy', 'Flournoy', 'ryan-flournoy'],
+  [20, 'Malik Davis', 'Davis', 'malik-davis'],
+  [23, 'Ameer Speed', 'Speed', 'ameer-speed'],
+  [24, 'Malik Hooker', 'Hooker', 'malik-hooker'],
+  [25, 'Joey Porter Jr.', 'Porter Jr.', 'joey-porter-jr'],
+  [26, 'DaRon Bland', 'Bland', 'daron-bland'],
+  [27, 'Reddy Steward', 'Steward', 'reddy-steward'],
+  [28, 'Shavon Revel Jr.', 'Revel Jr.', 'shavon-revel-jr'],
+  [29, 'Devin Moore', 'Moore', 'devin-moore'],
+  [30, 'Hunter Luepke', 'Luepke', 'hunter-luepke'],
+  [31, 'Emari Demercado', 'Demercado', 'emari-demercado'],
+  [32, 'Tyler Goodson', 'Goodson', 'tyler-goodson'],
+  [33, 'Javonte Williams', 'Williams', 'javonte-williams'],
+  [34, 'Jalen Thompson', 'Thompson', 'jalen-thompson'],
+  [35, 'Marist Liufau', 'Liufau', 'marist-liufau'],
+  [39, 'Tyrek Funderburk', 'Funderburk', 'tyrek-funderburk'],
+  [40, 'Von Miller', 'Miller', 'von-miller'],
+  [41, 'James Houston', 'Houston', 'james-houston'],
+  [42, 'Curtis Robinson', 'Robinson', 'curtis-robinson'],
+  [43, 'Juanyeh Thomas', 'Thomas', 'juanyeh-thomas'],
+  [44, 'Trent Sieg', 'Sieg', 'trent-sieg'],
+  [45, 'Justin Barron', 'Barron', 'justin-barron'],
+  [46, 'Michael Trigg', 'Trigg', 'michael-trigg'],
+  [49, 'DJ Rogers', 'Rogers', 'dj-rogers'],
+  [50, 'Shemar James', 'James', 'shemar-james'],
+  [51, 'Nick Leverett', 'Leverett', 'nick-leverett'],
+  [52, 'Tyler Booker', 'Booker', 'tyler-booker'],
+  [53, 'Dee Winters', 'Winters', 'dee-winters'],
+  [55, 'Jaishawn Barham', 'Barham', 'jaishawn-barham'],
+  [56, 'Cooper Beebe', 'Beebe', 'cooper-beebe'],
+  [57, 'Malachi Lawrence', 'Lawrence', 'malachi-lawrence'],
+  [58, 'Isaiah Land', 'Land', 'isaiah-land'],
+  [59, 'Tyrus Wheat', 'Wheat', 'tyrus-wheat'],
+  [60, 'Tyler Guyton', 'Guyton', 'tyler-guyton'],
+  [64, 'Wanya Morris', 'Morris', 'wanya-morris'],
+  [65, 'Ajani Cornelius', 'Cornelius', 'ajani-cornelius'],
+  [66, 'T.J. Bass', 'Bass', 't-j-bass'],
+  [67, 'Drew Shelton', 'Shelton', 'drew-shelton'],
+  [72, 'Matt Hennessy', 'Hennessy', 'matt-hennessy'],
+  [73, 'Tyler Smith', 'Smith', 'tyler-smith'],
+  [77, 'Broderick Jones', 'Jones', 'broderick-jones'],
+  [78, 'Terence Steele', 'Steele', 'terence-steele'],
+  [79, 'Marcellus Johnson', 'Johnson', 'marcellus-johnson'],
+  [80, 'Camden Brown', 'Brown', 'camden-brown'],
+  [81, 'Jordan Hudson', 'Hudson', 'jordan-hudson'],
+  [83, 'Anthony Smith', 'Smith', 'anthony-smith-2'],
+  [84, 'James Mitchell', 'Mitchell', 'james-mitchell'],
+  [85, 'Princeton Fant', 'Fant', 'princeton-fant'],
+  [86, 'Luke Schoonmaker', 'Schoonmaker', 'luke-schoonmaker'],
+  [87, 'Jake Ferguson', 'Ferguson', 'jake-ferguson'],
+  [88, 'CeeDee Lamb', 'Lamb', 'ceedee-lamb'],
+  [89, 'Brevyn Spann-Ford', 'Spann-Ford', 'brevyn-spann-ford'],
+  [90, 'Jonathan Bullard', 'Bullard', 'jonathan-bullard'],
+  [91, 'Otito Ogbonnia', 'Ogbonnia', 'otito-ogbonnia'],
+  [92, 'Quinnen Williams', 'Williams', 'quinnen-williams'],
+  [93, 'Elijah Garcia', 'Garcia', 'elijah-garcia'],
+  [94, 'Kelvin Gilliam', 'Gilliam', 'kelvin-gilliam'],
+  [95, 'Tommy Dunn', 'Dunn', 'tommy-dunn'],
+  [96, 'Adedayo Odeleye', 'Odeleye', 'adedayo-odeleye'],
+  [97, 'Kenny Clark', 'Clark', 'kenny-clark-x7989'],
+  [99, 'LT Overton', 'Overton', 'lt-overton'],
+].map(([number, name, short, file]) => ({ id: `dal${number}`, number, name, short, photo: photo('dallas-real', file) }));
+
+// Dorsales de la temporada 2025/26 puestos de memoria: revisar antes de enseñarlo al club
+const ARSENAL = [
+  [1,  'David Raya',          'Raya',         'raya'],
+  [2,  'William Saliba',      'Saliba',       'saliba'],
+  [3,  'Cristhian Mosquera',  'Mosquera',     'mosquera'],
+  [4,  'Ben White',           'White',        'white'],
+  [5,  'Piero Hincapié',      'Hincapié',     'hincapie'],
+  [6,  'Gabriel Magalhães',   'Gabriel',      'magalhaes'],
+  [7,  'Bukayo Saka',         'Saka',         'saka'],
+  [8,  'Martin Ødegaard',     'Ødegaard',     'odegard'],
+  [9,  'Gabriel Jesus',       'Jesus',        'gabriel-jesus'],
+  [10, 'Eberechi Eze',        'Eze',          'eze'],
+  [11, 'Gabriel Martinelli',  'Martinelli',   'martinelli'],
+  [12, 'Jurriën Timber',      'Timber',       'timber'],
+  [13, 'Kepa Arrizabalaga',   'Kepa',         'kepa'],
+  [14, 'Viktor Gyökeres',     'Gyökeres',     'gyokeres'],
+  [16, 'Christian Nørgaard',  'Nørgaard',     'norgaard'],
+  [19, 'Leandro Trossard',    'Trossard',     'trossard'],
+  [20, 'Noni Madueke',        'Madueke',      'madueke'],
+  [22, 'Ethan Nwaneri',       'Nwaneri',      'nwaneri'],
+  [23, 'Mikel Merino',        'Merino',       'merino'],
+  [29, 'Kai Havertz',         'Havertz',      'havertz'],
+  [33, 'Riccardo Calafiori',  'Calafiori',    'calafiori'],
+  [35, 'Tommy Setford',       'Setford',      'setford'],
+  [36, 'Martín Zubimendi',    'Zubimendi',    'zubimendi'],
+  [41, 'Declan Rice',         'Rice',         'rice'],
+  [49, 'Myles Lewis-Skelly',  'Lewis-Skelly', 'myles'],
+].map(([number, name, short, file]) => ({ id: `ars${number}`, number, name, short, photo: photo('arsenal', file) }));
+
+// Los reales primero (por dorsal, hasta el tamaño de la plantilla elegida); si la plantilla es más
+// grande que el equipo, el resto se rellena con los inventados en los dorsales libres
+function withReal(real, players) {
+  const picked = real.slice(0, players.length);
+  const taken = new Set(picked.map(p => p.number));
+  const fill = players.filter(p => !taken.has(p.number)).slice(0, players.length - picked.length);
+  return [...picked, ...fill].sort((a, b) => a.number - b.number);
+}
+
+export function teamRoster(players, team) {
+  if (team === 'dallas') {
+    // los inventados del relleno llevan una cara de IA (uno de cada nueve sin foto, para ver las
+    // iniciales, que pasa en la vida real)
+    const fill = players.map((p, i) => ({ ...p, photo: i % 9 === 4 ? null : DALLAS_PHOTOS[i % DALLAS_PHOTOS.length] }));
+    return withReal(DALLAS, fill);
+  }
+  if (team === 'arsenal') {
+    return withReal(ARSENAL, players.map(p => ({ ...p, photo: null })));
+  }
+  return players;
+}
+
 // Quien entra por QR: staff que no está en la plantilla
 export const STAFF_MEMBER = { id: 'staff', name: 'Alex Rivera', short: 'Alex Rivera', number: null, photo: null };
 

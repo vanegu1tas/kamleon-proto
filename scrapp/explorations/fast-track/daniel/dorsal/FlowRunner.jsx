@@ -7,7 +7,7 @@ import TweakPanel from '../../../../components/TweakPanel';
 import TrackingScreen from '../screens/TrackingScreen';
 import FlushScreen from '../screens/FlushScreen';
 import Exploration5, { scoreToAngle5, getZoneIndex5, GAUGE_START } from '../../../../screens/Exploration5';
-import { ROSTERS, STAFF_MEMBER } from '../data/rosters';
+import { ROSTERS, STAFF_MEMBER, teamRoster } from '../data/rosters';
 import { TEAMS, ACCENTS } from './theme';
 import styles from './FlowRunner.module.css';
 
@@ -38,7 +38,7 @@ export default function FastTrackDorsal() {
   // fondo del neutro, como en la 07 (22/10): A · Grafito por defecto, B · Luz para comparar
   const [neutralKey, setNeutralKey] = useState(QUERY.get('neutral') === 'glow' ? 'glow' : 'graphite');
   const [accentKey, setAccentKey] = useState(QUERY.get('accent') === 'white' ? 'white' : 'kamleon');
-  const players = DEMO_ROSTERS[rosterKey].players;
+  const players = teamRoster(DEMO_ROSTERS[rosterKey].players, teamKey);   // fotos según el equipo (22/10)
 
   // step: dónde estamos · rosterPhase: qué transición hace la plantilla
   const [step, setStep]               = useState('roster');

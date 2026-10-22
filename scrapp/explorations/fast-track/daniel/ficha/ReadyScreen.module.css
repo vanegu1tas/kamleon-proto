@@ -1,0 +1,241 @@
+.screen {
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  position: absolute;
+  inset: 0;
+  font-family: var(--font-family-primary);
+  color: #ffffff;
+}
+
+.content {
+  position: absolute;
+  inset: 96px 0 96px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.photoWrap {
+  position: relative;
+  /* alto fijo; el ancho sale de la proporción de la foto en la ficha (aspect-ratio desde Ready) */
+  /* polish 22/10: 180 → 240. La foto confirma quién eres y había aire de sobra; el vuelo desde la
+     ficha también se lee mejor */
+  height: 240px;
+  aspect-ratio: 1;
+  flex-shrink: 0;
+  overflow: hidden;
+  /* las esquinas de la ficha (4 px a 118) a esta escala */
+  border-radius: 8px;
+  box-shadow: 0 0 0 4px var(--accent);
+  transform-origin: 0 0;   /* el vuelo se calcula desde la esquina superior izquierda */
+}
+
+/* "Escuchando", opción Anillo en foto (22/10): cuando la foto ya llegó, el anillo respira: una onda
+   del mismo color sale del borde y se apaga, cada 2 s */
+.ringBreath .photoWrap {
+  animation: breathe 2s cubic-bezier(0.22, 1, 0.36, 1) 0.6s infinite;
+}
+
+@keyframes breathe {
+  from {
+    box-shadow: 0 0 0 4px var(--accent),
+                0 0 0 4px color-mix(in srgb, var(--accent) 55%, transparent);
+  }
+  to {
+    box-shadow: 0 0 0 4px var(--accent),
+                0 0 0 36px color-mix(in srgb, var(--accent) 0%, transparent);   /* 22/10: más lejos (antes 22) */
+  }
+}
+
+.leaving .photoWrap {
+  animation: none;
+}
+
+/* "Escuchando", opción Logo (por defecto): el símbolo de Kamleon debajo de la frase, respirando al
+   ritmo del de Tracking (2,2 s) */
+.listening {
+  width: 64px;
+  height: 64px;
+  fill: var(--color-turquoise-51);
+  animation: logoBreath 2.2s ease-in-out 0.6s infinite both;
+}
+
+@keyframes logoBreath {
+  0%, 100% { transform: scale(0.86); opacity: 0.5; }
+  50%      { transform: scale(1);    opacity: 1; }
+}
+
+.photo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 20%;
+}
+
+/* El dorsal sobre la foto, como en la ficha (32 px a 118 → ~56 a 240) */
+.badge {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 56px;
+  min-width: 56px;
+  padding: 0 12px;
+  border-bottom-right-radius: 8px;
+  background: var(--number);
+  color: #0b0f12;
+  font-size: var(--font-size-32);
+  font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
+}
+
+.initials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.14);
+  font-size: var(--font-size-64);
+  font-weight: var(--font-weight-medium);
+}
+
+/* T3: los textos aparecen cuando la foto ya casi llegó */
+.texts {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: textsIn 0.3s var(--ease-out) 0.22s both;
+}
+
+.greeting {
+  margin: 20px 0 0;   /* pegado a la foto: es su pie */
+  font-size: var(--font-size-48);
+  font-weight: var(--font-weight-bold);
+}
+
+/* Qué hacer: frase y logo juntos, bien separados del saludo */
+.action {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;   /* 22/10: el logo más abajo (antes 16) */
+  margin-top: 48px;
+}
+
+.instruction {
+  /* lo segundo que se lee, tras el saludo: es la acción principal (critique 22/10) */
+  margin: 0;
+  font-size: var(--font-size-32);
+  font-weight: var(--font-weight-medium);
+  color: #ffffff;
+}
+
+.back {
+  /* mismo sitio y forma que "Staff" / "‹ Players" en la plantilla; se ve de 48 px, responde en 80 */
+  position: absolute;
+  top: 20px;
+  right: 48px;
+  min-width: 112px;
+  height: 48px;
+  padding: 0 24px;
+  border: 2px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.85);
+  font-family: inherit;
+  font-size: var(--font-size-20);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  animation: textsIn 0.3s var(--ease-out) 0.22s both;
+  transition: transform 0.1s var(--ease-out);
+}
+
+.back::before {
+  content: '';
+  position: absolute;
+  inset: -16px 0;
+}
+
+.back:active {
+  transform: scale(0.96);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* T4: al irse, los textos se apagan rápido mientras la foto vuelve a su sitio */
+.sim {
+  position: absolute;
+  bottom: 40px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  animation: textsIn 0.3s var(--ease-out) 0.3s both;
+}
+
+.leaving .texts,
+.leaving .back,
+.leaving .sim {
+  animation: textsOut 0.15s var(--ease-out) both;
+}
+
+/* Paso a Tracking (22/10): todo se apaga y encoge un poco; el logo no (en "Logo viaja" lo mueve
+   ReadyScreen; en "Fundido" se apaga con lo demás desde FlowRunner, que no lo marca) */
+.exiting .photoWrap,
+.exiting .greeting,
+.exiting .instruction,
+.exiting .back,
+.exiting .sim {
+  animation: exitOut 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.exiting .photoWrap {
+  transform-origin: center;
+}
+
+.exitFade .listening {
+  animation: exitOut 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes exitOut {
+  to { opacity: 0; transform: scale(0.96); }
+}
+
+@keyframes textsIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes textsOut {
+  to { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .photoWrap, .ringBreath .photoWrap, .listening { animation: none; }
+  .screen { animation: textsIn 0.2s linear both; }
+  /* Paso a Tracking (22/10): todo se apaga y encoge un poco; el logo no (en "Logo viaja" lo mueve
+   ReadyScreen; en "Fundido" se apaga con lo demás desde FlowRunner, que no lo marca) */
+.exiting .photoWrap,
+.exiting .greeting,
+.exiting .instruction,
+.exiting .back,
+.exiting .sim {
+  animation: exitOut 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.exiting .photoWrap {
+  transform-origin: center;
+}
+
+.exitFade .listening {
+  animation: exitOut 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes exitOut {
+  to { opacity: 0; transform: scale(0.96); }
+}
+
+@keyframes textsIn { from { opacity: 0; } to { opacity: 1; } }
+}

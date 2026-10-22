@@ -7,7 +7,7 @@ import TweakPanel from '../../../../components/TweakPanel';
 import TrackingScreen from '../screens/TrackingScreen';
 import FlushScreen from '../screens/FlushScreen';
 import Exploration5, { scoreToAngle5, getZoneIndex5, GAUGE_START } from '../../../../screens/Exploration5';
-import { ROSTERS as BASE_ROSTERS, STAFF_MEMBER } from '../data/rosters';
+import { ROSTERS as BASE_ROSTERS, STAFF_MEMBER, teamRoster } from '../data/rosters';
 import { TEAMS } from './theme';
 import styles from './FlowRunner.module.css';
 
@@ -53,7 +53,7 @@ export default function FastTrackRelease() {
   const [teamKey, setTeamKey]     = useState(TEAMS[QUERY.get('team')] ? QUERY.get('team') : 'kamleon');   // por defecto, Neutro (22/10)
   const [numberKey, setNumberKey] = useState(NUMBER_COLORS[QUERY.get('number')] ? QUERY.get('number') : 'turq');   // por defecto, el turquesa de Kamleon (22/10)
   const [neutralKey, setNeutralKey] = useState(QUERY.get('neutral') === 'glow' ? 'glow' : 'graphite');   // por defecto, A · Grafito (22/10)
-  const players = ROSTERS[rosterKey].players;
+  const players = teamRoster(ROSTERS[rosterKey].players, teamKey);   // fotos según el equipo (22/10)
 
   // step: dónde estamos · rosterPhase: qué transición hace la plantilla
   const [step, setStep]               = useState('roster');
