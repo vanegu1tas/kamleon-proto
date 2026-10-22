@@ -89,6 +89,34 @@ Copia de la pulida (mismo tema, Staff, Ready y transiciones) con la celda que Da
 - **Logo del equipo** (17/10, solo en esta exploración): el club da su SVG en blanco con fondo transparente (`dorsal/logos/`, campo `logo` en `theme.js`). Del SVG solo cuenta la forma (máscara); el tratamiento es igual para todos: blanco con degradado en diagonal (blanco → 10 %), conjunto al 10 %, caja de 352 px abajo a la derecha sangrando 76 px a la derecha y 30 abajo, el logo cabe sin deformarse y se apoya abajo. Va en la capa del fondo: quieto entre plantilla y Ready, fuera en el Score. Sin logo no se pinta nada. Hecho: Dallas. Falta: Arsenal (SVG pendiente de Daniel).
 - Ajustada a Figma medida a medida (17/10): bloque del apellido de 25 px con las letras centradas sobre la curva, degradado sobre una caja de 128 px, dorsal 9 px por encima de su bloque, espaciado −4 %, columnas a 22 px y cuadrícula desde y=262. Pestañas 12 px más abajo, como en Figma (centro en y=140). Los rangos se quedan los reales (con 20 por página salen 5); los de Figma eran de 30 por página y no se copian (Daniel, 17/10).
 
+## Exploración 07 · Primer release (22/10) — `explorations/fast-track/daniel/release/`
+
+Daniel mostró las exploraciones; al cliente le gustaron y para el **primer release** pide:
+- 30 jugadores por pantalla
+- imágenes en "grande"
+- dorsal (en azul) y nombre, debajo de la imagen
+- Staff arriba a la derecha (click → el QR en grande)
+- con más de 30 jugadores, flechas para pasar de página — **sin las pestañas de rangos**
+
+Montado sobre la Pulida (tema del equipo, transiciones, Staff con "‹ Players" y vuelta a los 20 s):
+- Cuadrícula que llena el hueco entre las flechas con aire (1056 × 648 px: 40 px hasta la flecha y
+  hasta abajo, mínimo 32 entre fotos). Rejilla a prueba en el panel: 6×5 = 30, 7×4 = 28, 7×5 = 35,
+  8×4 = 32 por página. La foto sale lo más grande que deja la celda: ~88 px con 5 filas, ~108 con
+  7×4.
+- Sin rango escrito ni pestañas: con los dorsales ordenados, la cuadrícula ya dice del cuál al cuál
+  va la página (probado "Numbers 0–32" bajo el título y quitado, 22/10). Las flechas solo salen si
+  hay otra página hacia ese lado.
+- Fondo y flujo de siempre: el fondo nuevo (equipo o neutro) solo vive en plantilla y Ready. Al
+  detectar flujo, en Tracking se va a negro en 2 s y Score y Flush siguen en el negro de
+  la scrapp actual. Daniel (22/10): no se espera que el programador rediseñe esas pantallas, así
+  que el flujo nuevo tiene que encajar con lo que ya existe.
+- Atajo de la demo: la tecla **r** reinicia el flujo (vuelve a la plantilla sin esperar animaciones).
+- QR de Staff: mismo tamaño (260) y sitio que en Dorsal grande (probado a 360, Daniel prefirió el de la 06).
+- Azul del dorsal: `#4da3ff` (el DS no tiene azul; claro para leerse sobre el fondo del equipo). En
+  Ready el dorsal usa el mismo color.
+- Panel (para decidir con el cliente): Columnas 6 · 7 · 8, color del dorsal (azul / turquesa /
+  blanco), equipo y plantilla de prueba.
+
 ## Ready — pendiente de explorar (17/10)
 Aún no se ha trabajado. Plan de Daniel: explorar primero (Figma) y luego implementar. Lo que tiene que resolver, sacado de la critique:
 - "Not you?" mide 64 px: es el único control y la única corrección de error; mínimo 76–80.

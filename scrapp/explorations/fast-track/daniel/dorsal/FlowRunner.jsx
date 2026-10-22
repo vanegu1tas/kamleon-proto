@@ -35,6 +35,8 @@ const CAPTURE = QUERY.has('capture');
 export default function FastTrackDorsal() {
   const [rosterKey, setRosterKey] = useState(DEMO_ROSTERS[QUERY.get('roster')] ? QUERY.get('roster') : 'nfl');
   const [teamKey, setTeamKey]     = useState(TEAMS[QUERY.get('team')] ? QUERY.get('team') : 'dallas');
+  // fondo del neutro, como en la 07 (22/10): A · Grafito por defecto, B · Luz para comparar
+  const [neutralKey, setNeutralKey] = useState(QUERY.get('neutral') === 'glow' ? 'glow' : 'graphite');
   const [accentKey, setAccentKey] = useState(QUERY.get('accent') === 'white' ? 'white' : 'kamleon');
   const players = DEMO_ROSTERS[rosterKey].players;
 
@@ -165,7 +167,7 @@ export default function FastTrackDorsal() {
   const screen = (
     <div className={styles.stage} style={themeVars}>
       {/* El fondo del equipo vive debajo de plantilla y Ready, y no se corta entre ellas */}
-      <TeamBackground color={TEAMS[teamKey].color} className={`${styles.bg} ${onTeam ? '' : styles.bgHidden}`} />
+      <TeamBackground color={TEAMS[teamKey].color} neutral={teamKey === 'kamleon' ? neutralKey : null} className={`${styles.bg} ${onTeam ? '' : styles.bgHidden}`} />
       {/* El logo del equipo es parte del fondo: quieto entre plantilla y Ready, fuera en el Score */}
       {TEAMS[teamKey].logo && (
         <span
@@ -216,6 +218,15 @@ export default function FastTrackDorsal() {
               wide: k === 'kamleon',
             })),
           },
+          // fondo del neutro: solo cuando el equipo es Neutro
+          ...(teamKey === 'kamleon' ? [{
+            id: 'neutral', label: 'Fondo neutro', value: neutralKey, onChange: setNeutralKey,
+            control: 'keycaps', labelInCap: true, slot: true,
+            options: [
+              { value: 'graphite', label: 'A · Grafito' },
+              { value: 'glow',     label: 'B · Luz' },
+            ],
+          }] : []),
           {
             id: 'accent', label: 'Acento', value: accentKey, onChange: setAccentKey, control: 'keycaps',
             options: Object.entries(ACCENTS).map(([k, a]) => ({ value: k, label: a.label, dot: a.value })),

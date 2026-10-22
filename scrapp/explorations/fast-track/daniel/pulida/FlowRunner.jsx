@@ -3,6 +3,7 @@ import DeviceFrame from '../../../../components/DeviceFrame';
 import RosterScreen from './RosterScreen';
 import ReadyScreen from './ReadyScreen';
 import TeamBackground from './TeamBackground';
+import TweakPanel from '../../../../components/TweakPanel';
 import TrackingScreen from '../screens/TrackingScreen';
 import FlushScreen from '../screens/FlushScreen';
 import Exploration5, { scoreToAngle5, getZoneIndex5, GAUGE_START } from '../../../../screens/Exploration5';
@@ -194,57 +195,56 @@ export default function FastTrackPolished() {
     <>
       <DeviceFrame>{screen}</DeviceFrame>
 
-      <div className={styles.panel}>
-        <Group label="Equipo">
-          {Object.entries(TEAMS).map(([k, t]) => (
-            <Option key={k} active={teamKey === k} onClick={() => setTeamKey(k)}>
-              <span className={styles.swatch} style={{ background: t.color }} />{t.label}
-            </Option>
-          ))}
-        </Group>
-        <Group label="Acento" row>
-          {Object.entries(ACCENTS).map(([k, a]) => (
-            <Option key={k} active={accentKey === k} onClick={() => setAccentKey(k)}>{a.label}</Option>
-          ))}
-        </Group>
-        <Group label="Celda">
-          {Object.entries(CELLS).map(([k, label]) => (
-            <Option key={k} active={cellKey === k} onClick={() => setCellKey(k)}>{label}</Option>
-          ))}
-        </Group>
-        <Group label="Plantilla de prueba">
-          {Object.entries(ROSTERS).map(([k, r]) => (
-            <Option key={k} active={rosterKey === k} onClick={() => { setRosterKey(k); reset(); }}>{r.label}</Option>
-          ))}
-        </Group>
-        <Group label="Por página" row>
-          {PAGE_SIZES.map(n => (
-            <Option key={n} active={pageSize === n} onClick={() => { setPageSize(n); reset(); }}>{n}</Option>
-          ))}
-        </Group>
-        {pageSize === 30 && (
-          <Group label="Columnas" row>
-            {[6, 8].map(n => <Option key={n} active={denseCols === n} onClick={() => setDenseCols(n)}>{n}</Option>)}
-          </Group>
-        )}
-      </div>
+      {/* Mismo panel que Dorsal grande (TweakPanel), con los ajustes de esta exploración */}
+      <TweakPanel
+        title="Pulida"
+        groups={[
+          {
+            // neutro arriba a fila entera; los equipos debajo, 2 y 2, lisas, con el LED del color del equipo
+            id: 'team', label: 'Equipo', value: teamKey, onChange: setTeamKey,
+            control: 'keycaps', labelInCap: true, flat: true, keyHeight: 36,
+            options: Object.entries(TEAMS).map(([k, t]) => ({
+              value: k,
+              label: k === 'kamleon' ? 'Neutro' : t.label.replace(' Cowboys', ''),
+              led: k === 'kamleon' ? undefined : t.color,
+              wide: k === 'kamleon',
+            })),
+          },
+          {
+            id: 'accent', label: 'Acento', value: accentKey, onChange: setAccentKey, control: 'keycaps',
+            options: Object.entries(ACCENTS).map(([k, a]) => ({ value: k, label: a.label, dot: a.value })),
+          },
+          {
+            id: 'cell', label: 'Celda', value: cellKey, onChange: setCellKey,
+            control: 'keycaps', columns: 3, stretch: true,
+            options: [
+              { value: 'actual',   label: 'Actual',   cap: '—' },
+              { value: 'parche',   label: 'Parche',   cap: 'A' },
+              { value: 'camiseta', label: 'Camiseta', cap: 'B' },
+            ],
+          },
+          {
+            id: 'roster', label: 'Plantilla', value: rosterKey, onChange: k => { setRosterKey(k); reset(); },
+            control: 'keycaps', columns: 3,
+            options: [
+              { value: 'small',    label: 'Small',  cap: ROSTERS.small.players.length },
+              { value: 'football', label: 'Medium', cap: ROSTERS.football.players.length },
+              { value: 'nfl',      label: 'Big',    cap: ROSTERS.nfl.players.length },
+            ],
+          },
+          {
+            id: 'page', label: 'Por página', value: pageSize, onChange: n => { setPageSize(n); reset(); },
+            control: 'keycaps', labelInCap: true, slot: true,   // las dos en un mismo hueco, como Celda
+            options: PAGE_SIZES.map(n => ({ value: n, label: String(n) })),
+          },
+          // las columnas solo cambian algo con 30 por página
+          ...(pageSize === 30 ? [{
+            id: 'cols', label: 'Columnas', value: denseCols, onChange: setDenseCols,
+            control: 'keycaps', labelInCap: true,
+            options: [6, 8].map(n => ({ value: n, label: String(n) })),
+          }] : []),
+        ]}
+      />
     </>
-  );
-}
-
-function Group({ label, row, children }) {
-  return (
-    <div className={styles.group}>
-      <span className={styles.groupLabel}>{label}</span>
-      <div className={row ? styles.row : styles.column}>{children}</div>
-    </div>
-  );
-}
-
-function Option({ active, onClick, children }) {
-  return (
-    <button className={`${styles.option} ${active ? styles.optionActive : ''}`} onClick={onClick}>
-      {children}
-    </button>
   );
 }

@@ -111,6 +111,7 @@ function Keys({ group }) {
 //   labelInCap: el nombre va escrito en la tecla, junto al punto, en vez de debajo
 //   led: color del LED de esa opción al encenderse (p. ej. el color del equipo)
 //   slot (con 2 columnas): las wide sueltas arriba y el resto juntas en un hueco oscuro
+//   stretch (con 3+): el hueco ocupa todo el ancho y sus teclas se alargan (nombres largos debajo)
 //   flat: teclas lisas, sin el relieve del centro · keyHeight: alto de las teclas (48 por defecto)
 //   columns 3+: cuadradas, seguidas en un mismo hueco (como un banco de teclas); las opciones con
 //   wide van al lado, aparte, rectangulares, llenando el resto de la fila
@@ -119,7 +120,7 @@ function Keycaps({ group }) {
   const key = o => {
     const active = o.value === group.value;
     return (
-      <KeyButton key={o.value} momentary flat={group.flat} wide={columns === 2 || o.wide} on={active}
+      <KeyButton key={o.value} momentary flat={group.flat} wide={columns === 2 || o.wide || group.stretch} on={active}
         style={group.keyHeight ? { height: group.keyHeight } : undefined}
         ledColor={o.led}
         onClick={() => group.onChange(o.value)} aria-pressed={active} aria-label={o.label}>
@@ -161,7 +162,7 @@ function Keycaps({ group }) {
   const rest = group.options.filter(o => o.wide);
   return (
     <div className={styles.keycapsStack}>
-      <div className={styles.bank} style={{ '--keys': bank.length }}>
+      <div className={`${styles.bank} ${group.stretch ? styles.bankStretch : ''}`} style={{ '--keys': bank.length }}>
         <div className={styles.slot}>{bank.map(key)}</div>
         <div className={styles.bankLabels}>{bank.map(label)}</div>
       </div>

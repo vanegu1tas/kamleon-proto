@@ -1,0 +1,310 @@
+/* Tema: superficies, bordes y textos secundarios en blanco translúcido (se tiñen del fondo del
+   equipo). El color del dorsal llega por --number desde FlowRunner. */
+.screen {
+  --surface: rgba(255, 255, 255, 0.08);
+  --surface-strong: rgba(255, 255, 255, 0.14);
+  --border: rgba(255, 255, 255, 0.22);
+  --text-muted: rgba(255, 255, 255, 0.62);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-family-primary);
+  color: #ffffff;
+}
+
+/* Al tocar cualquier cosa: se hunde un poco al instante */
+.pressable {
+  transition: transform 0.1s var(--ease-out);
+}
+
+.pressable:active {
+  transform: scale(0.96);
+}
+
+/* ─── Cabecera ─── */
+
+.header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 88px;
+  flex-shrink: 0;
+}
+
+.title {
+  margin: 0;
+  padding-top: 8px;
+  font-size: var(--font-size-32);
+  font-weight: var(--font-weight-bold);
+}
+
+/* Se ve de 48 px, responde en 80 */
+.staffButton {
+  position: absolute;
+  top: 20px;
+  right: 48px;
+  min-width: 112px;
+  height: 48px;
+  padding: 0 24px;
+  border: 2px solid var(--border);
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.85);
+  font-family: inherit;
+  font-size: var(--font-size-20);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+}
+
+.staffButton::before {
+  content: '';
+  position: absolute;
+  inset: -16px 0;
+}
+
+/* ─── Flechas: pasar de página (solo con más de 30 jugadores) ─── */
+
+/* Se ven de 56 px, responden en 80; centradas en el alto de la cuadrícula */
+.arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  margin-top: -40px;
+  border: 2px solid var(--border);
+  border-radius: 50%;
+  background: var(--surface);
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.arrow::before {
+  content: '';
+  position: absolute;
+  inset: -12px;
+}
+
+.arrowPrev { left: 16px; }
+.arrowNext { right: 16px; }
+
+/* ─── Cuadrícula: 30 por página; columnas, filas y foto los calcula RosterScreen ─── */
+
+.body {
+  position: relative;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  min-height: 0;
+  padding-bottom: 24px;
+}
+
+.grid {
+  display: grid;
+  /* se llena de izquierda a derecha y de arriba abajo; la última página no se recoloca */
+  align-self: flex-start;
+  /* aire entre el título y la primera fila: el que dejaba el rango "Numbers …" que se quitó, así
+     las caras se quedan donde estaban (empiezan en y = 112). AREA_H en RosterScreen lo descuenta. */
+  margin-top: 24px;
+}
+
+.player {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.photo {
+  width: var(--photo);
+  height: var(--photo);
+  flex-shrink: 0;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--surface);
+  /* anillo fino: separa la foto de cualquier color de fondo */
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.16);
+  transition: transform 0.1s var(--ease-out);
+}
+
+.player:active .photo {
+  transform: scale(0.94);
+}
+
+.initials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-strong);
+  font-size: var(--font-size-24);
+  font-weight: var(--font-weight-medium);
+}
+
+/* dorsal (en azul) y apellido en una línea, debajo de la foto */
+.label {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 6px;
+  max-width: 100%;
+  font-size: var(--font-size-20);
+  line-height: 24px;
+}
+
+.number {
+  flex-shrink: 0;
+  color: var(--number);
+  font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
+}
+
+.name {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-weight: var(--font-weight-medium);
+}
+
+/* ─── Staff: el QR entra creciendo (T5) ─── */
+
+/* Mismo tamaño y sitio que en Dorsal grande (Daniel, 22/10): el QR empieza en y = 296 de la
+   pantalla, aunque aquí no haya pestañas debajo de la cabecera */
+.staffPanel {
+  position: absolute;
+  top: 208px;   /* 296 − 88 de la cabecera */
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  animation: qrIn 0.25s var(--ease-out) both;
+}
+
+.staffQr {
+  display: block;
+  padding: 20px;
+  border: none;
+  border-radius: 16px;
+  background: var(--surface);
+  cursor: pointer;
+}
+
+.staffText {
+  margin: 0;
+  font-size: var(--font-size-24);
+}
+
+@keyframes qrIn {
+  from { opacity: 0; transform: scale(0.94); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* ─── T1 · entrar: cascada de caras ─── */
+
+.enter .player {
+  animation: faceIn 0.32s var(--ease-out) both;
+  animation-delay: calc(min(var(--i), 24) * 12ms);
+}
+
+.enter .header {
+  animation: fadeIn 0.3s var(--ease-out) both;
+}
+
+@keyframes faceIn {
+  from { opacity: 0; transform: translateY(12px) scale(0.96); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ─── T2 · pasar de página: la cuadrícula entra por el lado de la flecha ─── */
+
+.fromRight { animation: slideFromRight 0.25s var(--ease-out) both; }
+.fromLeft  { animation: slideFromLeft 0.25s var(--ease-out) both; }
+
+@keyframes slideFromRight {
+  from { opacity: 0; transform: translateX(40px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes slideFromLeft {
+  from { opacity: 0; transform: translateX(-40px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ─── T3 · tocar una cara: todo se apaga y encoge; la elegida se queda (Ready la hace volar) ─── */
+
+.leaving {
+  pointer-events: none;
+}
+
+.leaving .header,
+.leaving .arrow,
+.leaving .player {
+  animation: fadeAway 0.25s var(--ease-out) both;
+}
+
+.leaving .selected,
+.returning .selected {
+  animation: none;
+}
+
+/* La foto elegida se oculta mientras vuela (la que se ve es la de Ready) */
+.leaving .selected .photo,
+.returning .selected .photo {
+  visibility: hidden;
+}
+
+.leaving .selected .label {
+  animation: fadeAway 0.15s var(--ease-out) both;
+}
+
+@keyframes fadeAway {
+  to { opacity: 0; transform: scale(0.92); }
+}
+
+/* ─── T4 · volver de Ready: la plantilla reaparece ─── */
+
+.returning {
+  pointer-events: none;
+}
+
+.returning .header,
+.returning .arrow,
+.returning .player {
+  animation: fadeBack 0.3s var(--ease-out) both;
+}
+
+@keyframes fadeBack {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Reducir movimiento: solo fundidos */
+@media (prefers-reduced-motion: reduce) {
+  .pressable:active, .player:active .photo { transform: none; }
+  @keyframes faceIn         { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes slideFromRight { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes slideFromLeft  { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes fadeAway       { to { opacity: 0; } }
+  @keyframes fadeBack       { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes qrIn           { from { opacity: 0; } to { opacity: 1; } }
+}

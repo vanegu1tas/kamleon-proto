@@ -240,6 +240,17 @@
 }
 
 
+/* stretch: el banco ocupa el ancho del panel y las columnas se reparten */
+.bankStretch {
+  flex: 1;
+  align-items: stretch;
+}
+
+.bankStretch .slot,
+.bankStretch .bankLabels {
+  grid-template-columns: repeat(var(--keys), 1fr);
+}
+
 /* mismas columnas que el hueco para que cada nombre quede bajo su tecla */
 .bankLabels {
   display: grid;
