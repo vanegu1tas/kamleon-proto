@@ -1,0 +1,317 @@
+/* Medidas de Figma (marco de 479 × 299) × 2,673. Valores de producción tal cual: no son tokens. */
+
+.screen {
+  width: 1280px;
+  height: 800px;
+  background: #000000;
+  position: relative;
+  overflow: hidden;
+  font-family: var(--font-family-primary);
+  color: var(--color-grey-98);
+}
+
+/* Los botones no heredan la fuente por defecto */
+.screen button {
+  font-family: inherit;
+}
+
+/* ─── Cabecera ─────────────────────────────── */
+
+.back {
+  position: absolute;
+  top: 46px;
+  left: 43px;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.title {
+  position: absolute;
+  top: 64px;
+  left: 0;
+  right: 0;
+  margin: 0;
+  text-align: center;
+  font-size: 40px;
+  font-weight: var(--font-weight-book);
+  color: #a7a9ac;
+}
+
+/* ─── Bienvenida ───────────────────────────── */
+
+.welcome {
+  position: absolute;
+  top: 257px;
+  left: 50%;
+  width: 973px;
+  transform: translateX(-50%);
+  margin: 0;
+  text-align: center;
+  font-size: 69px;
+  font-weight: var(--font-weight-bold);
+  line-height: 1.01;
+}
+
+/* Botón píldora (Get started, Continue) */
+.pill {
+  position: absolute;
+  top: 548px;
+  left: 513px;
+  width: 254px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #25cfc4;
+  border-radius: 999px;
+  background: transparent;
+  color: #25cfc4;
+  font-size: 27px;
+  font-weight: var(--font-weight-book);
+  cursor: pointer;
+}
+
+.pill:disabled {
+  cursor: default;
+}
+
+.pillBusy {
+  border-color: #808285;
+}
+
+.spinner {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 3px dotted #808285;
+  animation: spin 1.6s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ─── Búsqueda de redes ────────────────────── */
+
+.loader {
+  position: absolute;
+  top: 182px;
+  left: 50%;
+  transform: translateX(-50%);
+  line-height: 0;
+}
+
+.loaderTitle,
+.loaderText {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: 0;
+  text-align: center;
+  font-weight: var(--font-weight-book);
+}
+
+.loaderTitle {
+  top: 532px;
+  font-size: 40px;
+  color: var(--color-turquoise-51);
+}
+
+.loaderText {
+  top: 591px;
+  font-size: 20px;
+}
+
+/* Connected: el texto queda 3 px (de Figma) más arriba que en las de carga */
+.loaderTitleDone { top: 529px; }
+.loaderTextDone  { top: 585px; }
+
+.loaderTitleError { color: #fc664e; }
+
+.icon {
+  position: absolute;
+  inset: 0;
+}
+
+/* Try again va más abajo que Continue / Get started */
+.pillLow { top: 679px; }
+
+/* Installation failed: icono, textos y botón 75 px más arriba */
+.raised .icon        { top: -75px; }
+.raised .loaderTitle { top: 462px; }
+.raised .loaderText  { top: 521px; }
+.pillRaised          { top: 609px; }
+
+/* Affordance de demo (fuerza el fallo), fuera del diseño */
+.sim {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* ─── Lista ────────────────────────────────── */
+
+.listBox {
+  position: absolute;
+  top: 315px;
+  left: 184px;
+  width: 909px;
+  height: 168px;
+  border-radius: 35px;
+  background: rgba(65, 64, 66, 0.5);
+  overflow: hidden;
+}
+
+/* Con dos opciones la caja baja un poco (Connect, IP configuration) */
+.listBoxShort {
+  top: 345px;
+  height: auto;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.list::-webkit-scrollbar {
+  display: none;
+}
+
+.list li + li .row::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 29px;
+  right: 24px;
+  height: 1px;
+  background: #414042;
+}
+
+.row {
+  position: relative;
+  width: 100%;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  background: none;
+  border: none;
+  color: var(--color-grey-98);
+  font-size: 27px;
+  font-weight: var(--font-weight-book);
+  text-align: left;
+  cursor: pointer;
+}
+
+.row:not(button) {
+  cursor: default;
+}
+
+button.row:active {
+  background: rgba(65, 64, 66, 0.6);
+}
+
+.rowLabel {
+  color: #808285;
+}
+
+.lock {
+  flex-shrink: 0;
+  margin-right: 50px;
+}
+
+.scrollTrack {
+  position: absolute;
+  top: 315px;
+  left: 1127px;
+  width: 8px;
+  height: 168px;
+  background: rgba(65, 64, 66, 0.5);
+}
+
+.scrollThumb {
+  position: absolute;
+  left: 2px;
+  width: 4px;
+  background: var(--color-turquoise-51);
+}
+
+/* ─── Contraseña ───────────────────────────── */
+
+.field {
+  position: absolute;
+  top: 321px;
+  left: 209px;
+  width: 861px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 24px 0 37px;
+  border-radius: 999px;
+  background: rgba(65, 64, 66, 0.5);
+  font-size: 27px;
+  cursor: text;
+}
+
+/* Con el teclado abierto el campo sube y se ensancha */
+.fieldTyping {
+  top: 251px;
+  left: 184px;
+  width: 909px;
+  padding-left: 40px;
+}
+
+.fieldNetwork {
+  color: #808285;
+  white-space: nowrap;
+}
+
+.fieldValue {
+  flex: 1;
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  letter-spacing: 0.08em;
+}
+
+/* Unit ID (medidas de la foto del brief, aproximadas) */
+.fieldUnit {
+  top: 330px;
+}
+
+.fieldValueLeft {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.caret {
+  margin-left: 4px;
+  animation: blink 1s steps(1) infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+.eye {
+  display: flex;
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+}

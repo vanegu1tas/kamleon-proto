@@ -1,6 +1,7 @@
 import ExplorationsApp from '../ExplorationsApp';
 import FlowRunner from '../flow/FlowRunner';
 import FlowRunnerV2 from '../flow/FlowRunnerV2';
+import WizardRunner from '../screens/wizard/WizardRunner';
 import FastTrackDaniel from '../explorations/fast-track/daniel/FlowRunner';
 import FastTrackPolished from '../explorations/fast-track/daniel/pulida/FlowRunner';
 import FastTrackDorsal from '../explorations/fast-track/daniel/dorsal/FlowRunner';
@@ -40,9 +41,10 @@ export const SECTIONS = [
         id: 'actual',
         title: 'Flujo actual',
         status: 'reference',
-        description: 'Cómo funciona hoy la pantalla, reconstruido de capturas de producción. No se toca en ninguna tarea.',
+        description: 'Cómo funciona hoy la pantalla, reconstruido de capturas de producción y de Figma. No se toca en ninguna tarea.',
         items: [
           { id: 'end-user', label: 'End user', render: () => <FlowRunner /> },
+          { id: 'wizard',   label: 'Wizard (set up)', render: () => <WizardRunner /> },
         ],
       },
       {
@@ -75,6 +77,15 @@ export const SECTIONS = [
           { id: 'dorsal',         label: 'Dorsal grande (7 columnas)', author: 'Daniel', render: () => <FastTrackDorsal /> },
           { id: 'release',        label: 'Avatars círculo (feedback Jordi)', author: 'Daniel', render: () => <FastTrackRelease /> },
           { id: 'ficha',          label: 'Avatars cards', author: 'Daniel', render: () => <FastTrackFicha /> },
+        ],
+      },
+      {
+        id: 'wizard',
+        title: 'Wizard (set up)',
+        status: 'progress',
+        description: 'El flujo de instalación de la pantalla. Primero se emula el actual; luego, las mejoras.',
+        items: [
+          { id: 'actual', label: 'Wizard actual (referencia)', author: 'Daniel', render: () => <WizardRunner /> },
         ],
       },
       {

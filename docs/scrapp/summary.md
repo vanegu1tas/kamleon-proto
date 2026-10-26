@@ -3,12 +3,16 @@
 **Estado de la scrapp** (la pantalla de 1280×800 sobre el urinal). El de la webapp está en
 `docs/project-summary.md`. Si algo de la scrapp aparece en los dos, manda este.
 
-Última revisión: 2026-10-25 (Daniel pasa a otro proyecto; retomar desde aquí).
+Última revisión: 2026-10-26 (wizard en pausa; Daniel pasa a analytics de la webapp).
 
 ---
 
 ## Lo primero al retomar
 
+0. **Wizard (set up)** — en pausa desde el 26/10: producción hará hot fixes y Daniel pasa a analytics de la
+   webapp (cubre a su compañera de vacaciones). Wizard actual emulado entero en `scrapp/screens/wizard/` (Figma
+   *Screen App* + Unit ID desde la foto del brief); pains del brief *Wizard v2* anotados, **nada de mejoras
+   implementado**. Ficha y dudas abiertas → `docs/scrapp/wizard.md`. Con commit, sin push.
 1. **Fast Track**: exploraciones vivas → **07 "Avatars círculo (feedback Jordi)"** (`release/`) y
    **08 "Avatars cards"** (`ficha/`). Todo lo del 22–25/10 (logos, Celda con parche en la 07, Placa
    en la 08, fotos del Villarreal en Neutro, mandala del Tracking) → `docs/scrapp/fast-track.md`.
@@ -38,7 +42,8 @@ Journey map (#/journey/<id>)
 
 - **Producción**: *Flujo actual* (referencia, no se toca) · *Scrapp nueva* (= actual + lo aprobado;
   hoy igual al actual).
-- **Tareas**: *Fast Track* (en curso) · *Recommendation Engine* (futuro, página aparte) ·
+- **Tareas**: *Fast Track* (en curso) · *Wizard* (set up / instalación; en curso desde 26/10, ficha
+  `docs/scrapp/wizard.md`) · *Recommendation Engine* (futuro, página aparte) ·
   *Audit UX del flujo (julio)* (copia del flujo con los cambios del audit, solo cambia la Home) ·
   *Score* (exploraciones 1, 2, 4, 5).
 - **Registrar algo nuevo**: un item en `scrapp/hub/entries.jsx` (con `author`); un journey en

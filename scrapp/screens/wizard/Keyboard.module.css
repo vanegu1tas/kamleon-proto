@@ -1,0 +1,59 @@
+/* Medidas de Figma × 2,673: empieza en y = 382, teclas de 78 px de alto, 16 px entre teclas. */
+
+.keyboard {
+  position: absolute;
+  top: 382px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0 16px 16px;
+  background: #262626;
+}
+
+.suggestions {
+  height: 43px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 200px;
+  color: #ffffff;
+  font-size: 19px;
+}
+
+.row {
+  display: flex;
+  gap: 16px;
+}
+
+.key {
+  flex-basis: 0;
+  height: 78px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 9px;
+  background: #6b6b6b;
+  color: #ffffff;
+  font-size: 34px;
+  cursor: pointer;
+}
+
+.key:active {
+  background: #8a8a8a;
+}
+
+.fn {
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding: 0 12px 10px;
+  background: #424242;
+  font-size: 21px;
+}
+
+.right {
+  justify-content: flex-end;
+}

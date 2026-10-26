@@ -1,0 +1,42 @@
+/* Medidas sacadas de la foto (aprox.): panel de 930 × 306 px, de y = 432 a 738. */
+
+.keyboard {
+  position: absolute;
+  top: 432px;
+  left: 175px;
+  width: 930px;
+  height: 306px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px;
+  background: #ffffff;
+}
+
+.row {
+  flex: 1;
+  display: flex;
+  gap: 6px;
+}
+
+.key {
+  flex-basis: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #9a9a9a;
+  border-radius: 3px;
+  background: #ffffff;
+  color: #222222;
+  font-family: var(--font-family-primary);
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.key:active {
+  background: #e4e4e4;
+}
+
+.spacer {
+  flex-basis: 0;
+}
