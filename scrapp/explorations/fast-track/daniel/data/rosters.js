@@ -55,6 +55,9 @@ export const ROSTERS = {
 //            (Figma, "Scrapp · Fotos IA (Fast Track)"): caras ficticias, camiseta blanca sin logos
 //   arsenal  los jugadores reales, con su nombre, su dorsal y su foto (las de Daniel). Lo que falte
 //            hasta el tamaño de la plantilla se rellena con inventados sin foto
+//   kamleon  (neutro, 23/10) jugadores reales del Villarreal con su dorsal y su foto (las de Daniel,
+//            recortadas a cabeza y hombros). Lo que falte se rellena con inventados que reutilizan
+//            esas mismas fotos, como el relleno de Dallas
 //   resto    como antes, hasta que haya fotos de fútbol
 const PHOTOS = import.meta.glob('./photos/*/*.jpg', { eager: true, import: 'default' });
 const photo = (team, file) => PHOTOS[`./photos/${team}/${file}.jpg`];
@@ -172,6 +175,41 @@ const ARSENAL = [
   [49, 'Myles Lewis-Skelly',  'Lewis-Skelly', 'myles'],
 ].map(([number, name, short, file]) => ({ id: `ars${number}`, number, name, short, photo: photo('arsenal', file) }));
 
+// Villarreal 2025/26: los dorsales vienen en el nombre de cada foto de Daniel (23/10)
+const VILLARREAL = [
+  [1,  'Junior Luiz',        'Luiz',       'junior-luiz'],
+  [2,  'Logan Costa',        'Costa',      'logan-costa'],
+  [3,  'Álex Freeman',       'Freeman',    'alex-freeman'],
+  [4,  'Carlos Romero',      'Romero',     'carlos-romero'],
+  [5,  'Willy Kambwala',     'Kambwala',   'willy-kambwala'],
+  [6,  'Pau Navarro',        'Navarro',    'pau-navarro'],
+  [7,  'Gerard Moreno',      'Moreno',     'gerard-moreno'],
+  [8,  'Juan Foyth',         'Foyth',      'juan-foyth'],
+  [9,  'Georges Mikautadze', 'Mikautadze', 'georges-mikautadze'],
+  [10, 'Thiago Fernández',   'Fernández',  'thiago-fernandez'],
+  [11, 'Ilias Akhomach',     'Akhomach',   'ilias-akhomach'],
+  [12, 'Renato Veiga',       'Veiga',      'renato-veiga'],
+  [13, 'Diego Conde',        'Conde',      'diego-conde'],
+  [14, 'Santi Comesaña',     'Comesaña',   'santi-comesana'],
+  [15, 'Santiago Mouriño',   'Mouriño',    'santiago-mourino'],
+  [16, 'Ramón Terrats',      'Terrats',    'ramon-terrats'],
+  [17, 'Tajon Buchanan',     'Buchanan',   'tajon-buchanan'],
+  [18, 'Pape Gueye',         'Gueye',      'pape-gueye'],
+  [19, 'Nicolas Pépé',       'Pépé',       'nicolas-pepe'],
+  [20, 'Alberto Moleiro',    'Moleiro',    'alberto-moleiro'],
+  [21, 'Tani Oluwaseyi',     'Oluwaseyi',  'tani-oluwaseyi'],
+  [22, 'Ayoze Pérez',        'Pérez',      'ayoze-perez'],
+  [23, 'Sergi Cardona',      'Cardona',    'sergi-cardona'],
+  [24, 'Pau Cabanes',        'Cabanes',    'pau-cabanes'],
+  [25, 'Arnau Tenas',        'Tenas',      'arnau-tenas'],
+  [27, 'Dani Requena',       'Requena',    'dani-requena'],
+  [28, 'Daniel Budesca',     'Budesca',    'daniel-budesca'],
+  [29, 'Jean Ives Valou',    'Valou',      'jean-ives-valou'],
+  [30, 'Carlos Macià',       'Macià',      'carlos-macia'],
+  [31, 'Rubén Gómez',        'Gómez',      'ruben-gomez'],
+  [38, 'Alassane Diatta',    'Diatta',     'alassane-diatta'],
+].map(([number, name, short, file]) => ({ id: `vil${number}`, number, name, short, photo: photo('villarreal', file) }));
+
 // Los reales primero (por dorsal, hasta el tamaño de la plantilla elegida); si la plantilla es más
 // grande que el equipo, el resto se rellena con los inventados en los dorsales libres
 function withReal(real, players) {
@@ -187,6 +225,11 @@ export function teamRoster(players, team) {
     // iniciales, que pasa en la vida real)
     const fill = players.map((p, i) => ({ ...p, photo: i % 9 === 4 ? null : DALLAS_PHOTOS[i % DALLAS_PHOTOS.length] }));
     return withReal(DALLAS, fill);
+  }
+  if (team === 'kamleon') {
+    // el relleno reutiliza las fotos del Villarreal (uno de cada nueve sin foto, para las iniciales)
+    const fill = players.map((p, i) => ({ ...p, photo: i % 9 === 4 ? null : VILLARREAL[i % VILLARREAL.length].photo }));
+    return withReal(VILLARREAL, fill);
   }
   if (team === 'arsenal') {
     return withReal(ARSENAL, players.map(p => ({ ...p, photo: null })));

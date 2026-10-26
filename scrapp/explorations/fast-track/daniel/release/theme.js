@@ -6,11 +6,17 @@
 //
 // Colores aproximados de cada club, solo para probar la regla.
 
+// Logo del equipo (23/10, como en Dorsal grande): SVG del club en blanco, usado como máscara
+// (FlowRunner.module.css → .teamLogo). Los archivos son los de la 06.
+import dallasLogo from '../dorsal/logos/dallas.svg';
+import arsenalLogo from '../dorsal/logos/arsenal.svg';
+import astonVillaLogo from '../dorsal/logos/aston-villa.svg';
+
 export const TEAMS = {
   kamleon:    { label: 'Kamleon (neutro)', color: '#0b0f12' },
-  dallas:     { label: 'Dallas Cowboys',   color: '#003594' },
-  arsenal:    { label: 'Arsenal',          color: '#EF0107' },
-  astonVilla: { label: 'Aston Villa',      color: '#670E36' },
+  dallas:     { label: 'Dallas Cowboys',   color: '#003594', logo: dallasLogo },
+  arsenal:    { label: 'Arsenal',          color: '#EF0107', logo: arsenalLogo },
+  astonVilla: { label: 'Aston Villa',      color: '#670E36', logo: astonVillaLogo },
   gilVicente: { label: 'Gil Vicente',      color: '#C8102E' },
 };
 

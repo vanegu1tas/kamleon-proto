@@ -54,9 +54,9 @@ export default function FastTrackFicha() {
   const [layoutKey, setLayoutKey] = useState(LAYOUTS[QUERY.get('grid')] ? QUERY.get('grid') : '8x4');   // 8 × 4: la única con ≥ 30 y fichas más altas que anchas (22/10)
   const [listenKey, setListenKey] = useState(QUERY.get('listen') === 'ring' ? 'ring' : 'logo');   // "escuchando" en Ready: el logo bajo la frase (22/10)
   const [transKey, setTransKey]   = useState(QUERY.get('trans') === 'fade' ? 'fade' : 'travel');   // paso a Tracking (22/10)
-  const [stripKey, setStripKey]   = useState(['side', 'stack', 'badge', 'overlay'].includes(QUERY.get('strip')) ? QUERY.get('strip') : 'badge');   // por defecto, el dorsal sobre la foto (22/10)
+  const [stripKey, setStripKey]   = useState(['side', 'stack', 'badge', 'overlay', 'plate'].includes(QUERY.get('strip')) ? QUERY.get('strip') : 'badge');   // por defecto, el dorsal sobre la foto (22/10)
   const [teamKey, setTeamKey]     = useState(TEAMS[QUERY.get('team')] ? QUERY.get('team') : 'kamleon');   // por defecto, Neutro (22/10)
-  const [numberKey, setNumberKey] = useState(NUMBER_COLORS[QUERY.get('number')] ? QUERY.get('number') : 'turq');   // por defecto, el turquesa de Kamleon (22/10)
+  const [numberKey, setNumberKey] = useState(NUMBER_COLORS[QUERY.get('number')] ? QUERY.get('number') : 'white');   // por defecto, blanco (23/10, Daniel; antes el turquesa)
   const [neutralKey, setNeutralKey] = useState(QUERY.get('neutral') === 'glow' ? 'glow' : 'graphite');   // por defecto, A · Grafito (22/10)
   // "Logo viaja" necesita el logo en Ready; con el anillo en la foto, el paso es siempre un fundido
   const trans = listenKey === 'logo' ? transKey : 'fade';
@@ -181,7 +181,16 @@ export default function FastTrackFicha() {
   useEffect(() => () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); }, []);
 
   // --accent: el aro de la foto en Ready (turquesa, como en la Pulida)
-  const themeVars = { '--number': NUMBER_COLORS[numberKey].value, '--accent': 'var(--color-turquoise-51)' };
+  // --plate / --plate-ink: la placa del dorsal en la franja "Placa" (23/10). Por defecto, el color del
+  // club con el número en blanco; el equipo puede tener la suya (Dallas: blanca, número negro).
+  // Kamleon (neutro) no tiene: su color es casi negro, así que la placa usa su valor por defecto
+  const plate = TEAMS[teamKey].plate ?? (teamKey !== 'kamleon' ? { bg: TEAMS[teamKey].color } : {});
+  const themeVars = {
+    '--number': NUMBER_COLORS[numberKey].value,
+    '--accent': 'var(--color-turquoise-51)',
+    ...(plate.bg && { '--plate': plate.bg }),
+    ...(plate.ink && { '--plate-ink': plate.ink }),
+  };
   // Fondo (22/10): en plantilla y Ready, el del equipo. Al detectar flujo (Tracking) no se corta:
   // se va oscureciendo despacio hasta el negro de siempre, y Score y Flush siguen en negro como en
   // la scrapp actual. Así el fondo nuevo solo existe donde se rediseñó y el resto no cambia.
@@ -197,6 +206,7 @@ export default function FastTrackFicha() {
       rows={LAYOUTS[layoutKey].rows}
       strip={stripKey}
       upper={teamKey === 'dallas'}
+      darkInk={!!TEAMS[teamKey].plate?.ink}
       tab={tab}
       onTab={setTab}
       phase={step === 'roster' ? rosterPhase : rosterPhase === 'returning' ? 'returning' : 'leaving'}
@@ -210,6 +220,15 @@ export default function FastTrackFicha() {
     <div className={styles.stage} style={themeVars}>
       {/* El fondo del equipo vive debajo de plantilla y Ready, y no se corta entre ellas */}
       <TeamBackground color={TEAMS[teamKey].color} neutral={teamKey === 'kamleon' ? neutralKey : null} className={`${styles.bg} ${bgClass}`} />
+      {/* El logo del equipo es parte del fondo (como en Dorsal grande): quieto entre plantilla y Ready,
+          se apaga con el fondo en Tracking */}
+      {TEAMS[teamKey].logo && (
+        <span
+          className={`${styles.teamLogo} ${bgClass}`}
+          style={{ '--team-logo': `url("${TEAMS[teamKey].logo}")` }}
+          aria-hidden="true"
+        />
+      )}
 
       {(step === 'roster' || showRosterBehind) && roster}
       {/* Un solo logo para plantilla y Ready, fuera de las dos: no se mueve en ninguna transición */}
@@ -241,7 +260,7 @@ export default function FastTrackFicha() {
       <DeviceFrame>{screen}</DeviceFrame>
 
       <TweakPanel
-        title="Ficha"
+        title="Avatars cards"
         groups={[
           {
             // neutro arriba a fila entera; los equipos debajo, 2 y 2, lisas, con el LED del color del equipo
@@ -277,6 +296,7 @@ export default function FastTrackFicha() {
               { value: 'overlay', label: 'Todo en foto' },
               { value: 'stack',   label: 'Apilado' },
               { value: 'side',    label: 'Al lado' },
+              { value: 'plate',   label: 'Placa' },
             ],
           },
           {

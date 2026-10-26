@@ -27,13 +27,32 @@
   pointer-events: none;
 }
 
+/* Logo del equipo (22/10, el de Dorsal grande): la forma del logo sale del SVG (máscara); relleno
+   blanco con degradado en diagonal, todo al 10 %. Caja de 352 px abajo a la derecha, sangrando 76 px
+   por la derecha y 30 por abajo */
+.teamLogo {
+  position: absolute;
+  right: -76px;
+  bottom: -30px;
+  width: 352px;
+  height: 352px;
+  background: linear-gradient(150deg, #ffffff 26%, rgba(255, 255, 255, 0.1) 87%);
+  -webkit-mask: var(--team-logo) center bottom / contain no-repeat;
+  mask: var(--team-logo) center bottom / contain no-repeat;
+  opacity: 0.1;
+  pointer-events: none;
+  transition: opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 /* Fuera de plantilla y Ready (análisis, score, flush) el fondo del equipo se apaga */
-.bgHidden {
+.bgHidden,
+.teamLogo.bgHidden {
   opacity: 0;
 }
 
 /* Tracking: el fondo se va a negro en 2 s (Tracking dura 3) */
-.bgDarken {
+.bgDarken,
+.teamLogo.bgDarken {
   opacity: 0;
   transition: opacity 2s cubic-bezier(0.45, 0, 0.55, 1);
 }

@@ -179,6 +179,38 @@
   font-weight: var(--font-weight-medium);
 }
 
+/* ─── Celda "Parche" (23/10, la de la Pulida) ─── */
+
+.face {
+  position: relative;
+  display: flex;
+}
+
+/* el dorsal pegado a la foto, en el color del Dorsal; la esquina la da .br / .bl / .tl */
+.badge {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* 36 px (23/10, Daniel: 40 se veía un poco grande); el mismo que la Pulida en la rejilla densa */
+  min-width: 36px;
+  height: 36px;
+  padding: 0 6px;
+  border-radius: 18px;
+  background: var(--number);
+  color: #0b0f12;
+  font-size: var(--font-size-20);
+  font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  /* anillo oscuro: separa el parche de la foto */
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.45);
+}
+
+.br { right: -8px; bottom: -4px; }
+.bl { left: -8px;  bottom: -4px; }
+.tl { left: -8px;  top: -4px; }
+
 /* ─── Staff: el QR entra creciendo (T5) ─── */
 
 /* Mismo tamaño y sitio que en Dorsal grande (Daniel, 22/10): el QR empieza en y = 296 de la

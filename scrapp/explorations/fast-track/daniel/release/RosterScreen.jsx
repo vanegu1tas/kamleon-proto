@@ -19,7 +19,15 @@ import Avatar from './Avatar';
  *   T3  al tocar una cara, todo se apaga menos ella (el vuelo lo hace Ready) (phase="leaving")
  *   T4  al volver de Ready, la plantilla reaparece                        (phase="returning")
  *   T5  Staff: el QR entra creciendo; las flechas se van y "Staff" pasa a "‹ Players"
+ *
+ * Celda (`cell`, 23/10):
+ *   actual  dorsal + apellido debajo de la foto
+ *   parche    el de la Pulida: el dorsal en un parche pegado a la foto, abajo a la derecha; debajo
+ *              solo el apellido
+ *   parcheBL   abajo a la izquierda: igual de cerca del apellido y se lee "10 · Havertz"
+ *   parcheTL   arriba a la izquierda: lo primero que se ve, como en Avatars cards
  */
+const PATCH = { parche: 'br', parcheBL: 'bl', parcheTL: 'tl' };
 // Staff (17/10, tras la critique): si nadie escanea, la plantilla vuelve sola para el siguiente
 const STAFF_IDLE_MS = 20000;
 
@@ -34,7 +42,7 @@ const PHOTO_AIR = 32;         // mínimo entre fotos vecinas (lo que no ocupa la
 const LABEL_H = 24 + 8;       // línea del dorsal y el apellido + separación con la foto
 
 export default function RosterScreen({
-  players, cols = 6, rows = 5, tab, onTab, phase = 'idle', selectedId, onSelect, onScanQr,
+  players, cols = 6, rows = 5, cell = 'actual', tab, onTab, phase = 'idle', selectedId, onSelect, onScanQr,
 }) {
   const pages = paginate(players, cols * rows);
   const showStaff = tab === 'staff';
@@ -137,9 +145,12 @@ export default function RosterScreen({
                 style={{ '--i': i }}
                 onClick={e => select(p, e.currentTarget.querySelector('[data-photo]'))}
               >
-                <Avatar data-photo person={p} className={styles.photo} initialsClassName={styles.initials} />
+                <span className={styles.face}>
+                  <Avatar data-photo person={p} className={styles.photo} initialsClassName={styles.initials} />
+                  {PATCH[cell] && <span className={`${styles.badge} ${styles[PATCH[cell]]}`}>{p.number}</span>}
+                </span>
                 <span className={styles.label}>
-                  <span className={styles.number}>{p.number}</span>
+                  {cell === 'actual' && <span className={styles.number}>{p.number}</span>}
                   <span className={styles.name}>{p.short}</span>
                 </span>
               </button>

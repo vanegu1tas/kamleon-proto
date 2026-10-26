@@ -40,11 +40,14 @@ const GAP_Y = 16;
 //   badge  el dorsal sobre la foto (esquina de arriba) y abajo solo el apellido: la foto gana alto
 //   overlay dorsal y apellido sobre la foto (el apellido sobre un degradado): la foto ocupa la
 //          ficha entera y queda vertical
-const STRIP_H = { side: 40, stack: 52, badge: 32, overlay: 0 };
-const NUMBER_ON_PHOTO = new Set(['badge', 'overlay']);
+//   plate  la del Figma de Daniel (23/10, Scrapp explorations 2062:3599): el dorsal en una placa con
+//          el color del club en degradado sobre la foto, y una franja oscura con el apellido
+//          centrado (al tamaño de "Dorsal en foto")
+const STRIP_H = { side: 40, stack: 52, badge: 32, overlay: 0, plate: 27 };
+const NUMBER_ON_PHOTO = new Set(['badge', 'overlay', 'plate']);
 
 export default function RosterScreen({
-  players, cols = 6, rows = 5, strip = 'badge', upper = false, tab, onTab, phase = 'idle', selectedId, onSelect, onScanQr,
+  players, cols = 6, rows = 5, strip = 'badge', upper = false, darkInk = false, tab, onTab, phase = 'idle', selectedId, onSelect, onScanQr,
 }) {
   const pages = paginate(players, cols * rows);
   const showStaff = tab === 'staff';
@@ -96,7 +99,7 @@ export default function RosterScreen({
   const showNav = hasPages && !showStaff;
 
   return (
-    <div ref={rootRef} className={`${styles.screen} ${styles[phase] ?? ''} ${upper ? styles.upper : ''}`}>
+    <div ref={rootRef} className={`${styles.screen} ${styles[phase] ?? ''} ${upper ? styles.upper : ''} ${strip === 'plate' ? styles.plateLook : ''} ${darkInk ? styles.inkDark : ''}`}>
       <header className={styles.header}>
         <h1 className={styles.title}>Choose your profile</h1>
         <button
@@ -168,11 +171,11 @@ export default function RosterScreen({
 const NAME_MAX = 16;
 const NAME_MIN = 13;
 
-function FitName({ className, children }) {
+function FitName({ className, max = NAME_MAX, children }) {
   const ref = useRef(null);
   useLayoutEffect(() => {
     const el = ref.current;
-    let size = NAME_MAX;
+    let size = max;
     el.style.fontSize = `${size}px`;
     while (el.scrollWidth > el.clientWidth && size > NAME_MIN) {
       size -= 1;

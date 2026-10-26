@@ -89,7 +89,9 @@ Copia de la pulida (mismo tema, Staff, Ready y transiciones) con la celda que Da
 - **Logo del equipo** (17/10, solo en esta exploración): el club da su SVG en blanco con fondo transparente (`dorsal/logos/`, campo `logo` en `theme.js`). Del SVG solo cuenta la forma (máscara); el tratamiento es igual para todos: blanco con degradado en diagonal (blanco → 10 %), conjunto al 10 %, caja de 352 px abajo a la derecha sangrando 76 px a la derecha y 30 abajo, el logo cabe sin deformarse y se apoya abajo. Va en la capa del fondo: quieto entre plantilla y Ready, fuera en el Score. Sin logo no se pinta nada. Hecho: Dallas. Falta: Arsenal (SVG pendiente de Daniel).
 - Ajustada a Figma medida a medida (17/10): bloque del apellido de 25 px con las letras centradas sobre la curva, degradado sobre una caja de 128 px, dorsal 9 px por encima de su bloque, espaciado −4 %, columnas a 22 px y cuadrícula desde y=262. Pestañas 12 px más abajo, como en Figma (centro en y=140). Los rangos se quedan los reales (con 20 por página salen 5); los de Figma eran de 30 por página y no se copian (Daniel, 17/10).
 
-## Exploración 07 · Primer release (22/10) — `explorations/fast-track/daniel/release/`
+## Exploración 07 · Avatars círculo (22/10) — `explorations/fast-track/daniel/release/`
+
+En el hub: "Avatars círculo (feedback Jordi)" (antes "Primer release", renombrada el 25/10).
 
 Daniel mostró las exploraciones; al cliente le gustaron y para el **primer release** pide:
 - 30 jugadores por pantalla
@@ -116,6 +118,38 @@ Montado sobre la Pulida (tema del equipo, transiciones, Staff con "‹ Players" 
   Ready el dorsal usa el mismo color.
 - Panel (para decidir con el cliente): Columnas 6 · 7 · 8, color del dorsal (azul / turquesa /
   blanco), equipo y plantilla de prueba.
+- Logos de Dallas, Arsenal y Aston Villa (25/10), mismo tratamiento que en Dorsal grande.
+- **Celda** (25/10, panel): Actual (dorsal en el texto, debajo) · Parche ↘ · Parche ↙ · Parche ↖. El
+  parche es un círculo de 36 px (bajado de 40) con el dorsal, en el color del dorsal y tinta oscura,
+  montado en la esquina de la foto; con parche el dorsal ya no sale en el texto. Sin decidir esquina
+  (abajo a la izquierda queda más cerca del nombre).
+
+## Exploración 08 · Avatars cards (22–25/10) — `explorations/fast-track/daniel/ficha/`
+
+Fotos en cards con el dorsal sobre la foto. Panel: equipo, color del dorsal (por defecto **blanco**,
+25/10) y estilo de la franja, entre ellos **Placa** (25/10, Figma `Ae9SVr0hiDSbQSSqAU5AsT` 2062:3599):
+- Dorsal arriba a la izquierda sobre una placa de 34 px con degradado del color del equipo (80 % abajo
+  → transparente arriba). Dallas: placa blanca y número negro (`plate` en `theme.js`). Neutro: placa
+  oscura #161D24. Número blanco con sombra suave para leerse sobre fotos de fondo blanco (sin sombra
+  si el número es negro). Sin comprobar en pantalla.
+- Nombre en medium, centrado, a 16 px (como "Dorsal en foto"), sin fondo propio en la franja.
+- Logos de Dallas y Arsenal abajo a la derecha (falta Aston Villa).
+- `TRACKING_DURATION` está en 9200 (alargado para ver el mandala); devolver a 3000 cuando se cierre.
+
+## Fotos del equipo Neutro (25/10)
+
+Las de `kamleon` (Neutro) son ahora fotos de jugadores del Villarreal que pasó Daniel (31, en
+`data/photos/villarreal/`, recortadas a 320 px: cabeza y hombros, fondo blanco). Lista `VILLARREAL`
+en `data/rosters.js`; para plantillas más grandes se reutilizan y 1 de cada 9 queda sin foto (para
+ver las iniciales). Valen para todas las exploraciones que usan `teamRoster`.
+
+## Tracking: el mandala de la máquina (22/10) — `screens/TrackingScreen.jsx`
+
+Compartido por todas las exploraciones de Fast Track. Sacado midiendo el vídeo de la máquina real
+frame a frame (no a ojo): el mandala no gira, se abre como una flor. Ciclo de 2,23 s; apertura rápida
+(75 % en 0,17 s), rebote hacia dentro de ~la mitad, los de abajo 0,3 s detrás de los de arriba, los
+de dentro se mueven proporcionalmente más (`move = 11.7 + 0.195·dist`). Las curvas a mano con
+easings por tramos daban un movimiento a tirones: por eso keyframes por frame del vídeo.
 
 ## Ready — pendiente de explorar (17/10)
 Aún no se ha trabajado. Plan de Daniel: explorar primero (Figma) y luego implementar. Lo que tiene que resolver, sacado de la critique:

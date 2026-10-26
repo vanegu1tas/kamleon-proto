@@ -73,8 +73,8 @@ export const SECTIONS = [
           { id: 'staff-boton',    label: 'Pestañas + Staff arriba', author: 'Daniel', render: () => <FastTrackDaniel qrMode="button" /> },
           { id: 'pulida',         label: 'Pulida: equipo + transiciones', author: 'Daniel', render: () => <FastTrackPolished /> },
           { id: 'dorsal',         label: 'Dorsal grande (7 columnas)', author: 'Daniel', render: () => <FastTrackDorsal /> },
-          { id: 'release',        label: 'Primer release (comentarios del cliente)', author: 'Daniel', render: () => <FastTrackRelease /> },
-          { id: 'ficha',          label: 'Ficha (referencia)',                        author: 'Daniel', render: () => <FastTrackFicha /> },
+          { id: 'release',        label: 'Avatars círculo (feedback Jordi)', author: 'Daniel', render: () => <FastTrackRelease /> },
+          { id: 'ficha',          label: 'Avatars cards', author: 'Daniel', render: () => <FastTrackFicha /> },
         ],
       },
       {

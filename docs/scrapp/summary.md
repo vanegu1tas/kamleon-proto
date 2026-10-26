@@ -3,25 +3,23 @@
 **Estado de la scrapp** (la pantalla de 1280×800 sobre el urinal). El de la webapp está en
 `docs/project-summary.md`. Si algo de la scrapp aparece en los dos, manda este.
 
-Última revisión: 2026-10-16 (cierre del día).
+Última revisión: 2026-10-25 (Daniel pasa a otro proyecto; retomar desde aquí).
 
 ---
 
 ## Lo primero al retomar
 
-1. **Fast Track**: hay 6 exploraciones. La de referencia es **"Pulida: equipo + transiciones"**
-   (16/10, con selector de Celda: Actual · A Parche · B Camiseta); la nueva es **"Dorsal grande
-   (7 columnas)"** (17/10, la celda que Daniel exploró en Figma). Decisiones, motivos y pendientes →
-   `docs/scrapp/fast-track.md`. Preguntas al programador sobre Qt (Quick o Widgets, versión, hardware).
-   Hecho en la pulida: tema por equipo (fondo = color × 0,32 con shader ligero), transiciones T1–T6 y
-   un solo logo fijo (ya no brinca). Sin decidir: acento turquesa o blanco.
-   **impeccable** se actualizó el 16/10: tras reiniciar Claude Code, revisar la pulida con sus comandos
-   nuevos (comprobar antes cuáles existen, no suponerlos).
-2. **Nada está publicado.** Hay 114 commits sin push (al 16/10) (microsite, journey map, Fast Track, y también
-   el QA de la webapp). Al hacer push se publica todo en GitHub Pages: antes, que Daniel lo revise
-   con `npm run scrapp`.
-3. Pendiente de su ok: el **panel de control de Score** queda medio tapado por el marco del
-   dispositivo (ya pasaba antes del microsite). Se arregla con una línea.
+1. **Fast Track**: exploraciones vivas → **07 "Avatars círculo (feedback Jordi)"** (`release/`) y
+   **08 "Avatars cards"** (`ficha/`). Todo lo del 22–25/10 (logos, Celda con parche en la 07, Placa
+   en la 08, fotos del Villarreal en Neutro, mandala del Tracking) → `docs/scrapp/fast-track.md`.
+2. **Con commit, sin push** (26/10): logos 07/08, Placa, Celda/Parche de la 07, nombres en el hub, dorsal
+   blanco por defecto en la 08 y las 31 fotos del Villarreal. Hasta 5c60b9b está con push.
+   Hacer push solo cuando Daniel lo pida.
+3. Pendientes sueltos (sin pedir aún): ver en pantalla la Placa sobre fotos de fondo blanco; volver
+   `TRACKING_DURATION` de la 08 a 3000; logo de Aston Villa en la 08; el anillo de Ready sigue
+   turquesa; elegir esquina del parche en la 07.
+4. Antiguo y sin revisar: el **panel de control de Score** queda medio tapado por el marco del
+   dispositivo (se arregla con una línea, pendiente de su ok).
 
 ---
 

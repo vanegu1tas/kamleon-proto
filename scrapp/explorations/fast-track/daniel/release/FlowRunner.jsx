@@ -52,6 +52,7 @@ export default function FastTrackRelease() {
   const [layoutKey, setLayoutKey] = useState(LAYOUTS[QUERY.get('grid')] ? QUERY.get('grid') : '6x5');
   const [teamKey, setTeamKey]     = useState(TEAMS[QUERY.get('team')] ? QUERY.get('team') : 'kamleon');   // por defecto, Neutro (22/10)
   const [numberKey, setNumberKey] = useState(NUMBER_COLORS[QUERY.get('number')] ? QUERY.get('number') : 'turq');   // por defecto, el turquesa de Kamleon (22/10)
+  const [cellKey, setCellKey]     = useState(['parche', 'parcheBL', 'parcheTL'].includes(QUERY.get('cell')) ? QUERY.get('cell') : 'actual');   // 23/10: el Parche de la Pulida, en tres esquinas
   const [neutralKey, setNeutralKey] = useState(QUERY.get('neutral') === 'glow' ? 'glow' : 'graphite');   // por defecto, A · Grafito (22/10)
   const players = teamRoster(ROSTERS[rosterKey].players, teamKey);   // fotos según el equipo (22/10)
 
@@ -188,6 +189,7 @@ export default function FastTrackRelease() {
       players={players}
       cols={LAYOUTS[layoutKey].cols}
       rows={LAYOUTS[layoutKey].rows}
+      cell={cellKey}
       tab={tab}
       onTab={setTab}
       phase={step === 'roster' ? rosterPhase : rosterPhase === 'returning' ? 'returning' : 'leaving'}
@@ -201,6 +203,15 @@ export default function FastTrackRelease() {
     <div className={styles.stage} style={themeVars}>
       {/* El fondo del equipo vive debajo de plantilla y Ready, y no se corta entre ellas */}
       <TeamBackground color={TEAMS[teamKey].color} neutral={teamKey === 'kamleon' ? neutralKey : null} className={`${styles.bg} ${bgClass}`} />
+      {/* El logo del equipo es parte del fondo (como en Dorsal grande): quieto entre plantilla y Ready,
+          se apaga con el fondo en Tracking */}
+      {TEAMS[teamKey].logo && (
+        <span
+          className={`${styles.teamLogo} ${bgClass}`}
+          style={{ '--team-logo': `url("${TEAMS[teamKey].logo}")` }}
+          aria-hidden="true"
+        />
+      )}
 
       {(step === 'roster' || showRosterBehind) && roster}
       {/* Un solo logo para plantilla y Ready, fuera de las dos: no se mueve en ninguna transición */}
@@ -228,7 +239,7 @@ export default function FastTrackRelease() {
       <DeviceFrame>{screen}</DeviceFrame>
 
       <TweakPanel
-        title="Primer release"
+        title="Avatars círculo"
         groups={[
           {
             // neutro arriba a fila entera; los equipos debajo, 2 y 2, lisas, con el LED del color del equipo
@@ -255,6 +266,16 @@ export default function FastTrackRelease() {
             id: 'grid', label: 'Rejilla', value: layoutKey, onChange: k => { setLayoutKey(k); setTab(0); },
             control: 'keycaps', columns: 4, stretch: true,
             options: Object.entries(LAYOUTS).map(([k, l]) => ({ value: k, label: `${l.cols} × ${l.rows}`, cap: l.cols * l.rows })),
+          },
+          {
+            id: 'cell', label: 'Celda', value: cellKey, onChange: setCellKey,
+            control: 'keycaps', columns: 2, labelInCap: true,
+            options: [
+              { value: 'actual',   label: 'Actual' },
+              { value: 'parche',   label: 'Parche ↘' },
+              { value: 'parcheBL', label: 'Parche ↙' },
+              { value: 'parcheTL', label: 'Parche ↖' },
+            ],
           },
           {
             id: 'number', label: 'Dorsal', value: numberKey, onChange: setNumberKey,
