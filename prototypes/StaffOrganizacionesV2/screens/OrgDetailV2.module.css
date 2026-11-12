@@ -3596,6 +3596,29 @@
     z-index: 2;
   }
 
+  /* Degradado junto a la columna fija, solo cuando se ha deslizado (11/11, mismo patrón que las
+     tablas de analytics: TableScroll.module.css). data-scrolled lo pone el onScroll del contenedor */
+  .usersTab .teamColName::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 100%;
+    width: 32px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s ease-out;
+    background: linear-gradient(to right, var(--color-bg-surface) 35%, transparent);
+  }
+
+  .usersTab .teamTableHead .teamColName::after {
+    background: linear-gradient(to right, var(--color-bg-page) 35%, transparent);
+  }
+
+  .usersTab .teamTable[data-scrolled] .teamColName::after {
+    opacity: 1;
+  }
+
   .usersTab .teamTableRow .teamColName {
     background: var(--color-bg-surface);
   }

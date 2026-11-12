@@ -6,6 +6,11 @@
   background: var(--color-bg-page);
 }
 
+/* Captura a Figma (?capture=1): sin alto fijo ni scroll interno, todo el contenido a la vista */
+:global([data-capture]) .page { height: auto; min-height: 100vh; }
+:global([data-capture]) .sidebarWrap { height: auto; }
+:global([data-capture]) .main { overflow: visible; min-width: 0; } /* sin min-width la tabla ensancha la página en tablet y mobile */
+
 /* ─── Sidebar wrapper ─────────────────────────────────── */
 
 .sidebarWrap {
@@ -35,7 +40,9 @@
 .topbar {
   position: sticky;
   top: 0;
-  z-index: 10;
+  /* Por encima de las barras fijas del contenido (z 20, p. ej. la de Hydration analytics): si no,
+     el menú del avatar queda debajo (Daniel, 2/11). Los drawers y modales siguen encima (100+) */
+  z-index: 30;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1403,6 +1410,110 @@
     }
   }
 
+}
+
+
+/* ─── V2: tablet hasta el iPad Pro de 13" (769–1032px) ───────────
+   (Daniel, 6/11) En V2 el sidebar se esconde en todos los iPads en vertical: la misma barra oscura con
+   menú que a ≤768. Solo el armazón (sidebar y barra de arriba); las pantallas siguen con su layout de
+   escritorio hasta 768. Copia de las reglas del armazón de arriba, con .pageV2 para no tocar V1
+   (congelada). Al pasar al programador: un solo breakpoint de "sidebar escondido" a 1032. */
+
+@media (min-width: 769px) and (max-width: 1032px) {
+  .pageV2 .sidebarWrap {
+    width: 0;
+    height: 0;
+    padding: 0;
+    overflow: visible;
+    z-index: auto;
+  }
+
+  .pageV2 .topbar {
+    margin: 16px 16px 0;
+    padding: 8px 16px;
+    background: var(--color-bg-sidebar);
+    border: 1px solid #32404d;
+    border-radius: 12px;
+    box-shadow: var(--shadow-sidebar);
+    color: #ffffff;
+    justify-content: space-between;
+  }
+
+  .pageV2 .menuBtn {
+    display: flex;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 1px solid #32404d;
+    border-radius: 8px;
+    color: #ffffff;
+  }
+
+  .pageV2 .menuBtn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+  }
+
+  .pageV2 .topbarLogo {
+    display: flex;
+  }
+
+  .pageV2 .topbarRight {
+    gap: 12px;
+  }
+
+  .pageV2 .searchTriggerText,
+  .pageV2 .searchTriggerKbd {
+    display: none;
+  }
+
+  .pageV2 .searchTrigger {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border-radius: 50%;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    color: #ffffff;
+    justify-content: center;
+  }
+
+  .pageV2 .searchTrigger svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .pageV2 .searchTrigger:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border: none;
+    box-shadow: none;
+    color: #ffffff;
+  }
+
+  .pageV2 .notifBtn {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    color: #ffffff;
+    justify-content: center;
+  }
+
+  .pageV2 .notifBtn:hover {
+    color: #ffffff;
+  }
+
+  .pageV2 .notifDot {
+    border: 1.5px solid var(--color-bg-sidebar);
+  }
+
+  .pageV2 .avatar {
+    color: #ffffff;
+  }
+
+  .pageV2 .breadcrumb {
+    display: none;
+  }
 }
 
 

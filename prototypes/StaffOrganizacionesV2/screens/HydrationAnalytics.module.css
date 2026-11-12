@@ -1,0 +1,1691 @@
+/* Medidas de Figma: Explorations / Web App 3.0, nodo 329:14820 */
+
+:global([data-capture]) .container { overflow: visible; } /* captura a Figma (?capture=1) */
+
+.container {
+  overflow-anchor: none; /* sin corrección automática del scroll al plegarse la fila de la org (10/11) */
+  padding: 32px 64px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  flex: 1;
+  overflow-y: auto;
+  font-family: var(--font-family-primary);
+}
+
+.heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+/* Staff (10/11): fila de la org encima de la barra de la tarjeta (Figma 707:35281): padding 12, texto 16/20,
+   flecha a 16. La fila del equipo, a 16.
+   La barra pasa a envolver: sin padding arriba, la fila ocupa todo el ancho (se come el padding lateral)
+   y el row-gap hace de padding de arriba de la fila del equipo */
+.cardHeaderWithOrg {
+  flex-wrap: wrap;
+  padding-top: 0;
+  row-gap: 16px;
+}
+.cardHeaderWithOrg.cardHeaderTwoLine {
+  padding-top: 0;
+  padding-bottom: 16px; /* Figma 707:35281: la fila del equipo a 16 arriba y abajo, sin compensar las dos líneas */
+  row-gap: 16px;
+}
+.orgRow {
+  flex-basis: calc(100% + 48px); /* el padding lateral de la barra, para que la línea llegue a los bordes */
+  margin: 0 -24px;
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--color-border-default);
+}
+.orgPicker {
+  display: flex;
+  align-items: center;
+  gap: 16px; /* Figma 707:35281 */
+  max-width: 100%;
+  padding: 0;
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: var(--font-size-16);
+  line-height: var(--line-height-16);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+  cursor: pointer;
+}
+.orgPicker svg { flex-shrink: 0; }
+/* Sample mode B: desplegable compacto en hug */
+.inputPill.modePill { width: auto; } /* doble clase: .inputPill (180) va después en el archivo */
+
+/* Check del elegido en las listas: el color de acento, como el Calendar y el selector de jugador */
+.menuCheck {
+  display: flex;
+  color: var(--color-text-accent);
+}
+
+/* Buscador de los desplegables (el de Assign teams / selector de jugador), no el SearchBar del DS */
+.menuSearch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 8px 12px;
+  border-bottom: 1px solid var(--color-border-default);
+  color: var(--color-text-subtle);
+}
+.menuSearchInput {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-strong);
+}
+.menuSearchInput::placeholder { color: var(--color-text-subtle); }
+.menuSearchInput:focus { outline: none; }
+
+.orgMenu { width: 300px; gap: 8px; }
+.orgList {
+  display: flex;
+  flex-direction: column;
+  max-height: 320px;
+  overflow-y: auto;
+}
+.orgEmpty {
+  padding: 8px;
+  font-size: var(--font-size-14);
+  color: var(--color-text-subtle);
+}
+
+/* Tabs de página (exploración Day | History): línea a todo el ancho, como en Figma
+   (369:99397). El texto del primer tab se alinea con el título: se compensa el padding
+   del pill del hover (12px), que asoma a la izquierda solo al pasar el ratón. */
+.pageTabs {
+  /* Se quedan arriba y se van con el scroll; solo la barra de equipo y fecha acompaña (Daniel, 1/11) */
+  border-bottom: 1px solid var(--color-border-default);
+}
+
+/* 160 por tab (Daniel, 1/11; Figma 369:101657 tenía 187): el TabBar reparte el ancho a partes iguales.
+   3 tabs desde el 2/11 (Users Analytics) */
+.pageTabs > div {
+  width: 480px;
+  max-width: 100%;
+}
+
+.pageTitle {
+  font-size: var(--font-size-32);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-strong);
+  margin: 0;
+}
+
+.card {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-m);
+  box-shadow: var(--elevation-1);
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 24px;
+  /* La marca de la barra fija (absoluta) se coloca respecto a la tarjeta: sin esto lo hacía respecto a
+     un contenedor de fuera del scroll, el observador nunca la veía y la barra contaba como fija desde
+     el principio (el tapón de 32px de encima tapaba en móvil la línea de los tabs; 6/11) */
+  position: relative;
+}
+
+/* ─── Cabecera de la tarjeta ─────────────────────────── */
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--color-border-default);
+}
+
+/* Fija arriba al hacer scroll (Daniel, 1/11). El contenedor .container es el que scrollea. */
+.cardHeaderSticky {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--color-bg-surface);
+  /* Dentro del borde de 1px de la tarjeta la curva es de 23: con 24 el blanco asomaba por las esquinas */
+  border-radius: calc(var(--radius-m) - 1px) calc(var(--radius-m) - 1px) 0 0;
+  transition: transform 0.25s ease-out;
+}
+
+/* Ya fija: el mismo aspecto que en reposo (Daniel, 1/11). Al subir, el borde de la tarjeta se va
+   con el scroll, así que la barra pone el suyo arriba y a los lados (-1px: cae encima del de la
+   tarjeta, sin sumar 2px), con las esquinas de arriba redondeadas como siempre. */
+.cardHeaderStuck {
+  margin-inline: -1px;
+  border: 1px solid var(--color-border-default);
+  /* Ya con borde propio, por fuera: el radio de la tarjeta */
+  border-radius: var(--radius-m) var(--radius-m) 0 0;
+}
+
+/* Sobre la barra fija queda una franja (el padding de arriba de la página, 32px) y los huecos de
+   las esquinas redondeadas: por ahí se veía pasar el contenido. Se tapan con el fondo de la página,
+   con dos piezas rectas (una sombra copiaba el redondeo y dejaba huecos):
+   ::before = la franja de encima · ::after = las dos esquinas, solo por fuera de la curva. */
+.cardHeaderStuck::before,
+.cardHeaderStuck::after {
+  content: '';
+  position: absolute;
+  left: -1px;
+  right: -1px;
+  pointer-events: none;
+}
+
+.cardHeaderStuck::before {
+  top: -33px;
+  height: 32px;
+  background: var(--color-bg-page);
+}
+
+.cardHeaderStuck::after {
+  top: -1px;
+  height: var(--radius-m);
+  background:
+    radial-gradient(circle at var(--radius-m) var(--radius-m), transparent calc(var(--radius-m) - 0.25px), var(--color-bg-page) var(--radius-m)) left top / var(--radius-m) var(--radius-m) no-repeat,
+    radial-gradient(circle at 0 var(--radius-m), transparent calc(var(--radius-m) - 0.25px), var(--color-bg-page) var(--radius-m)) right top / var(--radius-m) var(--radius-m) no-repeat;
+}
+
+/* 16px de blanco a transparente justo bajo la línea de la barra; sin sombra gris */
+.stuckFade {
+  position: absolute;
+  top: calc(100% + 1px);
+  left: 0;
+  right: 0;
+  height: 16px;
+  background: linear-gradient(var(--color-bg-surface), transparent);
+  pointer-events: none;
+}
+
+/* Móvil: escondida al bajar, vuelve al subir */
+.cardHeaderHidden {
+  transform: translateY(-100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cardHeaderSticky {
+    transition: none;
+  }
+}
+
+.menuWrap {
+  position: relative;
+}
+
+.teamPicker {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0;
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: var(--font-size-20);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+  cursor: pointer;
+}
+
+/* Users Analytics: cuando el jugador entra en la barra fija, el equipo baja a su tamaño para que
+   los dos se lean al mismo nivel (Daniel, 4/11). Fuera de eso, el equipo sigue a 20. */
+.scope:has(.userSlot:not(:empty)) .teamPicker {
+  gap: 8px;
+  font-size: var(--font-size-16);
+}
+
+/* Con el hueco a 8, el -8 del centro lo dejaba pegado al equipo (11/11): sin margen, quedan los mismos 8 de arriba */
+.scope:has(.userSlot:not(:empty)) .teamPicker .centerHint {
+  margin-left: 0;
+}
+
+/* Team scope (10/11). b: el centro en gris al lado del equipo; se corta antes que el equipo */
+.centerHint {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+  margin-left: -8px;
+  flex-shrink: 2;
+}
+
+/* b: lista agrupada por centro, con el aspecto del ContextMenu del DS (no tiene cabeceras de grupo) */
+.groupMenu {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-s);
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.15), 0 0 8px rgba(0, 0, 0, 0.10);
+  padding: 8px;
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.group { display: flex; flex-direction: column; }
+.groupLabel {
+  padding: 4px 8px;
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-subtle);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.groupItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-strong);
+  cursor: pointer;
+  text-align: left;
+  white-space: nowrap;
+}
+.groupItem:hover { background: var(--color-bg-surface-raised); }
+
+/* e2: equipo · centro en una caja de una línea, como el campo de fecha pero en hug (máx. 280, se corta el centro) */
+.inputPill.scopePill { width: auto; max-width: 280px; } /* doble clase, idem */
+.scopePillTeam { font-weight: var(--font-weight-medium); }
+.scopePillCenter { color: var(--color-text-subtle); }
+
+/* c: el bloque equipo + centro mide 42,5 (25 + 17,5) y la fecha 36; se quita del padding lo que sobra para que
+   la barra mida lo mismo que con una línea (Daniel, 10/11, opción 1). Móvil tiene su propio padding */
+@media (min-width: 481px) {
+  .cardHeaderTwoLine {
+    padding-top: calc(16px - (var(--line-height-20) + var(--line-height-14) - 36px) / 2);
+    padding-bottom: calc(16px - (var(--line-height-20) + var(--line-height-14) - 36px) / 2);
+  }
+}
+
+/* c: el centro en gris debajo del equipo, en el mismo botón; la flecha centrada en las dos líneas */
+.teamPickerBelow { gap: 12px; text-align: left; }
+.teamLines {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.centerBelow {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--font-size-14);
+  line-height: var(--line-height-14); /* 17,5: el interlineado de su tamaño (el token va por tamaño de letra, no por px) */
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+}
+.teamLines .teamName { line-height: var(--line-height-20); } /* 25px, el de su tamaño de 20 */
+
+.teamName {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.teamPicker:disabled {
+  cursor: default;
+}
+
+.menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 20;
+}
+
+.menuRight {
+  left: auto;
+  right: 0;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Campo tipo input (fecha): mismo aspecto que el Input del diseño */
+.inputPill {
+  width: 180px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--color-bg-surface-subtle);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-l);
+  font-family: inherit;
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-strong);
+  cursor: pointer;
+}
+
+.inputPillText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ─── KPIs ───────────────────────────────────────────── */
+
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  padding: 24px;
+}
+
+.kpi {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px 24px;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-m);
+}
+
+.kpiValue {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--font-size-20);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-strong);
+}
+
+.kpiLabel {
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+}
+
+.kpiLink {
+  padding: 0;
+  background: none;
+  border: none;
+  font: inherit;
+  color: var(--color-text-accent);
+  cursor: pointer;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ─── Secciones ──────────────────────────────────────── */
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px 24px 0;
+}
+
+/* Espaciados de Figma 352:89103 (Daniel, 27/10), solo en la exploración: bloques separados 4px */
+.cardExplore {
+  gap: 4px;
+  padding-bottom: 0;
+}
+
+.cardExplore .sectionAttention {
+  gap: 16px;
+  padding: 32px 24px;
+}
+
+.cardExplore .sectionChart {
+  padding: 32px 24px;
+}
+
+.cardExplore .sectionTable {
+  padding: 24px 24px 12px;
+}
+
+/* Escala de títulos de la exploración (Daniel, 1/11), igual en Day y History: equipo 20 > título
+   de sección 16 > subtítulo 14. Solo con explore=1: la versión sin explorar sigue los frames de Figma. */
+.cardExplore .sectionTitle {
+  font-size: var(--font-size-16);
+  line-height: var(--line-height-16);
+}
+
+.cardExplore .sectionSubtitle {
+  font-size: var(--font-size-14);
+  line-height: var(--line-height-14);
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.sectionText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sectionTitle {
+  margin: 0;
+  font-size: var(--font-size-20);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+}
+
+.sectionSubtitle {
+  margin: 0;
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+}
+
+/* ─── Gráfica de franjas ─────────────────────────────── */
+
+.chartWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.chart {
+  position: relative;
+  height: 350px;
+  display: flex;
+  gap: 4px;
+}
+
+.band {
+  min-width: 0;
+  border-radius: var(--radius-xs) var(--radius-xs) 0 0;
+  background: color-mix(in srgb, var(--band-color) 20%, transparent);
+  border-bottom: 6px solid var(--band-color);
+}
+
+.avatar,
+.unknown {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar {
+  background: var(--color-bg-surface);
+  box-shadow: 0 0 0 1px var(--color-border-default);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+  cursor: default;
+}
+
+.avatarActive {
+  box-shadow: 0 0 0 2px var(--color-text-strong);
+  z-index: 2;
+}
+
+.unknown {
+  background: var(--color-grey-91);
+  color: var(--color-text-disabled);
+}
+
+.playerTip {
+  position: absolute;
+  z-index: 10;
+  width: 189px;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-s);
+  box-shadow:
+    0 0 2px rgba(0, 0, 0, 0.15),
+    0 0 8px rgba(0, 0, 0, 0.10);
+}
+
+/* Flecha: triángulo del borde (::before) y, 1 px adentro, el blanco del fondo (::after) */
+.playerTip::before,
+.playerTip::after {
+  content: '';
+  position: absolute;
+  top: 22px;
+  border: 8px solid transparent;
+}
+
+.playerTip::before {
+  right: 100%;
+  border-right: 11px solid var(--color-border-default);
+}
+
+.playerTip::after {
+  right: calc(100% - 1px);
+  border-right: 11px solid var(--color-bg-surface);
+}
+
+.playerTipLeft::before {
+  right: auto;
+  left: 100%;
+  border-right: 8px solid transparent;
+  border-left: 11px solid var(--color-border-default);
+}
+
+.playerTipLeft::after {
+  right: auto;
+  left: calc(100% - 1px);
+  border-right: 8px solid transparent;
+  border-left: 11px solid var(--color-bg-surface);
+}
+
+.playerTip p {
+  margin: 0;
+  font-size: var(--font-size-12);
+  line-height: 15px;
+}
+
+/* Paddings de Figma (tooltip corregido, nodo 329:14922) */
+.tipName {
+  padding: 12px 12px 8px;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+}
+
+.tipLabel {
+  padding: 4px 12px;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-subtle);
+}
+
+.tipGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 4px 12px 16px;
+}
+
+/* El separador del primer grupo; el del último lo pone el pie (línea superior) */
+.tipGroupDivided {
+  border-bottom: 1px solid var(--color-border-default);
+}
+
+.tipRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-strong);
+  white-space: nowrap;
+}
+
+.tipFooter {
+  margin-top: 4px;
+  padding: 4px;
+  border-top: 1px solid var(--color-border-default);
+}
+
+/* Opción con estado hover, como un item de menú: gris y radio 8 */
+.tipLink {
+  width: 100%;
+  padding: 8px;
+  background: none;
+  border: none;
+  border-radius: var(--radius-xs);
+  font-family: inherit;
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-book);
+  line-height: 15px;
+  color: var(--color-text-accent);
+  text-align: left;
+  cursor: pointer;
+}
+
+.tipLink:hover {
+  background: var(--color-bg-surface-raised);
+}
+
+.legend {
+  display: flex;
+  gap: 4px;
+}
+
+.legendItem {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  line-height: 18px;
+}
+
+.legendRange {
+  color: var(--color-text-subtle);
+}
+
+.legendLabel {
+  color: var(--color-text-strong);
+}
+
+/* ─── Tabla ──────────────────────────────────────────── */
+
+.tableScroll {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  /* separate: con collapse las celdas ignoran el border-radius */
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: var(--font-size-14);
+  color: var(--color-text-strong);
+}
+
+.table th {
+  height: 39px;
+  padding: 0 12px;
+  background: var(--color-bg-surface-raised);
+  text-align: left;
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--color-text-subtle);
+  white-space: nowrap;
+}
+
+/* La fila de cabecera es una píldora: radio 12 en los extremos (Figma) */
+.table th:first-child { border-radius: var(--radius-s) 0 0 var(--radius-s); }
+.table th:last-child  { border-radius: 0 var(--radius-s) var(--radius-s) 0; }
+
+.table th.highlight {
+  background: var(--color-bg-surface-disabled);
+  color: var(--color-text-strong);
+}
+
+.table td {
+  height: 64px;
+  padding: 12px;
+  border-bottom: 1px solid var(--color-border-default);
+  font-weight: var(--font-weight-book);
+  white-space: nowrap;
+}
+
+.table td.highlight {
+  background: var(--color-bg-surface-subtle);
+}
+
+/* La última fila de una tabla nunca lleva borde abajo (Daniel, 11/11) */
+.table tbody tr:last-child td { border-bottom: none; }
+
+/* La primera columna (Name, Time) a la izquierda y el resto centradas, cabecera y celda (Daniel, 11/11).
+   Vale para la tabla de Daily y la del jugador en Users Analytics */
+.table th:not(:first-child),
+.table td:not(:first-child) { text-align: center; }
+
+.sortBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  background: none;
+  border: none;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+/* Anchos de columna de Figma (990 en total). Son de referencia: si la tarjeta es más
+   estrecha, la columna Name cede antes que las demás. */
+.colName         { width: 266px; }
+.colScore        { width: 86px; }
+.colUsg          { width: 75px; }
+.colElectrolytes { width: 136px; }
+.colColor        { width: 88px; }
+.colVolume       { width: 96px; }
+.colTotal        { width: 128px; }
+.colLast         { width: 115px; }
+
+.userCell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.rowAvatar {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-grey-91);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+}
+
+.userText {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.userName {
+  font-weight: var(--font-weight-medium);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.userTeam {
+  font-size: var(--font-size-12);
+  color: var(--color-text-subtle);
+}
+
+.scoreTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: 9999px;
+  background: var(--color-grey-91);
+}
+
+.urine {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* relleno y borde del DS: urineStyle() en hydrationMock.js (11/11) */
+}
+
+.empty {
+  color: var(--color-text-disabled);
+}
+
+.sampleDots {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.sampleDot {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  cursor: default;
+}
+
+/* Tooltip oscuro de cada muestra */
+.sampleTip {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  right: -12px;
+  display: none;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  border-radius: var(--radius-xs);
+  background: var(--color-black);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  line-height: 15px;
+  color: var(--color-text-inverse-strong);
+  white-space: nowrap;
+  z-index: 5;
+}
+
+.sampleTip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  right: 12px;
+  border: 4px solid transparent;
+  border-top-color: var(--color-black);
+}
+
+.sampleDot:hover .sampleTip {
+  display: inline-flex;
+}
+
+/* ─── Exploración KPIs + Needs attention (solo ?explore=1) ─── */
+
+/* Equipo, fecha y filtros = qué datos; el segmented, a la derecha = cómo se ven */
+.scope {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.scopeFlat {
+  display: contents;
+}
+
+.userSlot:empty {
+  display: none;
+}
+
+/* Fila de KPIs (27/10): los frames de Daniel tal cual (Figma 352:86780, 352:86869 y 352:86773),
+   con el radio de 24 del resto de la webapp */
+.kpiRow {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  padding: 24px;
+}
+
+.kpiCard {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-m);
+}
+
+.kpiLabel {
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-subtle);
+}
+
+.kpiLabelCaps {
+  text-transform: uppercase;
+}
+
+.kpiBody {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.kpiValueRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.kpiBig {
+  font-size: var(--font-size-32);
+  font-weight: var(--font-weight-bold);
+  line-height: 40px;
+  color: var(--color-text-strong);
+  font-variant-numeric: tabular-nums;
+}
+
+.kpiPct {
+  font-size: var(--font-size-24);
+  line-height: 1; /* si no, el % estira la fila a 42 */
+}
+
+.kpiDetail {
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+}
+
+.kpiFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+}
+
+/* Pie de las tarjetas con línea arriba (referencia 27/10) */
+.kpiFooterRule {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 34px; /* Figma: pie de 34 con la línea dentro */
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-border-default);
+  font-size: var(--font-size-14);
+  color: var(--color-text-subtle);
+}
+
+.progress {
+  flex: 1;
+  min-width: 80px;
+  height: 8px;
+  margin-left: 16px;
+  border-radius: 4px;
+  background: var(--color-grey-91);
+  overflow: hidden;
+}
+
+/* Neutra (Daniel, 3/11: verde → gris muy oscuro, menos colores en pantalla). grey-25, el mismo
+   gris oscuro de las líneas y de "Identified" en History */
+.progress > span {
+  display: block;
+  height: 100%;
+  border-radius: 4px;
+  background: var(--color-grey-25);
+}
+
+/* Figma ".tag team score" (Daniel, 27/10): una variante por franja, sin punto */
+.rangeTag {
+  align-self: flex-end;
+  margin-bottom: 5px;
+  padding: 2px 8px;
+  border-radius: var(--radius-xs);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.rangeTag_severe { background: var(--color-red-91); }
+.rangeTag_dehydrated { background: var(--color-yellow-82); }
+.rangeTag_hydrated { background: var(--color-turquoise-86); }
+.rangeTag_over { background: var(--color-red-91); }
+
+.cromos {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.cromo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  /* 8 arriba y abajo (antes 12): el anillo de 48 se come el padding y la tarjeta sigue en 66, como en
+     Figma 721:40371 (alto fijo) */
+  padding: 8px 16px 8px 12px;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-s);
+}
+
+/* Hover: el mismo, con fondo background/surface subtle (Daniel, 10/11) */
+.cromo { transition: background 0.12s ease; }
+.cromo:hover { background: var(--color-bg-surface-subtle); }
+
+.cromoRing {
+  display: flex;
+  flex-shrink: 0;
+  padding: 2px;
+  border: 2px solid transparent;
+  border-radius: 50%;
+}
+
+.cromoAvatar {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-grey-91);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+}
+
+.cromoText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.cromoName {
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cromoScore {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--font-size-14);
+  color: var(--color-text-subtle);
+}
+
+/* KPIs compactos (Daniel, 1/11), en Day y en History, más bajos que los frames de Figma
+   (352:86780) — pendiente de pasar a Figma. Tres líneas:
+   etiqueta / valor + tag o barra / comparación o dato secundario. */
+.kpiRowCompact {
+  padding-bottom: 0;
+  /* Ancho mínimo y a partir de ahí se apilan (Daniel, 11/11), en vez de solo por breakpoint */
+  grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+}
+
+.kpiCompact {
+  gap: 8px;
+  padding: 16px;
+}
+
+.kpiLine {
+  /* Tres líneas fijas en todas las cards (Daniel, 1/11): con la comparación a la derecha, según el
+     ancho bajaba de línea en unas cards y en otras no, y la fila dejaba huecos vacíos */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.kpiMain {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.kpiValue {
+  font-size: var(--font-size-24);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-24);
+  color: var(--color-text-strong);
+  font-variant-numeric: tabular-nums;
+}
+
+.kpiCompare {
+  font-size: var(--font-size-14);
+  line-height: var(--line-height-14);
+  color: var(--color-text-subtle);
+}
+
+/* El tag de Day, una talla menos (S: 12px, como el Tag del DS) para que no compita con el número
+   de 24 (Daniel, 1/11). Allí va pegado abajo con margen para su número de 32; aquí, por la base. */
+.kpiCompact .kpiTag {
+  align-self: auto;
+  margin-bottom: 0;
+  padding: 2px 6px;
+  font-size: var(--font-size-12);
+  line-height: var(--line-height-12);
+}
+
+/* Barra de compliance junto al número (en la versión grande iba estirada en su fila) */
+.kpiProgress {
+  flex: 1 1 auto; /* hasta el final de la card, como la de Samples */
+  min-width: 0;
+  margin-left: 0;
+  align-self: center;
+}
+
+/* Tres KPIs en Day (score, compliance, samples) */
+.kpiRow3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* Reparto de muestras: una barra con un tramo por franja (colores de estado) + gris = sin identificar.
+   2px de superficie entre tramos para que no se fundan. */
+.distBar {
+  display: flex;
+  gap: 2px;
+  flex: 1 1 auto;
+  height: 8px;
+  align-self: center;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.distSeg {
+  min-width: 4px;
+  transition: opacity 0.12s ease-out;
+}
+
+/* Fila del valor que estira su barra hasta el borde derecho de la card (Daniel, 1/11): con la
+   comparación en su propia línea, la fila tiene sitio y la barra gana resolución */
+.kpiMainFill {
+  align-self: stretch;
+}
+
+/* "4 missing View": el enlace separado por espacio, sin punto */
+.kpiCompare .kpiLink {
+  margin-left: 4px;
+}
+
+.kpiStrong {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+}
+
+/* Users Analytics (2/11): tab montado, contenido sin definir */
+.tabPending {
+  margin: 0;
+  padding: 48px 24px;
+  font-size: var(--font-size-14);
+  color: var(--color-text-subtle);
+  text-align: center;
+}
+
+/* Nota bajo la gráfica de jugadores en Last sample (2/11): cuántas unknown quedan fuera */
+.chartNote {
+  margin: 0;
+  font-size: var(--font-size-12);
+  line-height: var(--line-height-12);
+  color: var(--color-text-subtle);
+}
+
+/* Needs attention con muchos jugadores (3/11): el botón Show N more / Show less, debajo de los cromos */
+.attentionMore {
+  display: flex;
+  justify-content: center;
+}
+
+/* ─── Breakpoints de Day (3/11) ─────────────────────────── */
+
+/* Mobile: lista por franja (sustituye a Needs attention y a la gráfica de jugadores). Medidas del
+   diseño antiguo (Web App 2.0 12520:377963): 32 entre franjas, 16 bajo la cabecera, 4 entre filas */
+.rangeList {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.rangeGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.rangeRows {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rangeGroupHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 0 0 12px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid; /* el color lo pone la franja (inline) */
+  font: inherit;
+  cursor: pointer;
+}
+
+/* Overline del DS (text-label-section) */
+.rangeGroupTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  line-height: normal;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--color-text-strong);
+}
+
+.rangeGroupCount {
+  color: var(--color-text-strong);
+}
+
+/* El % en el color del texto, como el diseño antiguo */
+.rangeScore {
+  color: var(--color-text-strong);
+}
+
+.chevronClosed,
+.chevronOpen {
+  display: inline-flex;
+  color: var(--color-text-subtle);
+  transition: transform 0.15s ease-out;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+.rangeRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px;
+  /* Fila del diseño antiguo (Web App 2.0 12520:378030): degradado del fondo de página al blanco */
+  background: linear-gradient(90deg, var(--color-bg-page), var(--color-bg-surface) 92%);
+  border: none;
+  border-radius: var(--radius-xs);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.rangeRow:active {
+  background: var(--color-bg-surface-subtle);
+}
+
+/* Contenido del bottom sheet de la lista (3/11): va en el slot del BottomSheet del DS (sin manija).
+   Medidas del "Sample details" antiguo (Web App 2.0 12520:378207): cabecera con línea debajo a todo
+   el ancho, 32 entre bloques, filas de 16/8 con línea abajo, textos Body/L, pie con línea arriba */
+.sheetBody {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  font-family: var(--font-family-primary);
+}
+
+.sheetHead {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  margin: 0 -16px;
+  padding: 0 16px 16px;
+  border-bottom: 1px solid var(--color-border-default);
+}
+
+.sheetTitle {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--font-size-20);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+}
+
+.sheetWhen {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.sheetWhenCol {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: var(--font-size-16);
+  color: var(--color-text-subtle);
+}
+
+.sheetWhenCol b {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+}
+
+.sheetRows {
+  display: flex;
+  flex-direction: column;
+}
+
+.sheetRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 8px;
+  border-bottom: 1px solid var(--color-border-default);
+}
+
+.sheetLabel {
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+}
+
+.sheetValue {
+  font-size: var(--font-size-16);
+  color: var(--color-text-strong);
+}
+
+/* El score en una píldora gris con el punto de la franja (Tag status del antiguo) */
+.sheetPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: 9999px;
+  background: var(--color-bg-page);
+  font-size: var(--font-size-16);
+  color: var(--color-text-strong);
+}
+
+.sheetUrine {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: var(--font-size-14);
+  color: var(--color-text-strong);
+}
+
+.sheetOverline {
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--color-text-strong);
+}
+
+.sheetSamples {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sheetSample {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 8px;
+  font-size: var(--font-size-16);
+  color: var(--color-text-strong);
+}
+
+.sheetSampleScore {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sheetMuted {
+  color: var(--color-text-subtle);
+}
+
+.sheetFooter {
+  display: flex;
+  flex-direction: column;
+  margin: 0 -16px;
+  padding: 16px 16px 0;
+  border-top: 1px solid var(--color-border-default);
+}
+
+.rangeAvatar {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-grey-91);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+}
+
+/* Muestra sin jugador: el mismo gris que las gotas de la gráfica */
+.rangeAvatarUnknown {
+  background: var(--color-grey-65);
+}
+
+.rangeName {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--font-size-14);
+  color: var(--color-text-strong);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chevronClosed, .chevronOpen { transition: none; }
+}
+
+/* Tablet: cromos a 3 columnas (Needs attention muestra 2 filas = 6). Hasta 1032 = iPad Pro 13" en
+   vertical (6/11; antes 1024 y ese iPad se quedaba con el layout de escritorio) */
+@media (max-width: 1032px) {
+  .cromos { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* Tablet: la barra de la tarjeta en una fila, como en desktop (Daniel, 6/11). Las dos filas del 3/11
+   (equipo arriba solo) eran porque con el sidebar no cabía; sin sidebar hasta 1032 cabe (Daily a 768:
+   ~670 de 686px). Si un nombre de equipo largo no deja sitio, lo de la derecha baja a otra fila. */
+@media (min-width: 481px) and (max-width: 1032px) {
+  .cardHeader { flex-wrap: wrap; gap: 12px 24px; }
+}
+
+/* Tablet sin sidebar: margen de 16 a los lados, como el diseño antiguo. El sidebar se esconde hasta
+   1032 desde el 6/11 (antes 768) */
+@media (min-width: 481px) and (max-width: 1032px) {
+  .container { padding-left: 16px; padding-right: 16px; }
+}
+
+/* Mobile (Daniel, 3/11): margen de 16, tabs a todo el ancho, la barra en tres filas (equipo / fecha +
+   Filters / segmented 50-50) y KPIs apilados (en 2 + 1 no cabían "Sev dehydrated" ni "Over hydrated") */
+@media (max-width: 480px) {
+  .container { padding: 24px 16px 32px; gap: 24px; }
+  .pageTitle { font-size: var(--font-size-24); line-height: var(--line-height-24); }
+  .downloadIcon > button { padding: 12px 16px; } /* 56×48 (diseño antiguo, Daniel 3/11) */
+  .downloadIcon > button > span { width: 24px; height: 24px; } /* el wrapper del Button es de 20 */
+  .pageTabs > div { width: 100%; }
+  .kpiRow3 { grid-template-columns: 1fr; }
+  .cardHeader { flex-direction: column; align-items: stretch; gap: 12px; padding: 12px 16px; }
+  .cardHeaderStuck::before { top: -25px; height: 24px; } /* el padding de arriba de la página aquí es 24 */
+  .scope { flex-direction: column; align-items: stretch; gap: 12px; width: 100%; }
+  .toolbar { width: 100%; }
+  .toolbar > .menuWrap { flex: 1; }
+  .toolbar .inputPill { width: 100%; }
+  .cardHeader > :last-child:not(.scope) { width: 100%; }
+  .cardHeader > :last-child:not(.scope) > button { flex: 1; }
+  .kpiRow { padding: 16px 16px 0; gap: 12px; }
+  /* Team History y Users Analytics (6/11): una card por fila, como en Daily. Lado a lado (156 cada una)
+     el tag "SEV DEHYDRATED" u "OVER HYDRATED" no cabía junto al valor y se salía de la card */
+  .kpiRowCompact { grid-template-columns: 1fr; }
+  .section { padding: 16px 16px 0; }
+  .sectionHeader { align-items: center; }
+  /* Team History (6/11): equipo a la izquierda y fecha a la derecha, en una fila. La fecha nunca se
+     encoge (hug); el nombre del equipo se corta con "…" si no cabe */
+  .cardHeaderRow .scope { flex-direction: row; align-items: center; gap: 12px; }
+  .cardHeaderRow .scope > .menuWrap:first-child { flex: 1; min-width: 0; }
+  .cardHeaderRow .teamPicker { max-width: 100%; gap: 8px; }
+  .cardHeaderRow .teamPicker svg { flex-shrink: 0; }
+  .cardHeaderRow .toolbar { width: auto; flex: none; }
+  .cardHeaderRow .toolbar > .menuWrap { flex: none; }
+  .cardHeaderRow .toolbar .inputPill { width: auto; }
+  /* La lista y el calendario a todo el ancho de la barra, dentro de su padding de 16 (Daniel, 6/11):
+     el menú se ancla a la barra (sticky, ya posicionada) y no al botón de la fecha */
+  .cardHeaderRow .toolbar > .menuWrap { position: static; }
+  .cardHeaderRow .menuRight { left: 16px; right: 16px; }
+  .cardHeaderRow .menuRight > * { width: 100%; }
+  /* Daily: el filtro solo con icono (36×36, el contador en su esquina), antes de la fecha para que la
+     fecha quede en el mismo sitio que en Team History */
+  .cardHeaderRow .toolbar { gap: 8px; }
+  .cardHeaderRow .toolbar > :not(.menuWrap) { order: -1; }
+  .cardHeaderRow .toolbar > :not(.menuWrap) button { width: 36px; height: 36px; padding: 0; gap: 0; justify-content: center; font-size: 0; }
+  /* Users Analytics (Daniel, 11/11, opción C): al bajar, el jugador ocupa el sitio del equipo en la misma
+     fila; el nombre se corta con "…" y la fecha no se mueve */
+  .cardHeaderRow .scope:has(.userSlot:not(:empty)) > .menuWrap:first-child { display: none; }
+  .cardHeaderRow .userSlot:not(:empty) { flex: 1; min-width: 0; display: flex; }
+  .cardHeaderRow .userSlot > *, .cardHeaderRow .userSlot [class*="menuWrap"] { min-width: 0; max-width: 100%; }
+  .cardHeaderRow .userSlot button { max-width: 100%; min-width: 0; }
+  .cardHeaderRow .userSlot button svg, .cardHeaderRow .userSlot button > span:first-child { flex-shrink: 0; }
+  .modeRow { padding: 16px 16px 0; }
+  .modeRow > * { width: 100%; }
+  .modeRow > * > * { flex: 1; }
+}
+ 
+/* Foto del jugador dentro del avatar (First Team, 4/11) */
+.avatarPhoto {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Staff, fila de la org (10/11): en tablet el gap de la barra es 12 (lo pone el bloque de tablet) */
+@media (min-width: 481px) and (max-width: 1032px) {
+  .cardHeaderWithOrg { row-gap: 16px; }
+  .cardHeaderWithOrg.cardHeaderTwoLine { row-gap: 16px; }
+}
+@media (max-width: 480px) {
+  .cardHeaderWithOrg { padding-top: 0; }
+  .orgRow { flex-basis: auto; margin: 0 -16px; padding: 12px 16px; } /* en columna, 100% sería el alto */
+}
+
+/* E2 para staff (10/11): la org al inicio de la barra. No cabe todo en una fila a 1280 (org ~200 + equipo
+   ~230 + fecha 180 + Filters + All samples): lo de la derecha baja a otra fila en cualquier ancho */
+.cardHeaderOrgInline { flex-wrap: wrap; row-gap: 12px; }
+.cardHeaderOrgInline .scope { flex-wrap: wrap; row-gap: 12px; min-width: 0; } /* con nombres largos, también baja la fecha */
+.orgInline { display: flex; min-width: 0; }
+/* Móvil: la org en su propia línea, encima de equipo + fecha */
+@media (max-width: 480px) {
+  .cardHeaderOrgInline .scope { flex-wrap: wrap; row-gap: 12px; }
+  .cardHeaderOrgInline .orgInline { flex-basis: 100%; }
+}
+
+/* E2 (10/11): caja del equipo, fecha, Filters y All samples a la misma distancia (12, la de la toolbar).
+   La org, que es texto y no caja, mantiene sus 24 */
+.scope.scopeE2 { column-gap: 12px; }
+.scopeE2 > .orgInline { margin-right: 12px; }
+
+/* E2 en móvil (10/11): la caja del equipo ocupa lo que dejan filtro + fecha y corta con "…" (antes no se
+   encogía: se montaba sobre el filtro, o en staff bajaba sola a una fila y se salía con nombres largos) */
+@media (max-width: 480px) {
+  .scopeE2 > .menuWrap { flex: 1 1 0; min-width: 0; }
+  .scopeE2 .scopePill { width: 100%; max-width: 100%; }
+}
+
+/* Tablet (10/11): All | Last en su fila debajo de la barra, como en móvil; en hug y alineado con el
+   contenido de la tarjeta (24 a los lados), no a todo el ancho */
+@media (min-width: 481px) and (max-width: 1032px) {
+  .modeRow { display: flex; padding: 16px 24px 0; }
+}
+
+/* F (10/11, Figma 713:37605): una fila en desktop. Org de título a la izquierda (20 medium, flecha 20 a 8);
+   a la derecha, a 8 entre sí: [Equipo (Centro) ▾] [fecha 160] [All samples ▾] [Filters] */
+.scope.scopeF { flex: 1; min-width: 0; flex-wrap: wrap; row-gap: 12px; }
+.toolbar.toolbarF { gap: 8px; margin-left: auto; }
+/* La org se corta con "…"; si le quedan menos de 160, la fila de la derecha baja debajo (a 1280 la fila
+   entera pide ~880 y hay ~814: en el Figma cabe porque el frame es más ancho) */
+.orgTitle { display: flex; flex: 1 1 160px; min-width: 160px; }
+.orgTitle > .menuWrap { display: flex; min-width: 0; } /* el envoltorio del selector tampoco puede imponer su ancho */
+.orgTitle .orgPicker, .orgTitle .teamPicker { min-width: 0; }
+.orgTitle .orgPicker {
+  gap: 8px;
+  font-size: var(--font-size-20);
+  line-height: var(--line-height-20);
+}
+.inputPill.fTeamPill { width: auto; max-width: 280px; justify-content: flex-start; gap: 4px; }
+.inputPill.fDatePill { width: auto; min-width: 160px; } /* 160 de mínimo; con un Custom range crece (hug) y no se corta (11/11) */
+.inputPill.pillSmallChevron { gap: 4px; }
+
+/* F en tablet, Users Analytics (Daniel, 11/11): al pasar el avatar, el jugador ocupa el sitio de la org (la org se va);
+   el equipo y la fecha siguen a la derecha. Una fila */
+@media (min-width: 481px) and (max-width: 1032px) {
+  .scope.scopeF:has(.userSlot:not(:empty)) > .orgTitle { display: none; }
+  .scope.scopeF:has(.userSlot:not(:empty)) > .userSlot { flex: 1 1 auto; } /* empuja los controles a la derecha */
+  .scope.scopeF:has(.userSlot:not(:empty)) > .toolbar.toolbarF { margin-left: 0; }
+  /* All samples a todo el ancho, como en móvil (Daniel, 11/11; staff con F) */
+  .modeRow:has(.modePill) > * { width: 100%; }
+  .modeRow .inputPill.modePill { width: 100%; justify-content: space-between; }
+}
+
+/* F con org (11/11, Daniel): si los controles no caben y bajan a otra fila, empiezan a la izquierda. En la misma
+   fila siguen a la derecha porque la org crece (flex 1) y los empuja */
+.scope.scopeF:has(> .orgTitle) > .toolbar.toolbarF { margin-left: 0; }
+/* Team Admin con F (sin org): lo mismo con el equipo, que es el título */
+.scope.scopeF:has(> .menuWrap:first-child) > .menuWrap:first-child { flex: 1 1 auto; }
+/* Con el jugador en la barra (Users Analytics) crece el hueco del jugador, para que vaya pegado al equipo */
+.scope.scopeF:has(> .menuWrap:first-child):has(.userSlot:not(:empty)) > .menuWrap:first-child { flex: 0 1 auto; }
+.scope.scopeF:has(> .menuWrap:first-child) > .userSlot:not(:empty) { flex: 1 1 auto; }
+.scope.scopeF:has(> .menuWrap:first-child) > .toolbar.toolbarF { margin-left: 0; }
+
+/* Staff en tablet, Daily con F (11/11): Filters solo con icono, 36×36 con el contador en su esquina (como en móvil) */
+.filterIconOnly .toolbar > :not(.menuWrap) button { width: 36px; height: 36px; padding: 0; gap: 0; justify-content: center; font-size: 0; }
+
+/* F en tablet (11/11, Daniel): una fila como en desktop; la de la org arriba sola (10/11, Figma 720:40334) gastaba
+   una fila con sitio de sobra. Si la org es larga, los controles bajan a otra fila (regla de desktop) */
+
+/* F en móvil (10/11, Figma 713:38906): la org arriba (flecha a 16) y debajo [equipo, lo que sobra] [fecha en
+   hug] [filtro solo icono], a 12, el filtro al final. All samples, desplegable a todo el ancho en su fila */
+@media (max-width: 480px) {
+  .cardHeaderRow .scope.scopeF:has(> .orgTitle) { flex-direction: column; align-items: stretch; flex-wrap: nowrap; gap: 12px; }
+  .scopeF > .orgTitle { flex: none; min-width: 0; }
+  .scopeF > .orgTitle .orgPicker { gap: 16px; }
+  .cardHeaderRow .scopeF:has(> .orgTitle) > .toolbar.toolbarF { width: 100%; gap: 12px; margin-left: 0; }
+  .cardHeaderRow .toolbar.toolbarF > .fTeamWrap { flex: 1; min-width: 0; }
+  .cardHeaderRow .toolbar.toolbarF > :not(.menuWrap) { order: 0; }
+  .cardHeaderRow .toolbar .inputPill.fTeamPill { width: 100%; max-width: none; justify-content: space-between; } /* le gana a "cajas en hug" de móvil */
+  .modeRow .inputPill.modePill { width: 100%; justify-content: space-between; }
+  /* F sin org arriba (Center Admin, 11/11): la misma fila de controles a todo el ancho, el equipo ocupa lo que sobra */
+  /* F sin org con el equipo de título (Org/Center Admin, 11/11): una fila como Team Admin; el centro se corta con "…" */
+  .cardHeaderRow .scope.scopeF:not(:has(> .orgTitle)) { flex-wrap: nowrap; }
+  .cardHeaderRow .scope.scopeF > .menuWrap:first-child { min-width: 0; }
+  .cardHeaderRow .scope.scopeF:not(:has(> .orgTitle)) > .toolbar.toolbarF:has(> .fTeamWrap) { flex: 1; min-width: 0; width: auto; gap: 12px; margin-left: 0; }
+  /* F con el jugador en la barra (opción C, 11/11): el equipo, que en F va dentro de la toolbar, también se va;
+     jugador y fecha en una fila. Con org arriba (Org Admin), la org ocupa su fila entera y se pliega como siempre */
+  .cardHeaderRow .scope.scopeF:has(.userSlot:not(:empty)) .fTeamWrap { display: none; }
+  .cardHeaderRow .scope.scopeF:has(.userSlot:not(:empty)) { flex-direction: row; align-items: center; }
+  .cardHeaderRow .scope.scopeF:has(> .orgTitle):has(.userSlot:not(:empty)) { flex-wrap: wrap; }
+  .cardHeaderRow .scope.scopeF:has(.userSlot:not(:empty)) > .orgTitle { flex-basis: 100%; }
+  .cardHeaderRow .scope.scopeF:has(.userSlot:not(:empty)) > .toolbar.toolbarF { flex: none; width: auto; }
+  /* Users Analytics (Daniel, 11/11): la org se va a la vez que el equipo, cuando el avatar pasa por debajo de la
+     barra (no al bajar, como en los otros tabs): queda solo jugador + fecha. Vuelve cuando vuelve el avatar */
+  .cardHeaderRow .scope.scopeF:has(.userSlot:not(:empty)) { row-gap: 0; }
+  .cardHeaderRow .scope.scopeF:has(.userSlot:not(:empty)) > .orgTitle { max-height: 0; opacity: 0; overflow: hidden; margin-bottom: 0; pointer-events: none; }
+}
+
+/* F, móvil (10/11; tablet ya va en una fila, 11/11): la fila de la org se pliega al bajar con la barra fija y vuelve al subir.
+   El margen negativo se come el hueco entre filas (16 en tablet, 12 en móvil) */
+@media (max-width: 480px) {
+  .scopeF > .orgTitle { max-height: 40px; transition: max-height 0.2s ease, opacity 0.15s ease, margin 0.2s ease; }
+  .orgFolded .scopeF > .orgTitle { max-height: 0; opacity: 0; overflow: hidden; margin-bottom: -12px; pointer-events: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scopeF > .orgTitle { transition: none; }
+}
+
+/* F, tablet y desktop (Daniel, 11/11): la barra siempre en una fila. Lo que no cabe se corta con "…": primero el
+   centro (dentro del título del equipo), luego equipo, jugador y org a partes iguales. Los controles de la
+   derecha (equipo en caja de staff, fecha, All samples, Filters) no se cortan ni bajan. Sustituye al "bajan a
+   otra fila" de antes */
+@media (min-width: 481px) {
+  .scope.scopeF { flex-wrap: nowrap; }
+  .scope.scopeF > .orgTitle { flex: 1 1 auto; min-width: 0; }
+  .scope.scopeF > .menuWrap:first-child { min-width: 0; }
+  .scope.scopeF > .menuWrap:first-child > .teamPicker { max-width: 100%; min-width: 0; }
+  .scope.scopeF > .menuWrap:first-child > .teamPicker svg { flex-shrink: 0; }
+  .scope.scopeF > .menuWrap:first-child .centerHint { flex-shrink: 1000; } /* el centro se corta antes que el equipo */
+  .scope.scopeF > .userSlot:not(:empty) { min-width: 0; display: flex; }
+  .scope.scopeF > .userSlot:not(:empty) [class*="menuWrap"], .scope.scopeF > .userSlot:not(:empty) > * { min-width: 0; max-width: 100%; display: flex; }
+  .scope.scopeF > .userSlot:not(:empty) button { min-width: 0; max-width: 100%; }
+  .scope.scopeF > .userSlot:not(:empty) button svg, .scope.scopeF > .userSlot:not(:empty) button > span:first-child { flex-shrink: 0; }
+  .scope.scopeF > .toolbar.toolbarF { flex: none; margin-left: auto; }
+}
+
+/* Móvil: la fecha en hug, sin el mínimo de 160 de desktop (11/11) */
+@media (max-width: 480px) {
+  .inputPill.fDatePill { min-width: 0; }
+}

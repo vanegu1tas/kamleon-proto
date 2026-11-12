@@ -164,6 +164,7 @@ export default function Sidebar({
   const classNames = [
     styles.sidebar,
     showExpanded ? styles.expanded : styles.collapsed,
+    inDrawerMode ? styles.drawerMode : '',
     inDrawerMode && drawerOpen ? styles.drawerVisible : '',
   ].filter(Boolean).join(' ');
 

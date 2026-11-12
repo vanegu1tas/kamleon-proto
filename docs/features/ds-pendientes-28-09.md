@@ -109,6 +109,16 @@ como nodo en el componente, así que hay que añadirlas en el DS.
 
 ---
 
+## SegmentedControl: el negro se desliza (código 1/11, Figma pendiente)
+
+En el código, el fondo negro de la opción activa es una sola pieza que se desliza hasta la opción
+pulsada (0,25s, frena al final; sin movimiento con "reducir movimiento"), como el indicador del
+TabBar. Afecta a todos los SegmentedControl. En reposo se ve igual. **Pendiente en Figma**:
+documentarlo en el componente (interacción Smart Animate entre variantes Mode=Active) y publicar
+en el DS + Update en Web App 2.0.
+
+---
+
 ## Recordatorio de método
 
 Cada vez que se toque el DS: **publicar en el Design System** y **Update en Web App 2.0**. Son dos

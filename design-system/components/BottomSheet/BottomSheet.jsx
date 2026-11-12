@@ -16,8 +16,14 @@ import styles from './BottomSheet.module.css';
  * @param {Array}    items  - { label, icon?, variant?: 'default'|'danger', disabled?, tooltip?, onClick }
  * @param {function} onClose
  * @param {string}   [label] - Nombre accesible del diálogo (no se muestra).
+ * @param {React.ReactNode} [children] - Slot de contenido (Daniel, 3/11: el sheet es un contenedor
+ *   con slot, su contenido varía). Si llega, ocupa el sitio de la lista de acciones; la manija,
+ *   el fondo, el arrastre y el cierre son los mismos.
+ * @param {boolean}  [handle=true] - Manija de arrastre. Sin ella (Daniel, 3/11: sheets con
+ *   cabecera propia, como "Sample details" de Web App 2.0 12520:378207) no se arrastra: se cierra
+ *   con la ✕ del contenido, tocando fuera o con Escape.
  */
-export default function BottomSheet({ open, items = [], onClose, label = 'Actions' }) {
+export default function BottomSheet({ open, items = [], onClose, label = 'Actions', handle = true, children }) {
   const sheetRef = useRef(null);
   const drag = useRef(null);
   const [dragY, setDragY] = useState(0);
@@ -85,17 +91,19 @@ export default function BottomSheet({ open, items = [], onClose, label = 'Action
         style={dragY ? { transform: `translateY(${dragY}px)`, transition: 'none' } : undefined}
         onClick={e => e.stopPropagation()}
       >
-        <div
-          className={styles.handleArea}
-          onPointerDown={onPointerDown}
-          onPointerMove={onPointerMove}
-          onPointerUp={onPointerUp}
-          onPointerCancel={onPointerUp}
-        >
-          <span className={styles.handle} />
-        </div>
+        {handle && (
+          <div
+            className={styles.handleArea}
+            onPointerDown={onPointerDown}
+            onPointerMove={onPointerMove}
+            onPointerUp={onPointerUp}
+            onPointerCancel={onPointerUp}
+          >
+            <span className={styles.handle} />
+          </div>
+        )}
 
-        <ul className={styles.list}>
+        {children ?? <ul className={styles.list}>
           {items.map(item => (
             <li key={item.label} className={styles.listItem}>
               <button
@@ -110,7 +118,7 @@ export default function BottomSheet({ open, items = [], onClose, label = 'Action
               </button>
             </li>
           ))}
-        </ul>
+        </ul>}
       </div>
     </div>,
     document.body,

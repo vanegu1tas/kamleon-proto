@@ -688,3 +688,92 @@
   color: var(--color-text-disabled);
   margin: 0;
 }
+
+/* ─── Página (Figma 12533:25374) ──────────────────────────
+   Título y KPIs sobre el fondo; la tarjeta solo lleva filtros, tabla y paginación.
+   Mismas medidas que Control panel (StaffOrganizaciones.module.css: heading / kpiCard). */
+
+.pageHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.pageHeadingTitle {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-32);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-strong);
+  line-height: 1.25;
+  margin: 0;
+}
+
+.kpiRow {
+  display: flex;
+  gap: 12px;
+  margin: 32px 0 12px;
+}
+
+.kpiCard {
+  flex: 1;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-m);
+  padding: 17px 25px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 4px;
+  min-height: 120px;
+}
+
+.cardToolbar {
+  padding: 24px 24px 16px;
+}
+
+/* Organization / Centers: en Figma son campos tipo Dropdown de 180px, no Toolbar Button */
+.selectTrigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 180px;
+  height: 36px;
+  padding: 0 12px 0 13px;
+  background: var(--color-bg-surface-subtle);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-l);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.selectTrigger:hover {
+  border-color: var(--color-border-strong);
+}
+
+.selectTrigger:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+.selectTriggerActive {
+  color: var(--color-text-strong);
+  border-color: var(--color-border-strong);
+}
+
+.selectTriggerLabel {
+  flex: 1;
+  text-align: left;
+}
+
+.cardToolbar .toolbar {
+  gap: 12px;
+}
+
+.cardToolbar .searchBar {
+  width: 223px;
+}

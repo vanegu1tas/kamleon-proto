@@ -4,7 +4,10 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 9px 12px;
+  /* 36px como en Figma: 1 + 8 + 18 + 8 + 1. En Figma el borde va dentro del layout; en CSS suma,
+     y sin line-height el navegador ponía la suya (~18-20px) → salía 38. */
+  padding: 8px 12px;
+  line-height: 18px;
   background: var(--color-bg-surface);
   border: 1px solid var(--color-border-default);
   border-radius: var(--radius-l);

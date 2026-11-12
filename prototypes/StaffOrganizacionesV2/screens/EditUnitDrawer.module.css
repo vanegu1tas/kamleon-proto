@@ -164,18 +164,20 @@
   cursor: not-allowed;
 }
 
+/* Antes este bloque tenía un comentario dentro del selector: `.rosterValue` solo se aplicaba con el
+   campo deshabilitado (el valor salía con la fuente del navegador) y el chevron gris valía siempre. */
 .fieldDisabled .rosterTrigger .rosterPlaceholder,
-.fieldDisabled /* Con equipos elegidos ya no es un placeholder: el texto va en color fuerte, como el valor
+.fieldDisabled .rosterChevron {
+  color: var(--color-text-disabled);
+}
+
+/* Con equipos elegidos ya no es un placeholder: el texto va en color fuerte, como el valor
    de cualquier otro campo. En gris parecía que seguía vacío. */
 .rosterValue {
   font-family: var(--font-family-primary);
   font-size: var(--font-size-14);
   font-weight: var(--font-weight-book);
   color: var(--color-text-strong);
-}
-
-.rosterChevron {
-  color: var(--color-text-disabled);
 }
 
 .fieldDisabled .chip {
@@ -430,4 +432,175 @@
 .chipRemove:hover {
   background: var(--color-bg-surface-disabled);
   color: var(--color-text-strong);
+}
+
+/* ─── Appearance / Messages / Parameters (Figma 12500:413631, solo staff) ───
+   Entre grupos hay 40px en el Figma: 24 del gap del body + 16 aquí. */
+
+.group,
+.groupTight {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-top: 16px;
+}
+
+/* Label/Overline del DS */
+.overline {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-subtle);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  line-height: 1;
+  margin: 0;
+}
+
+.uploadField {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.uploadText {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-left: 12px;
+}
+
+.uploadText .fieldLabel,
+.uploadText .fieldDescription {
+  padding-left: 0;
+  margin-top: 0;
+}
+
+.divider {
+  width: 100%;
+  height: 1px;
+  border: none;
+  background: var(--color-border-default);
+  margin: 16px 0;
+}
+
+.formRowSpacer {
+  flex: 1;
+}
+
+/* Display / Sensor con device guardado: no abre lista y la ✕ ocupa el sitio del chevron,
+   dentro del campo (Daniel, 29/10). Fuera, el campo encogía y Display y Sensor dejaban de
+   medir lo mismo; dentro, la ✕ se lee como "vaciar este campo", que es lo que hace. */
+.deviceFilled {
+  cursor: default;
+}
+
+.deviceFilled:hover {
+  border-color: var(--color-border-default);
+}
+
+/* La ✕ es solo el icono (dentro del campo), con el mismo tooltip oscuro que los ⓘ de Login mode */
+.deviceClear {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: none;
+  border-radius: var(--radius-xs);
+  color: var(--color-text-subtle);
+  cursor: pointer;
+}
+
+.deviceClear:hover {
+  color: var(--color-text-strong);
+}
+
+.deviceClear:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+.deviceClear::before,
+.deviceClear::after {
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.deviceClear:hover::before,
+.deviceClear:hover::after,
+.deviceClear:focus-visible::before,
+.deviceClear:focus-visible::after {
+  opacity: 1;
+}
+
+.deviceClear::before {
+  content: '';
+  position: absolute;
+  bottom: calc(100% + 2px);
+  left: 50%;
+  border: 5px solid transparent;
+  border-top-color: var(--color-text-strong);
+  transform: translateX(-50%);
+}
+
+.deviceClear::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-text-strong);
+  color: var(--color-text-inverse-strong);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+  padding: 6px 8px;
+  border-radius: 6px;
+  z-index: 100;
+}
+
+/* "+ Create new sensor": primera opción de la lista, en turquesa como "Upload image" */
+.deviceCreate {
+  color: var(--color-turquoise-30);
+  font-weight: var(--font-weight-medium);
+}
+
+/* Panel "Create new …" dentro del mismo desplegable (Figma 15002:105599, frame "List") */
+.devicePanel {
+  gap: 16px;
+  padding: 4px 8px 8px;
+  overflow: visible;
+  max-height: none;
+}
+
+.devicePanelBack {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 8px 12px;
+  border: none;
+  border-bottom: 1px solid var(--color-border-default);
+  background: none;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-strong);
+  cursor: pointer;
+  text-align: left;
+}
+
+.devicePanelBackIcon {
+  display: flex;
+  transform: rotate(90deg);
+}
+
+.devicePanelFooter {
+  display: flex;
+  justify-content: flex-end;
 }

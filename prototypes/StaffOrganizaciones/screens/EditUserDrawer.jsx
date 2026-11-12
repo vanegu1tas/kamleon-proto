@@ -1,30 +1,46 @@
 import { useState } from 'react';
 import Button from '../../../design-system/components/Button/Button';
-import { IconClose, IconChevronDown, IconInfoCircle } from '../../../design-system/icons/outline';
+import { IconClose, IconChevronDown, IconInfoCircle, IconWarning2 } from '../../../design-system/icons/outline';
 import IconButton from '../../../design-system/components/IconButton/IconButton';
-import Toggle from '../../../design-system/components/Toggle/Toggle';
 import SegmentedControl from '../../../design-system/components/SegmentedControl/SegmentedControl';
+import Dropdown from '../../../design-system/components/Dropdown/Dropdown';
+import Checkbox from '../../../design-system/components/Checkbox/Checkbox';
 import styles from './EditUserDrawer.module.css';
+import { ORGS } from '../mockData';
 
-function SettingRow({ label, description, checked, onChange, disabled }) {
-  return (
-    <div className={styles.settingRow}>
-      <div className={styles.settingInfo}>
-        <span className={styles.settingLabel}>{label}</span>
-        <span className={styles.settingDesc}>{description}</span>
-      </div>
-      <Toggle checked={checked} onChange={onChange} disabled={disabled} />
-    </div>
-  );
+// Busca en el mock el equipo y su centro (para "Team · Center" y el estado de la pertenencia)
+function findTeam(teamId) {
+  for (const org of ORGS) for (const center of org.centers ?? []) for (const team of center.teams ?? []) {
+    if (team.id === teamId) return { org, center, team };
+  }
+  return null;
 }
+
+// Pertenencias que ve quien edita (10/11). Staff y Org Admin: todos los equipos de la persona en la org.
+// Center Admin: los del centro desde el que abrió. Team Admin las recibe ya filtradas (memberships).
+// El equipo desde el que se abrió va primero.
+function membershipsFor(user, team, role) {
+  const found = team?.id != null ? findTeam(team.id) : null;
+  if (!found) return null;
+  const centers = role === 'centerAdmin' ? [found.center] : (found.org.centers ?? []);
+  const list = [];
+  centers.forEach(c => (c.teams ?? []).forEach(t => {
+    const isUser = (t.users ?? []).includes(user.id), isAdmin = (t.professionalIds ?? []).includes(user.id);
+    if (!isUser && !isAdmin && t.id !== team.id) return;
+    list.push({ teamId: t.id, teamName: t.name, role: isAdmin ? 'Team admin' : 'User' });
+  }));
+  return list.sort((a, b) => (a.teamId === team.id ? -1 : b.teamId === team.id ? 1 : 0));
+}
+
+const POSITION_OPTIONS = ['Goalkeeper', 'Defender', 'Midfielder', 'Forward'];
 
 // "On/Off" para PIN/Visible on screen (toggles de feature) — "Active/Inactive" queda
 // reservado solo para Status (estado de la cuenta), para no mezclar los dos conceptos.
 const ON_OFF_OPTIONS = [{ label: 'On', value: true }, { label: 'Off', value: false }];
 
-function PermissionRow({ label, tooltip, value, onChange }) {
+function PermissionRow({ label, tooltip, value, onChange, disabled = false }) {
   return (
-    <div className={styles.permissionRow}>
+    <div className={`${styles.permissionRow} ${disabled ? styles.permissionRowDisabled : ''}`}>
       <span className={styles.permissionLabelRow}>
         {label}
         {tooltip && (
@@ -33,28 +49,60 @@ function PermissionRow({ label, tooltip, value, onChange }) {
           </span>
         )}
       </span>
-      <SegmentedControl options={ON_OFF_OPTIONS} value={value} onChange={onChange} size="s" />
+      <span className={styles.segWide}>
+        <SegmentedControl options={ON_OFF_OPTIONS} value={value} onChange={onChange} size="s" disabled={disabled} />
+      </span>
     </div>
   );
 }
 
-function StatusField({ value, onChange }) {
-  const statusValue = value ? 'active' : 'inactive';
+// Status por equipo (10/11). Inactive en un equipo: oculto del roster y de analytics de ese equipo, y PIN y
+// Visible on screen se apagan (el sistema no recuerda cómo estaban: al reactivar quedan en Off). Por eso, al
+// pasar a Inactive, confirmación en el sitio (dentro de la tarjeta, no un modal encima del drawer) que dice
+// qué se apaga y cómo estaba. Volver a Active no pide nada.
+const STATUS_OPTIONS = [{ label: 'Active', value: 'active' }, { label: 'Inactive', value: 'inactive' }];
+
+function MembershipStatus({ state, confirming, onAskInactive, onConfirm, onKeep, onActivate }) {
+  const turnsOff = [state.pin && 'PIN', state.visible && 'Visible on screen'].filter(Boolean);
   return (
-    <div className={styles.field}>
-      <label className={styles.fieldLabel}>Status</label>
-      <div className={styles.statusSelectWrapFull}>
-        <span className={`${styles.statusDot} ${styles[statusValue]}`} />
-        <select
-          className={styles.statusSelectFull}
-          value={statusValue}
-          onChange={e => onChange(e.target.value === 'active')}
-        >
-          <option value="active">Active</option>
-          <option value="inactive">Inactive</option>
-        </select>
-        <span className={styles.statusSelectChevron}><IconChevronDown size={16} /></span>
+    <div className={`${styles.permissionRow} ${styles.statusRow}`}>
+      <div className={styles.statusRowTop}>
+        <span className={styles.permissionLabelRow}>
+          Status
+          <span className={styles.infoIconWrap} data-tooltip="Controls whether the user takes part in this team. Inactive users keep access to their own data.">
+            <IconInfoCircle size={14} />
+          </span>
+        </span>
+        <span className={styles.segWide}>
+          <SegmentedControl
+            options={STATUS_OPTIONS}
+            value={state.active ? 'active' : 'inactive'}
+            onChange={v => (v === 'inactive' ? onAskInactive() : onActivate())}
+            size="s"
+          />
+        </span>
       </div>
+      {confirming && (
+        <div className={styles.statusConfirm} role="alertdialog" aria-label="Set as inactive in this team?">
+          <span className={styles.statusConfirmTitle}><IconWarning2 size={16} />Set as inactive in this team?</span>
+          <p className={styles.statusConfirmText}>
+            Hidden from the roster and analytics.
+            {turnsOff.length > 0 && ' These will be turned off and won\'t come back on automatically:'}
+          </p>
+          {turnsOff.length > 0 && (
+            <ul className={styles.statusConfirmList}>
+              {turnsOff.map(t => <li key={t}>{t} (currently on)</li>)}
+            </ul>
+          )}
+          <div className={styles.statusConfirmActions}>
+            <Button variant="tertiary" size="s" onClick={onKeep}>Keep active</Button>
+            <Button variant="primary" size="s" onClick={onConfirm}>Set inactive</Button>
+          </div>
+        </div>
+      )}
+      {!state.active && !confirming && (
+        <p className={styles.statusHint}><IconInfoCircle size={16} />Hidden from this team's roster and analytics.</p>
+      )}
     </div>
   );
 }
@@ -64,9 +112,21 @@ function StatusField({ value, onChange }) {
 export default function EditUserDrawer({ user, team, onClose, role, onRemove, memberships: membershipsProp }) {
   // Pertenencias que quien está mirando puede ver. Si no se pasan, se asume la única que
   // conoce la pantalla: el equipo desde el que se abrió el drawer.
-  const memberships = membershipsProp?.length
+  const memberships = (membershipsProp?.length
     ? membershipsProp
-    : [{ teamId: team?.id, teamName: team?.name, role: user.role === 'professional' ? 'Team admin' : 'User' }];
+    : membershipsFor(user, team, role) ?? [{ teamId: team?.id, teamName: team?.name, role: user.role === 'professional' ? 'Team admin' : 'User',
+        status: (team?.inactiveUsers ?? []).includes(user.id) || user.status === 'inactive' ? 'inactive' : 'active' }]
+  ).map(m => {
+    // Completa centro y estado desde el mock cuando quien llama no los trae
+    const f = findTeam(m.teamId);
+    return {
+      ...m,
+      teamName: m.teamName ?? f?.team.name,
+      centerName: m.centerName ?? f?.center.name,
+      orgName: m.orgName ?? f?.org.name,
+      status: m.status ?? ((f?.team.inactiveUsers ?? []).includes(user.id) ? 'inactive' : 'active'),
+    };
+  });
   // El excel da users.viewStatus Y users.changeStatus a Team Admin (docs/permissions.md) —
   // antes lo ocultábamos del todo por confusión en testing con el switch viejo; ahora que
   // Status usa el mismo dropdown establecido en el resto de la app (EditOrgDrawer/EditTeamDrawer),
@@ -89,16 +149,27 @@ export default function EditUserDrawer({ user, team, onClose, role, onRemove, me
   const [gender,   setGender]   = useState(user.gender   ?? '');
   const [height,   setHeight]   = useState(user.height   ?? '');
   const [weight,   setWeight]   = useState(user.weight   ?? '');
-  const [status,   setStatus]   = useState(user.status === 'active');
-  const [rfid,     setRfid]     = useState(user.rfid     ?? false);
+  // Terms & consents y Delete account: solo Kamleon staff (10/11)
+  const isStaff = ['owner', 'admin', 'editor'].includes(role);
+  const [consents, setConsents] = useState({ health: true, web: true, app: true });
   // Team Admin: users.editData (docs/permissions.md) trata RFID como un dato más del
   // usuario (el código de la tarjeta), no como un switch de encendido/apagado — coincide
   // con la referencia del programador (input "Enter RFID"). El resto de roles sigue con
   // el Toggle de antes, no se tocó esa parte.
   const [rfidCode, setRfidCode] = useState(user.rfid ? `RFID-${String(user.id).padStart(6, '0')}` : '');
-  const [jerseyNumber, setJerseyNumber] = useState(user.jerseyNumber != null ? String(user.jerseyNumber) : '');
   const [pin,      setPin]      = useState(user.pin      ?? false);
   const [visibleOnScreen, setVisibleOnScreen] = useState(user.visibleOnScreen ?? true);
+  // Status, PIN y Visible on screen por pertenencia (cada tarjeta, los suyos)
+  const mKey = (m, i) => m.teamId ?? i;
+  const [mState, setMState] = useState(() => Object.fromEntries(memberships.map((m, i) => [mKey(m, i), {
+    active: m.status !== 'inactive',
+    // Inactivo en ese equipo: PIN y Visible apagados (se apagan al desactivar)
+    pin: m.status !== 'inactive' && (user.pin ?? false), visible: m.status !== 'inactive' && (user.visibleOnScreen ?? true),
+    jersey: i === 0 && user.jerseyNumber != null ? String(user.jerseyNumber) : '', position: user.position ?? '',
+  }])));
+  const [confirmingKey, setConfirmingKey] = useState(null);
+  const [membershipsDirty, setMembershipsDirty] = useState(false);
+  const patchM = (k, patch) => { setMState(st => ({ ...st, [k]: { ...st[k], ...patch } })); setMembershipsDirty(true); };
 
   const hasChanges =
     name     !== (user.name     ?? '') ||
@@ -108,12 +179,11 @@ export default function EditUserDrawer({ user, team, onClose, role, onRemove, me
     gender   !== (user.gender   ?? '') ||
     height   !== (user.height   ?? '') ||
     weight   !== (user.weight   ?? '') ||
-    status   !== (user.status === 'active') ||
-    rfid     !== (user.rfid     ?? false) ||
+    !consents.health || !consents.web || !consents.app ||
     rfidCode !== (user.rfid ? `RFID-${String(user.id).padStart(6, '0')}` : '') ||
-    jerseyNumber !== (user.jerseyNumber != null ? String(user.jerseyNumber) : '') ||
     pin      !== (user.pin      ?? false) ||
-    visibleOnScreen !== (user.visibleOnScreen ?? true);
+    visibleOnScreen !== (user.visibleOnScreen ?? true) ||
+    membershipsDirty;
 
   return (
     <div className={styles.overlay} onMouseDown={onClose}>
@@ -199,12 +269,12 @@ export default function EditUserDrawer({ user, team, onClose, role, onRemove, me
                 />
               </div>
               <div className={styles.field}>
-                <label className={styles.fieldLabel}>Gender</label>
-                <input
-                  className={styles.input}
-                  placeholder="Male / Female / Other"
+                <Dropdown
+                  label="Gender"
+                  placeholder="Select"
+                  options={['Male', 'Female', 'Other']}
                   value={gender}
-                  onChange={e => setGender(e.target.value)}
+                  onChange={setGender}
                 />
               </div>
             </div>
@@ -266,41 +336,15 @@ export default function EditUserDrawer({ user, team, onClose, role, onRemove, me
               </div>
             </div>
 
-            {role === 'teamAdmin' && (
-              <div className={styles.fieldRow}>
-                <div className={styles.field}>
-                  <label className={styles.fieldLabel}>RFID</label>
-                  <input
-                    className={styles.input}
-                    placeholder="Enter RFID"
-                    value={rfidCode}
-                    onChange={e => setRfidCode(e.target.value)}
-                  />
-                </div>
-                <div className={styles.field}>
-                  <label className={styles.fieldLabel}>Jersey Number</label>
-                  <input
-                    className={styles.input}
-                    type="text"
-                    inputMode="numeric"
-                    placeholder="e.g. 9"
-                    value={jerseyNumber}
-                    onChange={e => setJerseyNumber(e.target.value.replace(/\D/g, ''))}
-                  />
-                </div>
-              </div>
-            )}
-
-            {role !== 'teamAdmin' && (
-              <SettingRow
-                label="RFID"
-                description="Allow this user to log in via proximity card."
-                checked={rfid}
-                onChange={setRfid}
+            <div className={styles.field}>
+              <label className={styles.fieldLabel}>RFID scan code</label>
+              <input
+                className={styles.input}
+                placeholder="Enter RFID"
+                value={rfidCode}
+                onChange={e => setRfidCode(e.target.value)}
               />
-            )}
-
-            <StatusField value={status} onChange={setStatus} />
+            </div>
 
           </div>
 
@@ -313,44 +357,130 @@ export default function EditUserDrawer({ user, team, onClose, role, onRemove, me
               las que tiene competencia — un Team Admin, las de sus equipos.
               "Regenerate PIN" se quitó el 21/9: la acción ya no existe en el producto. */}
           <div className={styles.section}>
-            <h3 className={styles.sectionTitle}>Permissions</h3>
+            <h3 className={styles.sectionTitle}>{memberships.length > 1 ? 'Roles' : 'Role'}</h3>
 
             {memberships.map((membership, i) => (
-              <div key={membership.teamId ?? i} className={styles.permissionsCard}>
-                {memberships.length > 1 && (
-                  <div className={styles.permissionsCardHeader}>
-                    <span className={styles.permissionsCardRole}>{membership.role}</span>
-                    <span className={styles.permissionsCardTeam}>{membership.teamName}</span>
-                  </div>
-                )}
-
-                <div className={styles.permissionsGroup}>
-                  <PermissionRow
-                    label="Visible on screen"
-                    tooltip="Show members on the device's roster screen."
-                    value={visibleOnScreen}
-                    onChange={setVisibleOnScreen}
-                  />
-                  <PermissionRow
-                    label="PIN"
-                    tooltip="Allow members to log in with a PIN."
-                    value={pin}
-                    onChange={setPin}
-                  />
+              <div key={membership.teamId ?? i} className={styles.membershipBlock}>
+              {membership.orgName && membership.orgName !== memberships[i - 1]?.orgName && (
+                <span className={styles.membershipOrg}>
+                  <span className={styles.membershipOrgAvatar} aria-hidden="true">{membership.orgName.charAt(0).toUpperCase()}</span>
+                  {membership.orgName}
+                </span>
+              )}
+              <div className={styles.permissionsCard}>
+                <div className={styles.permissionsCardHeader}>
+                  <span className={styles.permissionsCardRole}>{membership.role}</span>
+                  <span className={styles.permissionsCardTeam}>
+                    {[membership.teamName, membership.centerName].filter(Boolean).join(' · ')}
+                  </span>
                 </div>
 
-                {onRemove && (
+                {(() => {
+                  const k = mKey(membership, i);
+                  const st = mState[k];
+                  const off = !st.active;
+                  return (
+                    <div className={styles.permissionsGroup}>
+                      <div className={styles.permissionRow}>
+                        <span className={styles.permissionLabelRow}>
+                          Jersey Number
+                          <span className={styles.infoIconWrap} data-tooltip="The user's number in this team.">
+                            <IconInfoCircle size={14} />
+                          </span>
+                        </span>
+                        <input
+                          className={`${styles.input} ${styles.cardInput} ${styles.jerseyInput}`}
+                          type="text"
+                          inputMode="numeric"
+                          placeholder="—"
+                          value={st.jersey}
+                          onChange={e => patchM(k, { jersey: e.target.value.replace(/\D/g, '').slice(0, 3) })}
+                        />
+                      </div>
+                      <div className={styles.permissionRow}>
+                        <span className={styles.permissionLabelRow}>
+                          Position
+                          <span className={styles.infoIconWrap} data-tooltip="The user's position in this team.">
+                            <IconInfoCircle size={14} />
+                          </span>
+                        </span>
+                        <span className={styles.positionWrap}>
+                          <select
+                            className={`${styles.input} ${styles.cardInput} ${styles.positionSelect}`}
+                            value={st.position}
+                            onChange={e => patchM(k, { position: e.target.value })}
+                          >
+                            <option value="">Select</option>
+                            {POSITION_OPTIONS.map(o => <option key={o} value={o}>{o}</option>)}
+                          </select>
+                          <span className={styles.positionChevron}><IconChevronDown size={16} /></span>
+                        </span>
+                      </div>
+                      <MembershipStatus
+                        state={st}
+                        confirming={confirmingKey === k}
+                        onAskInactive={() => setConfirmingKey(k)}
+                        onKeep={() => setConfirmingKey(null)}
+                        onConfirm={() => { patchM(k, { active: false, pin: false, visible: false }); setConfirmingKey(null); }}
+                        onActivate={() => { patchM(k, { active: true }); setConfirmingKey(null); }}
+                      />
+                      <PermissionRow
+                        label="Visible on screen"
+                        tooltip={off ? 'Turned off while the user is inactive.' : "Show members on the device's roster screen."}
+                        value={st.visible}
+                        onChange={v => patchM(k, { visible: v })}
+                        disabled={off}
+                      />
+                      <PermissionRow
+                        label="PIN"
+                        tooltip={off ? 'Turned off while the user is inactive.' : 'Allow members to log in with a PIN.'}
+                        value={st.pin}
+                        onChange={v => patchM(k, { pin: v })}
+                        disabled={off}
+                      />
+                    </div>
+                  );
+                })()}
+
+                <div className={styles.cardActions}>
+                  <button
+                    className={styles.actionBtn}
+                    type="button"
+                    disabled={!mState[mKey(membership, i)].active}
+                    title={!mState[mKey(membership, i)].active ? 'Turned off while the user is inactive.' : undefined}
+                  >
+                    Set new PIN
+                  </button>
                   <button
                     className={`${styles.actionBtn} ${styles.actionBtnDanger}`}
                     type="button"
-                    onClick={() => onRemove(membership)}
+                    onClick={() => onRemove?.(membership)}
                   >
                     Remove from team
                   </button>
-                )}
+                </div>
+              </div>
               </div>
             ))}
           </div>
+
+          {isStaff && (
+            <div className={styles.section}>
+              <h3 className={styles.sectionTitle}>Terms &amp; consents</h3>
+              <div className={styles.consents}>
+                {[['health', 'Health consent'], ['web', 'Web Privacy Policy'], ['app', 'APP Privacy Policy']].map(([k, label]) => (
+                  <label key={k} className={styles.consentRow}>
+                    <span>{label}</span>
+                    <Checkbox checked={consents[k]} onChange={v => setConsents(c => ({ ...c, [k]: v }))} />
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {isStaff && (
+            <button type="button" className={styles.deleteAccount}>Delete account</button>
+          )}
 
         </div>
 

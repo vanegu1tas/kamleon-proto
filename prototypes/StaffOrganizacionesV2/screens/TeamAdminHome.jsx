@@ -338,7 +338,7 @@ function TeamUsersList({ team, assignedTeams, onSelectUser, pendingInvites, setP
         </div>
       </div>
 
-      <div className={tstyles.tableWrap} style={{ padding: 0 }}>
+      <div className={tstyles.tableWrap} style={{ padding: 0 }} onScroll={e => e.currentTarget.toggleAttribute('data-scrolled', e.currentTarget.scrollLeft > 1)}>
         <div className={tstyles.tableHeader}>
           <div className={`${tstyles.colHead} ${tstyles.colName}`}>Name</div>
           {/* Sin columna Role — el subtítulo del nombre ya muestra Team admin/User */}

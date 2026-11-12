@@ -39,6 +39,7 @@ export const colors = {
   },
 
   yellow: {
+    95: '#fefce7',
     90: '#faf2d1',
     82: '#fceba6',
     74: '#ffe07a',
@@ -46,6 +47,7 @@ export const colors = {
     61: '#fac63e',
     57: '#f5b22d',
     47: '#ed9005',
+    41: '#d07d00',
   },
 
   green: {

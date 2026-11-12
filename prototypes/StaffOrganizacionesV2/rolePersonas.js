@@ -25,16 +25,17 @@ export const ROLES = {
 
 export const ROLE_ORDER = ['owner', 'admin', 'editor', 'orgAdmin', 'centerAdmin', 'teamAdmin', 'endUser'];
 
-// Nav items del sidebar que cada rol NO ve (ids reales de NAV_SECTIONS: center/units/hydration/usage).
+// Nav items del sidebar que cada rol NO ve (ids reales de NAV_SECTIONS: center/units/devices/hydration/usage).
+// Devices es solo de Kamleon staff (`units.devices.access`): ningún rol de cliente lo ve.
 export const HIDDEN_NAV_ITEMS = {
-  teamAdmin: new Set(['units', 'usage']),
+  teamAdmin: new Set(['units', 'devices', 'usage']),
   // Org Admin ya puede ver todas las units de su org desde el tab "Units" en el header de
   // la organización (mismo contenido) — el ítem del sidebar quedaba redundante con Center control.
-  orgAdmin: new Set(['units']),
+  orgAdmin: new Set(['units', 'devices']),
   // Mismo criterio para Center Admin: ve las units de su centro en el tab "Units" del centro.
   // Además la vista global muestra columnas Display/Sensor que no le corresponden
   // (`units.viewColumn.display` y `.sensor` son de Editor y staff, docs/permissions.md).
-  centerAdmin: new Set(['units']),
+  centerAdmin: new Set(['units', 'devices']),
 };
 
 // pendingInvites: invitaciones que ESTE usuario tiene pendientes de aceptar (ej. lo invitaron

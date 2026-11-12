@@ -1,6 +1,7 @@
 /* ─── Container ───────────────────────────────────────── */
 
 .container {
+  position: relative;
   display: flex;
   background: var(--color-bg-surface-subtle);
   border: 1px solid var(--color-border-default);
@@ -12,6 +13,8 @@
 /* ─── Option ──────────────────────────────────────────── */
 
 .option {
+  position: relative;
+  z-index: 1;
   flex: 1;
   padding: 8px 16px;
   background: none;
@@ -39,23 +42,85 @@
   outline-offset: 2px;
 }
 
-/* ─── Small size ──────────────────────────────────────── */
+/* ─── Small size (36px, como Button S e Input) ────────── */
 
+/* Alto fijo: no depende del line-height del texto (14 → 17,5px en el DS). Como en Figma:
+   contenedor de 36 fijo con padding 2 (como el XS), tabs que llenan el alto con el texto centrado. */
 .sm {
+  box-sizing: border-box;
+  height: 36px;
+  padding: 2px;
+  gap: 4px;
+}
+
+.sm .option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12px;
+}
+
+/* ─── Extra small size (29px, el S anterior; drawers) ─── */
+
+.xs {
   padding: 2px;
   gap: 0;
 }
 
-.sm .option {
+.xs .option {
   padding: 4px 12px;
   font-size: var(--font-size-12);
 }
 
 /* ─── Active ──────────────────────────────────────────── */
 
+/* El fondo negro no lo pinta la opción sino .thumb, que se desliza por detrás (1/11). La opción
+   activa solo cambia el texto. En reposo se ve igual que antes. */
 .active {
-  background: var(--color-text-strong);
-  border-color: var(--color-border-strong);
   color: var(--color-text-inverse-strong);
   font-weight: var(--font-weight-medium);
+}
+
+.thumb {
+  position: absolute;
+  z-index: 0;
+  box-sizing: border-box;
+  background: var(--color-text-strong);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-l);
+  pointer-events: none;
+}
+
+.thumbAnimate {
+  transition: left 0.25s cubic-bezier(0.4, 0, 0.2, 1), width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .thumbAnimate {
+    transition: none;
+  }
+}
+
+/* ─── Disabled (10/11) ────────────────────────────────── */
+
+/* Como el Button deshabilitado: la elegida con fondo Action/Disabled y borde Border/Default, y
+   todo el texto en Content/Disabled. La elegida se sigue distinguiendo por el fondo y el medium.
+   Sin hover ni clic. */
+.disabled .option {
+  color: var(--color-text-disabled);
+  cursor: not-allowed;
+}
+
+.disabled .option:hover:not(.active) {
+  background: none;
+  color: var(--color-text-disabled);
+}
+
+.disabled .option.active {
+  color: var(--color-text-disabled);
+}
+
+.disabled .thumb {
+  background: var(--color-action-disabled-bg);
+  border-color: var(--color-border-default);
 }

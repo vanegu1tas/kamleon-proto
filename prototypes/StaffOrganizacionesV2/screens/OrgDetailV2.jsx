@@ -30,6 +30,11 @@ import TruncatedText from './TruncatedText';
 import styles from './OrgDetailV2.module.css';
 import dstyles from '../../StaffOrganizaciones/screens/DeleteOrgModal.module.css';
 
+// Columna Name fija al deslizar en móvil (11/11): marca el contenedor cuando se ha deslizado para que
+// aparezca el degradado junto a la columna fija (mismo patrón que las tablas de analytics)
+const markScrolled = e => e.currentTarget.toggleAttribute('data-scrolled', e.currentTarget.scrollLeft > 1);
+
+
 function pluralize(count, word) {
   return `${count} ${word}${count === 1 ? '' : 's'}`;
 }
@@ -659,7 +664,7 @@ function OrgUsersTab({ org, role }) {
       </div>
 
       {pageItems.length > 0 ? (
-        <div className={styles.teamTable}>
+        <div className={styles.teamTable} onScroll={markScrolled}>
           <div className={styles.teamTableHead}>
             <span className={`${styles.teamCol} ${styles.teamColName}`}>Name</span>
             <span className={`${styles.teamCol} ${styles.orgColCenter}`}>Center</span>
@@ -909,7 +914,7 @@ function TeamsTab({ center, onSelectTeam, onEditTeam, onNewUserForTeam, onDelete
       </div>
 
       {teams.length > 0 ? (
-        <div className={styles.teamTable}>
+        <div className={styles.teamTable} onScroll={markScrolled}>
           <div className={styles.teamTableHead}>
             <span className={`${styles.teamCol} ${styles.teamColName}`}>Team Name</span>
             {showStatus && <span className={`${styles.teamCol} ${styles.teamColStatus}`}>Status</span>}
@@ -1584,7 +1589,7 @@ function UnitsTab({ center, org, role }) {
       </div>
 
       {units.length > 0 ? (
-        <div className={styles.teamTable}>
+        <div className={styles.teamTable} onScroll={markScrolled}>
           <div className={styles.teamTableHead}>
             <span className={`${styles.teamCol} ${styles.unitColId}`}>
               <button className={`${styles.sortBtn} ${sortCol === 'id' ? styles.sortBtnActive : ''}`} onClick={() => handleSort('id')}>
@@ -2196,7 +2201,7 @@ function TeamUsersSection({ center, onSelectUser, role, canManageUsers, teamInvi
       </div>
 
       {(pageUsers.length > 0 || pendingTeamRows.length > 0) ? (
-        <div className={styles.teamTable}>
+        <div className={styles.teamTable} onScroll={markScrolled}>
           <div className={styles.teamTableHead}>
             <span className={`${styles.teamCol} ${styles.teamColName}`}>Name</span>
             <span className={`${styles.teamCol} ${styles.teamColTeamWide}`}>Team</span>
@@ -2312,7 +2317,7 @@ function TeamUsersSection({ center, onSelectUser, role, canManageUsers, teamInvi
       )}
 
       {editUserTarget && (
-        <EditUserDrawer user={editUserTarget.user} team={editUserTarget.team} onClose={() => setEditUserTarget(null)} role="centerAdmin" />
+        <EditUserDrawer user={editUserTarget.user} team={editUserTarget.team} onClose={() => setEditUserTarget(null)} role={role} />
       )}
 
       {deleteUserTarget && (
@@ -2845,7 +2850,7 @@ function TeamCard({ team, center, org, onBack, onSelectUser, onNewUser, onEdit, 
             subtitle="Add users to this team to see them here"
           />
         ) : (pageMembers.length > 0 || pendingInvites.length > 0) ? (
-          <div className={styles.teamTable}>
+          <div className={styles.teamTable} onScroll={markScrolled}>
             <div className={styles.teamTableHead}>
               <span className={`${styles.teamCol} ${styles.teamColName}`}>Name</span>
               {/* La columna en sí ahora siempre se muestra (la necesitan las filas pendientes,
@@ -2999,7 +3004,7 @@ function TeamCard({ team, center, org, onBack, onSelectUser, onNewUser, onEdit, 
       )}
 
       {editUserTarget && (
-        <EditUserDrawer user={editUserTarget} team={team} onClose={() => setEditUserTarget(null)} role="centerAdmin" />
+        <EditUserDrawer user={editUserTarget} team={team} onClose={() => setEditUserTarget(null)} role={role} />
       )}
 
       {removeUserTarget && (
@@ -3201,7 +3206,7 @@ function UserCard({ user, team, backLabel, onBack, isMobile = false, role, onRem
 
       </div>
 
-      {showEdit && <EditUserDrawer user={user} team={team} onClose={() => setShowEdit(false)} />}
+      {showEdit && <EditUserDrawer user={user} team={team} onClose={() => setShowEdit(false)} role={role} />}
 
       {removeOpen && (
         <RemoveTeamMemberModal

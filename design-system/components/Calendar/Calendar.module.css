@@ -1,0 +1,328 @@
+/* Figma Design System, "Calendar" (2389:2479) */
+
+.calendar {
+  width: 336px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: var(--color-bg-surface);
+  border-radius: var(--radius-s);
+  box-shadow:
+    0 0 2px rgba(0, 0, 0, 0.15),
+    0 0 8px rgba(0, 0, 0, 0.10);
+  font-family: var(--font-family-primary);
+  color: var(--color-text-strong);
+}
+
+.anchor {
+  position: relative;
+}
+
+/* ─── Date range ─────────────────────────────────── */
+
+.rangeHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--color-border-default);
+}
+
+.rangeLabel {
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+}
+
+.rangePill {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 8px 8px 12px;
+  background: var(--color-bg-surface-raised);
+  border: none;
+  border-radius: var(--radius-xs);
+  font-family: inherit;
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-strong);
+  cursor: pointer;
+}
+
+/* ─── Custom range: Start / End date ─────────────── */
+
+.inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  padding: 16px 24px 12px;
+}
+
+/* ─── Mes / año ──────────────────────────────────── */
+
+.monthHeader {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+}
+
+.monthPickers {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.picker {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-strong);
+  cursor: pointer;
+}
+
+.navBtn {
+  display: flex;
+  padding: 0;
+  background: none;
+  border: none;
+  color: var(--color-text-strong);
+  cursor: pointer;
+}
+
+.navBtn:disabled {
+  color: var(--color-text-disabled);
+  cursor: default;
+}
+
+.chevronLeft,
+.chevronRight {
+  display: flex;
+}
+
+.chevronLeft  { transform: rotate(90deg); }
+.chevronRight { transform: rotate(-90deg); }
+
+/* ─── Días ───────────────────────────────────────── */
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 4px 24px 16px;
+}
+
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-subtle);
+  text-align: center;
+}
+
+.days {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.dayWrap {
+  display: flex;
+}
+
+/* Rango: inicio, días del medio y fin forman una sola banda negra (decidido con Daniel, 26/10) */
+.inRange {
+  background: var(--color-black);
+}
+
+/* El negro lo pone la banda (para que redondee en los bordes de semana), no el día */
+.inRange .day {
+  background: transparent;
+}
+
+.bandRoundLeft  { border-radius: 1000px 0 0 1000px; }
+.bandRoundRight { border-radius: 0 1000px 1000px 0; }
+
+.rangeStart {
+  background: linear-gradient(to right, transparent 50%, var(--color-black) 50%);
+}
+
+.rangeEnd {
+  background: linear-gradient(to left, transparent 50%, var(--color-black) 50%);
+}
+
+.day {
+  width: 100%;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 1000px;
+  font-family: inherit;
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-strong);
+  cursor: pointer;
+}
+
+button.day:hover:not(:disabled):not(.daySelected) {
+  background: var(--color-bg-surface-raised);
+}
+
+.day:disabled {
+  color: var(--color-text-disabled);
+  cursor: default;
+}
+
+.daySelected {
+  background: var(--color-black);
+  color: var(--color-text-inverse-strong);
+}
+
+/* Vista previa del rango (3/11): del inicio al día bajo el ratón, en el color de hover del día */
+.preview {
+  background: var(--color-bg-surface-raised);
+}
+
+.preview .day {
+  background: transparent;
+}
+
+.previewFromStart {
+  background: linear-gradient(to right, transparent 50%, var(--color-bg-surface-raised) 50%);
+}
+
+.previewToStart {
+  background: linear-gradient(to left, transparent 50%, var(--color-bg-surface-raised) 50%);
+}
+
+/* ─── Botones ────────────────────────────────────── */
+
+.buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  padding: 0 24px 16px;
+}
+
+/* ─── Menús (rango, mes, año) ────────────────────── */
+
+.list {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 10;
+  width: 138px;
+  display: flex;
+  flex-direction: column;
+  padding: 12px 8px;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-s);
+  box-shadow:
+    0 0 2px rgba(0, 0, 0, 0.15),
+    0 0 8px rgba(0, 0, 0, 0.10);
+}
+
+/* Meses: se ven 6 a la vez, como en Figma */
+.listScroll {
+  max-height: 211px;
+  overflow-y: auto;
+}
+
+.listItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px;
+  background: none;
+  border: none;
+  border-radius: var(--radius-xs);
+  font-family: inherit;
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-strong);
+  text-align: left;
+  cursor: pointer;
+}
+
+.listItem:hover:not(:disabled) {
+  background: var(--color-bg-surface-raised);
+}
+
+.listItem:disabled {
+  color: var(--color-text-disabled);
+  cursor: default;
+}
+
+.check {
+  display: flex;
+  color: var(--color-text-accent);
+}
+
+.listSeparator {
+  height: 1px;
+  margin: 8px -8px;
+  background: var(--color-border-default);
+}
+
+/* ─── Layouts de presets (exploración 3/11) ──────────── */
+
+/* La lista de presets fuera del desplegable: en su sitio, sin caja propia */
+.listStatic {
+  position: static;
+  width: auto;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+  /* Sin fondo propio: el blanco de la lista tapaba las esquinas redondeadas de la caja (4/11) */
+  background: none;
+}
+
+/* layout list: solo la lista, con la caja del calendario */
+.presetPanel {
+  width: 200px;
+}
+
+/* layout side: lista + calendario en una sola caja */
+.sideWrap {
+  display: flex;
+  background: var(--color-bg-surface);
+  border-radius: var(--radius-s);
+  box-shadow:
+    0 0 2px rgba(0, 0, 0, 0.15),
+    0 0 8px rgba(0, 0, 0, 0.10);
+}
+
+.sideList {
+  width: 160px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--color-border-default);
+}
+
+.calendarFlat {
+  box-shadow: none;
+  border-radius: 0 var(--radius-s) var(--radius-s) 0;
+}
+
+/* Arrastrar para elegir el rango (3/11): en tablet el dedo marca días en vez de hacer scroll */
+.days {
+  touch-action: none;
+  user-select: none;
+}

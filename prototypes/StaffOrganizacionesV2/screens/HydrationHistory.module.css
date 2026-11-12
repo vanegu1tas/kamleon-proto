@@ -1,0 +1,495 @@
+/* History (exploración 28/10). Marcas finas, ejes y rejilla discretos, texto siempre en tinta
+   de texto (nunca del color de la serie). Mismo padding lateral que las secciones de Day. */
+
+/* Estilo de la gráfica de Hydration (%) de la compañera (Explorations 292:65304, Daniel 30/10).
+   Ni #22aaa2 ni #cbced4 existen en el DS: quedan aquí como variables hasta que se decida su token. */
+.chartSection {
+  --chart-accent: #22aaa2; /* solo la franja Optimal range */
+  /* Línea y puntos neutros (Daniel, 1/11): en turquesa parecía que todo estaba Hydrated */
+  /* Gris oscuro (Daniel, 1/11; se probó el grey-46 y se descartó) */
+  --chart-line: var(--color-grey-25);
+  --chart-grid: #cbced4;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  /* 48 entre gráficas = 3× los 16 de dentro (Daniel, 1/11: con 32 se leían pegadas) */
+  padding: 48px 24px 0;
+}
+
+/* Mobile axis b y c (6/11): el mismo padding que los KPIs en móvil */
+.chartSectionTight {
+  padding-inline: 16px;
+}
+
+.chartSection:first-of-type {
+  padding-top: 32px;
+}
+
+.chartSection:last-child {
+  padding-bottom: 24px;
+}
+
+.plot {
+  position: relative;
+  width: 100%;
+}
+
+.plot svg {
+  display: block;
+  overflow: visible;
+  /* Táctil (6/11): vertical mueve la página, horizontal recorre los periodos */
+  touch-action: pan-y;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ─── Ejes ─────────────────────────────────────────────── */
+
+.axis text {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  fill: var(--color-text-subtle);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Mobile axis b: el número va sobre la gráfica; un halo del fondo lo separa de las barras y la línea */
+.axis .tickInside {
+  paint-order: stroke;
+  stroke: var(--color-bg-surface);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+
+/* Unidad del eje Y (Daniel, 3/11, de la gráfica de la compañera): horizontal y encima del eje, no
+   girada; solo donde los números no la dicen (Samples, mL, mS/cm) */
+.yLabel {
+  display: block;
+  margin-bottom: 4px;
+  font-size: var(--font-size-12);
+  line-height: var(--line-height-12);
+  color: var(--color-text-subtle);
+}
+
+/* Fechas versión B: la línea que abarca los días de cada mes (o los meses de cada año), del mismo
+   color que el nombre del mes (como en Figma 501:90421) */
+.axisSpan {
+  stroke: var(--color-text-subtle);
+}
+
+/* Rejilla continua (Daniel, 1/11): la punteada hacía ruido. Continua pesa más que punteada, así
+   que baja a border-default; la línea base queda un paso por encima para seguir siendo el suelo. */
+.grid {
+  stroke: var(--color-border-default);
+}
+
+.baseline {
+  stroke: var(--chart-grid);
+}
+
+/* ─── Marcas ───────────────────────────────────────────── */
+
+.line,
+.metricLine {
+  fill: none;
+  stroke: var(--chart-line);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+/* Users Analytics (4/11): media del equipo, línea gris continua debajo de la del jugador */
+.teamLine {
+  fill: none;
+  stroke: var(--color-grey-65);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.swatchTeam {
+  width: 16px;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--color-grey-65);
+}
+
+/* Días sin samples (versión B, 2/11): punteada y más clara que la línea de datos, para que se lea
+   como "aquí no hubo muestras" y no como un dato más */
+.lineGap {
+  fill: none;
+  stroke: var(--color-grey-65);
+  stroke-width: 2;
+  stroke-dasharray: 4 4;
+  stroke-linecap: butt;
+}
+
+.swatchDashed {
+  flex-shrink: 0;
+  display: block;
+}
+
+/* Anillo de superficie para que el punto se separe de la línea y de la banda */
+.metricDot {
+  fill: var(--chart-line);
+  stroke: var(--color-bg-surface);
+  stroke-width: 1;
+}
+
+/* Halo del punto: solo en el periodo con el cursor encima */
+.dotHalo {
+  fill: var(--chart-line);
+  fill-opacity: 0.15;
+}
+
+/* Hover en la ①: punto neutro con el estado dentro (el estado también va en texto en el card) */
+.dotStatus {
+  stroke: var(--color-bg-surface);
+  stroke-width: 1;
+}
+
+.optimal {
+  fill: var(--chart-accent);
+  fill-opacity: 0.1;
+}
+
+
+/* Los amarillos 1–3 casi no se ven sobre blanco: borde fino para que la barra exista */
+.urineBar {
+  stroke: var(--color-border-default);
+  stroke-width: 1;
+}
+
+/* Volumen en barras neutras (versión B de Sample metrics, 2/11): el color de orina va solo en el card */
+.volumeBar {
+  fill: var(--chart-line);
+}
+
+/* Hover de las barras apiladas: la columna del cursor entera, el resto al 40% (por debajo, el
+   amarillo y el verde claro desaparecen sobre blanco). La activa cambia al instante para que no
+   parpadee al recorrer un año; las demás se atenúan en 120ms. */
+.barCol {
+  transition: opacity 0.12s ease-out;
+}
+
+.barsHovering .barCol {
+  opacity: 0.4;
+}
+
+.barsHovering .barActive {
+  opacity: 1;
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .barCol { transition: none; }
+}
+
+/* Clara y continua (Daniel, 1/11): es una guía, pesa menos que la línea de datos (grey-25) y más
+   que la rejilla (border-default) */
+.crosshair {
+  stroke: var(--color-grey-70);
+  stroke-width: 1;
+  pointer-events: none;
+}
+
+/* ─── Tooltip ──────────────────────────────────────────── */
+
+.tooltipBox {
+  display: flex;
+  align-items: flex-start;
+}
+
+.tooltip {
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* entre grupos: fecha / dato / nota */
+  width: max-content;
+  max-width: 208px;
+  padding: 12px;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-xs);
+  box-shadow: var(--elevation-2);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  line-height: var(--line-height-12);
+  font-variant-numeric: tabular-nums; /* el card no cambia de ancho al recorrer los periodos */
+  color: var(--color-text-strong);
+  pointer-events: none;
+}
+
+/* Los datos pesan lo mismo en las 4 gráficas */
+.tooltip b {
+  font-weight: var(--font-weight-medium);
+}
+
+.tooltipBody {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tooltipDate {
+  color: var(--color-text-subtle);
+}
+
+/* Por la base: 16px junto a 12px se ve torcido si se centran */
+.tooltipValueRow {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.tooltipValue {
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-16);
+}
+
+.tooltipStatus {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--color-text-subtle);
+}
+
+.statusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.tooltipRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tooltipMuted {
+  color: var(--color-text-subtle);
+}
+
+/* ─── Franja táctil (6/11) ─────────────────────────────── */
+/* Móvil: el dato del periodo tocado ocupa la fila del título, encima de ella y con su misma altura
+   (Daniel, 6/11: en reposo nada; la gráfica no salta). Todas las filas de título miden 44 en táctil
+   para que quepan fecha y valor en dos líneas. */
+.headerTouch {
+  position: relative;
+  min-height: 44px;
+}
+/* Franja de 3 líneas (gráficas del jugador): el hueco se reserva siempre, para que la gráfica no salte al tocar */
+.headerTouchTall {
+  min-height: 61px;
+}
+.readoutSlot {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+.readout {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 100%;
+  padding: 4px 4px 4px 12px;
+  background: var(--color-bg-surface-raised);
+  border-radius: var(--radius-xs);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-12);
+  line-height: var(--line-height-12);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-strong);
+}
+.readout b {
+  font-weight: var(--font-weight-medium);
+}
+.readoutText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+.readoutDate {
+  color: var(--color-text-subtle);
+}
+/* Lo del card de desktop en una sola línea: valor, estado y muestras seguidos */
+.readoutBody {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.readoutBody > * {
+  flex-shrink: 0;
+}
+/* Gráficas del jugador: media del equipo y muestras van en la tercera línea (readoutFoot) */
+.readoutBody .tooltipTeam,
+.readoutBody .tooltipFoot {
+  display: none;
+}
+.readoutFoot {
+  color: var(--color-text-subtle);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.readoutBody .tooltipValue {
+  font-size: var(--font-size-14);
+  line-height: var(--line-height-14);
+}
+/* En una línea no caben los nombres de las franjas: color y número (la leyenda dice cuál es cuál) */
+.readout .rowLabel {
+  display: none;
+}
+.readout .tooltipRow {
+  gap: 4px;
+}
+.readoutClose {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--color-text-subtle);
+  cursor: pointer;
+}
+
+/* ─── Leyenda ──────────────────────────────────────────── */
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  padding-left: 48px; /* alineada con el área de la gráfica */
+  font-size: var(--font-size-12);
+  color: var(--color-text-subtle);
+}
+
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.swatch {
+  flex-shrink: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+.swatchBorder {
+  box-shadow: inset 0 0 0 1px var(--color-border-default);
+}
+
+.legend .swatch {
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.06);
+}
+
+.swatchLine {
+  position: relative;
+  width: 16px;
+  height: 2px;
+  border-radius: 1px;
+}
+
+/* Línea con su punto, como en la leyenda de la compañera */
+.swatchLine::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: inherit;
+  transform: translate(-50%, -50%);
+}
+
+.swatchBand {
+  flex-shrink: 0;
+  width: 32px;
+  height: 16px;
+  background: var(--chart-accent);
+  opacity: 0.25;
+}
+
+/* ─── Cabeceras ────────────────────────────────────────── */
+
+.infoBtn {
+  display: inline-flex;
+  padding: 4px;
+  border: none;
+  background: none;
+  color: var(--color-text-subtle);
+  cursor: pointer;
+  border-radius: var(--radius-xs);
+}
+
+.infoBtn:hover {
+  color: var(--color-text-strong);
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 4px; /* tamaño: .cardExplore .sectionTitle (HydrationAnalytics.module.css) */
+}
+
+.infoTip {
+  position: relative;
+  display: inline-flex;
+}
+
+.infoBtn:focus-visible {
+  outline: 2px solid var(--color-border-strong);
+  outline-offset: 1px;
+}
+
+/* Mismo estilo que los tooltips del DS (fondo oscuro, texto blanco), pero con varias líneas */
+.infoTipBox {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 50%;
+  z-index: 10;
+  width: max-content;
+  max-width: 240px;
+  padding: 8px 12px;
+  border-radius: var(--radius-xs);
+  background: var(--color-text-strong);
+  color: var(--color-bg-surface);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-book);
+  line-height: var(--line-height-12);
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(-50%, -4px);
+  transition: opacity 0.12s ease-out, transform 0.12s ease-out, visibility 0.12s;
+  pointer-events: none;
+}
+
+.infoTip:hover .infoTipBox,
+.infoTip:focus-within .infoTipBox {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, 0);
+}
+
+.metricActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+
+/* Filas de "Score & metrics by user": abren al jugador en Users Analytics (12/11, solo proto) */
+.rowLink { cursor: pointer; }
+.rowLink:hover td { background: var(--color-bg-surface-raised); }

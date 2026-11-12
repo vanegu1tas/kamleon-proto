@@ -19,6 +19,10 @@ const paramProto  = urlParams.get('proto');
 const paramOrgId  = urlParams.get('org')    ? Number(urlParams.get('org'))    : null;
 const paramCenter = urlParams.get('center') ? Number(urlParams.get('center')) : null;
 const paramRole   = urlParams.get('role'); // owner | admin | editor | orgAdmin | centerAdmin | teamAdmin | endUser
+// ?capture=1: la página a su alto completo, sin scroll interno, para capturarla entera a Figma
+if (urlParams.get('capture') === '1') document.documentElement.dataset.capture = '';
+// ?capturewidth=1440: el proto a ese ancho, sea cual sea la ventana (para frames de Figma de ancho fijo)
+if (urlParams.get('capturewidth')) document.getElementById('root').style.width = `${Number(urlParams.get('capturewidth'))}px`;
 
 function PrototypeSelector() {
   const [active, setActive] = useState(null);

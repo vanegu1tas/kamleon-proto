@@ -11,6 +11,11 @@ import { IconMailFilled, IconPhoneFilled, IconLocationFilled } from '../../../de
 import EditTeamDrawer from './EditTeamDrawer';
 import styles from './TeamDetail.module.css';
 
+// Columna Name fija al deslizar en móvil (11/11): marca el contenedor cuando se ha deslizado para que
+// aparezca el degradado junto a la columna fija (mismo patrón que las tablas de analytics)
+const markScrolled = e => e.currentTarget.toggleAttribute('data-scrolled', e.currentTarget.scrollLeft > 1);
+
+
 // ─── Icons ──────────────────────────────────────────────
 
 function ArrowLeftIcon() {
@@ -209,7 +214,7 @@ function UsersContent({ team, center, onNavigate }) {
       </div>
 
       {/* Tabla */}
-      <div className={styles.tableWrap}>
+      <div className={styles.tableWrap} onScroll={markScrolled}>
         <div className={styles.tableHeader}>
           <div className={`${styles.colHead} ${styles.colName}`}>Name</div>
           <div className={`${styles.colHead} ${styles.colNum}`}>Status</div>

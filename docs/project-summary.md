@@ -4,9 +4,94 @@
 sesión, así que se mantiene corto y sin nada que caduque— y apunta aquí para el detalle. Si algo
 está en los dos sitios, manda este.
 
-Última revisión: 2026-10-16.
+Última revisión: 2026-10-26.
 
 **La scrapp tiene su propio summary → `docs/scrapp/summary.md`.**
+
+---
+
+## En curso al 26/10 — Analytics Hydration (Team Admin)
+
+Daniel cubre analytics de la webapp mientras su compañera está de vacaciones (la scrapp, en
+pausa). Todo el detalle → **`docs/features/analytics-team-admin.md`**.
+
+- **Proto (V2) construido**: `HydrationAnalytics.jsx` + `hydrationMock.js` + componente DS
+  `Calendar` (`mode="single"`). `?proto=v2&org=3&role=teamAdmin` → Analytics > Hydration.
+- **En exploración en Figma** (Explorations / Web App 3.0): cómo mostrar a los jugadores que
+  necesitan atención. 3 exploraciones vivas (Briefing, Focus, Focus por defecto) + una 4
+  descartada, todas con el segmented "Average | Last sample" en la barra y anotaciones
+  "Cambio vs original". **No se monta en el proto hasta decidir.**
+
+**🆕 Devices (29/10, requisito de última hora):** inventario de devices solo para Kamleon staff, montado en el
+proto (sidebar › Devices, New/Edit device en drawer; en Units solo el botón pasa a New unit). Decisiones y lo que falta
+confirmar → `docs/features/devices.md`. Sin commit.
+
+**Pendiente DS (29/10): componente "Dropdown with search"** (Figma DS + código, mismo nombre). Hoy está repetido a mano en
+On-Screen y Display/Sensor (Edit unit) y en "Link a unit" de New center (Figma 15002:105408), con el panel "‹ Create new …".
+Hacerlo cuando Devices esté cerrado.
+
+**🔴 URGENTE — lo primero al volver (28/10): Segmented control en Figma.** El código ya está
+(M 44 · S 36 nuevo · XS 29 = el S de antes; drawer en `xs`, barra de analytics en `s`). En Figma:
+1. Conectar el Desktop Bridge (DS, Web App 2.0, Explorations) y confirmar que S solo se usa en drawers.
+2. DS (`ozgwasF3ziQyznQS0z0dM1`): renombrar la variante S → XS **sin tocar medidas**; añadir S de 36px.
+3. Publish en el DS + Update en Web App 2.0 y Explorations.
+4. Exploraciones de analytics: el segmented de la barra de M → S.
+
+**Lo primero al retomar (12/11, manda sobre los anteriores):** **12/11: Daniel vuelve al Recommendation Engine** (proto `npm run recommendation`, `scrapp/recommendation.html`); analytics queda aparcado así:
+- Users Analytics (5–11/11): breakpoints hechos, versiones decididas (Rankings B, Ranking focus C, Team average toggle B; sin ranking en un día suelto; en el menú solo quedan Sample mode y Team scope), tabla "Detailed samples in selected period", y todo documentado en Figma (key screens, flujos, Scope bar, Graphics).
+- Team History (12/11): tabla "Score & metrics by user" (pregunta 21, cerrada) al final, después de las gráficas: columnas de Daily sin "Last samples", anchos de Daily, scroll con Name fija cuando no cabe; las filas abren al jugador en Users Analytics con el mismo periodo (solo proto). En Figma: en las 3 key screens y los 5 pasos de flujos; todo lo de debajo bajó 3600 px.
+- Filters (12/11, pregunta 22, montado en el proto, sin Figma): Daily y Team History con Samples + Hydration range; jugadores por la franja de lo que enseña cada bloque (1A); en Team History todo obedece al filtro (2A) y el score y las métricas incluyen ya las unknown. Sample distribution cuenta también las unknown, en su franja (B). El único aviso de filtros activos es el botón Filters marcado (Daily ya está en programación).
+- Pendiente de analytics: 1) conectar "View analytics" de Daily con `?player=`; 2) score de varios días como media de las medias diarias (pregunta 4, con el programador); 3) Turquoise/40 y Blue/50 ("Data Colors" de Figma) no están en los tokens de código; 4) recordarle el modal de "View" (compliance) y la lista por rango de móvil; 5) hook PreCompact (pendiente de su ok); 6) preguntas abiertas para business en la ficha. Detalle → `docs/features/analytics-team-admin.md`. **Todo sin commit.**
+
+**Lo primero al retomar (5/11, histórico):** **Recordarle a Daniel al empezar (6/11):** configurar un hook PreCompact que, antes de comprimir la conversación, recuerde volcar a la ficha lo decidido que aún no esté escrito (hablado el 5/11; Daniel dijo "aún no lo hagas"). mañana (6/11) **breakpoints (tablet y móvil) de Team History y Users Analytics** en el proto. Users Analytics quedó montado y enseñado a business el 5/11 (buenos comentarios): perfil del jugador, cards, ranking (Days hydrated = número de días hidratado; Engagement), cinco gráficas del jugador con la media del equipo, y en un día solo cards + tabla. Cambios de la reunión ya aplicados: "Engagement" y "Urine volume & color", número primero en la card del score, la media del equipo se puede apagar (versión "Team average toggle" B). Daniel grabó un vídeo comparando las dos formas del ranking (bloque con selector vs dos cards) para que business decida. Versiones abiertas en el menú: Rankings · Ranking focus · Full ranking · Team average toggle · Team line. Todo en la ficha `analytics-team-admin.md`, sección "Users Analytics"; preguntas abiertas en "Preguntas para business" (quedan 2/13, 3, 9, 18, 19; la 4 y la 11 son para el programador).
+Pendiente después de los breakpoints: 1) cerrar las versiones cuando business decida el ranking; 2) conectar "View analytics" de Daily con `?player=`; 3) score de varios días como media de las medias diarias (pregunta 4, con el programador); 4) documentar Team History y Users Analytics en Figma (Team History aplazado desde el 4/11); 5) los colores Turquoise/40 y Blue/50 ("Data Colors" del DS de Figma) no están en los tokens de código. Fotos del First Team (Villarreal) en `prototypes/StaffOrganizacionesV2/assets/players/`, solo para enseñar. **Todo sin commit.**
+
+**Cambio de plan (4/11, histórico):** el programador empieza Daily el viernes 6/11, así que la documentación de Team History no le
+bloquea. Ahora se trabaja el **tab 3 (Users Analytics)** para enseñárselo a business; la documentación de Team History
+(pasos 2–5 de abajo; Sample metrics ya está hecha) queda para el viernes o después, antes de que el programador acabe Daily.
+
+**Lo primero al retomar (3/11, manda sobre el del 1/11):** Daily está documentado en Figma (escritorio, tablet, móvil y
+flujos 1–4). Las decisiones de Team History se cerraron el 3/11 (fijadas en `exploreVersions.jsx`, `DECIDED`; lista en
+la ficha, "Pendientes de la exploración de History"). Mañana, Team History en web, en este orden: 1) pasada a la
+④ Sample metrics ("i", unidad del eje Y, hover); 2) key screen de escritorio en Figma; 3) sección "Reglas de las
+gráficas" con ejemplos por rango y anotaciones (agrupación día/semana/mes, barras 60% máx. 72px solo en barras, eje de
+fechas B, huecos punteados, unidad Y, card del hover); 4) flujos (cambio de rango preset/Custom, hover por tipo, rango
+vacío); 5) después, tablet y móvil (con la card Samples B en táctil). TabBar `fit` borrado. **Todo sin commit.**
+
+**Lo primero al retomar (1/11, histórico):** seguir con **History** gráfica por gráfica (`?proto=v2&org=3&role=teamAdmin&explore=1`,
+`HydrationHistory.jsx`). Hechas ①②③ (Hydration score, Sample distribution, Team engagement), KPIs compactos en Day y
+History, tabs "Day | Team History" a 160px, barra de equipo/fechas fija al hacer scroll, hover de barras con la columna
+resaltada y el resto al 40%. Lo siguiente: **valorar el degradado bajo la barra fija** y revisar la **④ Sample metrics**.
+Pendientes y decisiones abiertas → ficha, "Pendientes de la exploración de History"; lo que irá a Figma → "Para pasar a
+Figma al cerrar la exploración". DS tocado a propósito: **SegmentedControl** (el negro se desliza; Figma pendiente en
+`ds-pendientes-28-09.md`) y **ToolbarButton** a 36px de alto. **Todo sin commit.**
+
+**Lo primero al retomar (29/10, histórico):** 1) **enseñarle a Daniel las referencias** (Whoop, Oura, Apple Health,
+Catapult/Kitman/Polar, Linear; links en la ficha, "Referencias de gráficas para afinar History"). 2) **Afinar
+estilos de las gráficas de History para que queden muy neutros y nada "hechos con IA"** (Daniel, 28/10).
+Pendiente también: huecos de días sin muestras → probar línea discontinua clara en vez de cortar.
+**Afinar las gráficas de History** (tab History del proto, `explore=1`,
+`HydrationHistory.jsx`). Están montadas con datos inventados pero **sin el estilo de la compañera**:
+pasarlas a su estilo (Figma 402:35332 USG · 402:35479 Electrolytes · 402:35626 Color & Volume), gráfica por
+gráfica, con tabla de diferencias y Daniel decide. Contexto, decisiones y preguntas → ficha
+`docs/features/analytics-team-admin.md` (secciones "History: gráficas pedidas" y "Preguntas para business").
+Opción A (botón → subpágina) en Figma, sección 402:25776, para comparar con los tabs.
+
+**Hecho el 28/10** (detalle en la ficha de analytics): Segmented XS 29 / S 36 / M 44 en código · tabs
+Day | History con TabBar `fit` · opción A (botón → subpágina) en Figma 402:25776 · lista viva de
+"Preguntas para business" (11) · lectura de la sección de History de la compañera (402:35197, leyenda de
+post-its) · History montado en el proto con 4 gráficas + KPIs.
+
+**Siguen abiertos (desde el 27/10):**
+1. La revisión de las exploraciones (Briefing vs Focus) **todavía no ha sido** (28/10): preguntar después.
+2. ~~OK al tamaño nuevo del Segmented~~ aprobado el 28/10; falta Figma (urgente, arriba).
+3. Recordarle: modal de "View" (compliance) y lista por rango de mobile.
+4. Siguen los temas uno a uno: KPIs (team score, sample distribution), filtro de muestras,
+   tabla, responsive, beeswarm con 90 jugadores.
+5. **Sin commit**: todo lo de analytics (pantalla, mock, Calendar, ficha, cambios en
+   `StaffOrganizacionesV2.jsx`, **History** `HydrationHistory.jsx/.module.css`), DS: **SegmentedControl**
+   (XS/S/M) y **TabBar** (`fit`), `EditUserDrawer.jsx` (`size="xs"`), `docs/scrapp/summary.md` y
+   `.impeccable/config.json`. Commit solo cuando Daniel lo pida.
 
 ---
 

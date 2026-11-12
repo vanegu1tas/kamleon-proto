@@ -39,6 +39,7 @@
   --color-red-29: #8b0e0a;
 
   /* ─── Yellow ────────────────────────────────── */
+  --color-yellow-95: #fefce7; /* Urine color nivel 1 (DS, 11/11) */
   --color-yellow-90: #faf2d1;
   --color-yellow-82: #fceba6;
   --color-yellow-74: #ffe07a;
@@ -46,6 +47,7 @@
   --color-yellow-61: #fac63e;
   --color-yellow-57: #f5b22d;
   --color-yellow-47: #ed9005;
+  --color-yellow-41: #d07d00; /* borde del Urine color nivel 8 (DS, 11/11) */
 
   /* ─── Green ─────────────────────────────────── */
   --color-green-88: #d9edd6;

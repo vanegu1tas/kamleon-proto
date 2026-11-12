@@ -1070,6 +1070,29 @@
     background: var(--color-bg-surface);
   }
 
+  /* Degradado junto a la columna fija, solo cuando se ha deslizado (11/11, mismo patrón que las
+     tablas de analytics). data-scrolled lo pone el onScroll de .tableWrap */
+  .colName::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 100%;
+    width: 32px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s ease-out;
+    background: linear-gradient(to right, var(--color-bg-surface) 35%, transparent);
+  }
+
+  .tableHeader .colName::after {
+    background: linear-gradient(to right, var(--color-bg-page) 35%, transparent);
+  }
+
+  .tableWrap[data-scrolled] .colName::after {
+    opacity: 1;
+  }
+
   /* La barra de búsqueda era ancho fijo (223px) — sumada a Filters + Bulk
      actions (ícono) se pasaba 17.7px del borde real de la tarjeta. La dejamos
      flexible para que se achique lo justo y todo entre en una sola fila. */

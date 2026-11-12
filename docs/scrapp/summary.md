@@ -12,13 +12,12 @@
 0. **Wizard (set up)** — en pausa desde el 26/10: producción hará hot fixes y Daniel pasa a analytics de la
    webapp (cubre a su compañera de vacaciones). Wizard actual emulado entero en `scrapp/screens/wizard/` (Figma
    *Screen App* + Unit ID desde la foto del brief); pains del brief *Wizard v2* anotados, **nada de mejoras
-   implementado**. Ficha y dudas abiertas → `docs/scrapp/wizard.md`. Con commit, sin push.
+   implementado**. Ficha y dudas abiertas → `docs/scrapp/wizard.md`. Publicado (fdad2ce).
 1. **Fast Track**: exploraciones vivas → **07 "Avatars círculo (feedback Jordi)"** (`release/`) y
    **08 "Avatars cards"** (`ficha/`). Todo lo del 22–25/10 (logos, Celda con parche en la 07, Placa
    en la 08, fotos del Villarreal en Neutro, mandala del Tracking) → `docs/scrapp/fast-track.md`.
-2. **Con commit, sin push** (26/10): logos 07/08, Placa, Celda/Parche de la 07, nombres en el hub, dorsal
-   blanco por defecto en la 08 y las 31 fotos del Villarreal. Hasta 5c60b9b está con push.
-   Hacer push solo cuando Daniel lo pida.
+2. **Publicado** (26/10, 3843de4): logos 07/08, Placa, Celda/Parche de la 07, nombres en el hub, dorsal
+   blanco por defecto en la 08 y las 31 fotos del Villarreal. Hacer push solo cuando Daniel lo pida.
 3. Pendientes sueltos (sin pedir aún): ver en pantalla la Placa sobre fotos de fondo blanco; volver
    `TRACKING_DURATION` de la 08 a 3000; logo de Aston Villa en la 08; el anillo de Ready sigue
    turquesa; elegir esquina del parche en la 07.

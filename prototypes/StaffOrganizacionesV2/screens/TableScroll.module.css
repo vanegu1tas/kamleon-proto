@@ -1,0 +1,41 @@
+/* Scroll horizontal de tabla con la primera columna fija (11/11) */
+.scroll {
+  overflow-x: auto;
+}
+
+/* Primera columna fija: con fondo propio para que el resto pase por debajo */
+.scroll :is(th, td):first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+}
+
+.scroll td:first-child {
+  background: var(--color-bg-surface);
+}
+
+/* Degradado pegado al borde derecho de la columna fija, solo cuando se ha deslizado.
+   Mismo degradado que la pista del TabBar del DS (superficie al 35% → transparente), sin flecha */
+.scroll :is(th, td):first-child::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 100%;
+  width: 32px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease-out;
+}
+
+.scroll td:first-child::after {
+  background: linear-gradient(to right, var(--color-bg-surface) 35%, transparent);
+}
+
+.scroll th:first-child::after {
+  background: linear-gradient(to right, var(--color-bg-surface-raised) 35%, transparent);
+}
+
+.scroll.scrolled :is(th, td):first-child::after {
+  opacity: 1;
+}

@@ -650,28 +650,28 @@
   color: var(--color-turquoise-51);
 }
 
-/* ─── Tablet drawer (≤768px) ─────────────────────── */
+/* ─── Modo drawer (tablet) ───────────────────────── */
+/* Se activa al pasar `drawerOpen` (6/11): el ancho en que el sidebar pasa a drawer lo decide la
+   pantalla que lo usa (V1 a 768, V2 a 1032), no el componente. Antes era un @media de 768. */
 
-@media (max-width: 768px) {
-  .sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100%;
-    z-index: 200;
-    border-radius: 0 20px 20px 0;
-    transform: translateX(calc(-100% - 32px));
-    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
-  }
+.drawerMode {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  z-index: 200;
+  border-radius: 0 20px 20px 0;
+  transform: translateX(calc(-100% - 32px));
+  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
-  .expanded,
-  .collapsed {
-    width: 256px;
-  }
+.drawerMode.expanded,
+.drawerMode.collapsed {
+  width: 256px;
+}
 
-  .drawerVisible {
-    transform: translateX(0);
-  }
+.drawerMode.drawerVisible {
+  transform: translateX(0);
 }
 
 .sectionLabelHidden {

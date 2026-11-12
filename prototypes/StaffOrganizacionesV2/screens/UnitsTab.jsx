@@ -14,7 +14,7 @@ import { getAssignedCenters } from '../rolePersonas';
 import EditUnitDrawer from './EditUnitDrawer';
 import styles from './UnitsTab.module.css';
 
-const PAGE_SIZE = 15;
+const PAGE_SIZE = 10; // Figma 12533:25374: "Showing 1-10 of 14 units"
 
 // Devices y Sensor History quedan para más adelante — por ahora solo Details.
 const DETAIL_TABS = [
@@ -66,7 +66,6 @@ export default function UnitsTab({ role, user, org: orgProp, embedded = false })
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleteToast, setDeleteToast] = useState(null);
   const [saveToast, setSaveToast]     = useState(null);
-  const [newMenuOpen, setNewMenuOpen] = useState(false);
   // units.delete: exclusivo de Owner/Admin — ni Kamleon Editor lo tiene (docs/permissions.md).
   const canDeleteUnit = role === 'owner' || role === 'admin';
   // units.create: exclusivo de Editor (+ Owner/Admin bypass) — mismo criterio que OrgDetailV2.
@@ -78,7 +77,6 @@ export default function UnitsTab({ role, user, org: orgProp, embedded = false })
   const filterRef = useRef(null);
   const orgFilterRef = useRef(null);
   const centerFilterRef = useRef(null);
-  const newMenuRef = useRef(null);
   const menuRefs = useRef({});
 
   useEffect(() => {
@@ -117,15 +115,6 @@ export default function UnitsTab({ role, user, org: orgProp, embedded = false })
     document.addEventListener('mousedown', handleClick);
     return () => document.removeEventListener('mousedown', handleClick);
   }, [centerFilterOpen]);
-
-  useEffect(() => {
-    if (!newMenuOpen) return;
-    function handleClick(e) {
-      if (newMenuRef.current && !newMenuRef.current.contains(e.target)) setNewMenuOpen(false);
-    }
-    document.addEventListener('mousedown', handleClick);
-    return () => document.removeEventListener('mousedown', handleClick);
-  }, [newMenuOpen]);
 
   const allRows = useMemo(() => {
     const centersInScope = [];
@@ -309,31 +298,47 @@ export default function UnitsTab({ role, user, org: orgProp, embedded = false })
 
       </div>
       ) : (
+      <>
+      {/* Figma 12533:25374: en la página, título y KPIs van sobre el fondo y la tarjeta solo
+          lleva filtros + tabla + paginación. Embebido (tab Units de una org) sigue igual. */}
+      {!embedded && (
+        <>
+          <div className={styles.pageHeading}>
+            <h1 className={styles.pageHeadingTitle}>Units</h1>
+            {/* Los devices se crean desde Devices (29/10): aquí solo units */}
+            {canCreateUnit && (
+              <Button variant="primary" leftIcon={<IconPlus size={16} />} onClick={() => {}}>
+                New unit
+              </Button>
+            )}
+          </div>
+          <div className={styles.kpiRow}>
+            <div className={styles.kpiCard}>
+              <span className={styles.statValue}>{totalUnits}</span>
+              <span className={styles.statLabel}>Total units</span>
+            </div>
+            <div className={styles.kpiCard}>
+              <span className={styles.statValue}>{activeUnits}</span>
+              <span className={styles.statLabel}>Active</span>
+            </div>
+            <div className={styles.kpiCard}>
+              <span className={styles.statValue}>{disabledUnits}</span>
+              <span className={styles.statLabel}>Disabled</span>
+            </div>
+          </div>
+        </>
+      )}
       <div className={embedded ? styles.embeddedCard : styles.card}>
 
-        <div className={styles.cardTop}>
+        <div className={embedded ? styles.cardTop : styles.cardToolbar}>
+          {embedded && (
+          <>
           <div className={styles.titleRow}>
             <h1 className={styles.pageTitle}>Units</h1>
             {canCreateUnit && (
-              <div className={styles.newMenuAnchor} ref={newMenuRef}>
-                <Button
-                  variant="primary"
-                  leftIcon={<IconPlus size={16} />}
-                  onClick={() => setNewMenuOpen(v => !v)}
-                >
-                  New
-                </Button>
-                {newMenuOpen && (
-                  <div className={styles.newMenu}>
-                    <ContextMenu
-                      items={[
-                        { label: 'New unit',   icon: <IconPlus size={16} />, onClick: () => setNewMenuOpen(false) },
-                        { label: 'New device', icon: <IconPlus size={16} />, onClick: () => setNewMenuOpen(false) },
-                      ]}
-                    />
-                  </div>
-                )}
-              </div>
+              <Button variant="primary" leftIcon={<IconPlus size={16} />} onClick={() => {}}>
+                New unit
+              </Button>
             )}
           </div>
           <p className={styles.pageDescription}>
@@ -358,6 +363,8 @@ export default function UnitsTab({ role, user, org: orgProp, embedded = false })
               <span className={styles.statLabel}>Disabled</span>
             </div>
           </div>
+          </>
+          )}
 
         <div className={styles.toolbar}>
           <SearchBar
@@ -369,11 +376,11 @@ export default function UnitsTab({ role, user, org: orgProp, embedded = false })
           />
           {canFilterByOrg && orgOptions.length > 1 && (
             <div className={styles.filterWrap} ref={orgFilterRef}>
-              <ToolbarButton selected={filters.organization.size > 0} onClick={() => setOrgFilterOpen(v => !v)}>
-                Organization
+              <button type="button" className={`${styles.selectTrigger} ${filters.organization.size > 0 ? styles.selectTriggerActive : ''}`} onClick={() => setOrgFilterOpen(v => !v)}>
+                <span className={styles.selectTriggerLabel}>Organization</span>
                 {filters.organization.size > 0 && <span className={styles.filterBadge}>{filters.organization.size}</span>}
                 <span className={styles.dropdownChevron}><IconChevronDown size={16} /></span>
-              </ToolbarButton>
+              </button>
               {orgFilterOpen && (
                 <div className={styles.filterDropdown}>
                   <div className={styles.filterSection}>
@@ -398,11 +405,11 @@ export default function UnitsTab({ role, user, org: orgProp, embedded = false })
           )}
           {canFilterByCenter && centerOptions.length > 1 && (
             <div className={styles.filterWrap} ref={centerFilterRef}>
-              <ToolbarButton selected={filters.center.size > 0} onClick={() => setCenterFilterOpen(v => !v)}>
-                Centers
+              <button type="button" className={`${styles.selectTrigger} ${filters.center.size > 0 ? styles.selectTriggerActive : ''}`} onClick={() => setCenterFilterOpen(v => !v)}>
+                <span className={styles.selectTriggerLabel}>Centers</span>
                 {filters.center.size > 0 && <span className={styles.filterBadge}>{filters.center.size}</span>}
                 <span className={styles.dropdownChevron}><IconChevronDown size={16} /></span>
-              </ToolbarButton>
+              </button>
               {centerFilterOpen && (
                 <div className={styles.filterDropdown}>
                   <div className={styles.filterSection}>
@@ -604,7 +611,7 @@ export default function UnitsTab({ role, user, org: orgProp, embedded = false })
 
         <div className={styles.pagination}>
           <span className={styles.paginationInfo}>
-            Showing <strong>{filtered.length === 0 ? 0 : (safePage - 1) * PAGE_SIZE + 1}–{Math.min(safePage * PAGE_SIZE, filtered.length)}</strong> of <strong>{filtered.length}</strong>
+            Showing <strong>{filtered.length === 0 ? 0 : (safePage - 1) * PAGE_SIZE + 1}–{Math.min(safePage * PAGE_SIZE, filtered.length)}</strong> of <strong>{filtered.length}</strong> units
           </span>
           <div className={styles.paginationBtns}>
             <button className={styles.paginationBtn} onClick={() => setPage(p => Math.max(1, p - 1))} disabled={safePage === 1}>Previous</button>
@@ -613,6 +620,7 @@ export default function UnitsTab({ role, user, org: orgProp, embedded = false })
         </div>
 
       </div>
+      </>
       )}
 
       {editUnitTarget && (

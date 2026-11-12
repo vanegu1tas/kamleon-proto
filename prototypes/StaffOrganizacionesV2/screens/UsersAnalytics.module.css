@@ -1,0 +1,537 @@
+/* Users Analytics (exploración 4/11). Reutiliza las cards, la tabla y los tags de
+   HydrationAnalytics.module.css; aquí la cabecera de perfil y el bloque Team ranking. */
+
+.head {
+  padding: 32px 24px 8px;
+}
+
+/* ─── Cabecera de perfil (4/11) ──────────────────────── */
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.profileText {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.menuWrap {
+  position: relative;
+}
+
+/* El nombre es el desplegable de jugadores: el título de la página */
+.profileName {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  background: none;
+  border: none;
+  font-family: inherit; /* los botones no heredan la fuente */
+  font-size: var(--font-size-24);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-24);
+  color: var(--color-text-strong);
+  cursor: pointer;
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.counter {
+  min-width: 56px;
+  text-align: center;
+  font-size: var(--font-size-14);
+  color: var(--color-text-subtle);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Versión compacta, dentro de la barra fija junto al equipo */
+.compact {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+
+.compactName {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+  cursor: pointer;
+}
+
+
+/* El nombre se corta con "…" si no cabe (móvil, donde ocupa el sitio del equipo) */
+.compactText {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Lista de jugadores: el desplegable con buscador de la webapp (rosterDropdown de EditUnitDrawer) */
+.playerMenu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 20;
+  width: 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 4px 8px 8px;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-s);
+  box-shadow: var(--elevation-2);
+}
+
+.playerSearch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 8px 12px;
+  border-bottom: 1px solid var(--color-border-default);
+  color: var(--color-text-subtle);
+}
+
+.playerSearchInput {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-strong);
+}
+
+.playerSearchInput::placeholder {
+  color: var(--color-text-subtle);
+}
+
+.playerSearchInput:focus {
+  outline: none;
+}
+
+/* ~7 filas a la vista; el resto con scroll */
+.playerList {
+  max-height: 280px;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.playerOption {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px;
+  background: none;
+  border: none;
+  border-radius: var(--radius-xs);
+  font-family: inherit;
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-book);
+  color: var(--color-text-strong);
+  text-align: left;
+  cursor: pointer;
+}
+
+.playerOption:hover {
+  background: var(--color-bg-surface-subtle);
+}
+
+.playerNumber {
+  flex-shrink: 0;
+  text-align: right;
+  color: var(--color-text-subtle);
+  font-variant-numeric: tabular-nums;
+}
+
+.playerOptionName {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Siempre ocupa su sitio: los dorsales quedan en la misma columna, esté o no elegido */
+.playerCheck {
+  width: 16px;
+  flex-shrink: 0;
+  display: flex;
+  color: var(--color-text-accent);
+}
+
+.playerEmpty {
+  padding: 8px;
+  font-size: var(--font-size-14);
+  color: var(--color-text-subtle);
+}
+
+
+/* El DS solo tiene la flecha a la derecha: la de "anterior" es la misma girada */
+.flip svg {
+  transform: scaleX(-1);
+}
+
+.avatar {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--color-grey-91);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+}
+
+/* ─── Card Samples, versión B: color + número por franja ─── */
+
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: var(--font-size-14);
+  line-height: var(--line-height-14);
+  color: var(--color-text-strong);
+  font-variant-numeric: tabular-nums;
+}
+
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: default;
+  transition: opacity 0.12s ease-out;
+}
+
+/* ─── Secciones ──────────────────────────────────────── */
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 32px 24px 0;
+}
+
+.section:last-child {
+  padding-bottom: 24px;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+
+
+
+
+
+/* ─── Team ranking (forma compacta: vecinos) ─────────── */
+
+.rankHeadline {
+  margin: 0;
+  font-size: var(--font-size-16);
+  color: var(--color-text-subtle);
+}
+
+/* La posición manda (Daniel, 4/11): el número grande, "of 16" al lado en gris */
+.rankHeadline b {
+  margin-right: 4px;
+  font-size: var(--font-size-24);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-24);
+  color: var(--color-text-strong);
+}
+
+.rankList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rankRow {
+  font-family: inherit; /* los botones no heredan la fuente */
+  display: grid;
+  /* Puesto pegado al avatar (Daniel, 4/11: con 32 + 16 quedaban muy separados); dos cifras caben en 20 */
+  grid-template-columns: 20px 1fr auto;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 12px;
+  background: none;
+  border: none;
+  border-radius: var(--radius-xs);
+  font-size: var(--font-size-14);
+  color: var(--color-text-strong);
+  text-align: left;
+}
+
+.rankRowMe,
+.rankRowMe:hover {
+  background: var(--color-bg-page);
+  font-weight: var(--font-weight-medium);
+}
+
+.rankPos {
+  color: var(--color-text-subtle);
+  font-variant-numeric: tabular-nums;
+}
+
+.rankRowMe .rankPos {
+  color: var(--color-text-strong);
+}
+
+.rankName {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rankTrack {
+  height: 8px;
+  border-radius: 9999px;
+  background: var(--color-grey-91);
+  overflow: hidden;
+}
+
+/* El resto en gris claro; el jugador en el gris oscuro de las gráficas */
+.rankBar {
+  display: block;
+  height: 100%;
+  border-radius: 9999px;
+  background: var(--color-grey-65);
+}
+
+.rankRowMe .rankBar {
+  background: var(--color-grey-25);
+}
+
+.rankValue {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.rankMuted,
+.muted {
+  color: var(--color-text-subtle);
+}
+
+.rankGroup {
+  margin: 8px 0 0;
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--color-text-subtle);
+}
+
+.rankMore {
+  font-family: inherit; /* los botones no heredan la fuente */
+  align-self: flex-start;
+  padding: 0;
+  background: none;
+  border: none;
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+/* ─── Ranking focus, versión B (5/11): el jugador encima, los vecinos desvaneciéndose hacia fuera ─── */
+
+.rankFocus {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Vecinos: en gris y medio tapados por el jugador; el de arriba se desvanece hacia arriba y el de abajo
+   hacia abajo. Con máscara (no un blanco encima) para que valga sobre cualquier fondo. */
+.rankFocusAbove,
+.rankFocusBelow {
+  color: var(--color-text-subtle);
+}
+
+.rankFocusAbove {
+  margin-bottom: -10px;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 75%);
+  mask-image: linear-gradient(to bottom, transparent, #000 75%);
+}
+
+.rankFocusBelow {
+  margin-top: -10px;
+  -webkit-mask-image: linear-gradient(to top, transparent, #000 75%);
+  mask-image: linear-gradient(to top, transparent, #000 75%);
+}
+
+.rankFocusAbove .rankRow { padding-bottom: 14px; }
+.rankFocusBelow .rankRow { padding-top: 14px; }
+
+.rankFocusMe {
+  position: relative;
+  z-index: 1;
+}
+
+.rankFocusMe .rankRow {
+  padding: 12px 16px;
+  background: var(--color-bg-surface);
+  border-radius: var(--radius-s);
+  box-shadow: var(--elevation-2);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-medium);
+  grid-template-columns: 24px 1fr auto;
+}
+
+/* Ranking focus C (5/11): una sola fila, el puesto delante */
+.rankSolo {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  border-radius: var(--radius-s);
+  background: var(--color-bg-page);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+}
+
+/* ─── Rankings, versión B: dos cards lado a lado (4/11) ─── */
+
+.rankCards {
+  display: grid;
+  /* Ancho mínimo y a partir de ahí se apilan (Daniel, 11/11): la fila "#3 of 16 · jugador · 19 days" pide ~340-372;
+     antes se apilaban por breakpoint (≤768) y con el sidebar (1033-1250) quedaban apretadas */
+  grid-template-columns: repeat(auto-fit, minmax(min(380px, 100%), 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+.rankCard {
+  gap: 16px;
+}
+
+/* Sin título: como una segunda fila de KPIs. 24 entre ellas para que las columnas caigan bajo las de
+   arriba; de fila a fila 16 (Daniel, 5/11: con 24 se sentían muy separadas) */
+.rankAsKpis {
+  padding-top: 12px; /* + los 4 de gap de la sección = 16 */
+}
+
+.rankAsKpis .rankCards {
+  gap: 24px;
+}
+
+/* La "i" pegada a la etiqueta, no al otro lado de la card */
+.rankCard .titleRow {
+  justify-content: flex-start;
+}
+
+
+
+/* Móvil (Daniel, 11/11): el puesto un paso más pequeño, de 24 a 20 */
+@media (max-width: 480px) {
+  .rankHeadline b { font-size: var(--font-size-20); line-height: var(--line-height-20); }
+  /* Un día: sin la 3ª línea vacía de Samples, que con las cards apiladas solo dejaba aire (11/11) */
+  .dayEmptyLine { display: none; }
+  /* Margen de 16 a los lados, como los KPIs y el resto de la tarjeta en móvil (11/11: aquí seguía en 24 y
+     el ranking, el perfil y las secciones quedaban 16px más estrechos que los KPIs) */
+  .head, .section { padding-left: 16px; padding-right: 16px; }
+  /* Sin flechas en móvil (Daniel, 11/11): el jugador se cambia desde el nombre, y el nombre gana el sitio */
+  .stepper { display: none; }
+}
+
+/* ─── Tabla de muestras ──────────────────────────────── */
+
+.dateCell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dateCell .muted {
+  font-size: var(--font-size-12);
+}
+
+/* Alineación: Time a la izquierda y el resto centradas, con la regla de .table (HydrationAnalytics.module.css) */
+
+/* Columnas a partes iguales en desktop y tablet (Daniel, 11/11: con el ancho automático Electrolytes se
+   llevaba casi todo el hueco y las columnas quedaban disparejas). En móvil, ancho automático y scroll horizontal (Daniel, 11/11) */
+@media (min-width: 481px) {
+  .samplesTable { table-layout: fixed; }
+  .samplesTable th { width: calc(100% / 6); }
+}
+ 
+/* Foto del jugador dentro del avatar (First Team, 4/11) */
+.avatarPhoto {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* ─── Ranking completo en modal (versión B "Full ranking", 5/11) ─── */
+
+.rankModal {
+  gap: 16px;
+  font-family: var(--font-family-primary); /* va en un portal al body: fuera de la pantalla no hereda la fuente */
+  color: var(--color-text-strong);
+}
+
+.rankModalHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+/* Título y, debajo, el periodo */
+.rankModalTitle {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: var(--font-size-14);
+}
+
+.rankModalList {
+  max-height: min(480px, 60vh);
+  overflow-y: auto;
+}

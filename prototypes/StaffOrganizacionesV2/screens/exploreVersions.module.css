@@ -1,0 +1,19 @@
+/* Filas del selector de versiones, dentro del menú del avatar (mismo padding que sus secciones) */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 16px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  line-height: var(--line-height-14);
+  color: var(--color-text-strong);
+  white-space: nowrap;
+}

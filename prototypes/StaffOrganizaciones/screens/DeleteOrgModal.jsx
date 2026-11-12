@@ -5,9 +5,15 @@ import styles from './DeleteOrgModal.module.css';
 // un equipo) hay que escribir DELETE antes de poder confirmar — Figma 13073:137156.
 const DELETE_WORD = 'DELETE';
 
-export default function DeleteOrgModal({ org, onClose, onConfirm, label = 'organization', requireTyping = false, children }) {
+// Devices (Daniel, 30/10): misma mecánica, pero lo que se escribe es el ID del device y la
+// acción puede ser "Remove" (quitarlo de su unit) en vez de "Delete". `confirmWord`, `verb` y
+// `message` son opcionales: sin ellos el modal es el de siempre.
+export default function DeleteOrgModal({
+  org, onClose, onConfirm, label = 'organization', requireTyping = false,
+  confirmWord = DELETE_WORD, verb = 'Delete', title, message, children,
+}) {
   const [confirmText, setConfirmText] = useState('');
-  const canDelete = !requireTyping || confirmText.trim().toUpperCase() === DELETE_WORD;
+  const canDelete = !requireTyping || confirmText.trim().toUpperCase() === String(confirmWord).toUpperCase();
   const inputId = `delete-confirm-${label}`;
 
   return (
@@ -15,16 +21,16 @@ export default function DeleteOrgModal({ org, onClose, onConfirm, label = 'organ
       <div className={styles.modal} onMouseDown={e => e.stopPropagation()}>
 
         <div className={styles.content}>
-          <h2 className={styles.title}>Delete {label}</h2>
+          <h2 className={styles.title}>{title ?? `${verb} ${label}`}</h2>
           <p className={styles.body}>
-            Are you sure to delete <strong className={styles.orgName}>{org.name}</strong>?
+            {message ?? <>Are you sure to {verb.toLowerCase()} <strong className={styles.orgName}>{org.name}</strong>?</>}
           </p>
           {children}
         </div>
 
         {requireTyping && (
           <div className={styles.confirmField}>
-            <label className={styles.confirmLabel} htmlFor={inputId}>Type {DELETE_WORD} to confirm</label>
+            <label className={styles.confirmLabel} htmlFor={inputId}>Type {confirmWord} to confirm</label>
             <input
               id={inputId}
               className={styles.confirmInput}
@@ -44,7 +50,7 @@ export default function DeleteOrgModal({ org, onClose, onConfirm, label = 'organ
             disabled={!canDelete}
             onClick={() => { onConfirm?.(); onClose(); }}
           >
-            Delete
+            {verb}
           </button>
         </div>
 

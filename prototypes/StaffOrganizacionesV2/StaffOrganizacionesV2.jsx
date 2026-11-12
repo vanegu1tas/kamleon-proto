@@ -11,6 +11,7 @@ import {
   IconSbDrop,
   IconSbChart,
   IconSbUnit,
+  IconSbDevices,
   IconSbMyData,
 } from '../../design-system/icons';
 // V2-specific screens
@@ -18,6 +19,8 @@ import OrgDetailV2      from './screens/OrgDetailV2';
 import TeamAdminHome    from './screens/TeamAdminHome';
 import UnitsTab         from './screens/UnitsTab';
 import UsageTab         from './screens/UsageTab';
+import DevicesTab       from './screens/DevicesTab';
+import HydrationAnalytics from './screens/HydrationAnalytics';
 import AccountDetails   from './screens/AccountDetails';
 import OnboardingTour   from './components/OnboardingTour';
 import { hasTour }      from './components/tourSteps';
@@ -43,11 +46,18 @@ import ToolbarButton from '../../design-system/components/ToolbarButton/ToolbarB
 import ContextMenu from '../../design-system/components/ContextMenu/ContextMenu';
 import Toast from '../../design-system/components/Toast/Toast';
 import { ROLES, ROLE_ORDER, HIDDEN_NAV_ITEMS, getPendingInvites, getRolePersona, getRolePersonaScope, getAssignedCenters, getAssignedTeams, getEntryStack } from './rolePersonas';
+import VersionsMenu, { VERSIONS } from './screens/exploreVersions';
+const EXPLORE_VERSIONS = new URLSearchParams(window.location.search).get('explore') === '1';
+
 // Shared styles from V1 (OrgList is the same)
 import styles from '../StaffOrganizaciones/StaffOrganizaciones.module.css';
 
 // Sidebar rediseñado (Figma design system, node 2155:1987): "Center control" → "Control panel",
 // "Usage" se muda de Analytics a Management y se renombra "Unit usage".
+// Analytics > Hydration: Team Admin, Org Admin y Kamleon staff (10/11: staff elige el cliente con un selector de org)
+const STAFF_ROLES = new Set(['owner', 'admin', 'editor']);
+const HYDRATION_ROLES = new Set(['teamAdmin', 'centerAdmin', 'orgAdmin', ...STAFF_ROLES]);
+
 const NAV_SECTIONS = [
   {
     id: 'management',
@@ -55,6 +65,8 @@ const NAV_SECTIONS = [
     items: [
       { id: 'center', label: 'Control panel', icon: <IconSbCenter />, active: true  },
       { id: 'units',  label: 'Units',          icon: <IconSbUnit />,  active: false },
+      // Inventario de devices, solo Kamleon staff (29/10). Oculto al resto en HIDDEN_NAV_ITEMS.
+      { id: 'devices', label: 'Devices',       icon: <IconSbDevices />, active: false },
       { id: 'usage',  label: 'Unit usage',     icon: <IconSbChart />, active: false },
     ],
   },
@@ -136,10 +148,14 @@ export default function StaffOrganizacionesV2({ initialOrgId, initialCenterId, r
     setNavStack(getEntryStack(newRole));
     setShowAvatarMenu(false);
     setShowMyData(false);
-    if (isTablet) setDrawerOpen(false);
+    if (sidebarHidden) setDrawerOpen(false);
   }
 
   const [navStack, setNavStack] = useState(() => {
+    // Deep-link a Analytics > Hydration (?screen=hydration), para las sesiones de Impeccable live
+    if (new URLSearchParams(window.location.search).get('screen') === 'hydration' && HYDRATION_ROLES.has(role)) {
+      return [{ screen: 'hydration', key: 'hydration', params: {} }];
+    }
     // Deep-link directo a una org (?org=) — solo aplica a roles con entry 'org-list'.
     if (initialOrgId && ROLES[role]?.entry === 'org-list') {
       const org = ORGS.find(o => o.id === initialOrgId);
@@ -150,6 +166,10 @@ export default function StaffOrganizacionesV2({ initialOrgId, initialCenterId, r
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isTablet, setIsTablet] = useState(() => window.matchMedia('(max-width: 768px)').matches);
+  // Sidebar escondido (barra oscura + drawer) en todos los iPads en vertical, hasta el Pro de 13" (1032)
+  // (Daniel, 6/11). Va aparte de isTablet: el modo móvil de las pantallas (slides, isMobile) sigue en 768.
+  const SIDEBAR_HIDDEN = '(max-width: 1032px)';
+  const [sidebarHidden, setSidebarHidden] = useState(() => window.matchMedia(SIDEBAR_HIDDEN).matches);
   const [expandedOrgs, setExpandedOrgs] = useState(new Set());
   const [sortCol, setSortCol] = useState(null);
   const [sortDir, setSortDir] = useState('asc');
@@ -192,13 +212,13 @@ export default function StaffOrganizacionesV2({ initialOrgId, initialCenterId, r
   function navigate(screen, params = {}) {
     setSlideDirection('forward');
     setNavStack(prev => [...prev, { screen, params, key: Date.now() }]);
-    if (isTablet) setDrawerOpen(false);
+    if (sidebarHidden) setDrawerOpen(false);
   }
 
   function goBack() {
     setSlideDirection('back');
     setNavStack(prev => prev.length > 1 ? prev.slice(0, -1) : prev);
-    if (isTablet) setDrawerOpen(false);
+    if (sidebarHidden) setDrawerOpen(false);
   }
 
   const SCREEN_LABELS = {
@@ -254,7 +274,10 @@ export default function StaffOrganizacionesV2({ initialOrgId, initialCenterId, r
     const mq = window.matchMedia('(max-width: 768px)');
     const handler = (e) => setIsTablet(e.matches);
     mq.addEventListener('change', handler);
-    return () => mq.removeEventListener('change', handler);
+    const mqSidebar = window.matchMedia(SIDEBAR_HIDDEN);
+    const sidebarHandler = (e) => { setSidebarHidden(e.matches); if (!e.matches) setDrawerOpen(false); };
+    mqSidebar.addEventListener('change', sidebarHandler);
+    return () => { mq.removeEventListener('change', handler); mqSidebar.removeEventListener('change', sidebarHandler); };
   }, []);
 
   useEffect(() => {
@@ -278,7 +301,7 @@ export default function StaffOrganizacionesV2({ initialOrgId, initialCenterId, r
   }, [showAvatarMenu]);
 
   function handleSidebarToggle() {
-    if (isTablet) {
+    if (sidebarHidden) {
       setDrawerOpen(false);
     } else {
       setSidebarCollapsed(c => !c);
@@ -335,12 +358,12 @@ export default function StaffOrganizacionesV2({ initialOrgId, initialCenterId, r
   }
 
   return (
-    <div className={styles.page}>
+    <div className={`${styles.page} ${styles.pageV2}`}>
       <div className={styles.sidebarWrap}>
         <Sidebar
           collapsed={sidebarCollapsed}
           onToggle={handleSidebarToggle}
-          drawerOpen={isTablet ? drawerOpen : undefined}
+          drawerOpen={sidebarHidden ? drawerOpen : undefined}
           user={{ ...user, scope: getRolePersonaScope(role), pendingInvites: pendingInvites.length }}
           roleOptions={ROLE_ORDER.map(key => ({
             key,
@@ -370,13 +393,11 @@ export default function StaffOrganizacionesV2({ initialOrgId, initialCenterId, r
                     // Team Admin no administra ningún centro — "Center control" no describe
                     // lo que ve acá (su lista de equipos), a diferencia de Center Admin.
                     label: item.id === 'center' && role === 'teamAdmin' ? 'Teams' : item.label,
-                    active: !showMyData && (item.id === 'units'
-                      ? currentScreen.screen === 'units'
-                      : item.id === 'usage'
-                        ? currentScreen.screen === 'usage'
-                        : item.id === 'center'
-                          ? currentScreen.screen !== 'units' && currentScreen.screen !== 'usage'
-                          : item.active),
+                    active: !showMyData && (item.id === 'units' || item.id === 'devices' || item.id === 'usage' || item.id === 'hydration'
+                      ? currentScreen.screen === item.id
+                      : item.id === 'center'
+                        ? !['units', 'devices', 'usage', 'hydration'].includes(currentScreen.screen)
+                        : item.active),
                     onClick: () => {
                       setShowAccount(false);
                       setShowMyData(false);
@@ -385,9 +406,16 @@ export default function StaffOrganizacionesV2({ initialOrgId, initialCenterId, r
                       } else if (item.id === 'units') {
                         setSlideDirection('forward');
                         setNavStack([{ screen: 'units', key: 'units', params: {} }]);
+                      } else if (item.id === 'devices') {
+                        setSlideDirection('forward');
+                        setNavStack([{ screen: 'devices', key: 'devices', params: {} }]);
                       } else if (item.id === 'usage') {
                         setSlideDirection('forward');
                         setNavStack([{ screen: 'usage', key: 'usage', params: {} }]);
+                      } else if (item.id === 'hydration' && HYDRATION_ROLES.has(role)) {
+                        // Por ahora solo está diseñada la vista de Team Admin
+                        setSlideDirection('forward');
+                        setNavStack([{ screen: 'hydration', key: 'hydration', params: {} }]);
                       } else {
                         item.onClick?.();
                       }
@@ -398,7 +426,7 @@ export default function StaffOrganizacionesV2({ initialOrgId, initialCenterId, r
         />
       </div>
 
-      {isTablet && drawerOpen && (
+      {sidebarHidden && drawerOpen && (
         <div
           className={styles.backdrop}
           onClick={() => setDrawerOpen(false)}
@@ -468,6 +496,13 @@ export default function StaffOrganizacionesV2({ initialOrgId, initialCenterId, r
                       <span className={styles.avatarMenuEmail}>{user.role}</span>
                     </div>
                   </div>
+
+                  {/* Versiones de las exploraciones (2/11) — herramienta del proto, solo con explore=1 */}
+                  {EXPLORE_VERSIONS && VERSIONS.length > 0 && <>
+                    <span className={styles.avatarMenuEyebrow}>Versions</span>
+                    <VersionsMenu />
+                    <div className={styles.avatarMenuDivider} />
+                  </>}
 
                   {/* Preview as — dev tool, no es parte de la app real: cambia de rol sin credenciales */}
                   <span className={styles.avatarMenuEyebrow}>Preview as</span>
@@ -627,8 +662,25 @@ export default function StaffOrganizacionesV2({ initialOrgId, initialCenterId, r
           <UnitsTab role={role} user={user} />
         )}
 
+        {currentScreen.screen === 'devices' && (
+          <DevicesTab role={role} />
+        )}
+
         {currentScreen.screen === 'usage' && (
           <UsageTab role={role} user={user} />
+        )}
+
+        {currentScreen.screen === 'hydration' && (
+          <HydrationAnalytics
+            assignedTeams={assignedTeams}
+            org={role === 'orgAdmin' ? { ...ORGS.find(o => o.id === user.orgId), hideName: true /* sin la org en la barra (Daniel, 11/11): fila de la org, solo staff */ }
+              // Center Admin: sus centros, con la misma lógica que Org Admin (&centers=1 para probar con uno solo).
+              // Sin la org en la barra, como Org Admin (Daniel, 11/11): pertenece a una sola y no la cambia; el centro va en el selector
+              : role === 'centerAdmin' ? { id: `ca-${user.orgId}`, name: ORGS.find(o => o.id === user.orgId)?.name ?? '', hideName: true, centers: assignedCenters.slice(0, Number(new URLSearchParams(window.location.search).get('centers')) || undefined) }
+              : null}
+            orgs={STAFF_ROLES.has(role) ? ORGS : null}
+            initialOrgId={initialOrgId}
+          />
         )}
 
         {currentScreen.screen === 'orgs' && (

@@ -18,15 +18,11 @@
 
 /* ─── Modos ──────────────────────────────────────── */
 
-/* Figma (Sidebar-v2, DS 2155:1987): el ítem activo es una píldora; el resto usa una esquina
-   de 6px, que solo se ve en el hover. */
+/* Figma (.Sidebar-Item2, DS 2154:925): Hover y Selected son píldora (40). Default tiene 6px
+   pero no tiene fondo, así que no se ve: la esquina visible siempre es la píldora. */
 .expanded {
   gap: 12px;
   padding: 8px 16px;
-  border-radius: 6px;
-}
-
-.expanded.selected {
   border-radius: var(--radius-l);
 }
 

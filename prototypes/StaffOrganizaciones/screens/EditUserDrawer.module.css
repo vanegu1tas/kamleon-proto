@@ -531,7 +531,6 @@
   justify-content: flex-end;
   gap: 12px;
   padding: 16px 24px;
-  border-top: 1px solid var(--color-border-default);
   flex-shrink: 0;
   margin-top: auto;
 }
@@ -581,4 +580,119 @@
   font-size: var(--font-size-14);
   font-weight: var(--font-weight-book);
   color: var(--color-text-subtle);
+}
+
+/* ─── Status por equipo (10/11) ─────────────────────── */
+.statusRow { flex-direction: column; align-items: stretch; gap: 8px; }
+.statusRowTop { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 36px; }
+
+.statusHint {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  line-height: var(--line-height-14);
+  color: var(--color-text-subtle);
+}
+.statusHint svg { flex-shrink: 0; margin-top: 1px; }
+
+/* Confirmación en el sitio, dentro de la fila de Status */
+.statusConfirm {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-s);
+}
+.statusConfirmTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+}
+.statusConfirmText, .statusConfirmList {
+  margin: 0;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  line-height: var(--line-height-14);
+  color: var(--color-text-subtle);
+}
+.statusConfirmList { padding-left: 20px; }
+.statusConfirmActions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px; }
+
+/* PIN y Visible on screen deshabilitados mientras está inactivo */
+.permissionRowDisabled .permissionLabelRow { color: var(--color-text-disabled); }
+
+/* Jersey y Position dentro de la tarjeta (Figma 15400:137589) */
+.permissionRow { min-height: 52px; box-sizing: border-box; padding-top: 8px; padding-bottom: 8px; }
+.cardInput { background: var(--color-bg-surface); }
+.input.jerseyInput { width: 72px; text-align: left; }
+.positionWrap { position: relative; display: inline-flex; }
+.input.positionSelect { width: 139px; appearance: none; padding-right: 36px; cursor: pointer; }
+.positionChevron { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); display: flex; pointer-events: none; color: var(--color-text-subtle); }
+.cardActions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.actionBtn:disabled { color: var(--color-text-disabled); cursor: not-allowed; opacity: 1; }
+
+/* Los tres segmented de la tarjeta, al ancho de Figma (149) con las opciones a partes iguales */
+.segWide { display: flex; flex-shrink: 0; }
+.segWide > div { width: 149px; box-sizing: border-box; }
+.segWide > div > button { flex: 1 1 0; justify-content: center; }
+
+/* Role(s): nombre de la org encima de cada tarjeta (Figma 15400:137587) */
+.membershipBlock { display: flex; flex-direction: column; gap: 16px; }
+.membershipOrg {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-16);
+  color: var(--color-text-strong);
+}
+
+/* Terms & consents y Delete account (solo staff) */
+.consents { display: flex; flex-direction: column; gap: 12px; }
+.consentRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  color: var(--color-text-strong);
+  cursor: pointer;
+}
+.deleteAccount {
+  align-self: flex-start;
+  margin-top: 16px;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-14);
+  color: var(--color-text-critic);
+}
+
+/* Avatar de la org junto a su nombre en Role(s): 32×32, mismo estilo que el orgAvatar del proto */
+.membershipOrg { display: flex; align-items: center; gap: 8px; }
+.membershipOrgAvatar {
+  width: 32px;
+  height: 32px;
+  box-sizing: border-box;
+  border-radius: 50%;
+  background: var(--color-bg-surface-subtle);
+  border: 1px solid var(--color-border-default);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
 }
