@@ -1,0 +1,174 @@
+/* Dirección C · Calma (base: Oura, hecha Kamleon). Tokens y fondo comunes a todas las pantallas de la C.
+   Ficha en docs/scrapp/look-and-feel.md. Diferencias con la A: grises un poco cálidos, superficies de vidrio mate
+   (sin blur: velo + canto + grano, barato en Qt), halo de agua que respira detrás con los puntos del mandala,
+   números finos (Book 400), botón en blanco cálido, movimiento más lento (0,6 s, suave al entrar y salir).
+   Tono (Daniel, 17/11): por defecto los grises van hacia el verde turquesa de Kamleon (--c-tone-*, desde
+   DirectionC); 'Cálido' es el original. */
+.screen {
+  --c-bg: var(--c-bg-override, var(--c-tone-bg, #121110));
+  --c-surface: rgba(255, 255, 255, 0.06);        /* velo del vidrio */
+  --c-surface-active: rgba(255, 255, 255, 0.12);
+  --c-border: rgba(255, 255, 255, 0.10);
+  --c-edge: rgba(255, 255, 255, 0.16);           /* canto de arriba del vidrio */
+  --c-text-3: var(--c-tone-text-3, #6B6660);
+  --c-text-2: var(--c-tone-text-2, #A39E97);
+  --c-text: var(--c-tone-text, #F5F2EE);
+  --c-primary: var(--c-tone-primary, #F2EEE8);  /* blanco cálido (o verdoso con el tono Verde Kamleon) */
+  --c-hydrated: #2FD5CB;
+  --c-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --c-dur: 0.6s;
+  /* vidrio mate (tarjetas, teclas, casillas): fondo y canto, para usarlo en cualquier pieza */
+  --c-glass:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.05 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+  --c-glass-edge: inset 0 1px 0 var(--c-edge), inset 0 0 0 1px var(--c-border);
+  /* aliases para el código heredado de la A */
+  --c-light: transparent;
+
+  position: relative;
+  width: 1280px;
+  height: 800px;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--c-bg);
+  color: var(--c-text);
+  font-family: var(--font-family-primary);
+  box-sizing: border-box;
+}
+
+/* Halo de agua: un óvalo grande y difuso que respira (9 s). Su color llega de fuera (--c-halo): gris cálido o el
+   color del club, según la opción. En Qt: una imagen del degradado que escala y cambia de opacidad. */
+.screen::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  width: 1100px;
+  height: 820px;
+  margin: -410px 0 0 -550px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, var(--c-halo, #3A332C) 0%, transparent 100%);
+  opacity: 0.75;
+  z-index: -2;
+  animation: breathe 9s ease-in-out infinite alternate;
+  will-change: transform, opacity;   /* capa propia: respirar no repinta la pantalla (Daniel, 17/11: iba a tirones) */
+}
+/* Puntos del mandala, muy tenues, solo donde está el halo */
+.screen::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.07) 1.2px, transparent 1.8px);
+  background-size: 22px 22px;
+  -webkit-mask-image: radial-gradient(ellipse 45% 55% at 50% 46%, #000 0%, transparent 100%);
+  mask-image: radial-gradient(ellipse 45% 55% at 50% 46%, #000 0%, transparent 100%);
+  z-index: -1;
+  pointer-events: none;
+}
+@keyframes breathe {
+  from { transform: scale(0.92); opacity: 0.6; }
+  to   { transform: scale(1.06); opacity: 0.85; }
+}
+
+/* Cabecera: escudo del cliente arriba a la izquierda, KAMLEON® pequeño a la derecha */
+.header {
+  position: absolute;
+  top: 40px;
+  left: 56px;
+  right: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 2;
+}
+/* izquierda de la cabecera: botón de volver (si lo hay) + escudo */
+.headerLeft { display: flex; align-items: center; gap: 20px; }
+.headerRight { display: flex; align-items: center; gap: 32px; }
+.backBtn {
+  width: 56px;
+  height: 56px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--c-glass);
+  box-shadow: var(--c-glass-edge);
+  color: var(--c-text);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: transform 0.12s ease-out;
+}
+.backBtn svg { margin-left: -3px; }
+.backBtn:active { transform: scale(0.94); }
+.clubLogo { height: 64px; width: auto; display: block; }
+
+/* Vidrio mate: velo translúcido, canto claro arriba, borde finísimo y grano. Sin backdrop-filter. */
+.card {
+  border-radius: 24px;
+  background: var(--c-glass);
+  box-shadow: var(--c-glass-edge);
+}
+/* "Relleno" en la C = vidrio más opaco (más velo, sin canto) */
+.cardsFill .card {
+  background: rgba(255, 255, 255, 0.09);
+  box-shadow: none;
+}
+
+/* Textos comunes de la C: titulares en Book (fino), más aire */
+.title {
+  margin: 0;
+  font-size: 52px;
+  font-weight: 400;
+  letter-spacing: -0.025em;
+  line-height: 1.08;
+}
+.body { margin: 0; font-size: 24px; font-weight: 400; color: var(--c-text-2); }
+/* etiqueta pequeña en mayúsculas */
+.label { font-size: 14px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--c-text-2); }
+
+/* Botón principal: píldora blanco cálido */
+.primary {
+  height: 68px;
+  padding: 0 44px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--c-primary);
+  color: var(--c-bg);
+  font: inherit;
+  font-size: 22px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background var(--c-dur) var(--c-ease), color var(--c-dur) var(--c-ease), transform var(--c-dur) var(--c-ease);
+}
+.primary:active:not(:disabled) { transform: scale(0.97); transition-duration: 0.15s; }
+.primary:disabled { background: var(--c-surface); color: var(--c-text-3); cursor: default; }
+
+/* Secundario: texto sin subrayar, en gris cálido */
+.link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--c-text-2);
+  font: inherit;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* Chip: vidrio; el elegido en blanco cálido */
+.chip {
+  height: 48px;
+  padding: 0 22px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--c-surface);
+  box-shadow: inset 0 1px 0 var(--c-edge);
+  color: var(--c-text-2);
+  font: inherit;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background var(--c-dur) var(--c-ease), color var(--c-dur) var(--c-ease);
+}
+.chipOn { background: var(--c-primary); color: var(--c-bg); font-weight: 500; box-shadow: none; }
+
+/* Entrada de la C: fundido + 16 px, más lenta */
+@keyframes cIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+.enter { animation: cIn var(--c-dur) var(--c-ease) both; }

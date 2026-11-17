@@ -1,0 +1,91 @@
+.svg { position: absolute; inset: 0; }
+
+.zone { transition: opacity 0.8s var(--c-ease); }
+.dotShadow { filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.35)); }
+
+.optimal {
+  font-family: var(--font-family-primary);
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 3px;
+  fill: #fff;
+}
+.fino .optimal { font-size: 14px; letter-spacing: 2.5px; fill: var(--c-text-2); }
+
+/* número del gauge actual (como hoy) */
+.numActual { font-family: var(--font-family-primary); font-size: 220px; font-weight: 500; }
+.pctActual { font-family: var(--font-family-primary); font-size: 104px; font-weight: 500; }
+
+/* número del gauge fino: blanco plano, interletrado cerrado (−5 %), % blanco a la altura del número */
+.numFino {
+  font-family: var(--font-family-primary);
+  font-size: 210px;
+  font-weight: 500;
+  letter-spacing: -0.05em;
+  fill: #fff;
+}
+.pctFino { font-size: 96px; letter-spacing: 0; fill: #fff; }   /* blanco y apoyado en la línea del número, como en el actual (Daniel, 17/11) */
+
+.statusActual { font-family: var(--font-family-primary); font-size: 68px; font-weight: 500; }
+.statusFino   { font-family: var(--font-family-primary); font-size: 48px; font-weight: 500; letter-spacing: -0.03em; }
+
+.message { font-family: var(--font-family-primary); font-size: 30px; font-weight: 400; fill: #fff; }
+.fino .message { font-size: 26px; fill: var(--c-text-2); }
+
+.rule { stroke: var(--c-border); stroke-width: 1; }
+.cmpLabel { font-family: var(--font-family-primary); font-size: 20px; fill: var(--c-text-2); }
+.cmpValue { font-family: var(--font-family-primary); font-size: 24px; font-weight: 500; fill: #fff; }
+
+.countdown { font-family: var(--font-family-primary); font-size: 22px; fill: #fff; }
+
+/* entradas de la A: fundido + 10 px, 0,3 s con frenada */
+.fade {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity var(--c-dur) var(--c-ease), transform var(--c-dur) var(--c-ease);
+}
+.fade.in { opacity: 1; transform: none; }
+
+@keyframes breathe {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.15); }
+}
+.breathe {
+  transform-origin: 640px 388px;
+  animation: breathe 3.8s ease-in-out infinite;
+}
+.glow { transition: opacity 0.8s var(--c-ease); }
+
+/* Experimento (Daniel, 17/11): los MISMOS puntos grises del fondo se encienden en el color del rango cuando sale
+   el resultado. .dotsLit usa la misma rejilla de 22 px que el fondo (C.module.css, .screen::after); el encendido va
+   del número hacia fuera (círculo que crece) hasta el borde interior del gauge, y entra con el estado. */
+@property --lit {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+.dotsArea {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+.dotsLit {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, var(--zone) 1.2px, transparent 1.8px);
+  background-size: 22px 22px;
+  opacity: 0.75;
+  -webkit-mask-image: radial-gradient(circle var(--lit) at 640px 388px, #000 75%, transparent 100%);
+  mask-image: radial-gradient(circle var(--lit) at 640px 388px, #000 75%, transparent 100%);
+  transition: --lit 1.1s var(--c-ease);
+}
+.dotsOn { --lit: 262px; }   /* solo dentro del gauge (radio 272), donde estaba el glow (Daniel, 17/11) */
+
+/* Variante "todo el fondo" (la anterior, Daniel 17/11): el encendido llega a todos los puntos del fondo, con la
+   misma máscara que los grises (C.module.css, .screen::after) */
+.dotsAll {
+  -webkit-mask-image: radial-gradient(ellipse 45% 55% at 50% 46%, #000 0%, transparent 100%);
+  mask-image: radial-gradient(ellipse 45% 55% at 50% 46%, #000 0%, transparent 100%);
+}
+.dotsAll .dotsOn { --lit: 900px; }

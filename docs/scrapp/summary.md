@@ -3,11 +3,15 @@
 **Estado de la scrapp** (la pantalla de 1280×800 sobre el urinal). El de la webapp está en
 `docs/project-summary.md`. Si algo de la scrapp aparece en los dos, manda este.
 
-Última revisión: 2026-10-26 (wizard en pausa; Daniel pasa a analytics de la webapp).
+Última revisión: 2026-11-12 (arranca Look & feel; antes, 26/10: wizard en pausa).
 
 ---
 
 ## Lo primero al retomar
+
+**12/11: nueva tarea, Look & feel de la scrapp** (con el Recommendation Engine neutro). Card en Tareas → Look & feel
+(vacía todavía); ficha → `docs/scrapp/look-and-feel.md`; referencias en `scrapp/explorations/look-and-feel/refs/`.
+Siguiente: lámina de la dirección A (A1: interfaz monocroma, turquesa solo para Hydrated).
 
 0. **Wizard (set up)** — en pausa desde el 26/10: producción hará hot fixes y Daniel pasa a analytics de la
    webapp (cubre a su compañera de vacaciones). Wizard actual emulado entero en `scrapp/screens/wizard/` (Figma

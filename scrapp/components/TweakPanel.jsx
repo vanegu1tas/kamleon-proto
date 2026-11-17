@@ -8,7 +8,7 @@ import styles from './TweakPanel.module.css';
  *
  * Mecánicas de DialKit, aspecto neo-skeuomórfico con referencias de Teenage Engineering:
  *   · el panel sale de una tecla con engranaje arriba a la derecha y vuelve a ella (Morph)
- *   · cada grupo es una carpeta plegable; plegada sigue mostrando el valor elegido
+ *   · cada grupo es una carpeta plegable; plegada sigue mostrando el valor elegido (defaultClosed: empieza plegada)
  *   · se construye solo desde la configuración: con 2 opciones, interruptor segmentado;
  *     con 3 o más, teclas en rejilla
  *   · control: 'keycaps' → teclas OP-1 (KeyButton) sueltas, sin pozo; cada opción puede llevar
@@ -26,7 +26,9 @@ import styles from './TweakPanel.module.css';
 export default function TweakPanel({ title, groups }) {
   const [state, setState] = useState(() => load(title));
   const update = next => { setState(next); save(title, next); };
-  const toggleFolder = id => update({ ...state, closed: { ...state.closed, [id]: !state.closed[id] } });
+  // una carpeta con defaultClosed empieza plegada hasta que se abre a mano (17/11, opciones comunes de Look & feel)
+  const isClosed = g => state.closed[g.id] ?? !!g.defaultClosed;
+  const toggleFolder = g => update({ ...state, closed: { ...state.closed, [g.id]: !isClosed(g) } });
 
   // arriba a la derecha, a la altura del ☰: la tecla del engranaje se convierte en el panel (Morph)
   return (
@@ -42,11 +44,11 @@ export default function TweakPanel({ title, groups }) {
         contentClassName={styles.panel}
       >
       {groups.map(g => {
-        const open = !state.closed[g.id];
+        const open = !isClosed(g);
         const current = g.options.find(o => o.value === g.value);
         return (
           <section key={g.id} className={styles.folder}>
-            <button className={styles.folderHead} onClick={() => toggleFolder(g.id)} aria-expanded={open}>
+            <button className={styles.folderHead} onClick={() => toggleFolder(g)} aria-expanded={open}>
               <span className={`${styles.caret} ${open ? styles.caretOpen : ''}`} aria-hidden="true">▸</span>
               <span className={styles.folderLabel}>{g.label}</span>
               <span className={styles.folderValue}>{current?.label}</span>

@@ -49,7 +49,7 @@ const FAILURES = {
 const LANGUAGES = ['English', 'Español', 'Català', 'Deutsch', 'Português', '汉语'];
 
 // Orden y candados tal como están en Figma (solo las tres últimas llevan candado).
-const NETWORKS = [
+export const NETWORKS = [
   { name: 'MOVISTAR_PLUS_5G' },
   { name: 'MIWIFI_5G_REFp' },
   { name: 'DIRECT-31-HP OfficeJet Pro 7740' },
@@ -294,7 +294,7 @@ function Header({ title, onBack }) {
 
 // Lista en caja redondeada: se ven 3 filas como máximo; si hay más, se desplaza
 // y aparece la barra de la derecha (gris con el tramo turquesa).
-function ListScreen({ title, onBack, items, onSelect }) {
+export function ListScreen({ title, onBack, items, onSelect }) {
   const listRef = useRef(null);
   const [scroll, setScroll] = useState({ top: 0, ratio: 1 });
   const scrollable = items.length > 3;

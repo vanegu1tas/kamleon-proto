@@ -1,0 +1,376 @@
+/* Tema: superficies, bordes y textos secundarios en blanco translúcido (se tiñen del fondo del
+   equipo). El acento llega por --accent / --on-accent desde FlowRunner. */
+.screen {
+  --surface: rgba(255, 255, 255, 0.08);
+  --surface-strong: rgba(255, 255, 255, 0.14);
+  --border: rgba(255, 255, 255, 0.22);
+  --text-muted: rgba(255, 255, 255, 0.62);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-family-primary);
+  color: #ffffff;
+}
+
+/* Al tocar cualquier cosa: se hunde un poco al instante */
+.pressable {
+  transition: transform 0.1s var(--ease-out);
+}
+
+.pressable:active {
+  transform: scale(0.96);
+}
+
+/* ─── Cabecera ─── */
+
+.header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 88px;
+  flex-shrink: 0;
+}
+
+.title {
+  margin: 0;
+  padding-top: 8px;
+  font-size: var(--font-size-32);
+  font-weight: var(--font-weight-bold);
+}
+
+/* Se ve de 48 px, responde en 80 */
+.staffButton {
+  position: absolute;
+  top: 20px;
+  right: 48px;
+  min-width: 112px;
+  height: 48px;
+  padding: 0 24px;
+  border: 2px solid var(--border);
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.85);
+  font-family: inherit;
+  font-size: var(--font-size-20);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+}
+
+.staffButton::before {
+  content: '';
+  position: absolute;
+  inset: -16px 0;
+}
+
+/* En Staff las pestañas se apagan (siguen ocupando su sitio para que el QR no salte) */
+.tabsHidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ─── Pestañas: un solo resaltado que se desliza (T2) ─── */
+
+.tabs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 80px;
+  flex-shrink: 0;
+  transition: opacity 0.2s var(--ease-out);
+  /* Figma: 12 px más abajo (centro en y=140). Se desplaza sin mover la cuadrícula. */
+  position: relative;
+  top: 12px;
+}
+
+.tabGroup {
+  position: relative;
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--surface);
+}
+
+.pill {
+  position: absolute;
+  top: 4px;
+  left: 0;
+  height: 56px;
+  border-radius: 999px;
+  background: var(--accent);
+  /* solo se anima la posición (barato); el ancho cambia al instante — las pestañas miden casi lo mismo */
+  transition: transform 0.25s var(--ease-out);
+}
+
+/* Se ve de 56 px, responde en 80 (13,6 mm en la pantalla real) */
+.tab {
+  position: relative;
+  z-index: 1;
+  min-width: 104px;
+  height: 56px;
+  padding: 0 24px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.75);
+  font-family: inherit;
+  font-size: var(--font-size-20);
+  font-weight: var(--font-weight-medium);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  /* la pestaña que pierde la pastilla se aclara enseguida (queda sobre fondo oscuro) */
+  transition: transform 0.1s var(--ease-out), color 0.12s var(--ease-out);
+}
+
+.tab::before {
+  content: '';
+  position: absolute;
+  inset: -12px 0;
+}
+
+.tabActive {
+  color: var(--on-accent);
+  /* La que la recibe se oscurece en la segunda mitad del viaje de la pastilla (0,25 s): a los
+     0,13 s ya ha recorrido ~85 % del camino, así el texto no se pone oscuro sobre el fondo. */
+  transition: transform 0.1s var(--ease-out), color 0.12s var(--ease-out) 0.13s;
+}
+
+/* ─── Cuadrícula ─── */
+
+.body {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  padding-bottom: 24px;
+}
+
+.grid {
+  display: grid;
+  grid-auto-rows: 128px;
+  column-gap: 22px;
+  row-gap: 32px;
+  /* Grilla fija: empieza siempre en y=262 (Figma) y se llena de izquierda a derecha y de arriba
+     abajo, tenga el rango los jugadores que tenga. 262 = 88 cabecera + 80 pestañas + 94. */
+  align-self: flex-start;
+  margin-top: 94px;
+}
+
+.player {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 4px;
+  border: none;
+  background: none;
+  color: inherit;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.photo {
+  position: absolute;
+  right: 0;
+  bottom: 7px;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--surface);
+  /* anillo fino: separa la foto de cualquier color de fondo */
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.16);
+  transition: transform 0.1s var(--ease-out);
+}
+
+.player:active .photo {
+  transform: scale(0.94);
+}
+
+.initials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-strong);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-medium);
+}
+
+/* ─── Celda (Figma 2029:2815): apellido en arco, dorsal enorme, foto de 40 px en su esquina ─── */
+
+.jerseyName {
+  /* 2 px más arriba que en Figma (Daniel, 17/10); no mueve el dorsal ni la foto */
+  position: relative;
+  top: -2px;
+  width: 138px;
+  height: 25px;
+  flex-shrink: 0;
+  overflow: visible;
+  fill: #ffffff;
+  font-family: var(--font-family-primary);
+  font-weight: var(--font-weight-medium);
+}
+
+.face {
+  position: relative;
+  display: flex;
+  flex-shrink: 0;
+  align-items: flex-start;
+  justify-content: center;
+  width: 134px;
+  height: 84px;
+}
+
+/* 108 px como en Figma (no es token: los de la scrapp saltan de 80 a 120). Caja de 128 px como en
+   Figma: el degradado se calcula sobre ella, no sobre la cifra (un "1" sale casi blanco). Empieza
+   9 px por encima de su bloque. */
+.bigNumber {
+  flex-shrink: 0;
+  width: 128px;
+  margin-top: -9px;
+  text-align: center;
+  font-size: 108px;
+  font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.04em;
+  line-height: 81px;
+  background: linear-gradient(90deg, #ffffff 44%, rgba(153, 153, 153, 0.2) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  opacity: 0.7;
+}
+
+/* ─── Staff: el QR entra creciendo (T5) ─── */
+
+.staffPanel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  animation: qrIn 0.25s var(--ease-out) both;
+}
+
+.staffQr {
+  display: block;
+  padding: 20px;
+  border: none;
+  border-radius: 16px;
+  background: var(--surface);
+  cursor: pointer;
+}
+
+.staffText {
+  margin: 0;
+  font-size: var(--font-size-24);
+}
+
+@keyframes qrIn {
+  from { opacity: 0; transform: scale(0.94); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* ─── T1 · entrar: cascada de caras ─── */
+
+.enter .player {
+  animation: faceIn 0.32s var(--ease-out) both;
+  animation-delay: calc(min(var(--i), 24) * 12ms);
+}
+
+.enter .header,
+.enter .tabs {
+  animation: fadeIn 0.3s var(--ease-out) both;
+}
+
+@keyframes faceIn {
+  from { opacity: 0; transform: translateY(12px) scale(0.96); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ─── T2 · cambiar de rango: la cuadrícula entra por el lado del cambio ─── */
+
+.fromRight { animation: slideFromRight 0.25s var(--ease-out) both; }
+.fromLeft  { animation: slideFromLeft 0.25s var(--ease-out) both; }
+
+@keyframes slideFromRight {
+  from { opacity: 0; transform: translateX(40px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes slideFromLeft {
+  from { opacity: 0; transform: translateX(-40px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ─── T3 · tocar una cara: todo se apaga y encoge; la elegida se queda (Ready la hace volar) ─── */
+
+.leaving {
+  pointer-events: none;
+}
+
+.leaving .header,
+.leaving .tabs,
+.leaving .player {
+  animation: fadeAway 0.25s var(--ease-out) both;
+}
+
+.leaving .selected,
+.returning .selected {
+  animation: none;
+}
+
+/* La foto elegida se oculta mientras vuela (la que se ve es la de Ready) */
+.leaving .selected .photo,
+.returning .selected .photo {
+  visibility: hidden;
+}
+
+.leaving .selected .jerseyName,
+.leaving .selected .bigNumber {
+  animation: fadeAway 0.15s var(--ease-out) both;
+}
+
+@keyframes fadeAway {
+  to { opacity: 0; transform: scale(0.92); }
+}
+
+/* ─── T4 · volver de Ready: la plantilla reaparece ─── */
+
+.returning {
+  pointer-events: none;
+}
+
+.returning .header,
+.returning .tabs,
+.returning .player {
+  animation: fadeBack 0.3s var(--ease-out) both;
+}
+
+@keyframes fadeBack {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Reducir movimiento: solo fundidos */
+@media (prefers-reduced-motion: reduce) {
+  .pill { transition: none; }
+  .pressable:active, .player:active .photo { transform: none; }
+  @keyframes faceIn         { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes slideFromRight { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes slideFromLeft  { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes fadeAway       { to { opacity: 0; } }
+  @keyframes fadeBack       { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes qrIn           { from { opacity: 0; } to { opacity: 1; } }
+}

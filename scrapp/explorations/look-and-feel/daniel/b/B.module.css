@@ -1,0 +1,133 @@
+/* Dirección B · Instrumento (base: Whoop, hecha Kamleon). Tokens y fondo comunes a todas las pantallas de la B.
+   Ficha en docs/scrapp/look-and-feel.md. Diferencias: fondo tintado de azul petróleo (familia del agua de Kamleon,
+   sin el morado de Whoop), más claro arriba; tarjetas sin borde separadas por tono; números en negrita; etiquetas en
+   MAYÚSCULAS con mucho interletrado; botón redondo con anillo de progreso para avanzar; todo dato "se llena";
+   movimiento rápido (0,25 s) y escalonado. */
+.screen {
+  --b-bg: var(--b-bg-override, #0D1417);
+  --b-bg-top: #16242A;
+  --b-surface: #18242A;
+  --b-surface-active: #22323A;
+  --b-border: #263740;
+  --b-edge: transparent;
+  --b-text-3: #5A6A73;
+  --b-text-2: #8A97A0;
+  --b-text: #FFFFFF;
+  --b-primary: #FFFFFF;
+  --b-hydrated: #2FD5CB;
+  --b-ease: cubic-bezier(0.2, 0, 0, 1);
+  --b-dur: 0.25s;
+  /* la "pieza" de la B: tono plano, sin canto ni borde (las pantallas heredadas de la C usan estos nombres) */
+  --b-glass: linear-gradient(var(--b-surface), var(--b-surface));
+  --b-glass-edge: 0 0 0 0 transparent;
+
+  position: relative;
+  width: 1280px;
+  height: 800px;
+  overflow: hidden;
+  background: linear-gradient(180deg, var(--b-bg-top) 0%, var(--b-bg) 55%);
+  color: var(--b-text);
+  font-family: var(--font-family-primary);
+  box-sizing: border-box;
+}
+
+.header {
+  position: absolute;
+  top: 40px;
+  left: 56px;
+  right: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 2;
+}
+/* izquierda de la cabecera: botón de volver (si lo hay) + escudo */
+.headerLeft { display: flex; align-items: center; gap: 20px; }
+.backBtn {
+  width: 56px;
+  height: 56px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--b-surface);
+  color: var(--b-text);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: transform 0.12s ease-out;
+}
+.backBtn svg { margin-left: -3px; }
+.backBtn:active { transform: scale(0.94); }
+.clubLogo { height: 64px; width: auto; display: block; }
+
+/* Tarjeta: tono más claro que el fondo, sin borde, radio 16 */
+.card {
+  border-radius: 16px;
+  background: var(--b-surface);
+}
+/* "Tinte" = la tarjeta lleva un velo del turquesa (para la destacada) */
+.cardsFill .card { background: linear-gradient(180deg, rgba(47, 213, 203, 0.10), rgba(47, 213, 203, 0.03)), var(--b-surface); }
+
+.title {
+  margin: 0;
+  font-size: 48px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+.body { margin: 0; font-size: 24px; font-weight: 400; color: var(--b-text-2); }
+/* etiqueta de instrumento */
+.label { font-size: 14px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--b-text-2); }
+
+.primary {
+  height: 64px;
+  padding: 0 40px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--b-primary);
+  color: var(--b-bg);
+  font: inherit;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background var(--b-dur) var(--b-ease), color var(--b-dur) var(--b-ease), transform var(--b-dur) var(--b-ease);
+}
+.primary:active:not(:disabled) { transform: scale(0.97); transition-duration: 0.1s; }
+.primary:disabled { background: var(--b-surface); color: var(--b-text-3); cursor: default; }
+
+/* Secundario: mayúsculas con interletrado y flecha (como los enlaces de acción de Whoop) */
+.link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--b-text);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.link::after { content: '  ›'; color: var(--b-hydrated); }
+
+.chip {
+  height: 46px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--b-surface);
+  color: var(--b-text-2);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background var(--b-dur) var(--b-ease), color var(--b-dur) var(--b-ease);
+}
+.chipOn { background: var(--b-text); color: var(--b-bg); }
+
+/* Entrada de la B: rápida, desde un poco más abajo, escalonada por cada pantalla */
+@keyframes bIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+.enter { animation: bIn var(--b-dur) var(--b-ease) both; }

@@ -1,0 +1,125 @@
+.svg { position: absolute; inset: 0; }
+
+.zone { transition: opacity 0.8s var(--e-ease); }
+.dotShadow { filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.35)); }
+
+.optimal {
+  font-family: var(--font-family-primary);
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 3px;
+  fill: #fff;
+}
+.fino .optimal { font-size: 14px; letter-spacing: 2.5px; fill: var(--e-text-2); }
+
+/* número del gauge actual (como hoy) */
+.numActual { font-family: var(--font-family-primary); font-size: 220px; font-weight: 500; }
+.pctActual { font-family: var(--font-family-primary); font-size: 104px; font-weight: 500; }
+
+/* número del gauge fino: blanco plano, interletrado cerrado (−5 %), % pequeño */
+.numFino {
+  font-family: var(--font-family-primary);
+  font-size: 210px;
+  font-weight: 500;
+  letter-spacing: -0.05em;
+  fill: #fff;
+}
+.pctFino { font-size: 72px; letter-spacing: 0; fill: var(--e-text-2); }
+
+.statusActual { font-family: var(--font-family-primary); font-size: 68px; font-weight: 500; }
+.statusFino   { font-family: var(--font-family-primary); font-size: 48px; font-weight: 500; letter-spacing: -0.03em; }
+
+.message { font-family: var(--font-family-primary); font-size: 30px; font-weight: 400; fill: #fff; }
+.fino .message { font-size: 26px; fill: var(--e-text-2); }
+
+.rule { stroke: var(--e-border); stroke-width: 1; }
+.cmpLabel { font-family: var(--font-family-primary); font-size: 20px; fill: var(--e-text-2); }
+.cmpValue { font-family: var(--font-family-primary); font-size: 24px; font-weight: 500; fill: #fff; }
+
+.countdown { font-family: var(--font-family-primary); font-size: 22px; fill: #fff; }
+
+/* entradas de la A: fundido + 10 px, 0,3 s con frenada */
+.fade {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity var(--e-dur) var(--e-ease), transform var(--e-dur) var(--e-ease);
+}
+.fade.in { opacity: 1; transform: none; }
+
+@keyframes breathe {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.15); }
+}
+.breathe {
+  transform-origin: 640px 388px;
+  animation: breathe 3.8s ease-in-out infinite;
+}
+.glow { transition: opacity 0.8s var(--e-ease); }
+
+/* E · disposición Escenario */
+.stageMain {
+  position: absolute;
+  left: 96px;
+  right: 96px;
+  top: 170px;
+  display: flex;
+  align-items: center;
+  gap: 56px;
+}
+.bigNum {
+  font-size: 300px;
+  font-weight: 400;
+  letter-spacing: -0.06em;
+  line-height: 0.9;
+  font-variant-numeric: tabular-nums;
+}
+.bigNum span { font-size: 96px; letter-spacing: 0; color: var(--e-text-2); margin-left: 8px; }
+.stageSide { display: flex; flex-direction: column; gap: 12px; }
+.stageStatus { margin: 0; font-size: 60px; font-weight: 400; letter-spacing: -0.02em; line-height: 1; }
+.stageMessage { margin: 0; font-size: 24px; color: var(--e-text-2); }
+
+.zoneBar {
+  position: absolute;
+  left: 96px;
+  right: 96px;
+  top: 520px;
+  height: 6px;
+  display: flex;
+  gap: 6px;
+}
+.zoneBar i { height: 100%; border-radius: 3px; transition: opacity 0.6s var(--e-ease); }
+.zoneBar b {
+  position: absolute;
+  top: 50%;
+  width: 18px;
+  height: 18px;
+  margin: -9px 0 0 -9px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.6);
+}
+
+.band {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  bottom: 24px;
+  height: 116px;
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  gap: 64px;
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.6s var(--e-ease), transform 0.6s var(--e-ease);
+}
+.bandIn { opacity: 1; transform: none; }
+.metric { display: flex; align-items: baseline; gap: 16px; }
+.metric strong { font-size: 48px; font-weight: 400; letter-spacing: -0.03em; }
+.metric small { font-size: 22px; color: var(--e-text-2); margin-left: 2px; }
+.timer { margin-left: auto; position: relative; width: 48px; height: 48px; display: grid; place-items: center; }
+.timer svg { position: absolute; inset: 0; }
+.timer span { font-size: 18px; }
+
+.fadeE { opacity: 0; transform: translateX(-12px); transition: opacity var(--e-dur) var(--e-ease), transform var(--e-dur) var(--e-ease); }
+.fadeE.in { opacity: 1; transform: none; }

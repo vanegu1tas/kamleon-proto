@@ -7,6 +7,13 @@ import FastTrackPolished from '../explorations/fast-track/daniel/pulida/FlowRunn
 import FastTrackDorsal from '../explorations/fast-track/daniel/dorsal/FlowRunner';
 import FastTrackRelease from '../explorations/fast-track/daniel/release/FlowRunner';
 import FastTrackFicha from '../explorations/fast-track/daniel/ficha/FlowRunner';
+import LookA from '../explorations/look-and-feel/daniel/a/DirectionA';
+import LookB from '../explorations/look-and-feel/daniel/b/DirectionB';
+import LookC from '../explorations/look-and-feel/daniel/c/DirectionC';
+import LookE from '../explorations/look-and-feel/daniel/e/DirectionE';
+import VideoFlow from '../explorations/video/daniel/FlowRunner';
+import VideoDallas08 from '../explorations/video/daniel/dallas-08/FlowRunner';
+import VideoDallasDorsal from '../explorations/video/daniel/dallas-dorsal/FlowRunner';
 
 /**
  * Índice del microsite de la scrapp.
@@ -63,6 +70,34 @@ export const SECTIONS = [
     title: 'Tareas',
     description: 'Exploraciones de cada tarea, de una o varias personas',
     entries: [
+      {
+        // Desde el 12/11: direcciones de look and feel para la scrapp neutra. Ficha: docs/scrapp/look-and-feel.md.
+        // Cada dirección será un item (A, B, C) con las 6 pantallas clave; el código va en
+        // explorations/look-and-feel/<persona>/ y las referencias en explorations/look-and-feel/refs/.
+        id: 'look-and-feel',
+        title: 'Look & feel',
+        status: 'progress',
+        description: 'Direcciones para la scrapp neutra: una paleta para cualquier cliente que se sienta Kamleon. Home, Elegir jugador, PIN, Score y Wizard.',
+        items: [
+          { id: 'a', label: 'A · Kamleon evolucionado', author: 'Daniel', render: () => <LookA /> },
+          { id: 'b', label: 'B · Instrumento', author: 'Daniel', render: () => <LookB /> },
+          { id: 'c', label: 'C · Calma', author: 'Daniel', render: () => <LookC /> },
+          { id: 'e', label: 'E · Escenario', author: 'Daniel', render: () => <LookE /> },
+        ],
+      },
+      {
+        // 13/11: vídeo corto de la scrapp para una presentación. Combina piezas de Fast Track y de Score en un
+        // flujo propio que se graba con ?bare=1. Temporal: seguramente se borra después.
+        id: 'video',
+        title: 'Video',
+        status: 'progress',
+        description: 'Vídeos de la presentación: Tracking → Score final, y dos exploraciones de Fast Track con Dallas.',
+        items: [
+          { id: 'tracking-score', label: 'Tracking → Score', author: 'Daniel', render: () => <VideoFlow /> },
+          { id: 'dallas-08',     label: 'Dallas · Avatars cards (08)', author: 'Daniel', render: () => <VideoDallas08 /> },
+          { id: 'dallas-dorsal', label: 'Dallas · Dorsal grande',        author: 'Daniel', render: () => <VideoDallasDorsal /> },
+        ],
+      },
       {
         id: 'fast-track',
         title: 'Fast Track',

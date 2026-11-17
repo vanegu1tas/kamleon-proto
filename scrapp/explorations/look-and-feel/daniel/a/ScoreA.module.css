@@ -1,0 +1,58 @@
+.svg { position: absolute; inset: 0; }
+
+.zone { transition: opacity 0.8s var(--a-ease); }
+.dotShadow { filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.35)); }
+
+.optimal {
+  font-family: var(--font-family-primary);
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 3px;
+  fill: #fff;
+}
+.fino .optimal { font-size: 14px; letter-spacing: 2.5px; fill: var(--a-text-2); }
+
+/* número del gauge actual (como hoy) */
+.numActual { font-family: var(--font-family-primary); font-size: 220px; font-weight: 500; }
+.pctActual { font-family: var(--font-family-primary); font-size: 104px; font-weight: 500; }
+
+/* número del gauge fino: blanco plano, interletrado cerrado (−5 %), % pequeño */
+.numFino {
+  font-family: var(--font-family-primary);
+  font-size: 210px;
+  font-weight: 500;
+  letter-spacing: -0.05em;
+  fill: #fff;
+}
+.pctFino { font-size: 72px; letter-spacing: 0; fill: var(--a-text-2); }
+
+.statusActual { font-family: var(--font-family-primary); font-size: 68px; font-weight: 500; }
+.statusFino   { font-family: var(--font-family-primary); font-size: 48px; font-weight: 500; letter-spacing: -0.03em; }
+
+.message { font-family: var(--font-family-primary); font-size: 30px; font-weight: 400; fill: #fff; }
+.fino .message { font-size: 26px; fill: var(--a-text-2); }
+
+.rule { stroke: var(--a-border); stroke-width: 1; }
+.cmpLabel { font-family: var(--font-family-primary); font-size: 20px; fill: var(--a-text-2); }
+.cmpValue { font-family: var(--font-family-primary); font-size: 24px; font-weight: 500; fill: #fff; }
+
+.countdown { font-family: var(--font-family-primary); font-size: 22px; fill: #fff; }
+
+/* entradas de la A: fundido + 10 px, 0,3 s con frenada */
+.fade {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity var(--a-dur) var(--a-ease), transform var(--a-dur) var(--a-ease);
+}
+.fade.in { opacity: 1; transform: none; }
+
+@keyframes breathe {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.15); }
+}
+.breathe {
+  transform-origin: 640px 388px;
+  animation: breathe 3.8s ease-in-out infinite;
+}
+.glow { transition: opacity 0.8s var(--a-ease); }
+

@@ -1,0 +1,143 @@
+/* Dirección E · Escenario (base: Peloton, hecha Kamleon). Ficha en docs/scrapp/look-and-feel.md.
+   Detrás, siempre en movimiento, el escenario (Stage: mandala de la máquina o shader de agua); encima, la interfaz
+   en paneles negros translúcidos sin blur (solo opacidad: lo más barato en Qt). Números grandes y finos sin caja,
+   blanco sobre negro, el estado en su color. Entradas deslizándose como una capa. */
+.screen {
+  --e-bg: #000000;
+  --e-panel: rgba(0, 0, 0, 0.66);
+  --e-surface: rgba(255, 255, 255, 0.07);
+  --e-surface-active: rgba(255, 255, 255, 0.16);
+  --e-border: rgba(255, 255, 255, 0.10);
+  --e-edge: rgba(255, 255, 255, 0.10);
+  --e-text-3: #6E6E6E;
+  --e-text-2: #9A9A9A;
+  --e-text: #FFFFFF;
+  --e-primary: #FFFFFF;
+  --e-hydrated: #2FD5CB;
+  --e-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --e-dur: 0.45s;
+  /* pieza (teclas, tarjetas dentro de un panel): velo blanco plano y borde finísimo */
+  --e-glass: linear-gradient(var(--e-surface), var(--e-surface));
+  --e-glass-edge: inset 0 0 0 1px var(--e-border);
+
+  position: relative;
+  width: 1280px;
+  height: 800px;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--e-bg);
+  color: var(--e-text);
+  font-family: var(--font-family-primary);
+  box-sizing: border-box;
+}
+/* todo lo que no es el escenario va por encima */
+.screen > :not([aria-hidden='true']) { z-index: 1; }
+
+/* Panel negro translúcido: la pieza de la E */
+.panel {
+  background: var(--e-panel);
+  border-radius: 24px;
+  box-shadow: inset 0 0 0 1px var(--e-border);
+}
+
+.header {
+  position: absolute;
+  top: 40px;
+  left: 56px;
+  right: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 2;
+}
+.headerLeft { display: flex; align-items: center; gap: 20px; }
+.backBtn {
+  width: 56px;
+  height: 56px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--e-panel);
+  box-shadow: inset 0 0 0 1px var(--e-border);
+  color: var(--e-text);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: transform 0.12s ease-out;
+}
+.backBtn svg { margin-left: -3px; }
+.backBtn:active { transform: scale(0.94); }
+.clubLogo { height: 64px; width: auto; display: block; }
+.logoBottom { position: absolute; left: 56px; bottom: 44px; z-index: 2; }
+
+/* Tarjeta dentro de un panel: velo blanco muy suave */
+.card {
+  border-radius: 16px;
+  background: var(--e-surface);
+  box-shadow: inset 0 0 0 1px var(--e-border);
+}
+.cardsFill .card { background: rgba(255, 255, 255, 0.11); box-shadow: none; }
+
+.title {
+  margin: 0;
+  font-size: 48px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+.body { margin: 0; font-size: 22px; font-weight: 400; color: var(--e-text-2); }
+.label { font-size: 14px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--e-text-2); }
+
+.primary {
+  height: 64px;
+  padding: 0 40px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--e-primary);
+  color: #000;
+  font: inherit;
+  font-size: 20px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background var(--e-dur) var(--e-ease), color var(--e-dur) var(--e-ease), transform var(--e-dur) var(--e-ease);
+}
+.primary:active:not(:disabled) { transform: scale(0.97); transition-duration: 0.1s; }
+.primary:disabled { background: var(--e-surface); color: var(--e-text-3); cursor: default; }
+
+.link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--e-text-2);
+  font: inherit;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.chip {
+  height: 46px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--e-surface);
+  color: var(--e-text-2);
+  font: inherit;
+  font-size: 17px;
+  cursor: pointer;
+}
+.chipOn { background: var(--e-text); color: #000; font-weight: 500; }
+
+/* Entrada de la E: la capa se desliza desde su borde */
+@keyframes eIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes eSlideR { from { opacity: 0; transform: translateX(48px); } to { opacity: 1; transform: none; } }
+@keyframes eSlideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: none; } }
+.enter { animation: eIn var(--e-dur) var(--e-ease) both; }
+.slideR { animation: eSlideR 0.6s var(--e-ease) both; }
+.slideUp { animation: eSlideUp 0.6s var(--e-ease) both; }
+
+/* Sin paneles (Daniel, 17/11). Los paneles de Peloton existen porque detrás hay vídeo; nuestro fondo lo controlamos.
+   Fuera las cajas grandes (Home, PIN, Score, Wizard): el texto va sobre el negro. Lo negro translúcido se queda
+   solo en las piezas que se tocan (tarjetas, teclas), que así se separan del agua. */
+.screen[data-panels='none'] .panel:not(.keepPanel) { background: transparent; box-shadow: none; }
+/* el QR de la Home conserva su panel (Daniel, 17/11: ahí sí funciona) */
+.keepPanel {}
+.screen[data-panels='none'] .card { background: var(--e-panel); box-shadow: inset 0 0 0 1px var(--e-border); }

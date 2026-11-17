@@ -1,0 +1,20 @@
+.touch {
+  position: fixed;
+  z-index: 1000;
+  width: 72px;
+  height: 72px;
+  margin: -36px 0 0 -36px;
+  border: 3px solid rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.18);
+  pointer-events: none;
+  animation: touch 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Aparece, se hunde (como el dedo al apretar) y se va abriéndose */
+@keyframes touch {
+  0%   { opacity: 0; transform: scale(1.25); }
+  15%  { opacity: 1; transform: scale(0.9); }
+  40%  { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.35); }
+}

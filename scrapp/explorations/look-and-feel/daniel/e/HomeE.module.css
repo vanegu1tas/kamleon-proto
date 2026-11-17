@@ -1,0 +1,45 @@
+.hero {
+  /* centrado en la pantalla (Daniel, 17/11), el agua queda debajo */
+  position: absolute;
+  left: 50%;
+  top: 214px;
+  width: 760px;
+  margin-left: -380px;
+  box-sizing: border-box;
+  padding: 44px 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+}
+.title { margin: 0; font-size: 64px; font-weight: 400; letter-spacing: -0.035em; line-height: 1; }
+.actions { margin-top: 22px; display: flex; flex-direction: column; align-items: center; gap: 22px; }
+.actions .primary, .actions button:first-child { min-width: 220px; }
+
+.qr {
+  position: absolute;
+  right: 56px;
+  bottom: 56px;
+  padding: 20px 20px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.rfid {
+  /* "Tap your card below" grande (Daniel, 17/11: a un metro, 16 px no se lee); encima del lector */
+  position: absolute;
+  left: 50%;
+  bottom: 22px;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.rfid .hint { font-size: 26px; color: var(--e-text); }
+.hint { font-size: 16px; color: var(--e-text-2); }
+.chevron { width: 32px; height: 18px; color: var(--e-text); animation: nudge 1.8s ease-in-out infinite; }
+@keyframes nudge { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(5px); } }
+

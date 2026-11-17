@@ -1,0 +1,9 @@
+.stage {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background: #000;
+}
+/* el canvas mide 640×400 y se estira a 1280×800 (media resolución, como en la máquina) */
+.shader { position: absolute; inset: 0; width: 100%; height: 100%; }

@@ -1,0 +1,98 @@
+.main {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  text-align: center;
+}
+.hero {
+  margin: 0;
+  font-size: 88px;
+  font-weight: 500;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+.actions {
+  margin-top: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+.beam > button { min-width: 280px; }
+
+/* Luz que recorre el borde: un anillo de 2 px alrededor del botón con un degradado cónico que gira.
+   Debajo, el anillo base en el gris del borde. En Qt: un ConicalGradient (o un shader corto) rotando. */
+@property --beam-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+.beam {
+  position: relative;
+  display: inline-flex;
+  padding: 2px;
+  border-radius: 999px;
+  isolation: isolate; /* el halo (::after, z-index -1) queda detrás del botón pero encima del fondo */
+}
+.beam_white, .beam_turquoise {
+  background:
+    conic-gradient(from var(--beam-angle), var(--beam-stops)),
+    var(--a-border);
+  animation: beamSpin 3.2s linear infinite;
+}
+.beam_white, .beam_turquoise {
+  /* una luz: estela de ~70° que se apaga por detrás (cometa) */
+  --beam-stops: transparent 0deg, transparent 250deg, var(--beam) 320deg, transparent 360deg;
+}
+/* dos luces enfrentadas (180° de separación), cada una con la misma estela */
+.twin {
+  --beam-stops: transparent 0deg, transparent 70deg, var(--beam) 140deg, transparent 180deg,
+                transparent 250deg, var(--beam) 320deg, transparent 360deg !important;
+}
+.beam_white { --beam: #FFFFFF; }
+.beam_turquoise { --beam: var(--a-hydrated); }
+/* halo suave que acompaña a la luz */
+.beam_white::after, .beam_turquoise::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 999px;
+  background: conic-gradient(from var(--beam-angle), var(--beam-stops));
+  filter: blur(10px);
+  opacity: 0.45;
+  z-index: -1;
+  animation: beamSpin 3.2s linear infinite;
+}
+@keyframes beamSpin { to { --beam-angle: 360deg; } }
+
+.qr {
+  position: absolute;
+  right: 56px;
+  bottom: 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.qrBox { padding: 14px; display: grid; place-items: center; }
+
+.rfid {
+  position: absolute;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.hint { font-size: 18px; color: var(--a-text-2); }
+.chevron { color: var(--a-text-2); animation: nudge 1.8s var(--a-ease) infinite; }
+@keyframes nudge { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
+
+/* entrar sin cuenta: sin subrayar (Daniel, 17/11) */
+.guest { text-decoration: none; }

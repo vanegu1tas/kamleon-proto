@@ -14,6 +14,7 @@ import Hub, { Section } from './hub/Hub';
 import { findEntry, findSection } from './hub/entries';
 import JourneyMap from './hub/JourneyMap';
 import ItemMenu from './components/ItemMenu';
+import { BARE } from './components/DeviceFrame';
 
 // Rutas por hash para que funcione igual en local y en GitHub Pages:
 //   #/                      → índice del microsite
@@ -121,7 +122,39 @@ function ItemArrows({ entry, item }) {
   );
 }
 
+// Easter egg (17/11): "i" tres veces seguidas (de invisible) enseña o esconde el engranaje de la derecha. Escondido por
+// defecto (para enseñar sin andamiaje). Lo de la izquierda (volver, menú de items), las pestañas y las flechas se
+// quedan siempre, para navegar. Se recuerda en la sesión.
+const CHROME_KEY = 'scrapp:chrome-hidden';
+function useHiddenChrome() {
+  const [hidden, setHidden] = useState(() => { try { return sessionStorage.getItem(CHROME_KEY) !== '0'; } catch { return true; } });
+  useEffect(() => {
+    let presses = [];
+    function onKey(e) {
+      if (e.target.closest('input, select, textarea, [contenteditable]')) return;
+      if (e.key.toLowerCase() !== 'i' || e.metaKey || e.ctrlKey || e.altKey) { presses = []; return; }
+      const now = performance.now();
+      presses = [...presses.filter(t => now - t < 900), now];
+      if (presses.length >= 3) { presses = []; setHidden(h => !h); }
+    }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+  useEffect(() => {
+    document.body.dataset.chrome = hidden ? 'hidden' : '';
+    try { sessionStorage.setItem(CHROME_KEY, hidden ? '1' : '0'); } catch { /* sin almacenamiento */ }
+  }, [hidden]);
+  return hidden;
+}
+// el engranaje vive dentro de cada exploración (TweakPanel): se esconde por CSS
+const hideStyle = document.createElement('style');
+hideStyle.textContent = 'body[data-chrome="hidden"] [class*="dock"] { display: none !important; }';
+document.head.appendChild(hideStyle);
+
 function Viewer({ section, entry, item }) {
+  useHiddenChrome();
+  // ?bare=1: solo la pantalla, sin los controles del microsite (para grabar vídeo)
+  if (BARE) return item.render();
   return (
     <>
       {item.render()}

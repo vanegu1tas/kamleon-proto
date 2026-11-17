@@ -1,0 +1,138 @@
+.panel {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 28px 28px 0;
+  overflow: hidden;
+}
+/* lateral: a la derecha, de arriba abajo */
+.side { top: 24px; right: 24px; bottom: 24px; width: 700px; }
+/* completo: debajo de la cabecera */
+.full { top: 124px; left: 24px; right: 24px; bottom: 24px; padding-top: 24px; }
+.title { font-size: 36px; }
+
+.grid {
+  flex: 1;
+  display: grid;
+  gap: 10px;
+  overflow-y: auto;
+  scrollbar-width: none;
+  padding-bottom: 28px;
+  align-content: start;
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 40px), transparent);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 40px), transparent);
+}
+.grid::-webkit-scrollbar { display: none; }
+.side .grid { grid-template-columns: repeat(4, 1fr); grid-auto-rows: 84px; }
+.full .grid { grid-template-columns: repeat(6, 1fr); grid-auto-rows: 1fr; -webkit-mask-image: none; mask-image: none; }
+
+.player {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 12px;
+  align-content: center;
+  padding: 0 12px;
+  border: 0;
+  color: var(--e-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease-out, transform 0.12s ease-out;
+}
+.player:active { transform: scale(0.98); }
+.picked, .picked:active { box-shadow: inset 0 0 0 2px var(--e-text) !important; }
+.photo {
+  grid-row: 1 / span 2;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: top;
+  background: var(--e-surface-active);
+  display: grid;
+  place-items: center;
+  font-size: 15px;
+  color: var(--e-text-2);
+}
+.name { align-self: end; font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* el dorsal en número grande y fino, como las métricas de Peloton */
+.number { align-self: start; font-size: 22px; font-weight: 400; color: var(--e-text-2); font-variant-numeric: tabular-nums; line-height: 1.1; }
+.qrCard .photo { background: none; color: var(--e-hydrated); }
+.qrCard .number { font-size: 14px; letter-spacing: 0.16em; }
+
+/* ─── Sin panel (17/11) ─── título en la línea del escudo (a la derecha de volver + escudo) */
+.topTitle {
+  position: absolute;
+  top: 40px;
+  left: 226px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  font-size: 38px;
+  z-index: 2;
+}
+
+/* A · tarjetas flotando: cada una es un panel negro translúcido; el agua se ve entre ellas */
+.floatGrid {
+  position: absolute;
+  top: 132px;
+  left: 56px;
+  right: 56px;
+  bottom: 40px;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-auto-rows: 1fr;
+  gap: 12px;
+}
+.floatCard {
+  background: var(--e-panel);
+  border-radius: 16px;
+  box-shadow: inset 0 0 0 1px var(--e-border);
+  grid-template-columns: 52px 1fr;
+  padding: 0 14px;
+}
+.floatCard .photo { width: 52px; height: 52px; font-size: 17px; }
+.floatCard .name { font-size: 17px; white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; line-height: 1.15; }  /* Lewis-Skelly en dos líneas */
+
+/* B · fotos grandes en círculo, sin tarjeta */
+.circleGrid {
+  position: absolute;
+  top: 128px;
+  left: 56px;
+  right: 56px;
+  bottom: 28px;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-auto-rows: 1fr;
+  gap: 8px 12px;
+}
+.circle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--e-text);
+  font: inherit;
+  cursor: pointer;
+  transition: transform 0.12s ease-out;
+}
+.circle:active { transform: scale(0.96); }
+.circle .photo {
+  width: 92px;
+  height: 92px;
+  font-size: 26px;
+  box-shadow: 0 0 0 1px var(--e-border), 0 8px 24px rgba(0, 0, 0, 0.5);
+  transition: box-shadow 0.2s ease-out;
+}
+.circle > * { align-self: center; }
+.circle .name { font-size: 17px; max-width: 130px; text-shadow: 0 1px 8px rgba(0, 0, 0, 0.9); }
+.circle .number { font-size: 15px; letter-spacing: 0.08em; line-height: 1; text-shadow: 0 1px 8px rgba(0, 0, 0, 0.9); }
+.circle.picked, .circle.picked:active { box-shadow: none !important; }
+.circle.picked .photo { box-shadow: 0 0 0 3px var(--e-text), 0 8px 24px rgba(0, 0, 0, 0.5); }
+.circle.qrCard .photo { background: var(--e-panel); box-shadow: inset 0 0 0 1px var(--e-border); }

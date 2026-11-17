@@ -50,3 +50,13 @@
   pointer-events: none;
   z-index: 1;
 }
+
+/* ?bare=1: solo la pantalla, para grabar vídeo */
+.bare {
+  position: fixed;
+  inset: 0 auto auto 0;
+  width: 1280px;
+  height: 800px;
+  overflow: hidden;
+  background: #000;
+}

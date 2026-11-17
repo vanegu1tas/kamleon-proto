@@ -18,3 +18,6 @@ docs/meeting-notes/
 .obsidian/
 .impeccable/
 *.zip
+
+# Referencias de look and feel (vídeos e imágenes de otras marcas): solo en local
+scrapp/explorations/look-and-feel/refs/

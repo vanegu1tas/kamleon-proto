@@ -2,7 +2,15 @@ import { useRef, useEffect, useState } from 'react';
 import styles from './DeviceFrame.module.css';
 import deviceImg from '../assets/device-frame.png';
 
+// ?bare=1 (13/11, para grabar vídeo): solo la pantalla, 1280×800 exactos arriba a la izquierda, sin marco ni escala
+export const BARE = new URLSearchParams(window.location.search).get('bare') === '1';
+
 export default function DeviceFrame({ children }) {
+  if (BARE) return <div className={styles.bare}><div className={styles.canvas}>{children}</div></div>;
+  return <FramedDevice>{children}</FramedDevice>;
+}
+
+function FramedDevice({ children }) {
   const screenRef = useRef(null);
   const [scale, setScale] = useState(1);
 
