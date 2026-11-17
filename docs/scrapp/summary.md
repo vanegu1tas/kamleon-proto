@@ -3,15 +3,40 @@
 **Estado de la scrapp** (la pantalla de 1280×800 sobre el urinal). El de la webapp está en
 `docs/project-summary.md`. Si algo de la scrapp aparece en los dos, manda este.
 
-Última revisión: 2026-11-12 (arranca Look & feel; antes, 26/10: wizard en pausa).
+Última revisión: 2026-11-17 (Look & feel: A, B, C y E montadas y publicadas; ajustes por dirección).
 
 ---
 
 ## Lo primero al retomar
 
-**12/11: nueva tarea, Look & feel de la scrapp** (con el Recommendation Engine neutro). Card en Tareas → Look & feel
-(vacía todavía); ficha → `docs/scrapp/look-and-feel.md`; referencias en `scrapp/explorations/look-and-feel/refs/`.
-Siguiente: lámina de la dirección A (A1: interfaz monocroma, turquesa solo para Hydrated).
+**17/11: Look & feel — cuatro direcciones montadas y publicadas** (a274b3b) para que el manager de Daniel las vaya
+validando: https://vanegu1tas.github.io/kamleon-proto/scrapp/#/look-and-feel/a (y /b, /c, /e). Ficha con todo lo
+decidido y abierto por dirección → `docs/scrapp/look-and-feel.md` (manda sobre este resumen).
+- **A · Kamleon evolucionado, B · Instrumento, C · Calma, E · Escenario**, cada una con Home, Elegir jugador, PIN,
+  Score y Wizard. La D (movimiento) se deja como capa de animación de la que gane. Recommendation Engine fuera.
+- **Microsite**: pestañas de pantalla abajo; botón **"Comparar con hoy"** (la scrapp actual a la izquierda);
+  el **engranaje está escondido por defecto: "i" tres veces** para verlo (lo de la izquierda y las pestañas siempre).
+- **Hecho hoy**: Score de todas con la curva y el puntero de la actual (animaba el número y saltaba entre zonas);
+  "Or just urinate and see your score" en las cuatro Homes. A: tarjetas con relleno, 12 redes, momento de marca
+  quitado. B y C: PIN automático. C: halo gris verdoso (y "Fondo y textos" como exploración aparte), Staff con QR
+  arriba + buscar por número (botón abajo / buscador), electrolitos y volumen bajo el mensaje, % blanco en el gauge
+  fino, puntos que se encienden. E: sin esfera ni nombres de marca, agua (ola / esfera) con ajustes, sin paneles
+  grandes (solo el QR de la Home y las piezas), Elegir jugador con Tarjetas flotando / Círculos, Score solo gauge.
+
+**Lo siguiente al retomar** (Daniel ajusta dirección por dirección, pantalla por pantalla, y va cerrando opciones):
+1. **C**: falta el Wizard; revisar el "NO. 7" de las tarjetas (pequeño); cerrar opciones (Modo, Buscar por número,
+   20/30 por página, Tarjetas, Gauge, Detrás del número, Halo, Fondo y textos).
+2. **Animaciones de la C**: Daniel las notó a tirones; se arregló el halo (capa propia) y el glow invisible del
+   Score. **Preguntarle si ya van fluidas**; si no, optimizar el Score mientras cuenta.
+3. **E**: igualar con B y C si Daniel quiere (PIN automático, electrolitos en vez de media/mejor).
+4. **A**: firma Kamleon débil, sigue abierta (descartados momento de marca, textura y puntos en componentes).
+5. **Presentación a business**: plan en la ficha (puntos débiles, guion, comparación con hoy). Cuando estén
+   ajustadas: congelar una configuración por dirección, vídeos y cuadrícula Hoy | A | B | C | E.
+6. Preguntas para business: qué datos de la muestra se enseñan y en qué unidades (48 mmol/L y 320 mL son de ejemplo).
+   Para el programador (cuando se sepa la dirección): redes ocultas, fondo animado en la máquina, vidrio en Qt.
+7. **El repo es público**: la ficha y comentarios del código nombran marcas de referencia (la web no). Daniel decidió
+   subirlo así el 17/11. `scrapp/explorations/look-and-feel/refs/` está en .gitignore (solo local).
+8. Sobras en la raíz sin commitear (`.render.mjs`, `frames/`, `render-frames*/`): borrar solo con su ok.
 
 0. **Wizard (set up)** — en pausa desde el 26/10: producción hará hot fixes y Daniel pasa a analytics de la
    webapp (cubre a su compañera de vacaciones). Wizard actual emulado entero en `scrapp/screens/wizard/` (Figma
